@@ -1,24 +1,21 @@
-import React from 'react'
+import React, { FC, ReactElement, useState } from 'react'
 import { SafeAreaView, View } from 'react-native'
 import { Button, TextInput } from 'react-native-paper'
-import { HeaderComponent } from '../../components/header/header.component'
-import { registerStyle } from './register.style'
+import HeaderComponent from '../../components/header'
+import { NavigationProps } from '../../models/Navigation'
+import { registerStyle } from './style'
 
-interface RegisterScreenProps {
-  navigation: any
-}
+const SignUpScreen: FC<NavigationProps> = ({ navigation }): ReactElement => {
 
-export const RegisterScreen = (props: RegisterScreenProps) => {
-
-  const [text, setText] = React.useState('')
-  const registerName = () => props.navigation.navigate('RegisterEmail', { name: text })
+  const [text, setText] = useState('')
+  const registerName = () => navigation.navigate('RegisterEmail', { name: text })
 
   return (
     <SafeAreaView style={registerStyle.content}>
 
       <HeaderComponent
         title='Registro'
-        navigation={props.navigation}
+        navigation={navigation}
         hasBackButton={true} />
       <View style={registerStyle.content}>
         <View style={registerStyle.view}>
@@ -40,4 +37,4 @@ export const RegisterScreen = (props: RegisterScreenProps) => {
   )
 }
 
-export default RegisterScreen
+export default SignUpScreen

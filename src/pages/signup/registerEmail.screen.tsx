@@ -1,28 +1,24 @@
-import React from 'react'
+import React, { FC, ReactElement } from 'react'
 import { SafeAreaView, Text, View } from 'react-native'
 import { Button, TextInput } from 'react-native-paper'
-import { HeaderComponent } from '../../components/header/header.component'
-import { registerStyle } from './register.style'
+import HeaderComponent from '../../components/header'
+import { NavigationProps } from '../../models/Navigation'
+import { registerStyle } from './style'
 
-interface RegisterEmailScreenProps {
-  route: any
-  navigation: any
-}
+const RegisterEmailScreen: FC<NavigationProps> = ({ navigation, route }): ReactElement => {
 
-export const RegisterEmailScreen = (props: RegisterEmailScreenProps) => {
-
-  const registerEmail = () => props.navigation.navigate('RegisterDate')
+  const registerEmail = () => navigation.navigate('RegisterDate')
 
   return (
     <SafeAreaView style={registerStyle.content}>
 
       <HeaderComponent
         title='Registro'
-        navigation={props.navigation}
+        navigation={navigation}
         hasBackButton={true} />
       <View style={registerStyle.content}>
         <View style={registerStyle.view}>
-          <Text>{props.route.params.name}</Text>
+          <Text>{route.params.name}</Text>
           <TextInput
             label='Qual seu email?'
             style={registerStyle.text} />

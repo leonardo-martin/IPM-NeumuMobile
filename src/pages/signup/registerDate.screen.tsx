@@ -1,20 +1,16 @@
-import React from 'react'
+import React, { FC, ReactElement } from 'react'
 import { SafeAreaView, View } from 'react-native'
-import { HeaderComponent } from '../../components/header/header.component'
-import { registerStyle } from './register.style'
+import HeaderComponent from '../../components/header'
+import { NavigationProps } from '../../models/Navigation'
+import { registerStyle } from './style'
 
-interface RegisterScreenProps {
-  navigation: any
-}
-
-export const RegisterEmailScreen = (props: RegisterScreenProps) => {
+const RegisterEmailScreen: FC<NavigationProps> = ({ navigation }): ReactElement => {
 
   return (
     <SafeAreaView style={registerStyle.content}>
-
       <HeaderComponent
         title='Registro'
-        navigation={props.navigation}
+        navigation={navigation}
         hasBackButton={true} />
       <View style={registerStyle.content}>
         <View style={registerStyle.view}>

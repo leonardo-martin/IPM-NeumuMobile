@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { FC, ReactElement } from 'react'
 import { useState } from 'react'
 import { Appbar, Menu } from 'react-native-paper'
-import { headerStyle } from './header.style'
+import { useAuth } from '../../contexts/auth'
+import { headerStyle } from './style'
 
 interface HeaderComponentProps {
     title: string
@@ -9,24 +10,26 @@ interface HeaderComponentProps {
     hasBackButton?: boolean
 }
 
-export const HeaderComponent = (props: HeaderComponentProps) => {
+const HeaderComponent: FC<HeaderComponentProps> = ({ title, navigation, hasBackButton }): ReactElement => {
 
     const [visible, setVisible] = useState(false)
+    const { signOut } = useAuth()
 
-    const goBack = () => props.navigation?.goBack()
+    const handleSignOut = () => {
+        signOut()
+        closeMenu()
+    }
+
+    const goBack = () => navigation?.goBack()
     const closeMenu = () => setVisible(false)
     const openMenu = () => setVisible(true)
 
-    const logout = () => {
-        props.navigation?.navigate('Login')
-        closeMenu()
-    }
 
     return (
         <Appbar
             style={headerStyle.menu}>
             {
-                props.hasBackButton ?
+                hasBackButton ?
                     <Appbar.BackAction
                         onPress={goBack} />
                     :
@@ -41,11 +44,13 @@ export const HeaderComponent = (props: HeaderComponentProps) => {
                         }>
                         <Menu.Item
                             title='Logout'
-                            onPress={logout} />
+                            onPress={handleSignOut} />
                     </Menu>
             }
             <Appbar.Content
-                title={props.title} />
+                title={title} />
         </Appbar>
     )
 }
+
+export default HeaderComponent
