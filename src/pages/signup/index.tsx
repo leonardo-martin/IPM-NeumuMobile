@@ -1,39 +1,37 @@
 import React, { FC, ReactElement, useState } from 'react'
 import { SafeAreaView, View } from 'react-native'
-import { Button, TextInput } from 'react-native-paper'
 import HeaderComponent from '../../components/header'
-import { NavigationProps } from '../../models/Navigation'
 import { registerStyle } from './style'
+import { Input, Button, Text } from '@ui-kitten/components'
+import { useNavigation } from '@react-navigation/native'
+import { RegisterEmailScreenProp } from '../../routes/auth.routes'
 
-const SignUpScreen: FC<NavigationProps> = ({ navigation }): ReactElement => {
+const SignUpScreen: FC = (): ReactElement => {
 
   const [text, setText] = useState('')
+  const navigation = useNavigation<RegisterEmailScreenProp>()
   const registerName = () => navigation.navigate('RegisterEmail', { name: text })
 
   return (
-    <SafeAreaView style={registerStyle.content}>
-
+    <>
       <HeaderComponent
-        title='Registro'
-        navigation={navigation}
         hasBackButton={true} />
-      <View style={registerStyle.content}>
-        <View style={registerStyle.view}>
-          <TextInput
+      <SafeAreaView style={registerStyle.content}>
+        <View style={registerStyle.box}>
+          <Text category='h4' style={registerStyle.label}>Qual o seu nome completo?</Text>
+          <Input
             value={text}
             onChangeText={text => setText(text)}
-            label='Qual seu nome completo?'
-            style={registerStyle.text} />
+            style={registerStyle.input} />
           <Button
             onPress={registerName}
-            style={registerStyle.continuedButton}
-            color='#3171AC'
-            mode='contained'>
-            Continuar
+            style={registerStyle.button}
+            status='primary'>
+            CONTINUAR
           </Button>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </>
   )
 }
 

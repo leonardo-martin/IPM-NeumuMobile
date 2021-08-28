@@ -1,37 +1,37 @@
-import React, { FC, ReactElement } from 'react'
-import { SafeAreaView, Text, View } from 'react-native'
-import { Button, TextInput } from 'react-native-paper'
+import React, { FC, ReactElement, useState } from 'react'
+import { SafeAreaView, View } from 'react-native'
 import HeaderComponent from '../../components/header'
-import { NavigationProps } from '../../models/Navigation'
 import { registerStyle } from './style'
+import { Input, Button, Text } from '@ui-kitten/components'
+import { useNavigation } from '@react-navigation/native'
+import { RegisterDateScreenProp } from '../../routes/auth.routes'
 
-const RegisterEmailScreen: FC<NavigationProps> = ({ navigation, route }): ReactElement => {
+const RegisterEmailScreen: FC = (): ReactElement => {
 
-  const registerEmail = () => navigation.navigate('RegisterDate')
+  const [text, setText] = useState('')
+  const navigation = useNavigation<RegisterDateScreenProp>()
+  const registerEmail = () => navigation.navigate('RegisterDate', { date: text })
 
   return (
-    <SafeAreaView style={registerStyle.content}>
-
+    <>
       <HeaderComponent
-        title='Registro'
-        navigation={navigation}
         hasBackButton={true} />
-      <View style={registerStyle.content}>
-        <View style={registerStyle.view}>
-          <Text>{route.params.name}</Text>
-          <TextInput
-            label='Qual seu email?'
-            style={registerStyle.text} />
+      <SafeAreaView style={registerStyle.content}>
+        <View style={registerStyle.box}>
+          <Text category='h4' style={registerStyle.label}>Qual seu email?</Text>
+          <Input
+            value={text}
+            onChangeText={text => setText(text)}
+            style={registerStyle.input} />
           <Button
             onPress={registerEmail}
-            style={registerStyle.continuedButton}
-            color='#3171AC'
-            mode='contained'>
-            Continuar
+            style={registerStyle.button}
+            status='primary'>
+            CONTINUAR
           </Button>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </>
   )
 }
 

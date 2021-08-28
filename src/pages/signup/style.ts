@@ -7,24 +7,35 @@ export const registerStyle = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignContent: 'center',
-        backgroundColor: 'rgb(255,255,255)',
+        backgroundColor: '#FAFAFA'
     },
-    view: {
-        width: '90%'
+    box: {
+        width: '90%',
+        flex: 1,
+        justifyContent: 'center',
+        flexDirection: 'column',
+    },
+    label: {
+        color: '#626262',
+        textAlign: 'center',
+        padding: 4
     },
     text: {
-        backgroundColor: 'white',
-        textAlign: 'center',
-        fontSize: 20,
-        maxHeight: '50%',
+        color: '#626262',
+        alignItems: 'flex-start',
+        fontSize: 11,
+        padding: 4
     },
-    continuedButton: {
-        marginTop: '2%',
-        color: '#3171AC',
+    input: {
+        backgroundColor: '#FEFEFE',
         borderRadius: 10,
-        marginLeft: '20%',
-        marginRight: '20%'
+        borderColor: '#EBEBEB',
+        shadowRadius: 4,
+        borderWidth: 1,
+        shadowColor: 'rgba(0, 0, 0, 0.03)',
     },
-
-
+    button: {
+        marginTop: '5%',
+        borderRadius: 50,   
+    }
 })

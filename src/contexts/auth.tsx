@@ -1,6 +1,6 @@
 import React, { FC, createContext, useState, useEffect, useContext } from 'react'
-import { TokenModel } from "../models/TokenModel"
-import { SignInData } from "../models/User"
+import { TokenModel } from '../models/TokenModel'
+import { SignInData } from '../models/User'
 import { signInRequest } from '../services/auth'
 import jwt_decode from 'jwt-decode'
 import AsyncStorage from '@react-native-community/async-storage'
@@ -9,7 +9,7 @@ import { api } from '../services/api'
 interface AuthContextType {
     isAuthenticated: boolean
     currentUser: TokenModel | null
-    signIn: (data: SignInData) => Promise<void>
+    signIn: (data: SignInData) => Promise<void | any>
     signOut: () => void
 }
 
@@ -21,7 +21,7 @@ const AuthProvider: FC = ({ children }) => {
     const isAuthenticated = !!currentUser
 
     useEffect(() => {
-        async function loadStorageData() {
+        const loadStorageData = async () => {
             const storagedUser = await AsyncStorage.getItem('@RNAuth:user')
             const storagedToken = await AsyncStorage.getItem('@RNAuth:token')
 
@@ -35,15 +35,18 @@ const AuthProvider: FC = ({ children }) => {
     })
 
     const signIn = async (data: SignInData) => {
-
-        const response = await signInRequest(data)
-        if (response.status === 201) {
-            const { accessToken } = response.data
-            const user = jwt_decode(accessToken) as TokenModel
-            setCurrentUser(user)
-            api.defaults.headers.Authorization = `Baerer ${accessToken}`
-            await AsyncStorage.setItem('@RNAuth:user', JSON.stringify(user))
-            await AsyncStorage.setItem('@RNAuth:token', accessToken)
+        try {
+            const response = await signInRequest(data)
+            if (response?.status === 201) {
+                const { accessToken } = response.data
+                const user = jwt_decode(accessToken) as TokenModel
+                setCurrentUser(user)
+                api.defaults.headers.Authorization = `Baerer ${accessToken}`
+                await AsyncStorage.setItem('@RNAuth:user', JSON.stringify(user))
+                await AsyncStorage.setItem('@RNAuth:token', accessToken)
+            }
+        } catch (error) {
+            return error
         }
     }
 

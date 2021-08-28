@@ -1,12 +1,20 @@
 import React, { FC, ReactElement } from 'react'
-import { createStackNavigator } from '@react-navigation/stack'
-import Dashboard from '../pages/admin'
+import { createDrawerNavigator } from '@react-navigation/drawer'
+import DashboardScreen from '../pages/admin'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { ParamListBase } from '@react-navigation/native'
 
-const { Navigator, Screen } = createStackNavigator()
+export type DashboardScreenProp = StackNavigationProp<ParamListBase, 'Dashboard'>
+
+const { Navigator, Screen } = createDrawerNavigator()
 
 const AppRoutes: FC = (): ReactElement => (
-    <Navigator headerMode='none' initialRouteName='Dashboard'>
-        <Screen name='Dashboard' component={Dashboard} />
+    <Navigator
+        initialRouteName='Dashboard' screenOptions={{
+            headerShown: false
+        }}
+    >
+        <Screen name='Dashboard' component={DashboardScreen} />
     </Navigator>
 )
 

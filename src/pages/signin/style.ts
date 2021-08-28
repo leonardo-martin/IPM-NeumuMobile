@@ -5,28 +5,49 @@ export const loginStyle = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'space-evenly',
         alignContent: 'center',
-        flexDirection: 'row',
-        backgroundColor: 'rgb(255,255,255)',
+        backgroundColor: '#FAFAFA'
     },
-    view: {
+    boxTitle: {
+        alignItems: 'center'
+    },
+    title: {
+        color: '#626262',
+        fontSize: 22,
+        lineHeight: 26,
+        fontStyle: 'normal',
+        fontWeight: 'normal'
+    },
+    box: {
         width: '85%'
     },
-    loginButton: {
-        marginTop: '2%',
-        color: '#3171AC',
-        borderRadius: 10
+    containerRecoveryPassword: {
+        paddingTop: '3%',
+        padding: '2%',
+        paddingBottom: '5%',
+        flexDirection: 'row'
     },
-    registerButton: {
-        marginTop: '5%',
-        color: '#D55F0A',
-        borderRadius: 10
-
+    containerButtons: {
+        flexDirection: 'column',
+        justifyContent: 'space-between'
     },
-
+    button: {
+        borderRadius: 50,
+        marginVertical: 5
+    },
+    input: {
+        backgroundColor: '#FEFEFE',
+        borderRadius: 10,
+        borderColor: '#EBEBEB',
+        shadowRadius: 4,
+        borderWidth: 1,
+        shadowColor: 'rgba(0, 0, 0, 0.03)',
+    },
     text: {
-        backgroundColor: 'rgb(255,255,255)'
+        color: '#626262',
     },
-
+    textHere: {
+        textDecorationLine: 'underline'
+    }
 })

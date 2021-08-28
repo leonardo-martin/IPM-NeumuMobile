@@ -1,55 +1,39 @@
 import React, { FC, ReactElement } from 'react'
-import { useState } from 'react'
-import { Appbar, Menu } from 'react-native-paper'
-import { useAuth } from '../../contexts/auth'
+import { TopNavigation, TopNavigationAction, Icon } from '@ui-kitten/components'
+import TitleNeumu from '../titleNeumu'
 import { headerStyle } from './style'
+import { useNavigation } from '@react-navigation/native'
 
 interface HeaderComponentProps {
-    title: string
-    navigation?: any
     hasBackButton?: boolean
 }
 
-const HeaderComponent: FC<HeaderComponentProps> = ({ title, navigation, hasBackButton }): ReactElement => {
+const HeaderComponent: FC<HeaderComponentProps> = ({ hasBackButton }): ReactElement => {
 
-    const [visible, setVisible] = useState(false)
-    const { signOut } = useAuth()
+    const { goBack } = useNavigation()
 
-    const handleSignOut = () => {
-        signOut()
-        closeMenu()
-    }
+    const BackIcon = (props: any) => (
+        <Icon onPress={goBack} {...props} name='arrow-back' />
+    )
 
-    const goBack = () => navigation?.goBack()
-    const closeMenu = () => setVisible(false)
-    const openMenu = () => setVisible(true)
-
+    const renderBackAction = () => (
+        <TopNavigationAction icon={BackIcon} />
+    )
 
     return (
-        <Appbar
-            style={headerStyle.menu}>
-            {
-                hasBackButton ?
-                    <Appbar.BackAction
-                        onPress={goBack} />
-                    :
-                    <Menu
-                        visible={visible}
-                        onDismiss={closeMenu}
-                        anchor={
-                            <Appbar.Action
-                                icon='menu'
-                                color={headerStyle.menu.color}
-                                onPress={openMenu} />
-                        }>
-                        <Menu.Item
-                            title='Logout'
-                            onPress={handleSignOut} />
-                    </Menu>
-            }
-            <Appbar.Content
-                title={title} />
-        </Appbar>
+        <>
+            {hasBackButton ?
+                <TopNavigation
+                    style={headerStyle.container}
+                    alignment='center'
+                    title={() => (
+                        <TitleNeumu />
+                    )}
+                    accessoryLeft={renderBackAction}
+                />
+                :
+                null}
+        </>
     )
 }
 

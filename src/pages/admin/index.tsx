@@ -1,28 +1,27 @@
 import React, { FC, ReactElement } from 'react'
 import { SafeAreaView, View } from 'react-native'
-import { Text } from 'react-native-paper'
-import HeaderComponent from '../../components/header'
+import { Text, Button } from '@ui-kitten/components'
 import { useAuth } from '../../contexts/auth'
-import { NavigationProps } from '../../models/Navigation'
 import { dashboardStyle } from './style'
 
-const Dashboard: FC<NavigationProps> = ({ navigation }): ReactElement => {
+const DashboardScreen: FC = (): ReactElement => {
 
-    const { currentUser } = useAuth()
+    const { currentUser, signOut } = useAuth()
 
     return (
         <SafeAreaView style={dashboardStyle.content}>
-            <HeaderComponent
-                title='Dashboard'
-                navigation={navigation}
-                hasBackButton={false} />
             <View style={dashboardStyle.content}>
-              
-                    <Text style={dashboardStyle.text}>Hello {currentUser?.user} !</Text>
-               
+
+                <Text style={dashboardStyle.text}>{`Hello ${currentUser?.user}`}</Text>
+                <Button
+                    onPress={signOut}
+                    testID='RegisterButton'
+                    status='primary'>
+                    Sair
+                </Button>
             </View>
         </SafeAreaView>
     )
 }
 
-export default Dashboard
+export default DashboardScreen
