@@ -19,7 +19,6 @@ const AuthProvider: FC = ({ children }) => {
 
     const [currentUser, setCurrentUser] = useState<TokenModel | null>(null)
     const isAuthenticated = !!currentUser
-    // const isAuthenticated = true
 
     useEffect(() => {
         const loadStorageData = async () => {
@@ -54,7 +53,6 @@ const AuthProvider: FC = ({ children }) => {
     const signOut = async () => {
         await AsyncStorage.clear()
         setCurrentUser(null)
-        console.log('saindo')
     }
 
     return (
