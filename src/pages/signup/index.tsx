@@ -1,6 +1,6 @@
 import React, { FC, ReactElement, useState } from 'react'
 import { SafeAreaView, View } from 'react-native'
-import HeaderComponent from '../../components/header'
+import HeaderAuth from '../../components/header/auth'
 import { registerStyle } from './style'
 import { Input, Button, Text } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
@@ -14,7 +14,7 @@ const SignUpScreen: FC = (): ReactElement => {
 
   return (
     <>
-      <HeaderComponent
+      <HeaderAuth
         hasBackButton={true} />
       <SafeAreaView style={registerStyle.content}>
         <View style={registerStyle.box}>

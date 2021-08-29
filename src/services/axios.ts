@@ -7,7 +7,7 @@ const getToken = async () => {
     return token
 }
 
-export function getAPIClient() {
+export const getAPIClient = () => {
 
     const api = axios.create({
         baseURL: `${API_BASE_URL}`

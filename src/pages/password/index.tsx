@@ -1,6 +1,6 @@
 import React, { FC, ReactElement } from 'react'
 import { SafeAreaView, View } from 'react-native'
-import HeaderComponent from '../../components/header'
+import HeaderAuth from '../../components/header/auth'
 import { recoveryStyle } from './style'
 import { Input, Button, Text } from '@ui-kitten/components'
 import { Controller, useForm } from 'react-hook-form'
@@ -18,7 +18,7 @@ const RecoveryPasswordScreen: FC = (): ReactElement => {
 
     return (
         <>
-            <HeaderComponent
+            <HeaderAuth
                 hasBackButton={true} />
             <SafeAreaView style={recoveryStyle.content}>
                 <View style={recoveryStyle.box}>

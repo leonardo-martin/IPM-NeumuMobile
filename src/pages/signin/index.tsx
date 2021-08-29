@@ -48,7 +48,7 @@ const SignInScreen: FC = (): ReactElement => {
         <SafeAreaView style={loginStyle.content}>
             <View style={loginStyle.boxTitle}>
                 <Text style={loginStyle.title}>Seja bem vindo ao</Text>
-                <TitleNeumu />
+                <TitleNeumu category='h3'/>
             </View>
             <View style={loginStyle.box}>
                 <Controller

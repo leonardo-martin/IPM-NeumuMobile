@@ -1,14 +1,14 @@
 import React, { FC, ReactElement } from 'react'
 import { TopNavigation, TopNavigationAction, Icon } from '@ui-kitten/components'
-import TitleNeumu from '../titleNeumu'
+import TitleNeumu from '../../titleNeumu'
 import { headerStyle } from './style'
 import { useNavigation } from '@react-navigation/native'
 
-interface HeaderComponentProps {
+interface HeaderAuthProps {
     hasBackButton?: boolean
 }
 
-const HeaderComponent: FC<HeaderComponentProps> = ({ hasBackButton }): ReactElement => {
+const HeaderAuth: FC<HeaderAuthProps> = ({ hasBackButton }): ReactElement => {
 
     const { goBack } = useNavigation()
 
@@ -27,7 +27,7 @@ const HeaderComponent: FC<HeaderComponentProps> = ({ hasBackButton }): ReactElem
                     style={headerStyle.container}
                     alignment='center'
                     title={() => (
-                        <TitleNeumu />
+                        <TitleNeumu category='h5'/>
                     )}
                     accessoryLeft={renderBackAction}
                 />
@@ -37,4 +37,4 @@ const HeaderComponent: FC<HeaderComponentProps> = ({ hasBackButton }): ReactElem
     )
 }
 
-export default HeaderComponent
+export default HeaderAuth
