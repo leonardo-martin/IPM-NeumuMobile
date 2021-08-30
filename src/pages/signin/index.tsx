@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { loginStyle } from './style'
 import { SignInData } from '../../models/User'
 import { useAuth } from '../../contexts/auth'
-import { Input, Text, Button, Icon } from '@ui-kitten/components'
+import { Input, Text, Button, Icon, IconProps } from '@ui-kitten/components'
 import TitleNeumu from '../../components/titleNeumu'
 import { useNavigation } from '@react-navigation/native'
 import { RecoveryPasswordScreenProp, SignUpScreenProp } from '../../routes/auth.routes'
@@ -38,7 +38,7 @@ const SignInScreen: FC = (): ReactElement => {
         setSecureTextEntry(!secureTextEntry)
     }
 
-    const renderIconRightPassword = (props: any) => (
+    const renderIconRightPassword = (props: IconProps) => (
         <TouchableWithoutFeedback onPress={toggleSecureEntry}>
             <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} />
         </TouchableWithoutFeedback>

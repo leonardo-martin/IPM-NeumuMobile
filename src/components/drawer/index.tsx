@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react'
 import {
+  DrawerContentComponentProps,
   DrawerContentScrollView,
   DrawerItem,
   DrawerItemList
@@ -10,7 +11,7 @@ import { drawerStyle } from './style'
 import { useAuth } from '../../contexts/auth'
 import Icon from 'react-native-vector-icons/Feather'
 
-const DrawerContent = (props: any): ReactElement => {
+const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
   const { currentUser, signOut } = useAuth()
 
   return (
@@ -18,7 +19,7 @@ const DrawerContent = (props: any): ReactElement => {
       <DrawerContentScrollView {...props}>
         <Layout style={drawerStyle.header}>
           <View style={drawerStyle.profileContainer}>
-            <Avatar size='giant' source={require('../../assets/imagem.jpg')} />
+            <Avatar size='giant' source={require('../../assets/profile.jpg')} />
             <Text style={drawerStyle.profileName} category='h6'>
               {currentUser?.user}
             </Text>

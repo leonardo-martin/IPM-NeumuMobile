@@ -12,8 +12,7 @@ export const dashboardStyle = StyleSheet.create({
   cardContainer: {
     width: '90%',
     justifyContent: 'center',
-    backgroundColor: '#FAFAFA',
-    height: '100%'
+    backgroundColor: '#FAFAFA'
   },
   cardGroupPrimary: {
     marginVertical: 10,
@@ -21,7 +20,6 @@ export const dashboardStyle = StyleSheet.create({
   },
   cardDefault: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'space-evenly',
     alignContent: 'center'
@@ -49,15 +47,16 @@ export const dashboardStyle = StyleSheet.create({
   cardText: {
     textAlign: 'center',
     color: '#626262',
-    padding: 2,
     fontStyle: 'normal',
     fontWeight: 'normal',
     lineHeight: 26,
-    display: 'flex'
+    display: 'flex',
+    flexWrap: 'wrap'
   },
   text: {
     textAlign: 'center',
     fontWeight: 'bold',
-    color: '#626262'
+    color: '#626262',
+    marginVertical: 10
   }
 })

@@ -13,10 +13,10 @@ const HeaderAdmin: FC = (): ReactElement => {
   const navigation = useNavigation()
 
   const MenuIcon = () => (
-    <Icon name='menu-outline' size={35} color={'#404040'} />
+    <Icon name='menu' size={35} color={'#404040'} />
   )
   const ChatIcon = () => (
-    <Icon name='chatbubbles-outline' size={35} color={'#404040'} />
+    <Icon name='chatbubbles' size={35} color={'#404040'} />
   )
 
   const renderSidebarIcon = () => (

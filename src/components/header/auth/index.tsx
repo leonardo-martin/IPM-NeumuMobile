@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from 'react'
-import { TopNavigation, TopNavigationAction, Icon } from '@ui-kitten/components'
+import { TopNavigation, TopNavigationAction, Icon, IconProps } from '@ui-kitten/components'
 import TitleNeumu from '../../titleNeumu'
 import { headerStyle } from './style'
 import { useNavigation } from '@react-navigation/native'
@@ -12,7 +12,7 @@ const HeaderAuth: FC<HeaderAuthProps> = ({ hasBackButton }): ReactElement => {
 
     const { goBack } = useNavigation()
 
-    const BackIcon = (props: any) => (
+    const BackIcon = (props: IconProps) => (
         <Icon onPress={goBack} {...props} name='arrow-back' />
     )
 

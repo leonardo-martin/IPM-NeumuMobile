@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 
 import { useAuth } from '../contexts/auth'
 import { StyleSheet } from 'react-native'
+import ScheduleScreen from '../pages/admin/schedule'
 
 export type DashboardScreenProp = StackNavigationProp<
   ParamListBase,
@@ -44,6 +45,18 @@ const AppRoutes: FC = (): ReactElement => {
           drawerLabel: 'Inicio',
           drawerIcon: () => (
             <Icon name='home-outline' size={20} color={'#404040'} />
+          ),
+          drawerItemStyle: style.drawerItem
+        }}
+      />
+      <Screen
+        name='Schedule'
+        component={ScheduleScreen}
+        initialParams={{ user: currentUser }}
+        options={{
+          drawerLabel: 'Agendar consulta',
+          drawerIcon: () => (
+            <Icon name='calendar-outline' size={20} color={'#404040'} />
           ),
           drawerItemStyle: style.drawerItem
         }}
