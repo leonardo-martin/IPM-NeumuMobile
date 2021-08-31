@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { useAuth } from '../contexts/auth'
 import { StyleSheet } from 'react-native'
 import ScheduleScreen from '../pages/admin/schedule'
+import HeaderAdmin from '../components/header/admin'
 
 export type DashboardScreenProp = StackNavigationProp<
   ParamListBase,
@@ -24,51 +25,52 @@ export type ProfileScreenProp = StackNavigationProp<ParamListBase, 'Profile'>
 const { Navigator, Screen } = createDrawerNavigator()
 
 const AppRoutes: FC = (): ReactElement => {
-  const { currentUser, signOut } = useAuth()
+  const { currentUser } = useAuth()
 
   return (
     <Navigator
       drawerContent={(props: DrawerContentComponentProps) => (
-        <DrawerContent {...props} signOut={signOut} />
+        <DrawerContent {...props} />
       )}
-      initialRouteName='Dashboard'
+      initialRouteName="Dashboard"
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        header: () => ( <HeaderAdmin />),
         swipeEnabled: true
       }}
     >
       <Screen
-        name='Dashboard'
+        name="Dashboard"
         component={DashboardScreen}
         initialParams={{ user: currentUser }}
         options={{
           drawerLabel: 'Inicio',
           drawerIcon: () => (
-            <Icon name='home-outline' size={20} color={'#404040'} />
+            <Icon name="home-outline" size={20} color={'#404040'} />
           ),
           drawerItemStyle: style.drawerItem
         }}
       />
       <Screen
-        name='Schedule'
+        name="Schedule"
         component={ScheduleScreen}
         initialParams={{ user: currentUser }}
         options={{
           drawerLabel: 'Agendar consulta',
           drawerIcon: () => (
-            <Icon name='calendar-outline' size={20} color={'#404040'} />
+            <Icon name="calendar-outline" size={20} color={'#404040'} />
           ),
           drawerItemStyle: style.drawerItem
         }}
       />
       <Screen
-        name='Profile'
+        name="Profile"
         component={ProfileScreen}
         initialParams={{ user: currentUser }}
         options={{
           drawerLabel: 'Meu Perfil',
           drawerIcon: () => (
-            <Icon name='person-outline' size={20} color={'#404040'} />
+            <Icon name="person-outline" size={20} color={'#404040'} />
           ),
           drawerItemStyle: style.drawerItem
         }}
