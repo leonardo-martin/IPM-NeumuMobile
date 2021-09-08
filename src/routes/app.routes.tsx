@@ -4,23 +4,13 @@ import {
   DrawerContentComponentProps
 } from '@react-navigation/drawer'
 import DashboardScreen from '../pages/admin'
-import { StackNavigationProp } from '@react-navigation/stack'
-import { ParamListBase } from '@react-navigation/native'
 import DrawerContent from '../components/drawer'
 import ProfileScreen from '../pages/admin/profile'
-import Icon from 'react-native-vector-icons/Ionicons'
 
 import { useAuth } from '../contexts/auth'
-import { StyleSheet } from 'react-native'
 import ScheduleScreen from '../pages/admin/schedule'
+import PresentialScreen from '../pages/admin/schedule/presential'
 import HeaderAdmin from '../components/header/admin'
-
-export type DashboardScreenProp = StackNavigationProp<
-  ParamListBase,
-  'Dashboard'
->
-
-export type ProfileScreenProp = StackNavigationProp<ParamListBase, 'Profile'>
 
 const { Navigator, Screen } = createDrawerNavigator()
 
@@ -29,14 +19,14 @@ const AppRoutes: FC = (): ReactElement => {
 
   return (
     <Navigator
+      backBehavior="history"
       drawerContent={(props: DrawerContentComponentProps) => (
         <DrawerContent {...props} />
       )}
       initialRouteName="Dashboard"
       screenOptions={{
         headerShown: true,
-        header: () => ( <HeaderAdmin />),
-        swipeEnabled: true
+        header: () => <HeaderAdmin />
       }}
     >
       <Screen
@@ -44,11 +34,8 @@ const AppRoutes: FC = (): ReactElement => {
         component={DashboardScreen}
         initialParams={{ user: currentUser }}
         options={{
-          drawerLabel: 'Inicio',
-          drawerIcon: () => (
-            <Icon name="home-outline" size={20} color={'#404040'} />
-          ),
-          drawerItemStyle: style.drawerItem
+          swipeEnabled: true,
+          drawerLabel: 'Inicio'
         }}
       />
       <Screen
@@ -56,11 +43,18 @@ const AppRoutes: FC = (): ReactElement => {
         component={ScheduleScreen}
         initialParams={{ user: currentUser }}
         options={{
-          drawerLabel: 'Agendar consulta',
-          drawerIcon: () => (
-            <Icon name="calendar-outline" size={20} color={'#404040'} />
-          ),
-          drawerItemStyle: style.drawerItem
+          swipeEnabled: false,
+          drawerLabel: 'Agendar consulta'
+        }}
+      />
+
+      <Screen
+        name="PresentialSchedule"
+        component={PresentialScreen}
+        initialParams={{ user: currentUser }}
+        options={{
+          swipeEnabled: false,
+          drawerLabel: 'Consulta Presencial'
         }}
       />
       <Screen
@@ -68,11 +62,8 @@ const AppRoutes: FC = (): ReactElement => {
         component={ProfileScreen}
         initialParams={{ user: currentUser }}
         options={{
-          drawerLabel: 'Meu Perfil',
-          drawerIcon: () => (
-            <Icon name="person-outline" size={20} color={'#404040'} />
-          ),
-          drawerItemStyle: style.drawerItem
+          swipeEnabled: false,
+          drawerLabel: 'Meu Perfil'
         }}
       />
     </Navigator>
@@ -80,10 +71,3 @@ const AppRoutes: FC = (): ReactElement => {
 }
 
 export default AppRoutes
-
-const style = StyleSheet.create({
-  drawerItem: {
-    borderBottomRightRadius: 50,
-    borderTopRightRadius: 50
-  }
-})

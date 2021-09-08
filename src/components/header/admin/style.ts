@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 
 export const headerStyle = StyleSheet.create({
-    container: {
+  container: {
     backgroundColor: '#FAFAFA'
   }
 })

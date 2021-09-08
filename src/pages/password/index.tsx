@@ -4,12 +4,13 @@ import HeaderAuth from '../../components/header/auth'
 import { recoveryStyle } from './style'
 import { Input, Button, Text } from '@ui-kitten/components'
 import { Controller, useForm } from 'react-hook-form'
+import { DrawerContentComponentProps } from '@react-navigation/drawer'
 
 interface Recovery {
     email: string
 }
 
-const RecoveryPasswordScreen: FC = (): ReactElement => {
+const RecoveryPasswordScreen: FC<DrawerContentComponentProps> = ({navigation}): ReactElement => {
 
     const { control, handleSubmit, formState: { errors } } = useForm<Recovery>()
     const handleRecoveryPasswd = (data: Recovery) => {

@@ -3,13 +3,11 @@ import { SafeAreaView, View } from 'react-native'
 import HeaderAuth from '../../components/header/auth'
 import { registerStyle } from './style'
 import { Input, Button, Text } from '@ui-kitten/components'
-import { useNavigation } from '@react-navigation/native'
-import { RegisterDateScreenProp } from '../../routes/auth.routes'
+import { DrawerContentComponentProps } from '@react-navigation/drawer'
 
-const RegisterEmailScreen: FC = (): ReactElement => {
+const RegisterEmailScreen: FC<DrawerContentComponentProps> = ({navigation}): ReactElement => {
 
   const [text, setText] = useState('')
-  const navigation = useNavigation<RegisterDateScreenProp>()
   const registerEmail = () => navigation.navigate('RegisterDate', { date: text })
 
   return (

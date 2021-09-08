@@ -8,21 +8,29 @@ import { headerStyle } from './style'
 import TitleNeumu from '../../titleNeumu'
 import { DrawerActions, useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { useDrawerStatus } from '@react-navigation/drawer'
 
 const HeaderAdmin: FC = (): ReactElement => {
-  const navigation = useNavigation()
+  const { goBack, dispatch, canGoBack } = useNavigation()
 
-  const MenuIcon = () => (
-    <Icon name='menu' size={35} color={'#404040'} />
+  const BackIcon = () => (
+    <Icon name="chevron-back-outline" size={35} color={'#404040'} />
   )
+  const MenuIcon = () => <Icon name="menu" size={35} color={'#404040'} />
   const ChatIcon = () => (
-    <Icon name='chatbubbles' size={35} color={'#404040'} />
+    <Icon name="chatbubbles" size={35} color={'#404040'} />
   )
 
-  const renderSidebarIcon = () => (
+  const isDrawerOpen = useDrawerStatus() === 'open'
+
+  const renderLeftIcon = () => (
     <TopNavigationAction
-      icon={MenuIcon}
-      onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+      icon={canGoBack() && !isDrawerOpen ? BackIcon : MenuIcon}
+      onPress={() =>
+        canGoBack() && !isDrawerOpen
+          ? goBack()
+          : dispatch(DrawerActions.toggleDrawer())
+      }
     />
   )
   const renderChatIcon = () => (
@@ -33,13 +41,15 @@ const HeaderAdmin: FC = (): ReactElement => {
   )
 
   return (
-    <Layout level='1'>
+    <Layout level="1">
       <TopNavigation
         style={headerStyle.container}
-        alignment='center'
-        title={() => <TitleNeumu category='h6' />}
-        accessoryLeft={renderSidebarIcon}
-        accessoryRight={renderChatIcon}
+        alignment="center"
+        title={() => <TitleNeumu category="h6" />}
+        accessoryLeft={renderLeftIcon}
+        accessoryRight={
+          !canGoBack() || isDrawerOpen ? renderChatIcon : undefined
+        }
       />
     </Layout>
   )
