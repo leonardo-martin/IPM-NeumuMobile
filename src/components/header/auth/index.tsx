@@ -9,11 +9,8 @@ import { headerStyle } from './style'
 import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/Ionicons'
 
-interface HeaderAuthProps {
-  hasBackButton?: boolean
-}
 
-const HeaderAuth: FC<HeaderAuthProps> = ({ hasBackButton }): ReactElement => {
+const HeaderAuth: FC = (): ReactElement => {
   const { goBack } = useNavigation()
 
   const BackIcon = () => (
@@ -26,16 +23,14 @@ const HeaderAuth: FC<HeaderAuthProps> = ({ hasBackButton }): ReactElement => {
 
   return (
     <>
-      {hasBackButton ? (
-        <Layout level="1" style={headerStyle.layout}>
-          <TopNavigation
-            style={headerStyle.container}
-            alignment="center"
-            title={() => <TitleNeumu category="h6" />}
-            accessoryLeft={renderBackAction}
-          />
-        </Layout>
-      ) : null}
+      <Layout level="1" style={headerStyle.layout}>
+        <TopNavigation
+          style={headerStyle.container}
+          alignment="center"
+          title={() => <TitleNeumu category="h6" />}
+          accessoryLeft={renderBackAction}
+        />
+      </Layout>
     </>
   )
 }

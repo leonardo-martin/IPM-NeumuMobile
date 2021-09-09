@@ -49,5 +49,8 @@ export const loginStyle = StyleSheet.create({
   },
   textHere: {
     textDecorationLine: 'underline'
+  },
+  containerLogo: {
+    alignItems: "center",    
   }
 })

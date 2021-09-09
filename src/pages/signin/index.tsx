@@ -1,9 +1,10 @@
-import React, { useRef, FC, ReactElement, useState, createRef } from 'react'
+import React, { FC, ReactElement, useState, createRef } from 'react'
 import {
   SafeAreaView,
   View,
   TouchableWithoutFeedback,
-  Alert
+  Alert,
+  KeyboardAvoidingView
 } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { loginStyle } from './style'
@@ -12,6 +13,7 @@ import { useAuth } from '../../contexts/auth'
 import { Input, Text, Button, Icon, IconProps } from '@ui-kitten/components'
 import TitleNeumu from '../../components/titleNeumu'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
+import LogoPedroMolina from '../../assets/svg/logo_pedro_molina.svg'
 
 const SignInScreen: FC<DrawerContentComponentProps> = ({
   navigation
@@ -56,67 +58,69 @@ const SignInScreen: FC<DrawerContentComponentProps> = ({
         <TitleNeumu category="h3" />
       </View>
       <View style={loginStyle.box}>
-        <Controller
-          control={control}
-          rules={{
-            required: true
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              style={loginStyle.input}
-              label="Usuário *"
-              keyboardType="default"
-              testID="username"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              returnKeyType="next"
-              autoFocus={true}
-              onSubmitEditing={() => inputPasswordRef.current.focus()}
-            />
+        <KeyboardAvoidingView behavior='position'>
+          <Controller
+            control={control}
+            rules={{
+              required: true
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                style={loginStyle.input}
+                label="Usuário *"
+                keyboardType="default"
+                testID="username"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                returnKeyType="next"
+                autoFocus={true}
+                onSubmitEditing={() => inputPasswordRef.current.focus()}
+              />
+            )}
+            name="username"
+            defaultValue="pacienttest"
+          />
+          {errors.username?.type === 'required' && (
+            <Text category="label" style={loginStyle.text}>
+              This is required
+            </Text>
           )}
-          name="username"
-          defaultValue="pacienttest"
-        />
-        {errors.username?.type === 'required' && (
-          <Text category="label" style={loginStyle.text}>
-            This is required
-          </Text>
-        )}
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-            minLength: 8
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              style={loginStyle.input}
-              label="Senha *"
-              testID="password"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              accessoryRight={renderIconRightPassword}
-              secureTextEntry={secureTextEntry}
-              returnKeyType="send"
-              underlineColorAndroid="transparent"
-              ref={inputPasswordRef}
-            />
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+              minLength: 8
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                style={loginStyle.input}
+                label="Senha *"
+                testID="password"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                accessoryRight={renderIconRightPassword}
+                secureTextEntry={secureTextEntry}
+                returnKeyType="send"
+                underlineColorAndroid="transparent"
+                ref={inputPasswordRef}
+              />
+            )}
+            name="password"
+            defaultValue="pacienttest"
+          />
+          {errors.password?.type === 'required' && (
+            <Text category="label" style={loginStyle.text}>
+              This is required
+            </Text>
           )}
-          name="password"
-          defaultValue="pacienttest"
-        />
-        {errors.password?.type === 'required' && (
-          <Text category="label" style={loginStyle.text}>
-            This is required
-          </Text>
-        )}
-        {errors.password?.type === 'minLength' && (
-          <Text category="label" style={loginStyle.text}>
-            Min. 8 characters.
-          </Text>
-        )}
+          {errors.password?.type === 'minLength' && (
+            <Text category="label" style={loginStyle.text}>
+              Min. 8 characters.
+            </Text>
+          )}
+        </KeyboardAvoidingView>
         <View style={loginStyle.containerRecoveryPassword}>
           <Text
             style={loginStyle.text}
@@ -154,7 +158,10 @@ const SignInScreen: FC<DrawerContentComponentProps> = ({
           </Button>
         </View>
       </View>
-    </SafeAreaView>
+      <View style={loginStyle.containerLogo}>
+        <LogoPedroMolina />
+      </View>
+    </SafeAreaView >
   )
 }
 

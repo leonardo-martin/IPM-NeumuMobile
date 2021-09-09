@@ -4,16 +4,17 @@ export class SignInData {
 }
 
 export class UserData {
+    mothersName: string = ''
     name: string = ''
     cpf: string = ''
     email: string = ''
     phone: string = ''
-    phone2?: string | null
+    phone2?: string
     username: string = ''
     password: string = ''
-    cns?: string | null
-    crm?: string | null
-    specialty?: Specialty | null
+    cns?: string
+    crm?: string
+    specialty?: Specialty
 }
 
 class Specialty {

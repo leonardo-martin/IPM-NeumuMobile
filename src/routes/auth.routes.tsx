@@ -2,9 +2,8 @@ import React, { FC, ReactElement } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 
 import SignIn from '../pages/signin'
-import SignUpScreen from '../pages/signup'
-import RegisterDateScreen from '../pages/signup/registerDate.screen'
-import RegisterEmailScreen from '../pages/signup/registerEmail.screen'
+import SignUpPart1Screen from '../pages/signup/part1'
+import SignUpPart2Screen from '../pages/signup/part2'
 import RecoveryPasswordScreen from '../pages/password'
 import HeaderAuth from '../components/header/auth'
 
@@ -22,12 +21,11 @@ const AuthRoutes: FC = (): ReactElement => {
       <Screen name="SignIn" component={SignIn} />
       <Group screenOptions={{
         headerShown: true,
-        header: () => <HeaderAuth hasBackButton={true} />
+        header: () => <HeaderAuth />
       }}>
-        <Screen name="SignUp" component={SignUpScreen} />
+        <Screen name="SignUp" component={SignUpPart1Screen} />
+        <Screen name="SignUpPart2" component={SignUpPart2Screen} />
         <Screen name="RecoveryPasswd" component={RecoveryPasswordScreen} />
-        <Screen name="RegisterEmail" component={RegisterEmailScreen} />
-        <Screen name="RegisterDate" component={RegisterDateScreen} />
       </Group>
     </Navigator>
   )
