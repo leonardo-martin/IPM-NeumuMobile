@@ -41,7 +41,7 @@ const HeaderAdmin: FC = (): ReactElement => {
   )
 
   return (
-    <Layout level="1">
+    <Layout level="1" style={headerStyle.layout}>
       <TopNavigation
         style={headerStyle.container}
         alignment="center"

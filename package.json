@@ -8,7 +8,8 @@
     "clean": "rm -rf node_modules/ && rm -rf package-lock.json yarn.lock",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "prettier:write": "npx prettier --write **/*.{ts,tsx,json,js,jsx} && npx prettier --write *.{ts,tsx,json,js,jsx}",
+    "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx ./"
   },
   "dependencies": {
     "@eva-design/eva": "^2.1.1",
@@ -46,14 +47,14 @@
     "@types/react-native-dotenv": "^0.2.0",
     "@types/react-native-vector-icons": "^6.4.8",
     "@types/react-test-renderer": "^16.9.2",
-    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/eslint-plugin": "^4.31.0",
     "babel-jest": "^26.6.3",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-typescript": "^14.0.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react": "^7.25.1",
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "^0.64.0",
     "prettier": "^2.3.2",

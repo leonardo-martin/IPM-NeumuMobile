@@ -1,5 +1,6 @@
 import React, { FC, ReactElement } from 'react'
 import {
+  Layout,
   TopNavigation,
   TopNavigationAction
 } from '@ui-kitten/components'
@@ -26,12 +27,14 @@ const HeaderAuth: FC<HeaderAuthProps> = ({ hasBackButton }): ReactElement => {
   return (
     <>
       {hasBackButton ? (
-        <TopNavigation
-          style={headerStyle.container}
-          alignment="center"
-          title={() => <TitleNeumu category="h6" />}
-          accessoryLeft={renderBackAction}
-        />
+        <Layout level="1" style={headerStyle.layout}>
+          <TopNavigation
+            style={headerStyle.container}
+            alignment="center"
+            title={() => <TitleNeumu category="h6" />}
+            accessoryLeft={renderBackAction}
+          />
+        </Layout>
       ) : null}
     </>
   )

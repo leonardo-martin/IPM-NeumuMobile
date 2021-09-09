@@ -10,7 +10,7 @@ interface Recovery {
     email: string
 }
 
-const RecoveryPasswordScreen: FC<DrawerContentComponentProps> = ({navigation}): ReactElement => {
+const RecoveryPasswordScreen: FC<DrawerContentComponentProps> = ({ navigation }): ReactElement => {
 
     const { control, handleSubmit, formState: { errors } } = useForm<Recovery>()
     const handleRecoveryPasswd = (data: Recovery) => {

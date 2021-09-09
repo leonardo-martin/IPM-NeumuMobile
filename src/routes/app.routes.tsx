@@ -26,7 +26,7 @@ const AppRoutes: FC = (): ReactElement => {
       initialRouteName="Dashboard"
       screenOptions={{
         headerShown: true,
-        header: () => <HeaderAdmin />
+        header: () => <HeaderAdmin />      
       }}
     >
       <Screen

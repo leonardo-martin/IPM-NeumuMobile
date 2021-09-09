@@ -14,7 +14,6 @@ const SignUpScreen: FC<DrawerContentComponentProps> = ({
 
   return (
     <>
-      <HeaderAuth hasBackButton={true} />
       <SafeAreaView style={registerStyle.content}>
         <View style={registerStyle.box}>
           <Text category="h4" style={registerStyle.label}>
