@@ -61,8 +61,8 @@ const SignUpPart2Screen: FC = (): ReactElement => {
             name='email'
             defaultValue=''
           />
-          {errors.email?.type === 'pattern' && <Text category='label' style={registerStyle.text}>Invalid</Text>}
-          {errors.email?.type === 'required' && <Text category='label' style={registerStyle.text}>This is required</Text>}
+          {errors.email?.type === 'pattern' && <Text category='s1' style={registerStyle.text}>Invalid</Text>}
+          {errors.email?.type === 'required' && <Text category='s1' style={registerStyle.text}>Campo obrigatório</Text>}
           <Controller
             control={control}
             rules={{
@@ -84,7 +84,7 @@ const SignUpPart2Screen: FC = (): ReactElement => {
             name='username'
             defaultValue=''
           />
-          {errors.username?.type === 'required' && <Text category='label' style={registerStyle.text}>This is required</Text>}
+          {errors.username?.type === 'required' && <Text category='s1' style={registerStyle.text}>Campo obrigatório</Text>}
           <Controller
             control={control}
             rules={{
@@ -110,8 +110,8 @@ const SignUpPart2Screen: FC = (): ReactElement => {
             name='password'
             defaultValue=''
           />
-          {errors.password?.type === 'minLength' && <Text category='label' style={registerStyle.text}>Min 8</Text>}
-          {errors.password?.type === 'required' && <Text category='label' style={registerStyle.text}>This is required</Text>}
+          {errors.password?.type === 'minLength' && <Text category='s1' style={registerStyle.text}>Min 8</Text>}
+          {errors.password?.type === 'required' && <Text category='s1' style={registerStyle.text}>Campo obrigatório</Text>}
           <Button
             onPress={handleSubmit(submit)}
             style={registerStyle.button}

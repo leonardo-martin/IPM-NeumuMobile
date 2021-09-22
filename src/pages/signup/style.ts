@@ -36,6 +36,23 @@ export const registerStyle = StyleSheet.create({
     },
     button: {
         marginTop: '5%',
-        borderRadius: 50,   
+        borderRadius: 50,
+    },
+    backdrop: {
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    labelCNSView: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    labelCNSText: {
+        color: '#8F9BB3',
+        display: 'flex'
+    },
+    labelCNSViewCard: {
+        paddingVertical: 40
+    },
+    labelCNSTextCenter: {
+        textAlign: 'center'
     }
 })

@@ -41,7 +41,7 @@ const RecoveryPasswordScreen: FC<DrawerContentComponentProps> = ({ navigation })
                         defaultValue=''
                     />
                     {errors.email?.type === 'pattern' && <Text category='label' style={recoveryStyle.text}>Invalid</Text>}
-                    {errors.email?.type === 'required' && <Text category='label' style={recoveryStyle.text}>This is required</Text>}
+                    {errors.email?.type === 'required' && <Text category='label' style={recoveryStyle.text}>Campo obrigatório</Text>}
                     <Button
                         onPress={handleSubmit(handleRecoveryPasswd)}
                         style={recoveryStyle.button}

@@ -3,22 +3,25 @@ import {
   SafeAreaView,
   View,
   TouchableWithoutFeedback,
-  Alert,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  StatusBar
 } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { loginStyle } from './style'
 import { SignInData } from '../../models/User'
 import { useAuth } from '../../contexts/auth'
-import { Input, Text, Button, Icon, IconProps } from '@ui-kitten/components'
+import { Input, Text, Button, Icon, IconProps, Modal, Card } from '@ui-kitten/components'
 import TitleNeumu from '../../components/titleNeumu'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import LogoPedroMolina from '../../assets/svg/logo_pedro_molina.svg'
+import LogoPedroMolina from '../../assets/svg/logo.svg'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const SignInScreen: FC<DrawerContentComponentProps> = ({
   navigation
 }): ReactElement => {
-  const [secureTextEntry, setSecureTextEntry] = useState(true)
+
+  const [visible, setVisible] = useState<boolean>(false)
+  const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true)
   const { signIn } = useAuth()
 
   const inputPasswordRef = createRef<any>()
@@ -32,9 +35,7 @@ const SignInScreen: FC<DrawerContentComponentProps> = ({
   const handleSignIn = async (data: SignInData) => {
     const response = await signIn(data)
     if (response) {
-      Alert.alert('Erro', 'Houve um problema para realizar o acesso', [
-        { text: 'OK' }
-      ])
+      setVisible(true)
     }
   }
 
@@ -53,7 +54,9 @@ const SignInScreen: FC<DrawerContentComponentProps> = ({
 
   return (
     <SafeAreaView style={loginStyle.content}>
+      <StatusBar barStyle="dark-content" backgroundColor={'transparent'} translucent={true} />
       <View style={loginStyle.boxTitle}>
+        <LogoPedroMolina width="140" height="150" />
         <Text style={loginStyle.title}>Seja bem vindo ao</Text>
         <TitleNeumu category="h3" />
       </View>
@@ -76,14 +79,16 @@ const SignInScreen: FC<DrawerContentComponentProps> = ({
                 returnKeyType="next"
                 autoFocus={true}
                 onSubmitEditing={() => inputPasswordRef.current.focus()}
+                autoCapitalize="none"
+
               />
             )}
             name="username"
             defaultValue="pacienttest"
           />
           {errors.username?.type === 'required' && (
-            <Text category="label" style={loginStyle.text}>
-              This is required
+            <Text category="s2" style={[loginStyle.text, { paddingBottom: 10 }]}>
+              Campo obrigatório
             </Text>
           )}
           <Controller
@@ -111,12 +116,12 @@ const SignInScreen: FC<DrawerContentComponentProps> = ({
             defaultValue="pacienttest"
           />
           {errors.password?.type === 'required' && (
-            <Text category="label" style={loginStyle.text}>
-              This is required
+            <Text category="s2" style={[loginStyle.text, { paddingBottom: 10 }]}>
+              Campo obrigatório
             </Text>
           )}
           {errors.password?.type === 'minLength' && (
-            <Text category="label" style={loginStyle.text}>
+            <Text category="s2" style={[loginStyle.text, { paddingBottom: 10 }]}>
               Min. 8 characters.
             </Text>
           )}
@@ -128,18 +133,40 @@ const SignInScreen: FC<DrawerContentComponentProps> = ({
             testID="recoveryButton"
           >
             Esqueceu a senha? Clique{' '}
-            <Text
-              category="label"
-              testID="hereBtn"
-              status="info"
-              style={loginStyle.textHere}
-              onPress={recoveryPasswd}
-            >
-              aqui
-            </Text>
-            !
           </Text>
+          <TouchableOpacity
+            hitSlop={{
+              left: 15,
+              right: 15,
+              top: 15,
+              bottom: 15
+            }}
+            onPress={recoveryPasswd}
+          >
+            <Text status='info' style={loginStyle.textHere}>aqui</Text>
+          </TouchableOpacity>
         </View>
+        <Modal
+          visible={visible}
+          backdropStyle={loginStyle.backdrop}
+          onBackdropPress={() => setVisible(false)}>
+          <Card disabled={true}>
+            <View style={{ paddingVertical: 20, paddingHorizontal: 20 }}>
+              <Text category="label" style={{ fontSize: 18, fontWeight: '400' }} >Usuário e/ou senha incorretos</Text>
+            </View>
+            <TouchableOpacity
+              style={loginStyle.buttonModal}
+              onPress={() => setVisible(false)}
+              hitSlop={{
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+              }}>
+              <Text status='primary' style={[loginStyle.textModal, { fontSize: 18 }]}>OK</Text>
+            </TouchableOpacity>
+          </Card>
+        </Modal>
         <View style={loginStyle.containerButtons}>
           <Button
             style={loginStyle.button}
@@ -157,9 +184,6 @@ const SignInScreen: FC<DrawerContentComponentProps> = ({
             CADASTRE-SE
           </Button>
         </View>
-      </View>
-      <View style={loginStyle.containerLogo}>
-        <LogoPedroMolina />
       </View>
     </SafeAreaView >
   )

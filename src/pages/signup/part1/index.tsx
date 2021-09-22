@@ -1,18 +1,52 @@
-import React, { FC, ReactElement } from 'react'
-import { SafeAreaView, View } from 'react-native'
+import React, { FC, ReactElement, useState } from 'react'
+import { Linking, SafeAreaView, TouchableOpacity, View } from 'react-native'
 import { registerStyle } from '../style'
-import { Input, Button, Text } from '@ui-kitten/components'
+import { Input, Button, Text, Tooltip, Layout, Modal, Card } from '@ui-kitten/components'
 import { Controller, useForm } from 'react-hook-form'
 import { UserData } from '../../../models/User'
 import { useNavigation } from '@react-navigation/core'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 const SignUpPart1Screen: FC = (): ReactElement => {
 
+  const [visible, setVisible] = useState<boolean>(false);
   const { control, handleSubmit, formState: { errors } } = useForm<UserData>()
   const navigation = useNavigation<any>()
   const submit = (data: UserData) => {
     navigation.navigate('SignUpPart2', { data: data })
   }
+
+  const renderLabelCNS = () => (
+    <View style={registerStyle.labelCNSView}>
+      <Text category="label" style={registerStyle.labelCNSText}>
+        Cartão Nacional de Saúde (CNS) *
+      </Text>
+      <Icon name="help-circle-outline" size={20} color={'#8F9BB3'} onPress={() => setVisible(true)} />
+      <Modal
+        visible={visible}
+        backdropStyle={registerStyle.backdrop}
+        onBackdropPress={() => setVisible(false)} >
+        <Card disabled={true} >
+          <View style={registerStyle.labelCNSViewCard}>
+            <Text style={registerStyle.labelCNSTextCenter}>O Cartão Nacional de Saúde (CNS) é o documento de identificação do usuário do SUS.</Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => Linking.openURL('https://www.gov.br/saude/pt-br/acesso-a-informacao/acoes-e-programas/cartao-nacional-de-saude')}
+            hitSlop={{
+              left: 10,
+              right: 10,
+              top: 10,
+              bottom: 10
+            }}
+          >
+            <Text status="primary" style={registerStyle.labelCNSTextCenter}>
+              SAIBA MAIS
+            </Text>
+          </TouchableOpacity>
+        </Card>
+      </Modal>
+    </View>
+  )
 
   return (
     <>
@@ -23,7 +57,7 @@ const SignUpPart1Screen: FC = (): ReactElement => {
             rules={{
               required: true
             }}
-            render={({ field: { onChange, onBlur, value } }) => (
+            render={({ field: { onChange, onBlur, value, ref, ...field } }) => (
               <Input
                 label="Nome da Mãe *"
                 style={registerStyle.input}
@@ -33,12 +67,15 @@ const SignUpPart1Screen: FC = (): ReactElement => {
                 onChangeText={onChange}
                 value={value}
                 underlineColorAndroid="transparent"
+                {...field}
+                ref={ref}
+
               />
             )}
             name='mothersName'
             defaultValue=''
           />
-          {errors.mothersName?.type === 'required' && <Text category='label' style={registerStyle.text}>This is required</Text>}
+          {errors.mothersName?.type === 'required' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Campo obrigatório</Text>}
           <Controller
             control={control}
             rules={{
@@ -59,7 +96,7 @@ const SignUpPart1Screen: FC = (): ReactElement => {
             name='name'
             defaultValue=''
           />
-          {errors.name?.type === 'required' && <Text category='label' style={registerStyle.text}>This is required</Text>}
+          {errors.name?.type === 'required' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Campo obrigatório</Text>}
           <Controller
             control={control}
             rules={{
@@ -82,9 +119,9 @@ const SignUpPart1Screen: FC = (): ReactElement => {
             name='cpf'
             defaultValue=''
           />
-          {errors.cpf?.type === 'pattern' && <Text category='label' style={registerStyle.text}>Invalid</Text>}
-          {errors.cpf?.type === 'minLength' && <Text category='label' style={registerStyle.text}>Min 11</Text>}
-          {errors.cpf?.type === 'required' && <Text category='label' style={registerStyle.text}>This is required</Text>}
+          {errors.cpf?.type === 'pattern' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Invalid</Text>}
+          {errors.cpf?.type === 'minLength' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Min 11</Text>}
+          {errors.cpf?.type === 'required' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Campo obrigatório</Text>}
           <Controller
             control={control}
             rules={{
@@ -107,8 +144,8 @@ const SignUpPart1Screen: FC = (): ReactElement => {
             name='phone'
             defaultValue=''
           />
-          {errors.phone?.type === 'pattern' && <Text category='label' style={registerStyle.text}>Invalid</Text>}
-          {errors.phone?.type === 'required' && <Text category='label' style={registerStyle.text}>This is required</Text>}
+          {errors.phone?.type === 'pattern' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Invalid</Text>}
+          {errors.phone?.type === 'required' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Campo obrigatório</Text>}
           <Controller
             control={control}
             rules={{
@@ -118,7 +155,7 @@ const SignUpPart1Screen: FC = (): ReactElement => {
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 label="Telefone 2"
-                style={registerStyle.input}
+                style={[registerStyle.input, { paddingBottom: 10 }]}
                 keyboardType='number-pad'
                 testID='phone2'
                 onBlur={onBlur}
@@ -131,7 +168,7 @@ const SignUpPart1Screen: FC = (): ReactElement => {
             name='phone2'
             defaultValue=''
           />
-          {errors.phone2?.type === 'pattern' && <Text category='label' style={registerStyle.text}>Invalid</Text>}
+          {errors.phone2?.type === 'pattern' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Invalid</Text>}
           <Controller
             control={control}
             rules={{
@@ -141,7 +178,7 @@ const SignUpPart1Screen: FC = (): ReactElement => {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                label="Cartão Nacional de Saúde (CNS) *"
+                label={renderLabelCNS}
                 style={registerStyle.input}
                 keyboardType='number-pad'
                 testID='cns'
@@ -155,9 +192,10 @@ const SignUpPart1Screen: FC = (): ReactElement => {
             name='cns'
             defaultValue=''
           />
-          {errors.cns?.type === 'minLength' && <Text category='label' style={registerStyle.text}>Min 15</Text>}
-          {errors.cns?.type === 'pattern' && <Text category='label' style={registerStyle.text}>Invalid</Text>}
-          {errors.cns?.type === 'required' && <Text category='label' style={registerStyle.text}>This is required</Text>}
+          {errors.cns?.type === 'minLength' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Min 15</Text>}
+          {errors.cns?.type === 'pattern' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Invalid</Text>}
+          {errors.cns?.type === 'required' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Campo obrigatório</Text>}
+
           <Button
             onPress={handleSubmit(submit)}
             style={registerStyle.button}
