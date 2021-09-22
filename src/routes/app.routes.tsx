@@ -7,15 +7,15 @@ import DashboardScreen from '../pages/admin'
 import DrawerContent from '../components/drawer'
 import ProfileScreen from '../pages/admin/profile'
 
-import { useAuth } from '../contexts/auth'
 import ScheduleScreen from '../pages/admin/schedule'
 import PresentialScreen from '../pages/admin/schedule/presential'
 import HeaderAdmin from '../components/header/admin'
+import DoctorsScheduleScreen from '../pages/admin/schedule/doctorsSchedule'
+import DoctorProfileScreen from '../pages/admin/doctorProfile'
 
-const { Navigator, Screen } = createDrawerNavigator()
+const { Navigator, Screen, Group } = createDrawerNavigator()
 
 const AppRoutes: FC = (): ReactElement => {
-  const { currentUser } = useAuth()
 
   return (
     <Navigator
@@ -26,13 +26,12 @@ const AppRoutes: FC = (): ReactElement => {
       initialRouteName="Dashboard"
       screenOptions={{
         headerShown: true,
-        header: () => <HeaderAdmin />      
+        header: () => <HeaderAdmin />
       }}
     >
       <Screen
         name="Dashboard"
         component={DashboardScreen}
-        initialParams={{ user: currentUser }}
         options={{
           swipeEnabled: true,
           drawerLabel: 'Inicio'
@@ -41,7 +40,6 @@ const AppRoutes: FC = (): ReactElement => {
       <Screen
         name="Schedule"
         component={ScheduleScreen}
-        initialParams={{ user: currentUser }}
         options={{
           swipeEnabled: false,
           drawerLabel: 'Agendar consulta'
@@ -51,7 +49,6 @@ const AppRoutes: FC = (): ReactElement => {
       <Screen
         name="PresentialSchedule"
         component={PresentialScreen}
-        initialParams={{ user: currentUser }}
         options={{
           swipeEnabled: false,
           drawerLabel: 'Consulta Presencial'
@@ -60,12 +57,30 @@ const AppRoutes: FC = (): ReactElement => {
       <Screen
         name="Profile"
         component={ProfileScreen}
-        initialParams={{ user: currentUser }}
         options={{
           swipeEnabled: false,
           drawerLabel: 'Meu Perfil'
         }}
       />
+
+      <Group>
+        <Screen
+          name="DoctorsSchedule"
+          component={DoctorsScheduleScreen}
+          options={{
+            swipeEnabled: false,
+            drawerLabel: 'Agenda do Médico'
+          }}
+        />
+        <Screen
+          name="DoctorProfile"
+          component={DoctorProfileScreen}
+          options={{
+            swipeEnabled: false,
+            drawerLabel: 'Perfil do Médico'
+          }}
+        />
+      </Group>
     </Navigator>
   )
 }

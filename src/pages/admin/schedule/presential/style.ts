@@ -1,46 +1,33 @@
 import { StyleSheet } from 'react-native'
 
 export const scheduleStyle = StyleSheet.create({
-  content: {
-    display: 'flex',
-    alignItems: 'center',
+  container: {
     flex: 1,
-    justifyContent: 'center',
+    alignItems: 'center',   
     alignContent: 'center',
     backgroundColor: '#FAFAFA'
   },
-  cardContainer: {
+  layout: {
     width: '90%',
+    paddingTop: 20,
     backgroundColor: '#FAFAFA'
   },
-  cardGroupPrimary: {
-    marginVertical: 10,
-    marginHorizontal: 10
+  autoComplete: {
+    paddingBottom: 10
   },
-  cardDefault: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  viewButton: {
+    flexDirection: 'column',
   },
-  cardText: {
-    color: '#626262',
-    fontStyle: 'normal',
-    fontWeight: 'normal',
-    lineHeight: 26,
-    flexWrap: 'wrap',
-    paddingHorizontal: 30,
+  button: {
+    borderRadius: 50,
+    marginVertical: 5
   },
-  card: {
-    justifyContent: 'center',    
-    alignItems: 'flex-start',
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderRadius: 5,
-    height: 95
+  viewDoctors: {
+    width: '100%',
+    paddingTop: 20,
   },
-  text: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: '#626262',
-    marginVertical: 10
+  sppiner: {
+    flex: 1,
+    justifyContent: 'center'
   }
 })
