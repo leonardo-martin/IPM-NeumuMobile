@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from 'react'
-import { SafeAreaView, View } from 'react-native'
+import { SafeAreaView, StatusBar, View } from 'react-native'
 import { Text, Card, Layout } from '@ui-kitten/components'
 import { dashboardStyle } from './style'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -15,6 +15,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
   return (
     <>
       <SafeAreaView style={dashboardStyle.content}>
+        <StatusBar barStyle="dark-content" backgroundColor={'transparent'} translucent={true} />
         <Layout style={dashboardStyle.cardContainer} level="1">
           <Text category="h5" style={dashboardStyle.text}>
             Como podemos te ajudar?
