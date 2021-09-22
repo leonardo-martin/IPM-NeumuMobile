@@ -1,3 +1,5 @@
+import { NestedValue } from "react-hook-form"
+
 export class SignInData {
     username: string = ''
     password: string = ''
@@ -14,7 +16,7 @@ export class UserData {
     password: string = ''
     cns?: string
     crm?: string
-    specialty?: Specialty
+    specialty?: NestedValue<Specialty>
 }
 
 class Specialty {

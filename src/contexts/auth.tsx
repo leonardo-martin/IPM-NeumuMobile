@@ -27,7 +27,7 @@ const AuthProvider: FC = ({ children }) => {
 
             if (storagedUser && storagedToken) {
                 setCurrentUser(JSON.parse(storagedUser))
-                api.defaults.headers.Authorization = `Baerer ${storagedToken}`
+                api.defaults.headers.Authorization = `Bearer ${storagedToken}`
             }
         }
 
@@ -41,7 +41,7 @@ const AuthProvider: FC = ({ children }) => {
                 const { accessToken } = response.data
                 const user = jwt_decode(accessToken) as TokenModel
                 setCurrentUser(user)
-                api.defaults.headers.Authorization = `Baerer ${accessToken}`
+                api.defaults.headers.Authorization = `Bearer ${accessToken}`
                 await AsyncStorage.setItem('@RNAuth:user', JSON.stringify(user))
                 await AsyncStorage.setItem('@RNAuth:token', accessToken)
             }
