@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 
 export const drawerStyle = StyleSheet.create({
   drawerContent: {
@@ -8,8 +8,8 @@ export const drawerStyle = StyleSheet.create({
     marginTop: 15
   },
   drawerItem: {
-    borderBottomRightRadius: 50,
-    borderTopRightRadius: 50
+    borderBottomRightRadius: Platform.OS === 'ios' ? 0 : 50,
+    borderTopRightRadius: Platform.OS === 'ios' ? 0 : 50
   },
   header: {
     height: 128,
@@ -21,6 +21,8 @@ export const drawerStyle = StyleSheet.create({
     alignItems: 'center'
   },
   profileName: {
+    fontSize: 22,
+    fontWeight: Platform.OS === 'ios' ? '400' : '600',
     marginHorizontal: 16
   },
   icon: {
