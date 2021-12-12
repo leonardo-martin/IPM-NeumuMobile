@@ -34,14 +34,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
             id: 1,
             title: 'Editar Perfil',
             accessoryLeft: () => (
-              <Icon name="person-circle-outline" size={30} color={"#000"} />
-            )
-          },
-          {
-            id: 2,
-            title: 'Configurações',
-            accessoryLeft: () => (
-              <Icon name="settings-outline" size={30} color={"#000"} />
+              <Icon name="person-circle-outline" size={20} color={"#000"} />
             )
           }
         ]}

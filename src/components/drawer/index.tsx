@@ -52,6 +52,14 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
         />
         <DrawerItem
           style={drawerStyle.drawerItem}
+          label='Configurações'
+          onPress={() => props.navigation.navigate('Configuration')}
+          icon={() => (
+            <Icon name='settings-outline' size={20} color={'#404040'} />
+          )}
+        />
+        <DrawerItem
+          style={drawerStyle.drawerItem}
           label='Sair'
           onPress={signOut}
           icon={() => (

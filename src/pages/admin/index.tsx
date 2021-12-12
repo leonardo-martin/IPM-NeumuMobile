@@ -12,6 +12,8 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
 }): ReactElement => {
   const gotToProfile = () => navigation.jumpTo('Profile')
   const gotToSchedule = () => navigation.jumpTo('Schedule')
+  const gotToAppointments = () => navigation.jumpTo('MyAppointments')
+
   return (
     <>
       <SafeAreaView style={dashboardStyle.content}>
@@ -39,7 +41,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                 Meu perfil
               </Text>
             </Card>
-            <Card style={dashboardStyle.card}>
+            <Card style={dashboardStyle.card} onPress={gotToAppointments}>
               <View style={dashboardStyle.cardDefault}>
                 <StethoscopeIcon width={40} height={40} fill={'#3171AC'} />
               </View>

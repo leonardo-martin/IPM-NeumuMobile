@@ -4,7 +4,7 @@ import { ImageBackground, SafeAreaView, View } from 'react-native'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { API_IBGE_GOV } from '@env'
 import { scheduleStyle } from './style'
-import AutocompleteComponent from '../../../../components/autoComplete'
+import AutoCompleteComponent from '../../../../components/autoComplete'
 import { City, UF } from '../../../../models/Places'
 import specialties from '../../../../utils/specialties'
 import ListComponent from '../../../../components/menuList'
@@ -190,7 +190,7 @@ const PresentialScreen: FC<DrawerContentComponentProps> = ({
     <>
       <SafeAreaView style={scheduleStyle.container}>
         <Layout style={scheduleStyle.layout} level="1">
-          <AutocompleteComponent
+          <AutoCompleteComponent
             style={scheduleStyle.autoComplete}
             data={statesTemp}
             label="Estado"
@@ -203,7 +203,7 @@ const PresentialScreen: FC<DrawerContentComponentProps> = ({
             autoCapitalize='characters'
             maxLength={2}
           />
-          <AutocompleteComponent
+          <AutoCompleteComponent
             style={scheduleStyle.autoComplete}
             data={citiesTemp}
             label="Cidade"
@@ -216,7 +216,7 @@ const PresentialScreen: FC<DrawerContentComponentProps> = ({
             disabled={isDisabledCity}
             autoCapitalize='words'
           />
-          <AutocompleteComponent
+          <AutoCompleteComponent
             style={scheduleStyle.autoComplete}
             data={specialtyTemp}
             label="Especialidade"
@@ -255,7 +255,17 @@ const PresentialScreen: FC<DrawerContentComponentProps> = ({
                     ImageComponent={ImageBackground}
                   />
                 ),
-                onPress: () => navigation.navigate('DoctorsSchedule', { doctorId: 1 })
+                onPress: () => navigation.navigate('DoctorsSchedule', {
+                  doctorId: 1,
+                  doctorName: 'Johnny Depp',
+                  specialty: 'Ortopedista',
+                  crm: 1234,
+                  tel: "43 3333-3333",
+                  visitAddress: {
+                    id: 1,
+                    street: "Rua Alvorada, 1289 - conj 902 - Vila Olímpia - São Paulo",
+                  }
+                })
               },
               {
                 id: 2,
@@ -269,7 +279,17 @@ const PresentialScreen: FC<DrawerContentComponentProps> = ({
                     ImageComponent={ImageBackground}
                   />
                 ),
-                onPress: () => navigation.navigate('DoctorsSchedule', { doctorId: 2 })
+                onPress: () => navigation.navigate('DoctorsSchedule', {
+                  doctorId: 2,
+                  doctorName: 'Davy Jones',
+                  specialty: 'Ortopedista',
+                  crm: 1235,
+                  tel: "43 3333-3333",
+                  visitAddress: {
+                    id: 1,
+                    street: "Rua Alvorada, 1289 - conj 902 - Vila Olímpia - São Paulo",
+                  }
+                })
               },
               {
                 id: 3,
@@ -283,7 +303,17 @@ const PresentialScreen: FC<DrawerContentComponentProps> = ({
                     ImageComponent={ImageBackground}
                   />
                 ),
-                onPress: () => navigation.navigate('DoctorsSchedule', { doctorId: 2 })
+                onPress: () => navigation.navigate('DoctorsSchedule', {
+                  doctorId: 3,
+                  doctorName: 'Davy Jones',
+                  specialty: 'Ortopedista',
+                  crm: 1236,
+                  tel: "43 3333-3333",
+                  visitAddress: {
+                    id: 1,
+                    street: "Rua Alvorada, 1289 - conj 902 - Vila Olímpia - São Paulo",
+                  }
+                })
               },
               {
                 id: 4,
@@ -297,7 +327,17 @@ const PresentialScreen: FC<DrawerContentComponentProps> = ({
                     ImageComponent={ImageBackground}
                   />
                 ),
-                onPress: () => navigation.navigate('DoctorsSchedule', { doctorId: 2 })
+                onPress: () => navigation.navigate('DoctorsSchedule', {
+                  doctorId: 4,
+                  doctorName: 'Davy Jones',
+                  specialty: 'Ortopedista',
+                  crm: 1234,
+                  tel: "43 3333-3333",
+                  visitAddress: {
+                    id: 1,
+                    street: "Rua Alvorada, 1289 - conj 902 - Vila Olímpia - São Paulo",
+                  }
+                })
               }
             ]}
               multiColoredCell={true}

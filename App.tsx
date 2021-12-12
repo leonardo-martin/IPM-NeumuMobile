@@ -11,14 +11,14 @@ const App: FC = (): ReactElement => {
 
   return (
     <React.Fragment>
-      <IconRegistry icons={EvaIconsPack} />
-      <ApplicationProvider  {...eva} theme={{ ...eva.light, ...theme }}>
-        <NavigationContainer>
-          <AuthProvider>
-            <Routes />
-          </AuthProvider>
-        </NavigationContainer>
-      </ApplicationProvider>
+        <IconRegistry icons={EvaIconsPack} />
+        <ApplicationProvider  {...eva} theme={{ ...eva.light, ...theme }}>
+          <NavigationContainer>
+            <AuthProvider>
+              <Routes />
+            </AuthProvider>
+          </NavigationContainer>
+        </ApplicationProvider>
     </React.Fragment>
   )
 }

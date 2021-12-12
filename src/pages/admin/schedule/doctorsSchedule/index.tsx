@@ -4,9 +4,14 @@ import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useRoute } from '@react-navigation/core'
 import { doctorScheduleStyle } from './style'
 import CalendarComponent from '../../../../components/calendar'
-import { Avatar, Button, Card, IndexPath, Modal, Text } from '@ui-kitten/components'
+import { Avatar, Button, Card, IndexPath, Modal, Spinner, Text } from '@ui-kitten/components'
 import Icon from 'react-native-vector-icons/Ionicons'
 import SelectComponent from '../../../../components/select'
+import { useAuth } from '../../../../contexts/auth'
+import { CreateAppointment } from '../../../../models/Appointment'
+import { convertToTimezone, dateFormatToString } from '../../../../utils/convertDate'
+import { createAppointment } from '../../../../services/appointment'
+import { openMapsWithAddress } from '../../../../utils/maps'
 
 const options = [
     {
@@ -30,10 +35,17 @@ const DoctorsScheduleScreen: FC<DrawerContentComponentProps> = ({
     navigation
 }): ReactElement => {
 
-    const [date, setDate] = useState<Date>()
+    const { currentUser } = useAuth()
+    const [date, setDate] = useState(new Date())
     const [isSelected, setIsSelected] = useState<boolean>(false)
     const [visibleModal, setVisibleModal] = useState<boolean>(false)
+    const [visibleErrorModal, setVisibleErrorModal] = useState<boolean>(false)
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0))
+
+    const [confirmDate, setConfirmDate] = useState<Date | string | undefined>('')
+    const [visibleConfirmModal, setVisibleConfirmModal] = useState<boolean>(false)
+    const [scheduleData, setScheduleData] = useState<CreateAppointment | undefined>()
+    const [loading, setLoading] = useState<boolean>()
 
     const route = useRoute()
     const { params }: any = route
@@ -50,6 +62,8 @@ const DoctorsScheduleScreen: FC<DrawerContentComponentProps> = ({
 
     const closeModal = () => {
         setVisibleModal(false)
+        setVisibleErrorModal(false)
+        setVisibleConfirmModal(false)
     }
 
     const handleAvailableTimes = (id: IndexPath | IndexPath[]) => {
@@ -58,15 +72,46 @@ const DoctorsScheduleScreen: FC<DrawerContentComponentProps> = ({
         setIsSelected(true)
     }
 
-    const toSchedule = () => {
-        const data = {
-            day: date,
-            time: options[(Number(selectedIndex) - 1)].title,
-            userId: params?.doctorId,
-            doctorId: 10
-        }
-        console.log(data)
+    const confirmSchedule = () => {
+        setLoading(false)
+        const startTime = new Date(date?.getFullYear(), date?.getMonth(), date?.getDate())
+
+        const time = options[(Number(selectedIndex) - 1)].title.split(':')
+        startTime.setHours(Number(time[0]))
+        startTime.setMinutes(Number(time[1]))
+
+        setConfirmDate(startTime)
+        const dateString = convertToTimezone(startTime.toISOString(), 'America/Sao_Paulo')
+
+        setScheduleData(
+            new CreateAppointment(
+                currentUser?.userId,
+                params?.doctorId,
+                dateString,
+                dateString,
+                params?.visitAddress.id))
+        setVisibleConfirmModal(true)
+
     }
+
+    const toSchedule = async () => {
+        setLoading(true)
+        try {
+            await createAppointment(scheduleData)
+            setVisibleConfirmModal(false)
+            setLoading(false)
+        } catch (error) {
+            setVisibleConfirmModal(false)
+            setVisibleErrorModal(true)
+        }
+
+    }
+
+    const LoadingIndicator = (props: any) => (
+        <View style={[props.style]}>
+            <Spinner status="info" size='small' />
+        </View>
+    )
 
     const footerCard = () => (
         <View style={doctorScheduleStyle.footerCard}>
@@ -94,30 +139,31 @@ const DoctorsScheduleScreen: FC<DrawerContentComponentProps> = ({
                                     <Text
                                         category="h5"
                                         status="basic"
-                                    >Davy Jones</Text>
+                                    >{params?.doctorName}</Text>
                                     <Text
                                         category="p1"
                                         status="basic"
                                         style={doctorScheduleStyle.textDoctorInfo}
-                                    >Ortopedista</Text>
+                                    >{params?.specialty}</Text>
                                     <Text
                                         category="c1"
                                         status="basic"
                                         style={doctorScheduleStyle.textDoctorInfo}
-                                    >CRM: 1235</Text>
+                                    >CRM: {params?.crm}</Text>
                                     <Text
                                         category="c1"
                                         status="basic"
                                         style={doctorScheduleStyle.textDoctorInfo}
-                                    >Tel: 43 3333-3333</Text>
+                                    >Tel: {params?.tel}</Text>
                                     <Text
                                         category="c1"
                                         status="basic"
                                         style={doctorScheduleStyle.textDoctorInfo}
-                                    >Rua XXXX
+                                    >{params?.visitAddress.street}
                                     </Text>
                                     <View style={doctorScheduleStyle.viewLocation}>
                                         <Text
+                                            onPress={() => openMapsWithAddress(params?.visitAddress.street)}
                                             category="c1"
                                             status="info"
                                             style={doctorScheduleStyle.textLocation}
@@ -135,11 +181,10 @@ const DoctorsScheduleScreen: FC<DrawerContentComponentProps> = ({
                                 date={date}
                                 boundingMonth={true}
                             />
-
                             <View style={doctorScheduleStyle.viewBtn}>
                                 <Button
                                     style={doctorScheduleStyle.btnToSchedule}
-                                    onPress={toSchedule}
+                                    onPress={confirmSchedule}
                                     status="success"
                                     disabled={!isSelected}
                                 >CONFIRMAR</Button>
@@ -164,6 +209,53 @@ const DoctorsScheduleScreen: FC<DrawerContentComponentProps> = ({
                                     selectedIndex={selectedIndex}
                                 />
                             </View>
+                        </Card>
+                    </Modal>
+
+                    <Modal
+                        style={doctorScheduleStyle.modalContainerError}
+                        backdropStyle={doctorScheduleStyle.backdrop}
+                        visible={visibleConfirmModal}
+                        onBackdropPress={closeModal}
+                    >
+                        <Card style={doctorScheduleStyle.cardContainer}>
+                            <View style={doctorScheduleStyle.viewCloseIcon}>
+                                <Icon name={'close-outline'} size={30} onPress={closeModal} />
+                            </View>
+                            <View>
+                                <Text
+                                    style={doctorScheduleStyle.textConfirmModal}
+                                    status="basic"
+                                >Confirma o agendamento para:</Text>
+                                <Text
+                                    style={doctorScheduleStyle.textConfirmModal}
+                                    status="basic"
+                                >{dateFormatToString(confirmDate)} ?</Text>
+                            </View>
+                            <View style={doctorScheduleStyle.viewConfirmButtonModal}>
+                                <Button
+                                    size="giant"
+                                    appearance='ghost'
+                                    onPress={toSchedule}
+                                    accessoryRight={loading ? LoadingIndicator : undefined}>{!loading ? "SIM" : ""}</Button>
+                            </View>
+                        </Card>
+                    </Modal>
+                    <Modal
+                        style={doctorScheduleStyle.modalContainerError}
+                        backdropStyle={doctorScheduleStyle.backdrop}
+                        visible={visibleErrorModal}
+                        onBackdropPress={closeModal}
+                    >
+                        <Card style={doctorScheduleStyle.cardContainer}>
+                            <View style={doctorScheduleStyle.viewCloseIcon}>
+                                <Icon name={'close-outline'} size={30} onPress={closeModal} />
+                            </View>
+                            <Text
+                                style={doctorScheduleStyle.textError}
+                                status="danger" category='h6'
+                            >Erro ao agendar a consulta. Tente novamente mais tarde.</Text>
+
                         </Card>
                     </Modal>
                 </SafeAreaView>

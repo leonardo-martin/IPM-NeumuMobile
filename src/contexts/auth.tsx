@@ -32,7 +32,7 @@ const AuthProvider: FC = ({ children }) => {
         }
 
         loadStorageData()
-    },[])
+    }, [])
 
     const signIn = async (data: SignInData) => {
         try {
@@ -51,7 +51,11 @@ const AuthProvider: FC = ({ children }) => {
     }
 
     const signOut = async () => {
+        const teleNeumuStar = await AsyncStorage.getItem('@TN:star')
         await AsyncStorage.clear()
+
+        if (teleNeumuStar)
+            await AsyncStorage.setItem('@TN:star', "true")
         setCurrentUser(null)
     }
 

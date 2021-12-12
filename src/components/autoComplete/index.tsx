@@ -20,7 +20,7 @@ type AutoCompleteProps = {
     style?: StyleProp<TextStyle>
 }
 
-const AutocompleteComponent: FC<AutoCompleteProps> = ({
+const AutoCompleteComponent: FC<AutoCompleteProps> = ({
     style, data, keyboardType, placeholder, maxLength, label, disabled, autoCapitalize, onSelect, onChangeText, renderOption, clearInput, value
 }) => {
 
@@ -31,7 +31,7 @@ const AutocompleteComponent: FC<AutoCompleteProps> = ({
     )
 
     return (
-        <Autocomplete
+        <Autocomplete            
             style={style}
             label={label}
             keyboardType={keyboardType}
@@ -48,7 +48,7 @@ const AutocompleteComponent: FC<AutoCompleteProps> = ({
     )
 }
 
-AutocompleteComponent.defaultProps = {
+AutoCompleteComponent.defaultProps = {
     data: [],
     placeholder: 'Place your Text',
     label: '',
@@ -60,4 +60,4 @@ AutocompleteComponent.defaultProps = {
     keyboardType: 'default'
 }
 
-export default AutocompleteComponent
+export default AutoCompleteComponent

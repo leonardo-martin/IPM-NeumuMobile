@@ -9,7 +9,6 @@ export const doctorScheduleStyle = StyleSheet.create({
     },
     container: {
         flex: 1,
-        justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#FAFAFA',
         paddingBottom: 10,
@@ -25,6 +24,9 @@ export const doctorScheduleStyle = StyleSheet.create({
     modalContainer: {
         width: '90%',
         height: '30%'
+    },
+    modalContainerError: {
+        width: '90%',
     },
     viewDoctorProfile: {
         justifyContent: 'flex-start',
@@ -57,7 +59,10 @@ export const doctorScheduleStyle = StyleSheet.create({
         borderRadius: 50
     },
     textDoctorInfo: {
-        color: '#626262'
+        color: '#626262',
+        flexShrink: 1,
+        flexWrap: 'wrap',
+        width: '60%'     
     },
     viewLocation: {
         flexDirection: 'row'
@@ -67,6 +72,21 @@ export const doctorScheduleStyle = StyleSheet.create({
     },
     footerCard: {
         alignSelf: 'flex-end',
-        paddingRight: 5,
+        paddingRight: 5
+    },
+    textError: {
+        paddingVertical: 20,
+        textAlign: 'center',
+        flexWrap: 'wrap'
+    },
+    viewConfirmButtonModal: {
+        paddingVertical: 5
+    },
+    textConfirmModal: {
+        flexShrink: 1,
+        flexWrap: 'wrap',
+        textAlign: 'center',
+        lineHeight: 20,
+        color: '#626262'
     }
 })

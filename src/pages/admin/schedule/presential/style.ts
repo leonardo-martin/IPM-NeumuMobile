@@ -13,7 +13,8 @@ export const scheduleStyle = StyleSheet.create({
     backgroundColor: '#FAFAFA'
   },
   autoComplete: {
-    paddingBottom: 10
+    paddingBottom: 10,
+    backgroundColor: '#FFFFFF'
   },
   viewButton: {
     flexDirection: 'column',

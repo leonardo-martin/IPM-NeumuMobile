@@ -12,6 +12,9 @@ import PresentialScreen from '../pages/admin/schedule/presential'
 import HeaderAdmin from '../components/header/admin'
 import DoctorsScheduleScreen from '../pages/admin/schedule/doctorsSchedule'
 import DoctorProfileScreen from '../pages/admin/doctorProfile'
+import ConfigurationScreen from '../pages/admin/configuration/home'
+import AppointmentScreen from '../pages/admin/appointments'
+import InformationAppScreen from '../pages/admin/configuration/infos'
 
 const { Navigator, Screen, Group } = createDrawerNavigator()
 
@@ -63,12 +66,21 @@ const AppRoutes: FC = (): ReactElement => {
         }}
       />
 
-      <Group>
+      <Screen
+        name="MyAppointments"
+        component={AppointmentScreen}
+        options={{
+          swipeEnabled: false,
+          drawerLabel: 'Minhas consultas'
+        }}
+      />
+      <Group screenOptions={{
+        swipeEnabled: false
+      }}>
         <Screen
           name="DoctorsSchedule"
           component={DoctorsScheduleScreen}
           options={{
-            swipeEnabled: false,
             drawerLabel: 'Agenda do Médico'
           }}
         />
@@ -76,11 +88,32 @@ const AppRoutes: FC = (): ReactElement => {
           name="DoctorProfile"
           component={DoctorProfileScreen}
           options={{
-            swipeEnabled: false,
             drawerLabel: 'Perfil do Médico'
           }}
         />
       </Group>
+
+
+      <Group screenOptions={{
+        swipeEnabled: false
+      }}>
+        <Screen
+          name="Configuration"
+          component={ConfigurationScreen}
+          options={{
+            drawerLabel: 'Configurações'
+          }}
+        />
+
+        <Screen
+          name="InformationApp"
+          component={InformationAppScreen}
+          options={{
+            drawerLabel: 'Informações do Aplicativo'
+          }}
+        />
+      </Group>
+
     </Navigator>
   )
 }
