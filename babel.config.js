@@ -8,5 +8,25 @@ module.exports = {
       allowUndefined: true
     }],
     'react-native-reanimated/plugin',
+    [
+      'module-resolver',
+      {
+        root: ['./src'],
+        extensions: ['.ios.js', '.android.js', '.js', '.ts', '.tsx', '.json'],
+        alias: {
+          tests: ['./tests/'],
+          "@assets": "./src/assets",
+          "@components": "./src/components",
+          "@contexts": "./src/contexts",
+          "@hooks": "./src/hooks",
+          "@models": "./src/models",
+          "@pages": "./src/pages",
+          "@routes": "./src/routes",
+          "@services": "./src/services",
+          "@types": "./src/types",
+          "@utils": "./src/utils",
+        }
+      }
+    ]
   ]
 }

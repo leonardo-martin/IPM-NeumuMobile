@@ -3,9 +3,9 @@ import { SafeAreaView, ScrollView, View } from 'react-native'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { appointmentsStyle } from './style'
 import { Card, Layout, Tab, TabView, Text } from '@ui-kitten/components'
-import { Appointment } from '../../../models/Appointment'
-import { dateFormatToString } from '../../../utils/convertDate'
-import { useFetch } from '../../../hooks/useSwr'
+import { Appointment } from '@models/Appointment'
+import { formatDateToString } from '@utils/convertDate'
+import { useFetch } from '@hooks/useSwr'
 import { SWRConfig } from 'swr'
 import Icon from 'react-native-vector-icons/Ionicons'
 
@@ -51,7 +51,7 @@ const AppointmentScreen: FC<DrawerContentComponentProps> = ({
                                                                 <View style={appointmentsStyle.viewCardInfo}>
                                                                     <Text style={appointmentsStyle.text}>{item.medicalDoctorSummaryDto.name}</Text>
                                                                     <Text style={appointmentsStyle.text}>{item.medicalDoctorSummaryDto.specialty}</Text>
-                                                                    <Text style={appointmentsStyle.text}>{dateFormatToString(item.startTime)}</Text>
+                                                                    <Text style={appointmentsStyle.text}>{formatDateToString(item.startTime)}</Text>
 
                                                                 </View>
                                                                 <View style={[

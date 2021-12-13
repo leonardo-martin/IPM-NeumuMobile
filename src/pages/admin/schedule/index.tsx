@@ -2,8 +2,8 @@ import React, { FC, ReactElement } from 'react'
 import { Card, Layout, Text } from '@ui-kitten/components'
 import { SafeAreaView, View } from 'react-native'
 import { scheduleStyle } from './style'
-import PhoneIcon from '../../../assets/svg/phone.svg'
-import HouseIcon from '../../../assets/svg/house.svg'
+import PhoneIcon from '@assets/svg/phone.svg'
+import HouseIcon from '@assets/svg/house.svg'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 
 const ScheduleScreen: FC<DrawerContentComponentProps> = ({

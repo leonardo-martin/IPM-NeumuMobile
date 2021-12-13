@@ -2,7 +2,7 @@ import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import React, { FC, ReactElement } from 'react'
 import { SafeAreaView } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import ListComponent from '../../../../components/menuList'
+import ListComponent from '@components/menuList'
 import { configurationStyle } from './style'
 
 const ConfigurationScreen: FC<DrawerContentComponentProps> = ({

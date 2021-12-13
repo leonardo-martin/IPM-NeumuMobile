@@ -3,7 +3,7 @@ import { Linking, SafeAreaView, TouchableOpacity, View } from 'react-native'
 import { registerStyle } from '../style'
 import { Input, Button, Text, Tooltip, Layout, Modal, Card } from '@ui-kitten/components'
 import { Controller, useForm } from 'react-hook-form'
-import { UserData } from '../../../models/User'
+import { UserData } from '@models/User'
 import { useNavigation } from '@react-navigation/core'
 import Icon from 'react-native-vector-icons/Ionicons'
 

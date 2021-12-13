@@ -3,7 +3,7 @@ import { SafeAreaView, View } from 'react-native'
 import { registerStyle } from '../style'
 import { Input, Button, Text, IconProps, Icon } from '@ui-kitten/components'
 import { useRoute } from '@react-navigation/core'
-import { UserData } from '../../../models/User'
+import { UserData } from '@models/User'
 import { Controller, useForm } from 'react-hook-form'
 import { TouchableWithoutFeedback } from '@ui-kitten/components/devsupport'
 

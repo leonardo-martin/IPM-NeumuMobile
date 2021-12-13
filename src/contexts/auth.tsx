@@ -1,10 +1,10 @@
 import React, { FC, createContext, useState, useEffect, useContext } from 'react'
-import { TokenModel } from '../models/TokenModel'
-import { SignInData } from '../models/User'
-import { signInRequest } from '../services/auth'
+import { TokenModel } from '@models/TokenModel'
+import { SignInData } from '@models/User'
+import { signInRequest } from '@services/auth'
 import jwt_decode from 'jwt-decode'
 import AsyncStorage from '@react-native-community/async-storage'
-import { api } from '../services/api'
+import { api } from '@services/api'
 
 interface AuthContextType {
     isAuthenticated: boolean

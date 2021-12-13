@@ -3,18 +3,18 @@ import {
   createDrawerNavigator,
   DrawerContentComponentProps
 } from '@react-navigation/drawer'
-import DashboardScreen from '../pages/admin'
-import DrawerContent from '../components/drawer'
-import ProfileScreen from '../pages/admin/profile'
+import DashboardScreen from '@pages/admin'
+import DrawerContent from '@components/drawer'
+import ProfileScreen from '@pages/admin/profile'
 
-import ScheduleScreen from '../pages/admin/schedule'
-import PresentialScreen from '../pages/admin/schedule/presential'
-import HeaderAdmin from '../components/header/admin'
-import DoctorsScheduleScreen from '../pages/admin/schedule/doctorsSchedule'
-import DoctorProfileScreen from '../pages/admin/doctorProfile'
-import ConfigurationScreen from '../pages/admin/configuration/home'
-import AppointmentScreen from '../pages/admin/appointments'
-import InformationAppScreen from '../pages/admin/configuration/infos'
+import ScheduleScreen from '@pages/admin/schedule'
+import PresentialScreen from '@pages/admin/schedule/presential'
+import HeaderAdmin from '@components/header/admin'
+import DoctorsScheduleScreen from '@pages/admin/schedule/doctorsSchedule'
+import DoctorProfileScreen from '@pages/admin/doctorProfile'
+import ConfigurationScreen from '@pages/admin/configuration/home'
+import AppointmentScreen from '@pages/admin/appointments'
+import InformationAppScreen from '@pages/admin/configuration/infos'
 
 const { Navigator, Screen, Group } = createDrawerNavigator()
 

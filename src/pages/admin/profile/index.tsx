@@ -4,8 +4,8 @@ import React, { FC, ReactElement } from 'react'
 import { ImageBackground, SafeAreaView, TouchableOpacity, View } from 'react-native'
 import { profileStyle } from './style'
 import Icon from 'react-native-vector-icons/Ionicons'
-import ListComponent from '../../../components/menuList'
-import { useAuth } from '../../../contexts/auth'
+import ListComponent from '@components/menuList'
+import { useAuth } from '@contexts/auth'
 
 const ProfileScreen: FC<DrawerContentComponentProps> = ({
   navigation

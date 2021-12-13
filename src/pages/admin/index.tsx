@@ -3,9 +3,10 @@ import { SafeAreaView, StatusBar, View } from 'react-native'
 import { Text, Card, Layout } from '@ui-kitten/components'
 import { dashboardStyle } from './style'
 import Icon from 'react-native-vector-icons/Ionicons'
-import StethoscopeIcon from '../../assets/svg/stethoscope.svg'
-import NotepadIcon from '../../assets/svg/notepad.svg'
+import StethoscopeIcon from '@assets/svg/stethoscope.svg'
+import NotepadIcon from '@assets/svg/notepad.svg'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
+import { formatDateToString } from '@utils/convertDate'
 
 const DashboardScreen: FC<DrawerContentComponentProps> = ({
   navigation
@@ -20,7 +21,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
         <StatusBar barStyle="dark-content" backgroundColor={'transparent'} translucent={true} />
         <Layout style={dashboardStyle.cardContainer} level="1">
           <Text category="h5" style={dashboardStyle.text}>
-            Como podemos te ajudar?
+            Como podemos te ajudar? {formatDateToString(new Date())}
           </Text>
           <View style={dashboardStyle.cardGroupPrimary}>
             <Card onPress={gotToSchedule}>

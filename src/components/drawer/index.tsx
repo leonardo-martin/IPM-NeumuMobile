@@ -7,7 +7,7 @@ import {
 import { Avatar, Layout, Text } from '@ui-kitten/components'
 import { ImageBackground, View } from 'react-native'
 import { drawerStyle } from './style'
-import { useAuth } from '../../contexts/auth'
+import { useAuth } from '@contexts/auth'
 import Icon from 'react-native-vector-icons/Ionicons'
 
 const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {

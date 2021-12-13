@@ -1,9 +1,13 @@
-import moment from 'moment-timezone'
+import { DateFnsService } from '@ui-kitten/date-fns'
 
-export const convertToTimezone = (date: string, timezone: string) => {
-    return moment(date).tz(timezone).format()
+const dateService = new DateFnsService()
+
+const _DEFAULT_FORMAT_DATETIME = 'dd-MM-YYYY HH:mm:ss'
+
+const getFormat = (format: string | undefined) => {
+    return format ? format : _DEFAULT_FORMAT_DATETIME
 }
 
-export const dateFormatToString = (date: Date | string | undefined) => {
-    return `${moment(date).format('DD-MM-YYYY')} - ${moment(date).format('HH:mm')}`
+export const formatDateToString = (date: Date, format?: string) => {
+    return dateService.format(date, getFormat(format))
 }

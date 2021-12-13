@@ -3,15 +3,15 @@ import { ImageBackground, SafeAreaView, ScrollView, View } from 'react-native'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useRoute } from '@react-navigation/core'
 import { doctorScheduleStyle } from './style'
-import CalendarComponent from '../../../../components/calendar'
+import CalendarComponent from '@components/calendar'
 import { Avatar, Button, Card, IndexPath, Modal, Spinner, Text } from '@ui-kitten/components'
 import Icon from 'react-native-vector-icons/Ionicons'
-import SelectComponent from '../../../../components/select'
-import { useAuth } from '../../../../contexts/auth'
-import { CreateAppointment } from '../../../../models/Appointment'
-import { convertToTimezone, dateFormatToString } from '../../../../utils/convertDate'
-import { createAppointment } from '../../../../services/appointment'
-import { openMapsWithAddress } from '../../../../utils/maps'
+import SelectComponent from '@components/select'
+import { useAuth } from '@contexts/auth'
+import { CreateAppointment } from '@models/Appointment'
+import { formatDateToString } from '@utils/convertDate'
+import { createAppointment } from '@services/appointment'
+import { openMapsWithAddress } from '@utils/maps'
 
 const options = [
     {
@@ -81,7 +81,7 @@ const DoctorsScheduleScreen: FC<DrawerContentComponentProps> = ({
         startTime.setMinutes(Number(time[1]))
 
         setConfirmDate(startTime)
-        const dateString = convertToTimezone(startTime.toISOString(), 'America/Sao_Paulo')
+        const dateString = formatDateToString(startTime)
 
         setScheduleData(
             new CreateAppointment(
@@ -230,7 +230,7 @@ const DoctorsScheduleScreen: FC<DrawerContentComponentProps> = ({
                                 <Text
                                     style={doctorScheduleStyle.textConfirmModal}
                                     status="basic"
-                                >{dateFormatToString(confirmDate)} ?</Text>
+                                >{formatDateToString(confirmDate as Date)} ?</Text>
                             </View>
                             <View style={doctorScheduleStyle.viewConfirmButtonModal}>
                                 <Button

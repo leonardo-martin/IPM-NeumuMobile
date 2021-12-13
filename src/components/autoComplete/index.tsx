@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react'
 import { KeyboardTypeOptions, StyleProp, TextStyle, TouchableWithoutFeedback } from 'react-native'
 import { Autocomplete, Icon } from '@ui-kitten/components'
-import { City, UF } from '../../models/Places'
+import { City, UF } from '@models/Places'
 
 
 type AutoCompleteProps = {

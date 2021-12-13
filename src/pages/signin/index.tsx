@@ -8,12 +8,12 @@ import {
 } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { loginStyle } from './style'
-import { SignInData } from '../../models/User'
-import { useAuth } from '../../contexts/auth'
+import { SignInData } from '@models/User'
+import { useAuth } from '@contexts/auth'
 import { Input, Text, Button, Icon, IconProps, Modal, Card } from '@ui-kitten/components'
-import TitleNeumu from '../../components/titleNeumu'
+import TitleNeumu from '@components/titleNeumu'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import LogoPedroMolina from '../../assets/svg/logo.svg'
+import LogoPedroMolina from '@assets/svg/logo.svg'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const SignInScreen: FC<DrawerContentComponentProps> = ({

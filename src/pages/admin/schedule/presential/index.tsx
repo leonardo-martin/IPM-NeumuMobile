@@ -4,10 +4,10 @@ import { ImageBackground, SafeAreaView, View } from 'react-native'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { API_IBGE_GOV } from '@env'
 import { scheduleStyle } from './style'
-import AutoCompleteComponent from '../../../../components/autoComplete'
-import { City, UF } from '../../../../models/Places'
-import specialties from '../../../../utils/specialties'
-import ListComponent from '../../../../components/menuList'
+import AutoCompleteComponent from '@components/autoComplete'
+import { City, UF } from '@models/Places'
+import specialties from '@utils/specialties'
+import ListComponent from '@components/menuList'
 
 const filter = (item: any, query: any) => item.sigla.toLowerCase().includes(query.toLowerCase())
 const filterCity = (item: any, query: any) => item.nome.toLowerCase().includes(query.toLowerCase())

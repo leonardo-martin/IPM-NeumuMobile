@@ -1,4 +1,4 @@
-import { CreateAppointment } from '../models/Appointment'
+import { CreateAppointment } from '@models/Appointment'
 import { api } from './api'
 
 interface QueryParameters {
