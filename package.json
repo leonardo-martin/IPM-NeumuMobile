@@ -3,11 +3,13 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "start": "react-native start",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "clean": "rm -rf node_modules/ && rm -rf package-lock.json yarn.lock",
-    "clean:pods": "cd ios && pod deintegrate && rm -rf Podfile.lock && cd ..",
-    "start": "react-native start",
+    "pods:install": "cd ios && pod install && cd ..",
+    "pods:update": "cd ios && pod update && cd ..",
+    "pods:clean": "cd ios && pod deintegrate && rm -rf Podfile.lock && cd ..",
     "test": "jest",
     "prettier:write": "npx prettier --write **/*.{ts,tsx,json,js,jsx} && npx prettier --write *.{ts,tsx,json,js,jsx}",
     "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx ./"
