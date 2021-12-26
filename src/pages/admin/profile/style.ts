@@ -49,4 +49,4 @@ export const profileStyle = StyleSheet.create({
   textFooter: {
     fontWeight: Platform.OS === 'ios' ? 'bold' : '600'
   }
-});
+})

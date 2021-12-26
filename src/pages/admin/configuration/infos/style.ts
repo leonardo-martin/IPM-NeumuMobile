@@ -34,4 +34,4 @@ export const infoAppStyle = StyleSheet.create({
         textAlign: 'center',
         color: '#626262'
     }
-});
+})

@@ -1,5 +1,4 @@
 import React, { FC, ReactElement } from 'react'
-import { View } from 'react-native'
 import { Calendar, Layout, NativeDateService } from '@ui-kitten/components'
 import { calendarStyles } from './style'
 

@@ -4,7 +4,7 @@ import {
   TopNavigation,
   TopNavigationAction
 } from '@ui-kitten/components'
-import TitleNeumu from '../../titleNeumu'
+import TitleNeumu from '@components/titleNeumu'
 import { headerStyle } from './style'
 import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/Ionicons'

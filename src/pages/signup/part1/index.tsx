@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 
 const SignUpPart1Screen: FC = (): ReactElement => {
 
-  const [visible, setVisible] = useState<boolean>(false);
+  const [visible, setVisible] = useState<boolean>(false)
   const { control, handleSubmit, formState: { errors } } = useForm<UserData>()
   const navigation = useNavigation<any>()
   const submit = (data: UserData) => {

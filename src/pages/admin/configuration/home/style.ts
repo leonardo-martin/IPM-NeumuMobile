@@ -1,4 +1,4 @@
-import { Platform, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 
 export const configurationStyle = StyleSheet.create({
     content: {
@@ -6,4 +6,4 @@ export const configurationStyle = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FAFAFA'
     }
-});
+})

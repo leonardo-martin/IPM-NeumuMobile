@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, ReactElement } from 'react'
 import { KeyboardTypeOptions, StyleProp, TextStyle, TouchableWithoutFeedback } from 'react-native'
 import { Autocomplete, Icon } from '@ui-kitten/components'
 import { City, UF } from '@models/Places'
@@ -22,7 +22,7 @@ type AutoCompleteProps = {
 
 const AutoCompleteComponent: FC<AutoCompleteProps> = ({
     style, data, keyboardType, placeholder, maxLength, label, disabled, autoCapitalize, onSelect, onChangeText, renderOption, clearInput, value
-}) => {
+}): ReactElement => {
 
     const renderCloseIcon = (props: any) => (
         <TouchableWithoutFeedback onPress={clearInput}>
@@ -31,7 +31,7 @@ const AutoCompleteComponent: FC<AutoCompleteProps> = ({
     )
 
     return (
-        <Autocomplete            
+        <Autocomplete
             style={style}
             label={label}
             keyboardType={keyboardType}
