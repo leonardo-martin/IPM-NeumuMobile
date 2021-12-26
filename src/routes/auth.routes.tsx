@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import SignIn from '@pages/signin'
 import SignUpPart1Screen from '@pages/signup/part1'
 import SignUpPart2Screen from '@pages/signup/part2'
-import RecoveryPasswordScreen from '@pages/password'
+import ChangePasswordRequest from '@pages/changePassword'
 import HeaderAuth from '@components/header/auth'
 
 const { Navigator, Screen, Group } = createStackNavigator()
@@ -25,7 +25,7 @@ const AuthRoutes: FC = (): ReactElement => {
       }}>
         <Screen name="SignUp" component={SignUpPart1Screen} />
         <Screen name="SignUpPart2" component={SignUpPart2Screen} />
-        <Screen name="RecoveryPasswd" component={RecoveryPasswordScreen} />
+        <Screen name="ChangePasswordRequest" component={ChangePasswordRequest} />
       </Group>
     </Navigator>
   )

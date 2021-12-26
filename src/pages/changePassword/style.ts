@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-export const recoveryStyle = StyleSheet.create({
+export const changePasswdReqStyle = StyleSheet.create({
     content: {
         display: 'flex',
         alignItems: 'center',
@@ -33,8 +33,20 @@ export const recoveryStyle = StyleSheet.create({
         borderWidth: 1,
         shadowColor: 'rgba(0, 0, 0, 0.03)'
     },
-    button: {
-        marginTop: '5%',
-        borderRadius: 50,   
+    viewBtn: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+        height: 45,
+        borderWidth: 1,
+        borderStyle: undefined,
+        borderColor: 'transparent',
+        borderRadius: 50,
+        marginVertical: 15
+    },
+    btnText: {
+        fontSize: 12,
+        color: '#FFFFFF'
     }
 })

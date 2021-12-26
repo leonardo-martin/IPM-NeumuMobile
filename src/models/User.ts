@@ -22,3 +22,13 @@ export class UserData {
 class Specialty {
     description: string = ''
 }
+
+export class UserAccRecoveryPasswdRequest {
+    userEmail!: string
+    userCpf!: string
+}
+
+export class UserAccRecoveryPasswd {
+    token: string = ''
+    newPassword: string = ''
+}
