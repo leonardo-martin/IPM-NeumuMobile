@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useState, createRef } from 'react'
+import React, { FC, ReactElement, useState, createRef, useEffect } from 'react'
 import {
   SafeAreaView,
   View,
@@ -10,17 +10,20 @@ import { useForm, Controller } from 'react-hook-form'
 import { loginStyle } from './style'
 import { SignInData } from '@models/User'
 import { useAuth } from '@contexts/auth'
-import { Input, Text, Button, Icon, IconProps, Modal, Card } from '@ui-kitten/components'
+import { Input, Text, Button, Icon, IconProps } from '@ui-kitten/components'
 import TitleNeumu from '@components/titleNeumu'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import LogoPedroMolina from '@assets/svg/logo.svg'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import Toast from '@components/toast'
+import { matchMessage } from '@utils/common'
 
 const SignInScreen: FC<DrawerContentComponentProps> = ({
   navigation
 }): ReactElement => {
 
-  const [visible, setVisible] = useState<boolean>(false)
+  const [visibleToast, setVisibleToast] = useState(false)
+  const [message, setMessage] = useState<string>('')
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true)
   const { signIn } = useAuth()
 
@@ -35,12 +38,25 @@ const SignInScreen: FC<DrawerContentComponentProps> = ({
   const handleSignIn = async (data: SignInData) => {
     const response = await signIn(data)
     if (response) {
-      setVisible(true)
+      const message = response?.response?.data?.message?.message
+      if (message !== "" && message !== undefined) {
+        const matchId = matchMessage(message)
+        if (matchId === 2)
+          setMessage('E-mail não verificado')
+        else if (matchId === 1)
+          setMessage('Usuário e/ou senha incorretos')
+
+      } else {
+        setMessage('Usuário e/ou senha incorretos')
+      }
+      setVisibleToast(true)
     }
   }
 
+  useEffect(() => setVisibleToast(false), [visibleToast])
+
   const registerName = () => navigation.navigate('SignUp')
-  const recoveryPasswd = () => navigation.navigate('RecoveryPasswd')
+  const recoveryPasswd = () => navigation.navigate('ChangePasswordRequest')
 
   const toggleSecureEntry = () => {
     setSecureTextEntry(!secureTextEntry)
@@ -146,27 +162,7 @@ const SignInScreen: FC<DrawerContentComponentProps> = ({
             <Text status='info' style={loginStyle.textHere}>aqui</Text>
           </TouchableOpacity>
         </View>
-        <Modal
-          visible={visible}
-          backdropStyle={loginStyle.backdrop}
-          onBackdropPress={() => setVisible(false)}>
-          <Card disabled={true}>
-            <View style={{ paddingVertical: 20, paddingHorizontal: 20 }}>
-              <Text category="label" style={{ fontSize: 18, fontWeight: '400' }} >Usuário e/ou senha incorretos</Text>
-            </View>
-            <TouchableOpacity
-              style={loginStyle.buttonModal}
-              onPress={() => setVisible(false)}
-              hitSlop={{
-                left: 10,
-                right: 10,
-                top: 10,
-                bottom: 10
-              }}>
-              <Text status='primary' style={[loginStyle.textModal, { fontSize: 18 }]}>OK</Text>
-            </TouchableOpacity>
-          </Card>
-        </Modal>
+        <Toast visible={visibleToast} message={message} />
         <View style={loginStyle.containerButtons}>
           <Button
             style={loginStyle.button}
