@@ -1,17 +1,17 @@
 import { Platform, StyleSheet } from 'react-native'
 
 export const profileStyle = StyleSheet.create({
-  content: {
-    display: 'flex',
+  safeArea: {
     flex: 1,
-    backgroundColor: '#FAFAFA'
+  },
+  contentContainer: {
+    paddingTop: 24,
   },
   avatar: {
     width: 130,
     height: 130,
     borderWidth: 4,
     borderColor: '#626262',
-    marginBottom: 10,
     alignSelf: 'center'
   },
   profileName: {
@@ -19,7 +19,7 @@ export const profileStyle = StyleSheet.create({
     fontWeight: Platform.OS === 'ios' ? '400' : '600'
   },
   body: {
-    paddingTop: 10
+    paddingTop: 10,
   },
   bodyContent: {
     alignItems: 'center',
@@ -35,7 +35,6 @@ export const profileStyle = StyleSheet.create({
     textAlign: 'center'
   },
   footer: {
-    backgroundColor: '#FAFAFA',
     alignItems: 'center'
   },
   buttonContainer: {
@@ -43,10 +42,13 @@ export const profileStyle = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
-    borderRadius: 30
+    marginBottom: 20
   },
   textFooter: {
-    fontWeight: Platform.OS === 'ios' ? 'bold' : '600'
-  }
+    fontWeight: Platform.OS === 'ios' ? 'bold' : '600',
+    fontSize: 20
+  },
+  item: {
+    marginVertical: 4,
+  },
 })
