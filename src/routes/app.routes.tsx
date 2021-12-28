@@ -15,6 +15,9 @@ import DoctorProfileScreen from '@pages/admin/doctorProfile'
 import ConfigurationScreen from '@pages/admin/configuration/home'
 import AppointmentScreen from '@pages/admin/appointments'
 import InformationAppScreen from '@pages/admin/configuration/infos'
+import MessagesScreen from '@pages/admin/messages'
+import ChatRoomScreen from '@pages/admin/chat'
+import EditProfileScreen from 'pages/admin/profile/extra'
 
 const { Navigator, Screen, Group } = createDrawerNavigator()
 
@@ -23,9 +26,7 @@ const AppRoutes: FC = (): ReactElement => {
   return (
     <Navigator
       backBehavior="history"
-      drawerContent={(props: DrawerContentComponentProps) => (
-        <DrawerContent {...props} />
-      )}
+      drawerContent={props => <DrawerContent {...props} />}
       initialRouteName="Dashboard"
       screenOptions={{
         headerShown: true,
@@ -57,14 +58,24 @@ const AppRoutes: FC = (): ReactElement => {
           drawerLabel: 'Consulta Presencial'
         }}
       />
-      <Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          swipeEnabled: false,
-          drawerLabel: 'Meu Perfil'
-        }}
-      />
+      <Group screenOptions={{
+        swipeEnabled: false
+      }}>
+        <Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{
+            drawerLabel: 'Meu Perfil'
+          }}
+        />
+        <Screen
+          name="EditProfile"
+          component={EditProfileScreen}
+          options={{
+            drawerLabel: 'Editar Perfil'
+          }}
+        />
+      </Group>
 
       <Screen
         name="MyAppointments"
@@ -74,6 +85,28 @@ const AppRoutes: FC = (): ReactElement => {
           drawerLabel: 'Minhas consultas'
         }}
       />
+
+      <Group screenOptions={{
+        swipeEnabled: false
+      }}>
+        <Screen
+          name="MessagesList"
+          component={MessagesScreen}
+          options={{
+            swipeEnabled: false,
+            drawerLabel: 'Mensagens'
+          }}
+        />
+        <Screen
+          name="ChatRoom"
+          component={ChatRoomScreen}
+          options={{
+            swipeEnabled: false,
+            drawerLabel: 'Bate-papo',
+          }}
+        />
+      </Group>
+
       <Group screenOptions={{
         swipeEnabled: false
       }}>
