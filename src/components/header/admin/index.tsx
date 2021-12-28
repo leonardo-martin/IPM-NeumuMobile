@@ -1,24 +1,24 @@
 import React, { FC, ReactElement } from 'react'
-import {
-  Layout,
-  TopNavigation,
-  TopNavigationAction
-} from '@ui-kitten/components'
-import { headerStyle } from './style'
-import TitleNeumu from '../../titleNeumu'
-import { DrawerActions, useNavigation } from '@react-navigation/native'
-import Icon from 'react-native-vector-icons/Ionicons'
+import { Platform } from 'react-native'
+import { DrawerActions, useNavigation, useRoute } from '@react-navigation/native'
+import { Layout, TopNavigation, TopNavigationAction } from '@ui-kitten/components'
 import { useDrawerStatus } from '@react-navigation/drawer'
+import Icon from 'react-native-vector-icons/Ionicons'
+
+import { headerStyle } from './style'
+import TitleNeumu from '@components/titleNeumu'
+import HeaderChatRoom from './chatRoom'
 
 const HeaderAdmin: FC = (): ReactElement => {
-  const { goBack, dispatch, canGoBack } = useNavigation()
+  const { goBack, dispatch, canGoBack, navigate } = useNavigation<any>()
+  const route = useRoute()
 
   const BackIcon = () => (
-    <Icon name="chevron-back-outline" size={35} color={'#404040'} />
+    <Icon name={Platform.OS === 'ios' ? 'chevron-back-outline' : Platform.OS === 'android' ? 'arrow-back-outline' : 'arrow-back-outline'} size={35} />
   )
-  const MenuIcon = () => <Icon name="menu" size={35} color={'#404040'} />
+  const MenuIcon = () => <Icon name="menu" size={35} />
   const ChatIcon = () => (
-    <Icon name="chatbubbles" size={35} color={'#404040'} />
+    <Icon name="chatbubbles" size={35} />
   )
 
   const isDrawerOpen = useDrawerStatus() === 'open'
@@ -36,21 +36,24 @@ const HeaderAdmin: FC = (): ReactElement => {
   const renderChatIcon = () => (
     <TopNavigationAction
       icon={ChatIcon}
-      onPress={() => console.log('navigate to chat screen')}
+      onPress={() => navigate('MessagesList')}
     />
   )
 
   return (
     <Layout level="1" style={headerStyle.layout}>
-      <TopNavigation
-        style={headerStyle.container}
-        alignment="center"
-        title={() => <TitleNeumu category="h6" />}
-        accessoryLeft={renderLeftIcon}
-        accessoryRight={
-          !canGoBack() || isDrawerOpen ? renderChatIcon : undefined
-        }
-      />
+      {route.name === 'ChatRoom' ?
+        <HeaderChatRoom />
+        :
+        <TopNavigation
+          alignment="center"
+          title={() => <TitleNeumu category="h6" />}
+          accessoryLeft={renderLeftIcon}
+          accessoryRight={
+            !canGoBack() || isDrawerOpen ? renderChatIcon : undefined
+          }
+        />
+      }
     </Layout>
   )
 }

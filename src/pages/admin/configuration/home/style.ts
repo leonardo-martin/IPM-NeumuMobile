@@ -1,9 +1,11 @@
 import { StyleSheet } from 'react-native'
 
 export const configurationStyle = StyleSheet.create({
-    content: {
-        display: 'flex',
-        flex: 1,
-        backgroundColor: '#FAFAFA'
+    container: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginVertical: 8,
+        margin: 20
     }
 })

@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useState } from 'react'
-import { SafeAreaView, ScrollView, View } from 'react-native'
+import { ScrollView, View } from 'react-native'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { appointmentsStyle } from './style'
 import { Card, Layout, Tab, TabView, Text } from '@ui-kitten/components'
@@ -8,12 +8,13 @@ import { formatDateToString } from '@utils/convertDate'
 import { useFetch } from '@hooks/useSwr'
 import { SWRConfig } from 'swr'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { SafeAreaLayout } from '@components/safeAreaLayout'
 
 const AppointmentScreen: FC<DrawerContentComponentProps> = ({
     navigation
 }): ReactElement => {
 
-    const { data: appointmentsData } = useFetch<Appointment[]>('appointment/get-appointment-list-patient')
+    const { data: appointmentsData, error } = useFetch<Appointment[]>('appointment/get-appointment-list-patient')
     const [selectedIndex, setSelectedIndex] = useState<number>(0)
 
     return (
@@ -21,26 +22,25 @@ const AppointmentScreen: FC<DrawerContentComponentProps> = ({
             <SWRConfig value={{
                 refreshInterval: 5000
             }}>
-                <TabView
-                    selectedIndex={selectedIndex}
-                    onSelect={(index: number) => setSelectedIndex(index)}>
-                    <Tab title={
-                        <Text>
-                            <Icon name='checkmark-circle-outline' size={15} />
-                            Ativos
-                        </Text>
-                    } >
-                        {appointmentsData && appointmentsData.length === 0
-                            ?
-                            <View style={appointmentsStyle.viewNothingData}>
-                                <Text>Nada encontrado</Text>
-                            </View>
-                            :
-                            <ScrollView
-                                style={appointmentsStyle.scrollView}
-                                contentContainerStyle={appointmentsStyle.contentContainerScrollView}
-                                showsVerticalScrollIndicator={false}>
-                                <SafeAreaView style={appointmentsStyle.content}>
+                <SafeAreaLayout style={appointmentsStyle.safeArea}>
+                    <TabView
+                        selectedIndex={selectedIndex}
+                        onSelect={(index: number) => setSelectedIndex(index)}>
+                        <Tab title={
+                            <Text>
+                                <Icon name='checkmark-circle-outline' size={15} />
+                                Ativos
+                            </Text>
+                        } >
+                            {(appointmentsData && appointmentsData.length === 0) || error
+                                ?
+                                <View style={appointmentsStyle.viewNothingData}>
+                                    <Text status='basic'>Nada encontrado</Text>
+                                </View>
+                                :
+                                <ScrollView
+                                    contentContainerStyle={appointmentsStyle.contentContainerScrollView}
+                                    showsVerticalScrollIndicator={false}>
                                     <View style={appointmentsStyle.view}>
                                         {appointmentsData?.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
                                             .map((item, index) => {
@@ -76,34 +76,32 @@ const AppointmentScreen: FC<DrawerContentComponentProps> = ({
                                                 )
                                             })}
                                     </View>
-                                </SafeAreaView>
-                            </ScrollView>
-                        }
-                    </Tab>
-                    <Tab title={
-                        <Text>
-                            <Icon name='close-circle-outline' size={15} />
-                            Encerrados
-                        </Text>
-                    } >
-                        {appointmentsData && appointmentsData.length === 0 || appointmentsData && appointmentsData.filter(e => e.confirmedByMedicalDoctor).length === 0
-                            ?
-                            <View style={appointmentsStyle.viewNothingData}>
-                                <Text>Nada encontrado</Text>
-                            </View>
-                            :
-                            <ScrollView
-                                style={appointmentsStyle.scrollView}
-                                contentContainerStyle={appointmentsStyle.contentContainerScrollView}
-                                showsVerticalScrollIndicator={false}>
-                                <SafeAreaView style={appointmentsStyle.content}>
+                                </ScrollView>
+                            }
+                        </Tab>
+                        <Tab title={
+                            <Text>
+                                <Icon name='close-circle-outline' size={15} />
+                                Encerrados
+                            </Text>
+                        } >
+                            {(appointmentsData && appointmentsData.length === 0) || (appointmentsData && appointmentsData.filter(e => e.confirmedByMedicalDoctor).length === 0) || error
+                                ?
+                                <View style={appointmentsStyle.viewNothingData}>
+                                    <Text>Nada encontrado</Text>
+                                </View>
+                                :
+                                <ScrollView
+                                    contentContainerStyle={appointmentsStyle.contentContainerScrollView}
+                                    showsVerticalScrollIndicator={false}>
+                                    <View style={appointmentsStyle.view}>
 
-                                </SafeAreaView>
-                            </ScrollView>
-                        }
-
-                    </Tab>
-                </TabView>
+                                    </View>
+                                </ScrollView>
+                            }
+                        </Tab>
+                    </TabView>
+                </SafeAreaLayout>
             </SWRConfig>
         </>
     )

@@ -1,20 +1,20 @@
 import { StyleSheet } from 'react-native'
 
 export const scheduleStyle = StyleSheet.create({
+  safeAre: {
+    flex: 1
+  },
   container: {
     flex: 1,
-    alignItems: 'center',   
+    alignItems: 'center',
     alignContent: 'center',
-    backgroundColor: '#FAFAFA'
   },
   layout: {
     width: '90%',
     paddingTop: 20,
-    backgroundColor: '#FAFAFA'
   },
   autoComplete: {
     paddingBottom: 10,
-    backgroundColor: '#FFFFFF'
   },
   viewButton: {
     flexDirection: 'column',

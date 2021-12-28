@@ -7,7 +7,8 @@ import { scheduleStyle } from './style'
 import AutoCompleteComponent from '@components/autoComplete'
 import { City, UF } from '@models/Places'
 import specialties from '@utils/specialties'
-import ListComponent from '@components/menuList'
+import ListComponentWithAvatar from '@components/menuList'
+import { SafeAreaLayout } from 'components/safeAreaLayout'
 
 const filter = (item: any, query: any) => item.sigla.toLowerCase().includes(query.toLowerCase())
 const filterCity = (item: any, query: any) => item.nome.toLowerCase().includes(query.toLowerCase())
@@ -188,173 +189,174 @@ const PresentialScreen: FC<DrawerContentComponentProps> = ({
 
   return (
     <>
-      <SafeAreaView style={scheduleStyle.container}>
-        <Layout style={scheduleStyle.layout} level="1">
-          <AutoCompleteComponent
-            style={scheduleStyle.autoComplete}
-            data={statesTemp}
-            label="Estado"
-            placeholder=''
-            onSelect={onSelectState}
-            onChangeText={onChangeTextState}
-            renderOption={renderOptionState}
-            clearInput={clearInputs}
-            value={selectedState}
-            autoCapitalize='characters'
-            maxLength={2}
-          />
-          <AutoCompleteComponent
-            style={scheduleStyle.autoComplete}
-            data={citiesTemp}
-            label="Cidade"
-            placeholder=''
-            onSelect={onSelectCity}
-            onChangeText={onChangeTextCity}
-            renderOption={renderOptionCity}
-            clearInput={() => clearInputs('city')}
-            value={selectedCity}
-            disabled={isDisabledCity}
-            autoCapitalize='words'
-          />
-          <AutoCompleteComponent
-            style={scheduleStyle.autoComplete}
-            data={specialtyTemp}
-            label="Especialidade"
-            placeholder=''
-            onSelect={onSelectSpecialty}
-            onChangeText={onChangeTextSpecialty}
-            renderOption={renderOptionSpecialty}
-            clearInput={() => clearInputs('specialty')}
-            value={selectedSpecialty}
-            disabled={isDisabledSpecialty}
-            autoCapitalize='sentences'
-          />
-          <View style={scheduleStyle.viewButton}>
-            <Button
-              style={scheduleStyle.button}
-              onPress={filterDoctors}
-              status="primary"
-              disabled={selectedCity === '' || selectedState === ''}
-            >
-              FILTRAR
-            </Button>
-          </View>
-        </Layout>
-        {showListDoctors ?
-          <View style={scheduleStyle.viewDoctors}>
-            <ListComponent data={[
-              {
-                id: 1,
-                title: 'Johnny Depp',
-                description: "Ortopedista - CRM 1234",
-                accessoryLeft: (props: any) => (
-                  <Avatar
-                    {...props}
-                    style={[props.style, { tintColor: null }]}
-                    source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar1.png' }}
-                    ImageComponent={ImageBackground}
-                  />
-                ),
-                onPress: () => navigation.navigate('DoctorsSchedule', {
-                  doctorId: 1,
-                  doctorName: 'Johnny Depp',
-                  specialty: 'Ortopedista',
-                  crm: 1234,
-                  tel: "43 3333-3333",
-                  visitAddress: {
-                    id: 1,
-                    street: "Rua Alvorada, 1289 - conj 902 - Vila Olímpia - São Paulo",
-                  }
-                })
-              },
-              {
-                id: 2,
-                title: 'Davy Jones',
-                description: "Ortopedista - CRM 1235",
-                accessoryLeft: (props: any) => (
-                  <Avatar
-                    {...props}
-                    style={[props.style, { tintColor: null }]}
-                    source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar2.png' }}
-                    ImageComponent={ImageBackground}
-                  />
-                ),
-                onPress: () => navigation.navigate('DoctorsSchedule', {
-                  doctorId: 2,
-                  doctorName: 'Davy Jones',
-                  specialty: 'Ortopedista',
-                  crm: 1235,
-                  tel: "43 3333-3333",
-                  visitAddress: {
-                    id: 1,
-                    street: "Rua Alvorada, 1289 - conj 902 - Vila Olímpia - São Paulo",
-                  }
-                })
-              },
-              {
-                id: 3,
-                title: 'Davy Jones',
-                description: "Ortopedista - CRM 1236",
-                accessoryLeft: (props: any) => (
-                  <Avatar
-                    {...props}
-                    style={[props.style, { tintColor: null }]}
-                    source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar4.png' }}
-                    ImageComponent={ImageBackground}
-                  />
-                ),
-                onPress: () => navigation.navigate('DoctorsSchedule', {
-                  doctorId: 3,
-                  doctorName: 'Davy Jones',
-                  specialty: 'Ortopedista',
-                  crm: 1236,
-                  tel: "43 3333-3333",
-                  visitAddress: {
-                    id: 1,
-                    street: "Rua Alvorada, 1289 - conj 902 - Vila Olímpia - São Paulo",
-                  }
-                })
-              },
-              {
-                id: 4,
-                title: 'Davy Jones',
-                description: "Ortopedista - CRM 1236",
-                accessoryLeft: (props: any) => (
-                  <Avatar
-                    {...props}
-                    style={[props.style, { tintColor: null }]}
-                    source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar7.png' }}
-                    ImageComponent={ImageBackground}
-                  />
-                ),
-                onPress: () => navigation.navigate('DoctorsSchedule', {
-                  doctorId: 4,
-                  doctorName: 'Davy Jones',
-                  specialty: 'Ortopedista',
-                  crm: 1234,
-                  tel: "43 3333-3333",
-                  visitAddress: {
-                    id: 1,
-                    street: "Rua Alvorada, 1289 - conj 902 - Vila Olímpia - São Paulo",
-                  }
-                })
-              }
-            ]}
-              multiColoredCell={true}
-              rightIconShow={false}
-              divider={true}
-              scrollEnabled={false}
+      <SafeAreaLayout style={scheduleStyle.safeAre}>
+        <View style={scheduleStyle.container}>
+          <Layout style={scheduleStyle.layout} level="1">
+            <AutoCompleteComponent
+              style={scheduleStyle.autoComplete}
+              data={statesTemp}
+              label="Estado"
+              placeholder=''
+              onSelect={onSelectState}
+              onChangeText={onChangeTextState}
+              renderOption={renderOptionState}
+              clearInput={clearInputs}
+              value={selectedState}
+              autoCapitalize='characters'
+              maxLength={2}
             />
-          </View>
-          :
-          isLoadingActive ?
-            <>
-              <View style={scheduleStyle.sppiner}>
-                <Spinner size='giant' status='primary' />
-              </View>
-            </> : null
-        }
-      </SafeAreaView>
+            <AutoCompleteComponent
+              style={scheduleStyle.autoComplete}
+              data={citiesTemp}
+              label="Cidade"
+              placeholder=''
+              onSelect={onSelectCity}
+              onChangeText={onChangeTextCity}
+              renderOption={renderOptionCity}
+              clearInput={() => clearInputs('city')}
+              value={selectedCity}
+              disabled={isDisabledCity}
+              autoCapitalize='words'
+            />
+            <AutoCompleteComponent
+              style={scheduleStyle.autoComplete}
+              data={specialtyTemp}
+              label="Especialidade"
+              placeholder=''
+              onSelect={onSelectSpecialty}
+              onChangeText={onChangeTextSpecialty}
+              renderOption={renderOptionSpecialty}
+              clearInput={() => clearInputs('specialty')}
+              value={selectedSpecialty}
+              disabled={isDisabledSpecialty}
+              autoCapitalize='sentences'
+            />
+            <View style={scheduleStyle.viewButton}>
+              <Button
+                style={scheduleStyle.button}
+                onPress={filterDoctors}
+                status="primary"
+                disabled={selectedCity === '' || selectedState === ''}
+              >
+                FILTRAR
+              </Button>
+            </View>
+          </Layout>
+          {showListDoctors ?
+            <View style={scheduleStyle.viewDoctors}>
+              <ListComponentWithAvatar data={[
+                {
+                  id: 1,
+                  title: 'Johnny Depp',
+                  description: "Ortopedista - CRM 1234",
+                  accessoryLeft: (props: any) => (
+                    <Avatar
+                      {...props}
+                      style={[props.style, { tintColor: null }]}
+                      source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar1.png' }}
+                      ImageComponent={ImageBackground}
+                    />
+                  ),
+                  onPress: () => navigation.navigate('DoctorsSchedule', {
+                    doctorId: 1,
+                    doctorName: 'Johnny Depp',
+                    specialty: 'Ortopedista',
+                    crm: 1234,
+                    tel: "43 3333-3333",
+                    visitAddress: {
+                      id: 1,
+                      street: "Rua Alvorada, 1289 - conj 902 - Vila Olímpia - São Paulo",
+                    }
+                  })
+                },
+                {
+                  id: 2,
+                  title: 'Davy Jones',
+                  description: "Ortopedista - CRM 1235",
+                  accessoryLeft: (props: any) => (
+                    <Avatar
+                      {...props}
+                      style={[props.style, { tintColor: null }]}
+                      source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar2.png' }}
+                      ImageComponent={ImageBackground}
+                    />
+                  ),
+                  onPress: () => navigation.navigate('DoctorsSchedule', {
+                    doctorId: 2,
+                    doctorName: 'Davy Jones',
+                    specialty: 'Ortopedista',
+                    crm: 1235,
+                    tel: "43 3333-3333",
+                    visitAddress: {
+                      id: 1,
+                      street: "Rua Alvorada, 1289 - conj 902 - Vila Olímpia - São Paulo",
+                    }
+                  })
+                },
+                {
+                  id: 3,
+                  title: 'Davy Jones',
+                  description: "Ortopedista - CRM 1236",
+                  accessoryLeft: (props: any) => (
+                    <Avatar
+                      {...props}
+                      style={[props.style, { tintColor: null }]}
+                      source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar4.png' }}
+                      ImageComponent={ImageBackground}
+                    />
+                  ),
+                  onPress: () => navigation.navigate('DoctorsSchedule', {
+                    doctorId: 3,
+                    doctorName: 'Davy Jones',
+                    specialty: 'Ortopedista',
+                    crm: 1236,
+                    tel: "43 3333-3333",
+                    visitAddress: {
+                      id: 1,
+                      street: "Rua Alvorada, 1289 - conj 902 - Vila Olímpia - São Paulo",
+                    }
+                  })
+                },
+                {
+                  id: 4,
+                  title: 'Davy Jones',
+                  description: "Ortopedista - CRM 1236",
+                  accessoryLeft: (props: any) => (
+                    <Avatar
+                      {...props}
+                      style={[props.style, { tintColor: null }]}
+                      source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar7.png' }}
+                      ImageComponent={ImageBackground}
+                    />
+                  ),
+                  onPress: () => navigation.navigate('DoctorsSchedule', {
+                    doctorId: 4,
+                    doctorName: 'Davy Jones',
+                    specialty: 'Ortopedista',
+                    crm: 1234,
+                    tel: "43 3333-3333",
+                    visitAddress: {
+                      id: 1,
+                      street: "Rua Alvorada, 1289 - conj 902 - Vila Olímpia - São Paulo",
+                    }
+                  })
+                }
+              ]}
+                rightIconShow={false}
+                divider={true}
+                scrollEnabled={false}
+              />
+            </View>
+            :
+            isLoadingActive ?
+              <>
+                <View style={scheduleStyle.sppiner}>
+                  <Spinner size='giant' status='primary' />
+                </View>
+              </> : null
+          }
+        </View>
+      </SafeAreaLayout>
     </>
   )
 }

@@ -1,64 +1,45 @@
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import React, { FC, ReactElement } from 'react'
-import { SafeAreaView } from 'react-native'
-import Icon from 'react-native-vector-icons/Ionicons'
-import ListComponent from '@components/menuList'
+import { Divider, Text, Toggle } from '@ui-kitten/components'
+import { DrawerContentComponentProps } from '@react-navigation/drawer'
+
+import { data } from './data'
 import { configurationStyle } from './style'
+import { useTheme } from '@contexts/theme'
+import ListComponent from '@components/list'
+import { TouchableOpacity } from 'react-native'
 
 const ConfigurationScreen: FC<DrawerContentComponentProps> = ({
     navigation
 }): ReactElement => {
 
-    return (
+    const { theme, toggleTheme } = useTheme()
+
+    const renderFooter = () => (
         <>
-            <SafeAreaView style={configurationStyle.content}>
-
-                <ListComponent data={[
-                    {
-                        id: 1,
-                        title: 'Conta',
-                        accessoryLeft: () => (
-                            <Icon name="key-outline" size={20} color={"#000"} />
-                        )
-                    },
-                    {
-                        id: 2,
-                        title: 'Notificações',
-                        accessoryLeft: () => (
-                            <Icon name="notifications-outline" size={20} color={"#000"} />
-                        )
-                    },
-                    {
-                        id: 3,
-                        title: 'Centro de Ajuda',
-                        accessoryLeft: () => (
-                            <Icon name="help-circle-outline" size={20} color={"#000"} />
-                        ),
-                        description: 'Dúvidas? Precisa de Ajuda?'
-                    },
-                    {
-                        id: 4,
-                        title: 'Termos e Política de Privacidade',
-                        accessoryLeft: () => (
-                            <Icon name="lock-closed-outline" size={20} color={"#000"} />
-                        )
-                    },
-                    {
-                        id: 5,
-                        title: 'Informações do Aplicativo',
-                        accessoryLeft: () => (
-                            <Icon name="information-circle-outline" size={20} color={"#000"} />
-                        ),
-                        onPress: () => navigation.navigate('InformationApp')
-                    }
-                ]}
-                    rightIconShow={false}
-                    scrollEnabled={false}
-                    divider={true}
+            <TouchableOpacity
+                activeOpacity={1.0}
+                style={configurationStyle.container}
+                onPress={toggleTheme}>
+                <Text
+                    category='s2'>
+                    {theme !== 'light' ? 'Modo Escuro' : 'Modo Claro'}
+                </Text>
+                <Toggle
+                    checked={theme !== 'light'}
+                    onChange={toggleTheme}
                 />
-
-            </SafeAreaView>
+            </TouchableOpacity>
+            <Divider />
         </>
+
+    )
+
+
+    return (
+        <ListComponent
+            data={data}
+            ListFooterComponent={renderFooter}
+        />
     )
 }
 

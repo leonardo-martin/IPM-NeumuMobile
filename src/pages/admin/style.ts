@@ -1,18 +1,20 @@
 import { StyleSheet } from 'react-native'
 
 export const dashboardStyle = StyleSheet.create({
+  safeArea: {
+    flex: 1
+  },
   content: {
     display: 'flex',
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
-    alignContent: 'center',
-    backgroundColor: '#FAFAFA'
+    alignContent: 'center'
   },
   cardContainer: {
     width: '90%',
     justifyContent: 'center',
-    backgroundColor: '#FAFAFA'
+    alignContent: 'center'
   },
   cardGroupPrimary: {
     marginVertical: 10,
@@ -42,11 +44,10 @@ export const dashboardStyle = StyleSheet.create({
     maxHeight: 120,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderRadius: 5
+    borderRadius: 5,
   },
   cardText: {
     textAlign: 'center',
-    color: '#626262',
     fontStyle: 'normal',
     fontWeight: 'normal',
     lineHeight: 26,
@@ -56,7 +57,6 @@ export const dashboardStyle = StyleSheet.create({
   text: {
     textAlign: 'center',
     fontWeight: 'bold',
-    color: '#626262',
     marginVertical: 10
   }
 })

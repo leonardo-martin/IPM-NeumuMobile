@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native'
 
 export const appointmentsStyle = StyleSheet.create({
-  scrollView: {
-    backgroundColor: '#FAFAFA'
+  safeArea: {
+    flex: 1
   },
   contentContainerScrollView: {
     flexGrow: 1,
@@ -12,10 +12,6 @@ export const appointmentsStyle = StyleSheet.create({
     paddingBottom: 10,
     width: '100%',
     alignItems: 'center',
-    backgroundColor: '#FAFAFA'
-  },
-  content: {
-    backgroundColor: '#FAFAFA'
   },
   card: {
     width: '90%'
@@ -55,11 +51,11 @@ export const appointmentsStyle = StyleSheet.create({
     justifyContent: 'center'
   },
   viewNothingData: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FAFAFA',
     width: '100%',
+    height: '100%'
+
   }
 })

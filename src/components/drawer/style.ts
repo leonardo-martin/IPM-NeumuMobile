@@ -1,6 +1,9 @@
 import { Platform, StyleSheet } from 'react-native'
 
 export const drawerStyle = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   drawerContent: {
     flex: 1
   },
@@ -10,6 +13,11 @@ export const drawerStyle = StyleSheet.create({
   drawerItem: {
     borderBottomRightRadius: Platform.OS === 'ios' ? 0 : 50,
     borderTopRightRadius: Platform.OS === 'ios' ? 0 : 50
+  },
+  drawerItemGroup: {
+    borderBottomRightRadius: Platform.OS === 'ios' ? 0 : 50,
+    borderTopRightRadius: Platform.OS === 'ios' ? 0 : 50,
+    paddingStart: 25
   },
   header: {
     height: 128,
@@ -29,5 +37,10 @@ export const drawerStyle = StyleSheet.create({
     width: 22,
     height: 22,
     marginRight: 8
-  }
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingVertical: 10    
+  },
 })

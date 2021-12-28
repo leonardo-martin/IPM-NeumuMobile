@@ -1,4 +1,5 @@
 import React, { FC, ReactElement } from 'react'
+import { Platform } from 'react-native'
 import {
   Layout,
   TopNavigation,
@@ -9,12 +10,11 @@ import { headerStyle } from './style'
 import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/Ionicons'
 
-
 const HeaderAuth: FC = (): ReactElement => {
   const { goBack } = useNavigation()
 
   const BackIcon = () => (
-    <Icon name="chevron-back-outline" size={35} color={'#404040'} />
+    <Icon name={Platform.OS === 'ios' ? 'chevron-back-outline' : Platform.OS === 'android' ? 'arrow-back-outline' : 'arrow-back-outline'} size={35} />
   )
 
   const renderBackAction = () => (

@@ -1,17 +1,19 @@
 import { StyleSheet } from 'react-native'
 
 export const scheduleStyle = StyleSheet.create({
+  safeArea: {
+    flex: 1
+  },
   content: {
     display: 'flex',
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
     alignContent: 'center',
-    backgroundColor: '#FAFAFA'
   },
   cardContainer: {
     width: '90%',
-    backgroundColor: '#FAFAFA'
+    justifyContent: 'center',
   },
   cardGroupPrimary: {
     marginVertical: 10,
@@ -22,7 +24,6 @@ export const scheduleStyle = StyleSheet.create({
     alignItems: 'center',
   },
   cardText: {
-    color: '#626262',
     fontStyle: 'normal',
     fontWeight: 'normal',
     lineHeight: 26,
@@ -30,7 +31,7 @@ export const scheduleStyle = StyleSheet.create({
     paddingHorizontal: 30,
   },
   card: {
-    justifyContent: 'center',    
+    justifyContent: 'center',
     alignItems: 'flex-start',
     borderWidth: 1,
     borderStyle: 'solid',
@@ -39,8 +40,6 @@ export const scheduleStyle = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-    fontWeight: 'bold',
-    color: '#626262',
     marginVertical: 10
   }
 })
