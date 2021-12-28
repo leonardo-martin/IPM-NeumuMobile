@@ -1,6 +1,5 @@
 import React, { FC, ReactElement } from 'react'
 import {
-  Layout,
   Icon,
   IconProps,
   ListItem,
@@ -8,7 +7,7 @@ import {
   Text,
   Divider
 } from '@ui-kitten/components'
-import { ImageProps, StyleProp, TextStyle } from 'react-native'
+import { ImageProps, ListRenderItemInfo } from 'react-native'
 import { RenderProp } from '@ui-kitten/components/devsupport'
 
 interface Data {
@@ -19,75 +18,55 @@ interface Data {
   onPress?: () => void
 }
 
-interface ListDataItem {
-  index: number
-  item: Data
-}
-
-type ListPropsComponent = {
+type ListComponentWithAvatarProps = {
   data: Data[]
   leftIconShow?: boolean
   rightIconShow?: boolean
-  listItemStyle?: StyleProp<TextStyle>
   divider?: boolean
-  multiColoredCell?: boolean | undefined
-  colorCell?: string
   scrollEnabled?: boolean | undefined
 }
 
-const ListComponent: FC<ListPropsComponent> = ({
+const ListComponentWithAvatar: FC<ListComponentWithAvatarProps> = ({
   data,
   leftIconShow,
   rightIconShow,
-  listItemStyle,
   divider,
-  multiColoredCell,
-  colorCell,
   scrollEnabled
 }): ReactElement => {
   const ForwardIcon = (props: IconProps) => (
     <Icon {...props} name="arrow-ios-forward" />
   )
 
-  const renderItem = ({ item, index }: ListDataItem) => (
+  const renderItem = (info: ListRenderItemInfo<Data>) => (
     <ListItem
-
-      style={multiColoredCell ? [listItemStyle ? listItemStyle : undefined, {
-        backgroundColor: (index % 2) !== 0 ? `${colorCell}` : '#FFFFFF'
-
-      }] : listItemStyle ? listItemStyle : undefined}
-      testID={`listItem#${index}`}
-      title={evaProps => <Text {...evaProps}>{item.title}</Text>}
-      description={item.description ? evaProps => <Text {...evaProps}>{item.description}</Text> : undefined}
+      testID={`listItem#${info.index}`}
+      title={evaProps => <Text {...evaProps}>{info.item.title}</Text>}
+      description={info.item.description ? evaProps => <Text {...evaProps}>{info.item.description}</Text> : undefined}
       accessoryLeft={
         leftIconShow
-          ? item.accessoryLeft
+          ? info.item.accessoryLeft
           : undefined
       }
       accessoryRight={rightIconShow ? ForwardIcon : undefined}
-      onPress={item.onPress ? item.onPress : undefined}
+      onPress={info.item.onPress ? info.item.onPress : undefined}
     />
   )
 
 
   return (
     <>
-      <Layout level="1">
-        {divider ? <Divider /> : undefined}
-        <List data={data} renderItem={renderItem} scrollEnabled={scrollEnabled} ItemSeparatorComponent={divider ? Divider : undefined} />
-        {divider ? <Divider /> : undefined}
-      </Layout>
+      {divider ? <Divider /> : undefined}
+      <List data={data} renderItem={renderItem} scrollEnabled={scrollEnabled} ItemSeparatorComponent={divider ? Divider : undefined} />
+      {divider ? <Divider /> : undefined}
     </>
   )
 }
 
-ListComponent.defaultProps = {
+ListComponentWithAvatar.defaultProps = {
   leftIconShow: true,
   rightIconShow: true,
   divider: false,
-  multiColoredCell: false,
-  colorCell: '#F4F4F4',
   scrollEnabled: true
 }
 
-export default ListComponent
+export default ListComponentWithAvatar
