@@ -1,5 +1,5 @@
 import { UserAccRecoveryPasswd, UserAccRecoveryPasswdRequest } from '@models/User'
-import { api } from './api'
+import { api } from './api.service'
 
 export const changePassReq = async (data: UserAccRecoveryPasswdRequest) => {
 

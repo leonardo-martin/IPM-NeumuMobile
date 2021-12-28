@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from 'axios'
 import useSWR from 'swr'
-import { api } from '@services/api'
+import { api } from 'services/api.service'
 
 export function useFetch<Data = any, Error = any>(url: string, config?: AxiosRequestConfig) {
 

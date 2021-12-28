@@ -1,5 +1,5 @@
 import { CreateAppointment } from '@models/Appointment'
-import { api } from './api'
+import { api } from './api.service'
 
 interface QueryParameters {
     confirmedByDoctor?: boolean | undefined
