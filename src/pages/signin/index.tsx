@@ -10,22 +10,23 @@ import { useForm, Controller } from 'react-hook-form'
 import { loginStyle } from './style'
 import { SignInData } from '@models/User'
 import { useAuth } from '@contexts/auth'
-import { Input, Text, Button, Icon, IconProps } from '@ui-kitten/components'
+import { Input, Text, Button, Icon, IconProps, Spinner } from '@ui-kitten/components'
 import TitleNeumu from '@components/titleNeumu'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import LogoPedroMolina from '@assets/svg/logo.svg'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Toast from '@components/toast'
 import { matchMessage } from '@utils/common'
+import { useNavigation } from '@react-navigation/native'
 
-const SignInScreen: FC<DrawerContentComponentProps> = ({
-  navigation
-}): ReactElement => {
+const SignInScreen: FC = (): ReactElement => {
 
   const [visibleToast, setVisibleToast] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
   const [message, setMessage] = useState<string>('')
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true)
   const { signIn } = useAuth()
+  const navigation = useNavigation<any>()
 
   const inputPasswordRef = createRef<any>()
 
@@ -36,27 +37,34 @@ const SignInScreen: FC<DrawerContentComponentProps> = ({
   } = useForm<SignInData>()
 
   const handleSignIn = async (data: SignInData) => {
-    const response = await signIn(data)
-    if (response) {
-      const message = response?.response?.data?.message?.message
-      if (message !== "" && message !== undefined) {
-        const matchId = matchMessage(message)
-        if (matchId === 2)
-          setMessage('E-mail não verificado')
-        else if (matchId === 1)
-          setMessage('Usuário e/ou senha incorretos')
+    setIsLoading(!isLoading)
+    try {
+      const response = await signIn(data)
+      if (response) {
+        const message = response?.response?.data?.message?.message
+        if (message !== "" && message !== undefined) {
+          const matchId = matchMessage(message)
+          if (matchId === 2)
+            setMessage('E-mail não verificado')
+          else if (matchId === 1)
+            setMessage('Usuário e/ou senha incorretos')
 
-      } else {
-        setMessage('Usuário e/ou senha incorretos')
+        } else {
+          setMessage('Usuário e/ou senha incorretos')
+        }
+        setVisibleToast(true)
       }
-      setVisibleToast(true)
+    } catch (error) {
+      setMessage(error as string)
+    } finally {
+      setIsLoading(false)
     }
   }
 
   useEffect(() => setVisibleToast(false), [visibleToast])
 
   const registerName = () => navigation.navigate('SignUp')
-  const recoveryPasswd = () => navigation.navigate('ChangePasswordRequest')
+  const recoveryPasswd = () => navigation.navigate('ChangePasswordChoice')
 
   const toggleSecureEntry = () => {
     setSecureTextEntry(!secureTextEntry)
@@ -66,6 +74,10 @@ const SignInScreen: FC<DrawerContentComponentProps> = ({
     <TouchableWithoutFeedback onPress={toggleSecureEntry}>
       <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} />
     </TouchableWithoutFeedback>
+  )
+
+  const LoadingIndicator = () => (
+    <Spinner size='small' status='basic' />
   )
 
   return (
@@ -165,6 +177,8 @@ const SignInScreen: FC<DrawerContentComponentProps> = ({
         <Toast visible={visibleToast} message={message} />
         <View style={loginStyle.containerButtons}>
           <Button
+            accessoryLeft={isLoading ? LoadingIndicator : undefined}
+            disabled={isLoading}
             style={loginStyle.button}
             onPress={handleSubmit(handleSignIn)}
             status="primary"
