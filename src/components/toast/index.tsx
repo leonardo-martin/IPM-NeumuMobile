@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { ToastAndroid } from 'react-native'
+import { Platform, ToastAndroid } from 'react-native'
 
 interface ToastProps {
     visible: boolean
@@ -12,7 +12,7 @@ interface ToastProps {
 
 const Toast: FC<ToastProps> = ({ visible, message, duration, gravity, xOffset, yOffset }) => {
 
-    if (visible) {
+    if (visible && Platform.OS === 'android') {
         ToastAndroid.showWithGravityAndOffset(
             message,
             Number(duration),
