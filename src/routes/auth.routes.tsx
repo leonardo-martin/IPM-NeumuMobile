@@ -1,11 +1,12 @@
 import React, { FC, ReactElement } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
+import HeaderAuth from '@components/header/auth'
 
 import SignIn from '@pages/signin'
 import SignUpPart1Screen from '@pages/signup/part1'
 import SignUpPart2Screen from '@pages/signup/part2'
-import ChangePasswordRequest from '@pages/changePassword'
-import HeaderAuth from '@components/header/auth'
+import ChangePasswordChoice from '@pages/changePassword'
+import ChangePasswordRequest from '@pages/changePassword/changePasswordSpecific'
 
 const { Navigator, Screen, Group } = createStackNavigator()
 
@@ -25,6 +26,7 @@ const AuthRoutes: FC = (): ReactElement => {
       }}>
         <Screen name="SignUp" component={SignUpPart1Screen} />
         <Screen name="SignUpPart2" component={SignUpPart2Screen} />
+        <Screen name="ChangePasswordChoice" component={ChangePasswordChoice} />
         <Screen name="ChangePasswordRequest" component={ChangePasswordRequest} />
       </Group>
     </Navigator>

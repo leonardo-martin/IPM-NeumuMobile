@@ -10,7 +10,7 @@ import SelectComponent from '@components/select'
 import { useAuth } from '@contexts/auth'
 import { CreateAppointment } from '@models/Appointment'
 import { formatDateToString } from '@utils/convertDate'
-import { createAppointment } from '@services/appointment'
+import { createAppointment } from 'services/appointment.service'
 import { openMapsWithAddress } from '@utils/maps'
 
 const options = [

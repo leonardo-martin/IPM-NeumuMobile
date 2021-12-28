@@ -1,52 +1,24 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 
 export const changePasswdReqStyle = StyleSheet.create({
     content: {
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         flex: 1,
-        justifyContent: 'center',
-        alignContent: 'center',
-        backgroundColor: '#FAFAFA'
-    },
-    box: {
-        width: '90%',
-        flex: 1,
-        justifyContent: 'center',
-        flexDirection: 'column',
+        backgroundColor: '#FAFAFA',
+        paddingHorizontal: 15
     },
     label: {
+        fontSize: Platform.OS === 'ios' ? 20 : Platform.OS === 'android' ? 24 : 24,
         color: '#626262',
-        textAlign: 'center',
-        padding: 4
+        padding: Platform.OS === 'ios' ? 15 : Platform.OS === 'android' ? 5 : 5
     },
-    text: {
-        color: '#626262',
-        alignItems: 'flex-start',
-        padding: 4
+    controlContainer: {
+        paddingVertical: 30,
+        paddingHorizontal: 15
     },
-    input: {
-        backgroundColor: '#FEFEFE',
-        borderRadius: 10,
-        borderColor: '#EBEBEB',
-        shadowRadius: 4,
-        borderWidth: 1,
-        shadowColor: 'rgba(0, 0, 0, 0.03)'
-    },
-    viewBtn: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-evenly",
-        alignItems: "center",
-        height: 45,
-        borderWidth: 1,
-        borderStyle: undefined,
-        borderColor: 'transparent',
-        borderRadius: 50,
-        marginVertical: 15
-    },
-    btnText: {
-        fontSize: 12,
-        color: '#FFFFFF'
+    radioText: {
+        fontSize: Platform.OS === 'ios' ? 14 : Platform.OS === 'android' ? 18 : 18,
+        paddingHorizontal: 10
     }
 })
