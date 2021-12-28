@@ -1,10 +1,10 @@
 import React, { FC, createContext, useState, useEffect, useContext } from 'react'
 import { TokenModel } from '@models/TokenModel'
 import { SignInData } from '@models/User'
-import { signInRequest } from '@services/auth'
+import { signInRequest } from '@services/auth.service'
 import jwt_decode from 'jwt-decode'
-import AsyncStorage from '@react-native-community/async-storage'
-import { api } from '@services/api'
+import { api } from '@services/api.service'
+import { AppStorage } from '@services/app-storage.service'
 
 interface AuthContextType {
     isAuthenticated: boolean
@@ -22,8 +22,8 @@ const AuthProvider: FC = ({ children }) => {
 
     useEffect(() => {
         const loadStorageData = async () => {
-            const storagedUser = await AsyncStorage.getItem('@RNAuth:user')
-            const storagedToken = await AsyncStorage.getItem('@RNAuth:token')
+            const storagedUser = await AppStorage.getUserContext()
+            const storagedToken = await AppStorage.getUserToken()
 
             if (storagedUser && storagedToken) {
                 setCurrentUser(JSON.parse(storagedUser))
@@ -42,8 +42,8 @@ const AuthProvider: FC = ({ children }) => {
                 const user = jwt_decode(accessToken) as TokenModel
                 setCurrentUser(user)
                 api.defaults.headers.Authorization = `Bearer ${accessToken}`
-                await AsyncStorage.setItem('@RNAuth:user', JSON.stringify(user))
-                await AsyncStorage.setItem('@RNAuth:token', accessToken)
+                AppStorage.setUserContext(user)
+                AppStorage.setUserToken(accessToken)
             }
         } catch (error) {
             return error
@@ -51,11 +51,7 @@ const AuthProvider: FC = ({ children }) => {
     }
 
     const signOut = async () => {
-        const teleNeumuStar = await AsyncStorage.getItem('@TN:star')
-        await AsyncStorage.clear()
-
-        if (teleNeumuStar)
-            await AsyncStorage.setItem('@TN:star', "true")
+        AppStorage.clear()
         setCurrentUser(null)
     }
 
