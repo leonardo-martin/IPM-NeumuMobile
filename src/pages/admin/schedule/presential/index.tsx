@@ -1,6 +1,6 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { Layout, AutocompleteItem, Button, Avatar, Spinner } from '@ui-kitten/components'
-import { ImageBackground, SafeAreaView, View } from 'react-native'
+import { ImageBackground, View } from 'react-native'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { API_IBGE_GOV } from '@env'
 import { scheduleStyle } from './style'
@@ -8,7 +8,7 @@ import AutoCompleteComponent from '@components/autoComplete'
 import { City, UF } from '@models/Places'
 import specialties from '@utils/specialties'
 import ListComponentWithAvatar from '@components/menuList'
-import { SafeAreaLayout } from 'components/safeAreaLayout'
+import { SafeAreaLayout } from '@components/safeAreaLayout'
 
 const filter = (item: any, query: any) => item.sigla.toLowerCase().includes(query.toLowerCase())
 const filterCity = (item: any, query: any) => item.nome.toLowerCase().includes(query.toLowerCase())
