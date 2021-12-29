@@ -42,18 +42,14 @@ const HeaderAdmin: FC = (): ReactElement => {
 
   return (
     <Layout level="1" style={headerStyle.layout}>
-      {route.name === 'ChatRoom' ?
-        <HeaderChatRoom />
-        :
-        <TopNavigation
-          alignment="center"
-          title={() => <TitleNeumu category="h6" />}
-          accessoryLeft={renderLeftIcon}
-          accessoryRight={
-            !canGoBack() || isDrawerOpen ? renderChatIcon : undefined
-          }
-        />
-      }
+      <TopNavigation
+        alignment="center"
+        title={() => <TitleNeumu category="h6" />}
+        accessoryLeft={renderLeftIcon}
+        accessoryRight={
+          !canGoBack() || isDrawerOpen ? renderChatIcon : undefined
+        }
+      />
     </Layout>
   )
 }
