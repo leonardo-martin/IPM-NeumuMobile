@@ -5,12 +5,15 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import Routes from '@routes/index'
 import { AuthProvider } from '@contexts/auth'
 import { ThemeProvider } from '@contexts/theme'
+import { IoniconsIconsPack } from './ionicons-icon'
+import { FontAwesomeIconsPack } from './font-awesome-icon'
+import { FontistoIconsPack } from './fontisto-icon'
 
 const App: FC = (): ReactElement => {
 
   return (
     <React.Fragment>
-      <IconRegistry icons={EvaIconsPack} />
+      <IconRegistry icons={[ IoniconsIconsPack, EvaIconsPack, FontAwesomeIconsPack, FontistoIconsPack ]} />
       <ThemeProvider>
         <NavigationContainer>
           <AuthProvider>
