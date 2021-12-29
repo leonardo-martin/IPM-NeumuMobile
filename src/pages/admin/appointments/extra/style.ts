@@ -1,12 +1,11 @@
 import { StyleSheet } from 'react-native'
 
-export const appointmentsStyle = StyleSheet.create({
+export const appointmentItemStyle = StyleSheet.create({
   safeArea: {
     flex: 1
   },
   contentContainerScrollView: {
-    flexGrow: 1,
-    height: '100%'
+    flex: 1,
   },
   layoutContainer: {
     paddingBottom: 10,
