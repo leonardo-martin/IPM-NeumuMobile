@@ -11,7 +11,7 @@ export const profileStyle = StyleSheet.create({
     width: 130,
     height: 130,
     borderWidth: 4,
-    borderColor: '#626262',
+    borderColor: 'border-alternative-color-5',
     alignSelf: 'center'
   },
   profileName: {
@@ -45,10 +45,17 @@ export const profileStyle = StyleSheet.create({
     marginBottom: 20
   },
   textFooter: {
-    fontWeight: Platform.OS === 'ios' ? 'bold' : '600',
     fontSize: 20
   },
   item: {
     marginVertical: 4,
+  },
+  icon: {
+    color: 'text-info-color',
+  },
+  viewLocation: {
+    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 })
