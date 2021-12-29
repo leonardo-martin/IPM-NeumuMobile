@@ -1,17 +1,18 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { ImageBackground, SafeAreaView, ScrollView, View } from 'react-native'
+import { ImageBackground, ImageStyle, Platform, ScrollView, StyleProp, View } from 'react-native'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useRoute } from '@react-navigation/core'
 import { doctorScheduleStyle } from './style'
 import CalendarComponent from '@components/calendar'
-import { Avatar, Button, Card, IndexPath, Modal, Spinner, Text } from '@ui-kitten/components'
-import Icon from 'react-native-vector-icons/Ionicons'
+import { Avatar, Button, Card, Icon, IconProps, IndexPath, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import SelectComponent from '@components/select'
 import { useAuth } from '@contexts/auth'
 import { CreateAppointment } from '@models/Appointment'
 import { formatDateToString } from '@utils/convertDate'
 import { createAppointment } from '@services/appointment.service'
 import { openMapsWithAddress } from '@utils/maps'
+import { SafeAreaLayout } from '@components/safeAreaLayout'
+import { useTheme } from '@contexts/theme'
 
 const options = [
     {
@@ -35,6 +36,8 @@ const DoctorsScheduleScreen: FC<DrawerContentComponentProps> = ({
     navigation
 }): ReactElement => {
 
+    const { theme } = useTheme()
+    const styles = useStyleSheet(doctorScheduleStyle(theme))
     const { currentUser } = useAuth()
     const [date, setDate] = useState(new Date())
     const [isSelected, setIsSelected] = useState<boolean>(false)
@@ -113,154 +116,156 @@ const DoctorsScheduleScreen: FC<DrawerContentComponentProps> = ({
         </View>
     )
 
-    const footerCard = () => (
-        <View style={doctorScheduleStyle.footerCard}>
-            <Icon name="arrow-forward-outline" size={20} color="#626262" />
+    const footerCard = (props: IconProps) => (
+        <View style={styles.footerCard}>
+            <Icon {...props} style={[props.style, {
+                ...styles.icon
+            }]} name={Platform.OS === 'ios' ? 'arrow-ios-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'}
+                pack='ionicons' size={20} />
         </View>
     )
 
     return (
-        <>
+        <SafeAreaLayout insets='top' level='1' style={styles.safeArea}>
             <ScrollView
-                style={doctorScheduleStyle.scrollView}
-                contentContainerStyle={doctorScheduleStyle.contentContainerScrollView}
+                contentContainerStyle={styles.contentContainerScrollView}
                 showsVerticalScrollIndicator={false}>
-                <SafeAreaView style={doctorScheduleStyle.container}>
-                    <View style={doctorScheduleStyle.viewContent}>
-                        <Card
-                            footer={footerCard}
-                            status='success'>
-                            <View style={doctorScheduleStyle.viewDoctorProfile}>
-                                <Avatar
-                                    style={doctorScheduleStyle.avatarDoctor}
-                                    source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar1.png' }}
-                                    ImageComponent={ImageBackground} />
-                                <View>
-                                    <Text
-                                        category="h5"
-                                        status="basic"
-                                    >{params?.doctorName}</Text>
-                                    <Text
-                                        category="p1"
-                                        status="basic"
-                                        style={doctorScheduleStyle.textDoctorInfo}
-                                    >{params?.specialty}</Text>
-                                    <Text
-                                        category="c1"
-                                        status="basic"
-                                        style={doctorScheduleStyle.textDoctorInfo}
-                                    >CRM: {params?.crm}</Text>
-                                    <Text
-                                        category="c1"
-                                        status="basic"
-                                        style={doctorScheduleStyle.textDoctorInfo}
-                                    >Tel: {params?.tel}</Text>
-                                    <Text
-                                        category="c1"
-                                        status="basic"
-                                        style={doctorScheduleStyle.textDoctorInfo}
-                                    >{params?.visitAddress.street}
-                                    </Text>
-                                    <View style={doctorScheduleStyle.viewLocation}>
-                                        <Text
-                                            onPress={() => openMapsWithAddress(params?.visitAddress.street)}
-                                            category="c1"
-                                            status="info"
-                                            style={doctorScheduleStyle.textLocation}
-                                        >Ver no mapa
-                                            <Icon name="location-outline" size={15} />
-                                        </Text>
-                                    </View>
-                                </View>
-                            </View>
-                        </Card>
-
-                        <View style={doctorScheduleStyle.viewCalendar} >
-                            <CalendarComponent
-                                onSelect={onSelectDate}
-                                date={date}
-                                boundingMonth={true}
-                            />
-                            <View style={doctorScheduleStyle.viewBtn}>
-                                <Button
-                                    style={doctorScheduleStyle.btnToSchedule}
-                                    onPress={confirmSchedule}
-                                    status="success"
-                                    disabled={!isSelected}
-                                >CONFIRMAR</Button>
-                            </View>
-                        </View>
-                    </View>
-                    <Modal
-                        style={doctorScheduleStyle.modalContainer}
-                        backdropStyle={doctorScheduleStyle.backdrop}
-                        visible={visibleModal}
-                        onBackdropPress={closeModal}
-                    >
-                        <Card style={doctorScheduleStyle.cardContainer}>
-                            <View style={doctorScheduleStyle.viewCloseIcon}>
-                                <Icon name={'close-outline'} size={30} onPress={closeModal} />
-                            </View>
-                            <Text status="primary" category='h6'>Horários disponíveis</Text>
-                            <View style={doctorScheduleStyle.viewSelect}>
-                                <SelectComponent
-                                    items={options}
-                                    onSelect={handleAvailableTimes}
-                                    selectedIndex={selectedIndex}
-                                />
-                            </View>
-                        </Card>
-                    </Modal>
-
-                    <Modal
-                        style={doctorScheduleStyle.modalContainerError}
-                        backdropStyle={doctorScheduleStyle.backdrop}
-                        visible={visibleConfirmModal}
-                        onBackdropPress={closeModal}
-                    >
-                        <Card style={doctorScheduleStyle.cardContainer}>
-                            <View style={doctorScheduleStyle.viewCloseIcon}>
-                                <Icon name={'close-outline'} size={30} onPress={closeModal} />
-                            </View>
+                <View style={styles.viewContent}>
+                    <Card
+                        style={styles.card}
+                        footer={footerCard}
+                        status='info'>
+                        <View style={styles.viewDoctorProfile}>
+                            <Avatar
+                                style={styles.avatarDoctor as StyleProp<ImageStyle>}
+                                source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar1.png' }}
+                                ImageComponent={ImageBackground} />
                             <View>
                                 <Text
-                                    style={doctorScheduleStyle.textConfirmModal}
+                                    category="h5"
                                     status="basic"
-                                >Confirma o agendamento para:</Text>
+                                >{params?.doctorName}</Text>
                                 <Text
-                                    style={doctorScheduleStyle.textConfirmModal}
+                                    category="p1"
                                     status="basic"
-                                >{formatDateToString(confirmDate as Date)} ?</Text>
+                                    style={styles.textDoctorInfo}
+                                >{params?.specialty}</Text>
+                                <Text
+                                    category="c1"
+                                    status="basic"
+                                    style={styles.textDoctorInfo}
+                                >CRM: {params?.crm}</Text>
+                                <Text
+                                    category="c1"
+                                    status="basic"
+                                    style={styles.textDoctorInfo}
+                                >Tel: {params?.tel}</Text>
+                                <Text
+                                    category="c1"
+                                    status="basic"
+                                    style={styles.textDoctorInfo}
+                                >{params?.visitAddress.street}
+                                </Text>
+                                <View style={styles.viewLocation}>
+                                    <Text
+                                        onPress={() => openMapsWithAddress(params?.visitAddress.street)}
+                                        category="c1"
+                                        style={styles.textLocation}
+                                    >Ver no mapa</Text>
+                                    <Icon style={styles.icon} name="location-outline" size={15} pack='ionicons'
+                                        onPress={() => openMapsWithAddress(params?.visitAddress.street)} />
+                                </View>
                             </View>
-                            <View style={doctorScheduleStyle.viewConfirmButtonModal}>
-                                <Button
-                                    size="giant"
-                                    appearance='ghost'
-                                    onPress={toSchedule}
-                                    accessoryRight={loading ? LoadingIndicator : undefined}>{!loading ? "SIM" : ""}</Button>
-                            </View>
-                        </Card>
-                    </Modal>
-                    <Modal
-                        style={doctorScheduleStyle.modalContainerError}
-                        backdropStyle={doctorScheduleStyle.backdrop}
-                        visible={visibleErrorModal}
-                        onBackdropPress={closeModal}
-                    >
-                        <Card style={doctorScheduleStyle.cardContainer}>
-                            <View style={doctorScheduleStyle.viewCloseIcon}>
-                                <Icon name={'close-outline'} size={30} onPress={closeModal} />
-                            </View>
-                            <Text
-                                style={doctorScheduleStyle.textError}
-                                status="danger" category='h6'
-                            >Erro ao agendar a consulta. Tente novamente mais tarde.</Text>
+                        </View>
+                    </Card>
 
-                        </Card>
-                    </Modal>
-                </SafeAreaView>
+                    <View style={styles.viewCalendar} >
+                        <CalendarComponent
+                            onSelect={onSelectDate}
+                            date={date}
+                            boundingMonth={true}
+                        />
+                        <View style={styles.viewBtn}>
+                            <Button
+                                style={styles.btnToSchedule}
+                                onPress={confirmSchedule}
+                                status="success"
+                                disabled={!isSelected}
+                            >CONFIRMAR</Button>
+                        </View>
+                    </View>
+                </View>
+
+                <Modal
+                    style={styles.modalContainer}
+                    backdropStyle={styles.backdrop}
+                    visible={visibleModal}
+                    onBackdropPress={closeModal}
+                >
+                    <Card style={styles.cardContainer} >
+                        <View style={styles.viewCloseIcon}>
+                            <Icon style={styles.iconModal} size={30} name='close-outline' pack='ionicons' onPress={closeModal} />
+                        </View>
+                        <Text status="primary" category='h6'>Horários disponíveis</Text>
+                        <View style={styles.viewSelect}>
+                            <SelectComponent
+                                items={options}
+                                onSelect={handleAvailableTimes}
+                                selectedIndex={selectedIndex}
+                            />
+                        </View>
+                    </Card>
+                </Modal>
+
+                <Modal
+                    style={styles.modalContainerError}
+                    backdropStyle={styles.backdrop}
+                    visible={visibleConfirmModal}
+                    onBackdropPress={closeModal}
+                >
+                    <Card style={styles.cardContainer}>
+                        <View style={styles.viewCloseIcon}>
+                            <Icon style={styles.iconModal} size={30} name='close-outline' pack='ionicons' onPress={closeModal} />
+                        </View>
+                        <View>
+                            <Text
+                                style={styles.textConfirmModal}
+                                status="basic"
+                            >Confirma o agendamento para:</Text>
+                            <Text
+                                style={styles.textConfirmModal}
+                                status="basic"
+                            >{formatDateToString(confirmDate as Date)} ?</Text>
+                        </View>
+                        <View style={styles.viewConfirmButtonModal}>
+                            <Button
+                                size="giant"
+                                appearance='ghost'
+                                onPress={toSchedule}
+                                accessoryRight={loading ? LoadingIndicator : undefined}>{!loading ? "SIM" : ""}</Button>
+                        </View>
+                    </Card>
+                </Modal>
+                <Modal
+                    style={styles.modalContainerError}
+                    backdropStyle={styles.backdrop}
+                    visible={visibleErrorModal}
+                    onBackdropPress={closeModal}
+                >
+                    <Card style={styles.cardContainer}>
+                        <View style={styles.viewCloseIcon}>
+                            <Icon style={styles.iconModal} size={30} name='close-outline' pack='ionicons' onPress={closeModal} />
+                        </View>
+                        <Text
+                            style={styles.textError}
+                            status="danger" category='h6'
+                        >Erro ao agendar a consulta. Tente novamente mais tarde.</Text>
+
+                    </Card>
+                </Modal>
             </ScrollView>
-        </>
+        </SafeAreaLayout>
+
     )
 }
 

@@ -5,7 +5,6 @@ import { Input, Button, Text, IconProps, Icon } from '@ui-kitten/components'
 import { useRoute } from '@react-navigation/core'
 import { UserData } from '@models/User'
 import { Controller, useForm } from 'react-hook-form'
-import { TouchableWithoutFeedback } from '@ui-kitten/components/devsupport'
 
 const SignUpPart2Screen: FC = (): ReactElement => {
 
@@ -27,9 +26,7 @@ const SignUpPart2Screen: FC = (): ReactElement => {
   }
 
   const renderIconRightPassword = (props: IconProps) => (
-    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
-      <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} />
-    </TouchableWithoutFeedback>
+    <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} onPress={toggleSecureEntry} pack='eva' />
   )
 
   const submit = (data: UserData) => {

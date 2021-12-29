@@ -15,7 +15,7 @@ const ChatRoomScreen: FC<DrawerContentComponentProps> = ({
 
   return (
     <>
-      <SafeAreaLayout style={chatRoomStyle.safeArea}>
+      <SafeAreaLayout level='2' style={chatRoomStyle.safeArea}>
         <View style={chatRoomStyle.container}>
           <Text>Chat Screen: {params?.id}</Text>
         </View>

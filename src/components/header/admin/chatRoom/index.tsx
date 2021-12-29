@@ -1,8 +1,7 @@
 import React, { FC, ReactElement, useEffect } from 'react'
 import { BackHandler, Platform, Share, View } from 'react-native'
-import { Layout, MenuItem, OverflowMenu, Text, TopNavigation, TopNavigationAction } from '@ui-kitten/components'
+import { Icon, IconProps, Layout, MenuItem, OverflowMenu, Text, TopNavigation, TopNavigationAction } from '@ui-kitten/components'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import Icon from 'react-native-vector-icons/Ionicons'
 import { headerStyle } from './style'
 
 const HeaderChatRoom: FC = (): ReactElement => {
@@ -22,17 +21,16 @@ const HeaderChatRoom: FC = (): ReactElement => {
         }
     }
 
-    const BackIcon = () => (
-        <Icon name={Platform.OS === 'ios' ? 'chevron-back-outline' : Platform.OS === 'android' ? 'arrow-back-outline' : 'arrow-back-outline'}
-            size={35} />
+    const BackIcon = (props: IconProps) => (
+        <Icon {...props} name={Platform.OS === 'ios' ? 'arrow-ios-back-outline' : Platform.OS === 'android' ? 'arrow-back-outline' : 'arrow-back-outline'} size={25} pack='ionicons'/>
     )
 
-    const OptionsIcon = () => (
-        <Icon name="ellipsis-vertical-outline" size={25} />
+    const OptionsIcon = (props: IconProps) => (
+        <Icon {...props} name="ellipsis-vertical-outline" size={25} pack='ionicons'/>
     )
 
-    const ShareIcon = () => (
-        <Icon name='share-social-outline' size={20} onPress={onShare} />
+    const ShareIcon = (props: IconProps) => (
+        <Icon {...props} name='share-social-outline' size={25} onPress={onShare} pack='ionicons'/>
     )
 
     const renderLeftIcon = () => (

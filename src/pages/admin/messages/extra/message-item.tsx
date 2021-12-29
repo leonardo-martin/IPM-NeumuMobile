@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
-import { View } from 'react-native'
-import { Avatar, Icon, IconProps, ListItem, ListItemProps, Text } from '@ui-kitten/components'
+import { ImageProps, StyleProp, View } from 'react-native'
+import { Avatar, Icon, IconProps, ListItem, ListItemProps, Text, useStyleSheet } from '@ui-kitten/components'
 import { Message } from '@services/message.service'
 import { messageItemStyle } from './style'
 
@@ -10,15 +10,16 @@ export type MessageItemProps = ListItemProps & {
 
 const MessageItem: FC<MessageItemProps> = ({ message, onPress }): React.ReactElement => {
 
+  const styles = useStyleSheet(messageItemStyle)
   const DoneAllIcon = (props: IconProps) => (
-    <Icon {...props} width={16} height={16} name='done-all-outline' />
+    <Icon {...props} style={styles.icon} name='checkmark-done-outline' pack='ionicons' />
   )
 
   const renderMessageDate = (): React.ReactElement => (
-    <View style={messageItemStyle.dateContainer}>
+    <View style={styles.dateContainer}>
       {message.isRead && <DoneAllIcon />}
       <Text
-        style={messageItemStyle.dateText}
+        style={styles.dateText}
         appearance='hint'
         category='c1'>
         {message.date}
@@ -29,7 +30,7 @@ const MessageItem: FC<MessageItemProps> = ({ message, onPress }): React.ReactEle
 
   const renderProfileAvatar = (): React.ReactElement => (
     <Avatar
-      style={messageItemStyle.avatar}
+      style={styles.avatar as StyleProp<ImageProps>}
       width={40}
       height={40}
       source={{ uri: message.profile.photo }}

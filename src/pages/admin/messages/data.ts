@@ -4,7 +4,7 @@ export const initialMessages: Message[] = [
   new Message(
     'Olá, tudo bem?',
     '4:30 PM',
-    false,
+    true,
     new Profile(
       'Jack',
       'Sparrow',
@@ -24,7 +24,7 @@ export const initialMessages: Message[] = [
   new Message(
     'Para mais informações',
     '5:30 PM',
-    false,
+    true,
     new Profile(
       'Will',
       'Turner',

@@ -1,24 +1,23 @@
 import React, { FC, ReactElement } from 'react'
 import { Platform } from 'react-native'
-import { DrawerActions, useNavigation, useRoute } from '@react-navigation/native'
-import { Layout, TopNavigation, TopNavigationAction } from '@ui-kitten/components'
+import { DrawerActions, useNavigation } from '@react-navigation/native'
+import { Icon, IconProps, Layout, TopNavigation, TopNavigationAction } from '@ui-kitten/components'
 import { useDrawerStatus } from '@react-navigation/drawer'
-import Icon from 'react-native-vector-icons/Ionicons'
 
 import { headerStyle } from './style'
 import TitleNeumu from '@components/titleNeumu'
-import HeaderChatRoom from './chatRoom'
 
 const HeaderAdmin: FC = (): ReactElement => {
   const { goBack, dispatch, canGoBack, navigate } = useNavigation<any>()
-  const route = useRoute()
 
-  const BackIcon = () => (
-    <Icon name={Platform.OS === 'ios' ? 'chevron-back-outline' : Platform.OS === 'android' ? 'arrow-back-outline' : 'arrow-back-outline'} size={35} />
+  const BackIcon = (props: IconProps) => (
+    <Icon {...props} name={Platform.OS === 'ios' ? 'arrow-ios-back-outline' : Platform.OS === 'android' ? 'arrow-back-outline' : 'arrow-back-outline'} size={30} pack='ionicons' />
   )
-  const MenuIcon = () => <Icon name="menu" size={35} />
-  const ChatIcon = () => (
-    <Icon name="chatbubbles" size={35} />
+  const MenuIcon = (props: IconProps) => (
+    <Icon {...props} name="menu-outline" size={30} pack='ionicons' />
+  )
+  const ChatIcon = (props: IconProps) => (
+    <Icon {...props} name="chatbubbles-outline" size={30} pack='ionicons' />
   )
 
   const isDrawerOpen = useDrawerStatus() === 'open'

@@ -4,12 +4,18 @@ export const data: ItemInfo[] = [
     {
         title: 'Editar Perfil',
         description: '',
-        iconName: 'person-outline',
+        icon: {
+            name: 'person-outline',
+            pack: 'eva'
+        },
         route: 'EditProfile'
     },
     {
         title: 'Redefinir Senha',
         description: '',
-        iconName: 'unlock-outline'
+        icon: {
+            name: 'unlock-outline',
+            pack: 'eva'
+        }
     },
 ]

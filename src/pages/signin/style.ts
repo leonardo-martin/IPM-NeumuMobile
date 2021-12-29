@@ -39,7 +39,7 @@ export const loginStyle = StyleSheet.create({
     marginVertical: 5
   },
   input: {
-    backgroundColor: '#FEFEFE',
+    backgroundColor: 'color-control-default',
     borderRadius: 10,
     borderColor: '#EBEBEB',
     shadowRadius: 4,

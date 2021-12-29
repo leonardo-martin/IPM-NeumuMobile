@@ -1,10 +1,7 @@
 import React, { FC, ReactElement } from 'react'
 import { StatusBar, View } from 'react-native'
-import { Text, Card } from '@ui-kitten/components'
+import { Text, Card, Icon } from '@ui-kitten/components'
 import { dashboardStyle } from './style'
-import Icon from 'react-native-vector-icons/Ionicons'
-import StethoscopeIcon from '@assets/svg/stethoscope.svg'
-import NotepadIcon from '@assets/svg/notepad.svg'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 
@@ -27,9 +24,9 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
             <View style={dashboardStyle.cardGroupPrimary}>
               <Card onPress={gotToSchedule}>
                 <View style={dashboardStyle.cardDefault}>
-                  <Icon name="calendar-outline" size={60} color={'#D55F0A'} />
+                  <Icon name="calendar-outline" color='#D55F0A' size={50} pack='ionicons' />
                   <Text category="h6" style={dashboardStyle.cardText}>
-                    Agendar consulta
+                    Quero agendar uma consulta
                   </Text>
                 </View>
               </Card>
@@ -37,7 +34,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
             <View style={dashboardStyle.cardGroupSecondary}>
               <Card style={dashboardStyle.card} onPress={gotToProfile}>
                 <View style={dashboardStyle.cardDefault}>
-                  <NotepadIcon width={40} height={40} fill={'#3171AC'} />
+                  <Icon name='prescription' size={40} pack='fontisto' color='#3171AC' />
                 </View>
                 <Text category="h6" style={dashboardStyle.cardText}>
                   Meu perfil
@@ -45,7 +42,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
               </Card>
               <Card style={dashboardStyle.card} onPress={gotToAppointments}>
                 <View style={dashboardStyle.cardDefault}>
-                  <StethoscopeIcon width={40} height={40} fill={'#3171AC'} />
+                  <Icon name='stethoscope' size={40} pack='font-awesome' color='#3171AC' />
                 </View>
                 <Text category="h6" style={dashboardStyle.cardText}>
                   Minhas consultas
@@ -59,6 +56,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                     name="information-circle-outline"
                     size={40}
                     color={'#3171AC'}
+                    pack='ionicons'
                   />
                 </View>
                 <Text category="h6" style={dashboardStyle.cardText}>
@@ -67,7 +65,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
               </Card>
               <Card style={dashboardStyle.card}>
                 <View style={dashboardStyle.cardDefault}>
-                  <Icon name="help-circle-outline" size={40} color={'#3171AC'} />
+                  <Icon name="help-circle-outline" size={40} color={'#3171AC'} pack='ionicons' />
                 </View>
                 <Text category="h6" style={dashboardStyle.cardText}>
                   Ajuda

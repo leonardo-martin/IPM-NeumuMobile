@@ -14,19 +14,11 @@ export const drawerStyle = StyleSheet.create({
     borderBottomRightRadius: Platform.OS === 'ios' ? 0 : 50,
     borderTopRightRadius: Platform.OS === 'ios' ? 0 : 50
   },
-  drawerItemGroup: {
-    borderBottomRightRadius: Platform.OS === 'ios' ? 0 : 50,
-    borderTopRightRadius: Platform.OS === 'ios' ? 0 : 50,
-    paddingStart: 25
-  },
-  header: {
-    height: 128,
-    paddingHorizontal: 16,
-    justifyContent: 'center'
-  },
   profileContainer: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    height: 100,
+    paddingStart: 16,    
   },
   profileName: {
     fontSize: 22,

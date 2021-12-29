@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 
 export const scheduleStyle = StyleSheet.create({
-  safeAre: {
+  safeArea: {
     flex: 1
   },
   container: {
@@ -11,7 +11,6 @@ export const scheduleStyle = StyleSheet.create({
   },
   layout: {
     width: '90%',
-    paddingTop: 20,
   },
   autoComplete: {
     paddingBottom: 10,

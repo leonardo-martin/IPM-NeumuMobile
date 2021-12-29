@@ -12,5 +12,8 @@ export const messageItemStyle = StyleSheet.create({
         textAlign: 'right',
         minWidth: 64,
     },
+    icon: {
+        color: 'text-info-color'
+    }
 })
 

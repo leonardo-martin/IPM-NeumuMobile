@@ -1,14 +1,19 @@
 import React, { FC, ReactElement } from 'react'
-import { ListRenderItemInfo } from 'react-native'
+import { ListRenderItemInfo, Platform } from 'react-native'
 import { List, ListItem, IconProps, Icon } from '@ui-kitten/components'
 
 import { listStyle } from './style'
 import { useNavigation } from '@react-navigation/native'
 
+type Icons = {
+    name: string
+    pack: 'ionicons' | 'eva' | 'feather' | 'font-awesome' | 'fontisto'
+}
+
 export interface ItemInfo {
     title: string
     description: string
-    iconName?: string
+    icon?: Icons
     route?: string
 }
 
@@ -23,12 +28,12 @@ const ListComponent: FC<ListComponentProps> = ({
 }): ReactElement => {
 
     const navigation = useNavigation<any>()
-    const renderLeftIcon = (props: IconProps, name: string): React.ReactElement => (
-        <Icon {...props} name={name} color={'#000'} />
+    const renderLeftIcon = (props: IconProps, icon?: Icons): React.ReactElement => (
+        <Icon {...props} name={icon?.name} pack={icon?.pack} />
     )
 
     const renderRightIcon = (props: IconProps) => (
-        <Icon {...props} name="arrow-ios-forward" color={'#000'} />
+        <Icon {...props} name={Platform.OS === 'ios' ? 'arrow-ios-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'} pack='ionicons' />
     )
 
     const renderItem = (info: ListRenderItemInfo<ItemInfo>) => (
@@ -37,7 +42,7 @@ const ListComponent: FC<ListComponentProps> = ({
             title={info.item.title}
             description={info.item.description}
             accessoryRight={renderRightIcon}
-            accessoryLeft={(props) => renderLeftIcon(props, info.item.iconName ? info.item.iconName : '')}
+            accessoryLeft={(props) => renderLeftIcon(props, info.item.icon)}
             onPress={() => info.item.route ? navigation.navigate(info.item.route) : undefined}
         />
     )
@@ -53,3 +58,17 @@ const ListComponent: FC<ListComponentProps> = ({
 }
 
 export default ListComponent
+
+ListComponent.defaultProps = {
+    data: [
+        {
+            title: 'Default',
+            description: '',
+            icon: {
+                name: 'question-mark-outline',
+                pack: 'eva'
+            },
+            route: ''
+        }
+    ]
+}

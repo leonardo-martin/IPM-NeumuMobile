@@ -1,16 +1,19 @@
 import { StyleSheet } from 'react-native'
+import { Theme } from '@models/Theme'
 
-export const doctorScheduleStyle = StyleSheet.create({
-    scrollView: {
-        backgroundColor: '#FAFAFA'
+export const doctorScheduleStyle = (theme: Theme) => StyleSheet.create({
+    safeArea: {
+        flex: 1
     },
     contentContainerScrollView: {
         flexGrow: 1
     },
+    card: {
+        backgroundColor: theme === 'dark' ? 'background-basic-color-2' : 'background-basic-color-1',
+    },
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: '#FAFAFA',
         paddingBottom: 10,
         width: '100%'
     },
@@ -44,13 +47,14 @@ export const doctorScheduleStyle = StyleSheet.create({
         marginRight: 10
     },
     cardContainer: {
-        height: '100%'
+        height: '100%',
+        backgroundColor: theme === 'dark' ? 'background-basic-color-2' : 'background-basic-color-1',
     },
     viewCloseIcon: {
         alignItems: 'flex-end'
     },
     viewSelect: {
-        paddingTop: 30
+        paddingTop: 30,
     },
     viewBtn: {
         paddingTop: 20
@@ -59,20 +63,20 @@ export const doctorScheduleStyle = StyleSheet.create({
         borderRadius: 50
     },
     textDoctorInfo: {
-        color: '#626262',
         flexShrink: 1,
         flexWrap: 'wrap',
-        width: '60%'     
+        width: '60%'
     },
     viewLocation: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignItems: 'center'
     },
     textLocation: {
-        alignItems: 'center'
+        alignItems: 'center',
+        color: 'text-info-color'
     },
     footerCard: {
         alignSelf: 'flex-end',
-        paddingRight: 5
     },
     textError: {
         paddingVertical: 20,
@@ -87,6 +91,12 @@ export const doctorScheduleStyle = StyleSheet.create({
         flexWrap: 'wrap',
         textAlign: 'center',
         lineHeight: 20,
-        color: '#626262'
+        color: 'text-hint-color'
+    },
+    icon: {
+        color: 'text-info-color',
+    },
+    iconModal: {
+        color: 'text-basic-color',
     }
 })

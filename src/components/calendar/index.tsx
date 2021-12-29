@@ -1,6 +1,7 @@
 import React, { FC, ReactElement } from 'react'
-import { Calendar, Layout, NativeDateService } from '@ui-kitten/components'
+import { Calendar, Layout, NativeDateService, useStyleSheet } from '@ui-kitten/components'
 import { calendarStyles } from './style'
+import { useTheme } from '@contexts/theme'
 
 const i18n: any = {
     dayNames: {
@@ -41,14 +42,16 @@ const CalendarComponent: FC<CalendarProps> = ({
 }): ReactElement => {
 
     const filterWeekend = (date: Date) => date.getDay() !== 0 && date.getDay() !== 6
+    const { theme } = useTheme()
+    const styles = useStyleSheet(calendarStyles(theme))
 
     return (
-        <Layout style={calendarStyles.container} level='1'>
+        <Layout style={styles.container} level='1'>
             <Calendar
                 date={date}
                 min={min}
                 max={max}
-                style={calendarStyles.calendar}
+                style={styles.calendar}
                 dateService={localeDateService}
                 boundingMonth={boundingMonth}
                 filter={filterWeekend}

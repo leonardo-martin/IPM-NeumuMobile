@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { Layout, AutocompleteItem, Button, Avatar, Spinner } from '@ui-kitten/components'
+import { AutocompleteItem, Button, Avatar, Spinner } from '@ui-kitten/components'
 import { ImageBackground, View } from 'react-native'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { API_IBGE_GOV } from '@env'
@@ -189,9 +189,9 @@ const PresentialScreen: FC<DrawerContentComponentProps> = ({
 
   return (
     <>
-      <SafeAreaLayout style={scheduleStyle.safeAre}>
+      <SafeAreaLayout insets='bottom' level='1' style={scheduleStyle.safeArea}>
         <View style={scheduleStyle.container}>
-          <Layout style={scheduleStyle.layout} level="1">
+          <View style={scheduleStyle.layout}>
             <AutoCompleteComponent
               style={scheduleStyle.autoComplete}
               data={statesTemp}
@@ -241,7 +241,7 @@ const PresentialScreen: FC<DrawerContentComponentProps> = ({
                 FILTRAR
               </Button>
             </View>
-          </Layout>
+          </View>
           {showListDoctors ?
             <View style={scheduleStyle.viewDoctors}>
               <ListComponentWithAvatar data={[

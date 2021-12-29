@@ -1,40 +1,34 @@
 import React, { ReactElement } from 'react'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { Avatar, DrawerGroup, Layout, Text, DrawerItem, Drawer } from '@ui-kitten/components'
+import { Avatar, DrawerGroup, Text, DrawerItem, Drawer, IconProps, Icon } from '@ui-kitten/components'
 import { ImageBackground, View } from 'react-native'
 import { drawerStyle } from './style'
 import { useAuth } from '@contexts/auth'
-import Icon from 'react-native-vector-icons/Ionicons'
-import HouseIcon from '@assets/svg/house.svg'
-import PhoneIcon from '@assets/svg/phone.svg'
 import { AppInfoService } from '@services/app-info.service'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 
 const _VERSION: string = AppInfoService.getVersion()
-const iconColorDefault = '#404040'
 const iconSizeDefault = 20
 
 const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
   const { currentUser, signOut } = useAuth()
 
-  const CalendarIcon = () => (
-    <Icon name='calendar-outline' size={iconSizeDefault} color={iconColorDefault} />
+  const CalendarIcon = (props: IconProps) => (
+    <Icon {...props} name='calendar-outline' size={iconSizeDefault} pack='ionicons' />
   )
 
   const renderHeader = (): ReactElement => (
     <SafeAreaLayout insets='top' level='2'>
-      <Layout style={drawerStyle.header} level='2'>
-        <View style={drawerStyle.profileContainer}>
-          <Avatar
-            size='giant'
-            source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar6.png' }}
-            ImageComponent={ImageBackground}
-          />
-          <Text style={drawerStyle.profileName} category='h6'>
-            {currentUser?.user}
-          </Text>
-        </View>
-      </Layout>
+      <View style={drawerStyle.profileContainer}>
+        <Avatar
+          size='giant'
+          source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar6.png' }}
+          ImageComponent={ImageBackground}
+        />
+        <Text style={drawerStyle.profileName} category='h6'>
+          {currentUser?.user}
+        </Text>
+      </View>
     </SafeAreaLayout>
   )
 
@@ -57,51 +51,55 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
           style={drawerStyle.drawerItem}
           title='Inicio'
           onPress={() => props.navigation.navigate('Dashboard')}
-          accessoryLeft={() => <Icon name='home-outline' size={iconSizeDefault} color={iconColorDefault} />}
+          accessoryLeft={(props: IconProps) => <Icon {...props} name='home-outline' size={iconSizeDefault} pack='ionicons' />}
         />
-        <DrawerGroup title='Agendar consulta'
+        <DrawerGroup title='Agendamento de Consulta'
           onLongPress={() => props.navigation.navigate('Schedule')}
           accessoryLeft={CalendarIcon}
         >
           <DrawerItem
-            style={drawerStyle.drawerItemGroup}
+            style={drawerStyle.drawerItem}
             title='Virtual (teleconsulta)'
             onPress={() => props.navigation.navigate('PresentialSchedule')}
-            accessoryLeft={() => (
-              <PhoneIcon width={iconSizeDefault} height={iconSizeDefault} fill={iconColorDefault} />
-            )}
           />
           <DrawerItem
-            style={drawerStyle.drawerItemGroup}
+            style={drawerStyle.drawerItem}
             title='Presencial'
             onPress={() => props.navigation.navigate('PresentialSchedule')}
-            accessoryLeft={() => (
-              <HouseIcon width={iconSizeDefault} height={iconSizeDefault} fill={iconColorDefault} />
-            )}
           />
         </DrawerGroup>
         <DrawerItem
           style={drawerStyle.drawerItem}
+          title='Minhas Consultas'
+          onPress={() => props.navigation.navigate('MyAppointments')}
+          accessoryLeft={(props: IconProps) => (
+            <Icon {...props} name='stethoscope' size={iconSizeDefault} pack='font-awesome' />
+          )}
+        />
+        <DrawerItem
+          style={drawerStyle.drawerItem}
           title='Meu Perfil'
           onPress={() => props.navigation.navigate('Profile')}
-          accessoryLeft={() => (
-            <Icon name='person-outline' size={iconSizeDefault} color={iconColorDefault} />
+          accessoryLeft={(props: IconProps) => (
+            <View style={{ paddingHorizontal: 3 }}>
+              <Icon {...props} name='prescription' size={iconSizeDefault} pack='fontisto' />
+            </View>
           )}
         />
         <DrawerItem
           style={drawerStyle.drawerItem}
           title='Configurações'
           onPress={() => props.navigation.navigate('Configuration')}
-          accessoryLeft={() => (
-            <Icon name='settings-outline' size={iconSizeDefault} color={iconColorDefault} />
+          accessoryLeft={(props: IconProps) => (
+            <Icon {...props} name='settings-outline' size={iconSizeDefault} pack='ionicons' />
           )}
         />
         <DrawerItem
           style={drawerStyle.drawerItem}
           title='Sair'
           onPress={signOut}
-          accessoryLeft={() => (
-            <Icon name='log-out-outline' size={iconSizeDefault} color={iconColorDefault} />
+          accessoryLeft={(props: IconProps) => (
+            <Icon {...props} name='log-out-outline' size={iconSizeDefault} pack='ionicons' />
           )}
         />
       </Drawer>

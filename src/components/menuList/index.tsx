@@ -7,7 +7,7 @@ import {
   Text,
   Divider
 } from '@ui-kitten/components'
-import { ImageProps, ListRenderItemInfo } from 'react-native'
+import { ImageProps, ListRenderItemInfo, Platform } from 'react-native'
 import { RenderProp } from '@ui-kitten/components/devsupport'
 
 interface Data {
@@ -34,7 +34,7 @@ const ListComponentWithAvatar: FC<ListComponentWithAvatarProps> = ({
   scrollEnabled
 }): ReactElement => {
   const ForwardIcon = (props: IconProps) => (
-    <Icon {...props} name="arrow-ios-forward" />
+    <Icon {...props} name={Platform.OS === 'ios' ? 'arrow-ios-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'} pack='ionicons' />
   )
 
   const renderItem = (info: ListRenderItemInfo<Data>) => (

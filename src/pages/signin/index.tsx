@@ -10,7 +10,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { loginStyle } from './style'
 import { SignInData } from '@models/User'
 import { useAuth } from '@contexts/auth'
-import { Input, Text, Button, Icon, IconProps, Spinner } from '@ui-kitten/components'
+import { Input, Text, Button, Icon, IconProps, Spinner, useStyleSheet } from '@ui-kitten/components'
 import TitleNeumu from '@components/titleNeumu'
 import LogoPedroMolina from '@assets/svg/logo.svg'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -20,6 +20,7 @@ import { useNavigation } from '@react-navigation/native'
 
 const SignInScreen: FC = (): ReactElement => {
 
+  const styles = useStyleSheet(loginStyle)
   const [visibleToast, setVisibleToast] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -71,9 +72,7 @@ const SignInScreen: FC = (): ReactElement => {
   }
 
   const renderIconRightPassword = (props: IconProps) => (
-    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
-      <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} />
-    </TouchableWithoutFeedback>
+    <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} onPress={toggleSecureEntry} pack='eva'/>
   )
 
   const LoadingIndicator = () => (
@@ -81,14 +80,14 @@ const SignInScreen: FC = (): ReactElement => {
   )
 
   return (
-    <SafeAreaView style={loginStyle.content}>
+    <SafeAreaView style={styles.content}>
       <StatusBar barStyle="dark-content" backgroundColor={'transparent'} translucent={true} />
-      <View style={loginStyle.boxTitle}>
+      <View style={styles.boxTitle}>
         <LogoPedroMolina width="140" height="150" />
-        <Text style={loginStyle.title}>Seja bem vindo ao</Text>
+        <Text style={styles.title}>Seja bem vindo ao</Text>
         <TitleNeumu category="h3" />
       </View>
-      <View style={loginStyle.box}>
+      <View style={styles.box}>
         <KeyboardAvoidingView behavior='position'>
           <Controller
             control={control}
@@ -97,7 +96,7 @@ const SignInScreen: FC = (): ReactElement => {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                style={loginStyle.input}
+                style={styles.input}
                 label="Usuário *"
                 keyboardType="default"
                 testID="username"
@@ -108,7 +107,6 @@ const SignInScreen: FC = (): ReactElement => {
                 autoFocus={true}
                 onSubmitEditing={() => inputPasswordRef.current.focus()}
                 autoCapitalize="none"
-
               />
             )}
             name="username"
@@ -127,7 +125,7 @@ const SignInScreen: FC = (): ReactElement => {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                style={loginStyle.input}
+                style={styles.input}
                 label="Senha *"
                 testID="password"
                 onBlur={onBlur}
@@ -154,9 +152,9 @@ const SignInScreen: FC = (): ReactElement => {
             </Text>
           )}
         </KeyboardAvoidingView>
-        <View style={loginStyle.containerRecoveryPassword}>
+        <View style={styles.containerRecoveryPassword}>
           <Text
-            style={loginStyle.text}
+            style={styles.text}
             category="label"
             testID="recoveryButton"
           >
@@ -171,15 +169,15 @@ const SignInScreen: FC = (): ReactElement => {
             }}
             onPress={recoveryPasswd}
           >
-            <Text status='info' style={loginStyle.textHere}>aqui</Text>
+            <Text status='info' style={styles.textHere}>aqui</Text>
           </TouchableOpacity>
         </View>
         <Toast visible={visibleToast} message={message} />
-        <View style={loginStyle.containerButtons}>
+        <View style={styles.containerButtons}>
           <Button
             accessoryLeft={isLoading ? LoadingIndicator : undefined}
             disabled={isLoading}
-            style={loginStyle.button}
+            style={styles.button}
             onPress={handleSubmit(handleSignIn)}
             status="primary"
           >
@@ -187,7 +185,7 @@ const SignInScreen: FC = (): ReactElement => {
           </Button>
           <Button
             onPress={registerName}
-            style={loginStyle.button}
+            style={styles.button}
             testID="RegisterButton"
             status="warning"
           >

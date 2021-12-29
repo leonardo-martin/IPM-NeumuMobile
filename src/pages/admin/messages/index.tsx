@@ -32,11 +32,11 @@ const MessagesScreen: FC<DrawerContentComponentProps> = ({
     )
 
     const SearchIcon = (props: IconProps) => (
-        <Icon {...props} name='search' />
+        <Icon {...props} name='search' pack='ionicons' size={20} />
     )
 
     const CloseIcon = (props: IconProps) => (
-        <Icon {...props} name='close-outline' onPress={() => setSearchQuery('')} />
+        <Icon {...props} name='close-outline' pack='ionicons' size={20} onPress={() => setSearchQuery('')} />
     )
 
     const onChangeInputSearch = (value: string) => {

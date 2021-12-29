@@ -8,11 +8,12 @@ export const titleStyle = StyleSheet.create({
     fontWeight: 'bold',
     fontStyle: 'normal',
     lineHeight: 37,
-    color: '#626262'
+    color: 'text-hint-color'
   },
   titleSecondary: {
     fontWeight: 'bold',
     fontStyle: 'normal',
-    lineHeight: 37
+    lineHeight: 37,
+    color: 'text-primary-color'
   }
 })

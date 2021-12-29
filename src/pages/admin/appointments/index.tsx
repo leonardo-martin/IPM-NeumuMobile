@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from 'react'
-import AppointmentsRoutes from '../../../routes/appointment.routes'
+import AppointmentsRoutes from '@routes/appointment.routes'
 
 const AppointmentsScreen: FC = (): ReactElement => {
 

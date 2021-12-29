@@ -1,4 +1,4 @@
-import { Text } from '@ui-kitten/components'
+import { Text, useStyleSheet } from '@ui-kitten/components'
 import { LiteralUnion } from '@ui-kitten/components/devsupport'
 import React, {FC, ReactElement} from 'react'
 import { View } from 'react-native'
@@ -9,10 +9,13 @@ type TitleProps = {
 }
 
 const TitleNeumu: FC<TitleProps> = ({category}): ReactElement => {
+
+    const styles = useStyleSheet(titleStyle)
+
     return (
         <View style={titleStyle.box}>
-            <Text category={category} style={titleStyle.titlePrimary}>Tele</Text>
-            <Text category={category} style={titleStyle.titleSecondary} status='primary'>Neumu</Text>
+            <Text category={category} style={styles.titlePrimary}>Tele</Text>
+            <Text category={category} style={styles.titleSecondary}>Neumu</Text>
         </View>
     )
 }

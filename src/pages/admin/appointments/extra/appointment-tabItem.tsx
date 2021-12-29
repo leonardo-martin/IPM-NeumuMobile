@@ -31,7 +31,7 @@ const AppointmentTabItemScreen: FC<DrawerContentComponentProps> = ({ navigation 
     }, [error])
 
     return (
-        <SafeAreaLayout style={appointmentItemStyle.safeArea}>
+        <SafeAreaLayout level='2' style={appointmentItemStyle.safeArea}>
             <ScrollView
                 contentContainerStyle={appointmentItemStyle.contentContainerScrollView}
                 showsVerticalScrollIndicator={false}

@@ -1,7 +1,7 @@
 import React, { FC, ReactElement, useState } from 'react'
 import { Linking, SafeAreaView, TouchableOpacity, View } from 'react-native'
 import { registerStyle } from '../style'
-import { Input, Button, Text, Tooltip, Layout, Modal, Card } from '@ui-kitten/components'
+import { Input, Button, Text, Modal, Card } from '@ui-kitten/components'
 import { Controller, useForm } from 'react-hook-form'
 import { UserData } from '@models/User'
 import { useNavigation } from '@react-navigation/core'
@@ -17,35 +17,14 @@ const SignUpPart1Screen: FC = (): ReactElement => {
   }
 
   const renderLabelCNS = () => (
-    <View style={registerStyle.labelCNSView}>
-      <Text category="label" style={registerStyle.labelCNSText}>
-        Cartão Nacional de Saúde (CNS) *
-      </Text>
-      <Icon name="help-circle-outline" size={20} color={'#8F9BB3'} onPress={() => setVisible(true)} />
-      <Modal
-        visible={visible}
-        backdropStyle={registerStyle.backdrop}
-        onBackdropPress={() => setVisible(false)} >
-        <Card disabled={true} >
-          <View style={registerStyle.labelCNSViewCard}>
-            <Text style={registerStyle.labelCNSTextCenter}>O Cartão Nacional de Saúde (CNS) é o documento de identificação do usuário do SUS.</Text>
-          </View>
-          <TouchableOpacity
-            onPress={() => Linking.openURL('https://www.gov.br/saude/pt-br/acesso-a-informacao/acoes-e-programas/cartao-nacional-de-saude')}
-            hitSlop={{
-              left: 10,
-              right: 10,
-              top: 10,
-              bottom: 10
-            }}
-          >
-            <Text status="primary" style={registerStyle.labelCNSTextCenter}>
-              SAIBA MAIS
-            </Text>
-          </TouchableOpacity>
-        </Card>
-      </Modal>
-    </View>
+    <React.Fragment>
+      <View style={registerStyle.labelCNSView}>
+        <Text category="label" style={registerStyle.labelCNSText}>
+          Cartão Nacional de Saúde (CNS) *
+        </Text>
+        <Icon name="help-circle-outline" size={20} color={'#8F9BB3'} onPress={() => setVisible(true)} />
+      </View>
+    </React.Fragment>
   )
 
   return (
@@ -203,6 +182,30 @@ const SignUpPart1Screen: FC = (): ReactElement => {
           >
             CONTINUAR
           </Button>
+
+          {/* <Modal
+            visible={visible}
+            backdropStyle={registerStyle.backdrop}
+            onBackdropPress={() => setVisible(false)} >
+            <Card disabled={true} >
+              <View style={registerStyle.labelCNSViewCard}>
+                <Text style={registerStyle.labelCNSTextCenter}>O Cartão Nacional de Saúde (CNS) é o documento de identificação do usuário do SUS.</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => Linking.openURL('https://www.gov.br/saude/pt-br/acesso-a-informacao/acoes-e-programas/cartao-nacional-de-saude')}
+                hitSlop={{
+                  left: 10,
+                  right: 10,
+                  top: 10,
+                  bottom: 10
+                }}
+              >
+                <Text status="primary" style={registerStyle.labelCNSTextCenter}>
+                  SAIBA MAIS
+                </Text>
+              </TouchableOpacity>
+            </Card>
+          </Modal> */}
         </View>
       </SafeAreaView>
     </>

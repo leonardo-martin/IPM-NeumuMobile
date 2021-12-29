@@ -4,22 +4,34 @@ export const data: ItemInfo[] = [
     {
         title: 'Conta',
         description: '',
-        iconName: 'layers-outline'
+        icon: {
+            name: 'layers-outline',
+            pack: 'eva'
+        },
     },
     {
         title: 'Notificações',
         description: '',
-        iconName: 'bell-outline'
+        icon: {
+            name: 'bell-outline',
+            pack: 'eva'
+        },
     },
     {
         title: 'Central de Ajuda',
         description: 'Dúvidas? Precisa de Ajuda? Fale conosco',
-        iconName: 'question-mark-circle-outline'
+        icon: {
+            name: 'question-mark-circle-outline',
+            pack: 'eva'
+        },
     },
     {
         title: 'Informações do Aplicativo',
         description: 'Versão',
         route: 'InformationApp',
-        iconName: 'info-outline'
+        icon: {
+            name: 'info-outline',
+            pack: 'eva'
+        },
     },
 ]

@@ -1,4 +1,4 @@
-import { StyleSheet, Platform } from 'react-native'
+import { StyleSheet } from 'react-native'
 
 export const headerStyle = StyleSheet.create({
   layout: {
@@ -7,5 +7,8 @@ export const headerStyle = StyleSheet.create({
   },
   container: {
     backgroundColor: '#FAFAFA'
+  },
+  icon: {
+    color: '#222B45'
   }
 })

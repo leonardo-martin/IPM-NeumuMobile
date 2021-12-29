@@ -1,8 +1,7 @@
 import React, { FC, ReactElement } from 'react'
-import { KeyboardTypeOptions, StyleProp, TextStyle, TouchableWithoutFeedback } from 'react-native'
+import { KeyboardTypeOptions, StyleProp, TextStyle } from 'react-native'
 import { Autocomplete, Icon } from '@ui-kitten/components'
 import { City, UF } from '@models/Places'
-
 
 type AutoCompleteProps = {
     data: UF[] | City[] | string[]
@@ -24,10 +23,8 @@ const AutoCompleteComponent: FC<AutoCompleteProps> = ({
     style, data, keyboardType, placeholder, maxLength, label, disabled, autoCapitalize, onSelect, onChangeText, renderOption, clearInput, value
 }): ReactElement => {
 
-    const renderCloseIcon = (props: any) => (
-        <TouchableWithoutFeedback onPress={clearInput}>
-            <Icon {...props} name='close' />
-        </TouchableWithoutFeedback>
+    const renderRightIcon = (props: any) => (
+        <Icon {...props} name='close-outline' pack='ionicons' onPress={clearInput} />
     )
 
     return (
@@ -40,7 +37,7 @@ const AutoCompleteComponent: FC<AutoCompleteProps> = ({
             autoCapitalize={autoCapitalize}
             disabled={disabled}
             maxLength={maxLength}
-            accessoryRight={value ? renderCloseIcon : undefined}
+            accessoryRight={value !== '' ? renderRightIcon : undefined}
             onChangeText={onChangeText}
             onSelect={onSelect}>
             {data.map(renderOption)}
@@ -61,3 +58,4 @@ AutoCompleteComponent.defaultProps = {
 }
 
 export default AutoCompleteComponent
+
