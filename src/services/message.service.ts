@@ -1,6 +1,7 @@
 export class Message {
 
-    constructor(readonly text: string,
+    constructor(readonly id: number,
+        readonly text: string,
         readonly date: string,
         readonly isRead: boolean,
         readonly profile: Profile) {
@@ -15,9 +16,13 @@ export class Message {
 
 export class Profile {
 
-    constructor(readonly firstName: string,
+    constructor(readonly id: number,
+        readonly firstName: string,
         readonly lastName: string,
-        readonly photo: string) {
+        readonly photo: string,
+        readonly phone?: string,
+        readonly location?: string,
+        readonly description?: string) {
     }
 
     get fullName(): string {
@@ -25,4 +30,3 @@ export class Profile {
     }
 
 }
-

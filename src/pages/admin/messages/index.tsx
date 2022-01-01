@@ -15,9 +15,8 @@ const MessagesScreen: FC<DrawerContentComponentProps> = ({
     const [messages, setMessages] = useState<Message[]>(initialMessages)
 
     const onItemPress = (item: Message): void => {
-        // TODO
         navigation.navigate('ChatRoom', {
-            username: item.profile.fullName
+            ...item
         })
     }
 

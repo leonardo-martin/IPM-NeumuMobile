@@ -1,6 +1,6 @@
 import React, { FC, ReactElement } from 'react'
 import { StatusBar, View } from 'react-native'
-import { Text, Card, Icon } from '@ui-kitten/components'
+import { Text, Card, Icon, useStyleSheet } from '@ui-kitten/components'
 import { dashboardStyle } from './style'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
@@ -12,62 +12,66 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
   const gotToSchedule = () => navigation.jumpTo('Schedule')
   const gotToAppointments = () => navigation.jumpTo('MyAppointments')
 
+  const styles = useStyleSheet(dashboardStyle)
+
   return (
     <>
-      <SafeAreaLayout style={dashboardStyle.safeArea}>
-        <View style={dashboardStyle.content}>
+      <SafeAreaLayout insets='bottom' level='1' style={styles.safeArea}>
+        <View style={styles.content}>
           <StatusBar barStyle="dark-content" backgroundColor={'transparent'} translucent={true} />
-          <View style={dashboardStyle.cardContainer}>
-            <Text category="h5" status='basic' style={dashboardStyle.text}>
+          <View style={styles.cardContainer}>
+            <Text category="h5" status='basic' style={styles.text}>
               Como podemos te ajudar?
             </Text>
-            <View style={dashboardStyle.cardGroupPrimary}>
+            <View style={styles.cardGroupPrimary}>
               <Card onPress={gotToSchedule}>
-                <View style={dashboardStyle.cardDefault}>
-                  <Icon name="calendar-outline" color='#D55F0A' size={50} pack='ionicons' />
-                  <Text category="h6" style={dashboardStyle.cardText}>
+                <View style={styles.cardDefault}>
+                  <Icon style={styles.iconOrange} name="calendar-outline" size={50} pack='ionicons' />
+                  <Text category="h6" style={[styles.cardText, {
+                    marginHorizontal: -8, flex: 1
+                  }]}>
                     Quero agendar uma consulta
                   </Text>
                 </View>
               </Card>
             </View>
-            <View style={dashboardStyle.cardGroupSecondary}>
-              <Card style={dashboardStyle.card} onPress={gotToProfile}>
-                <View style={dashboardStyle.cardDefault}>
-                  <Icon name='prescription' size={40} pack='fontisto' color='#3171AC' />
+            <View style={styles.cardGroupSecondary}>
+              <Card style={styles.card} onPress={gotToProfile}>
+                <View style={styles.cardDefault}>
+                  <Icon style={styles.iconPrimary} name='prescription' size={40} pack='fontisto' />
                 </View>
-                <Text category="h6" style={dashboardStyle.cardText}>
+                <Text category="h6" style={styles.cardText}>
                   Meu perfil
                 </Text>
               </Card>
-              <Card style={dashboardStyle.card} onPress={gotToAppointments}>
-                <View style={dashboardStyle.cardDefault}>
-                  <Icon name='stethoscope' size={40} pack='font-awesome' color='#3171AC' />
+              <Card style={styles.card} onPress={gotToAppointments}>
+                <View style={styles.cardDefault}>
+                  <Icon style={styles.iconPrimary} name='stethoscope' size={40} pack='font-awesome' />
                 </View>
-                <Text category="h6" style={dashboardStyle.cardText}>
+                <Text category="h6" style={styles.cardText}>
                   Minhas consultas
                 </Text>
               </Card>
             </View>
-            <View style={dashboardStyle.cardGroupSecondary}>
-              <Card style={dashboardStyle.card}>
-                <View style={dashboardStyle.cardDefault}>
+            <View style={styles.cardGroupSecondary}>
+              <Card style={styles.card}>
+                <View style={styles.cardDefault}>
                   <Icon
+                    style={styles.iconPrimary}
                     name="information-circle-outline"
                     size={40}
-                    color={'#3171AC'}
                     pack='ionicons'
                   />
                 </View>
-                <Text category="h6" style={dashboardStyle.cardText}>
+                <Text category="h6" style={styles.cardText}>
                   Sobre
                 </Text>
               </Card>
-              <Card style={dashboardStyle.card}>
-                <View style={dashboardStyle.cardDefault}>
-                  <Icon name="help-circle-outline" size={40} color={'#3171AC'} pack='ionicons' />
+              <Card style={styles.card}>
+                <View style={styles.cardDefault}>
+                  <Icon style={styles.iconPrimary} name="help-circle-outline" size={40} pack='ionicons' />
                 </View>
-                <Text category="h6" style={dashboardStyle.cardText}>
+                <Text category="h6" style={styles.cardText}>
                   Ajuda
                 </Text>
               </Card>

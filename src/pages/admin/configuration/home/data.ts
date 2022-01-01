@@ -19,7 +19,7 @@ export const data: ItemInfo[] = [
     },
     {
         title: 'Central de Ajuda',
-        description: 'Dúvidas? Precisa de Ajuda? Fale conosco',
+        description: 'Dúvidas? Fale conosco',
         icon: {
             name: 'question-mark-circle-outline',
             pack: 'eva'
