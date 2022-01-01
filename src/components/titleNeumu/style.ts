@@ -4,13 +4,13 @@ export const titleStyle = StyleSheet.create({
   box: {
     flexDirection: 'row'
   },
-  titlePrimary: {
+  titleSecondary: {
     fontWeight: 'bold',
     fontStyle: 'normal',
     lineHeight: 37,
     color: 'text-hint-color'
   },
-  titleSecondary: {
+  titlePrimary: {
     fontWeight: 'bold',
     fontStyle: 'normal',
     lineHeight: 37,

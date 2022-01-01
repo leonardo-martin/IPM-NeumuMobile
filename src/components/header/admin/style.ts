@@ -1,7 +1,10 @@
-import { StyleSheet } from 'react-native'
+import { StatusBar, StyleSheet } from 'react-native'
 
 export const headerStyle = StyleSheet.create({
   layout: {
-    paddingTop: 30,
+    paddingTop: StatusBar.currentHeight,
   },
+  icon: {
+    color: 'color-basic-600'
+  }
 })

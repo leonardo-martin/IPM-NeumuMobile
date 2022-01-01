@@ -1,36 +1,29 @@
-import React, { FC, ReactElement, useEffect } from 'react'
-import { BackHandler, Platform, Share, View } from 'react-native'
-import { Icon, IconProps, Layout, MenuItem, OverflowMenu, Text, TopNavigation, TopNavigationAction } from '@ui-kitten/components'
+import React, { FC, ReactElement, useEffect, useState } from 'react'
+import { BackHandler, Platform, View } from 'react-native'
+import { Icon, IconProps, Layout, MenuItem, OverflowMenu, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { headerStyle } from './style'
+import { Message, Profile } from '@services/message.service'
 
 const HeaderChatRoom: FC = (): ReactElement => {
-    const [visible, setVisible] = React.useState(false)
+    const [visible, setVisible] = useState(false)
+    const styles = useStyleSheet(headerStyle)
 
-    const { goBack } = useNavigation<any>()
+    const { goBack, navigate } = useNavigation<any>()
     const route = useRoute()
+    const { params } = route
+    const [profile, setProfile] = useState<Profile | undefined>((params as Message).profile)
 
-    const onShare = async () => {
-        try {
-            await Share.share({
-                message:
-                    'Baixe o app do TeleNeumu e conheça nosso trabalho.',
-            })
-        } catch (error: any) {
-            console.log(error.message)
-        }
-    }
+    useEffect(() => {
+        setProfile((params as Message).profile)
+    }, [params])
 
     const BackIcon = (props: IconProps) => (
-        <Icon {...props} name={Platform.OS === 'ios' ? 'arrow-ios-back-outline' : Platform.OS === 'android' ? 'arrow-back-outline' : 'arrow-back-outline'} size={25} pack='ionicons'/>
+        <Icon {...props} style={styles.icon} name={Platform.OS === 'ios' ? 'arrow-ios-back-outline' : Platform.OS === 'android' ? 'arrow-back-outline' : 'arrow-back-outline'} size={30} pack='ionicons' />
     )
 
     const OptionsIcon = (props: IconProps) => (
-        <Icon {...props} name="ellipsis-vertical-outline" size={25} pack='ionicons'/>
-    )
-
-    const ShareIcon = (props: IconProps) => (
-        <Icon {...props} name='share-social-outline' size={25} onPress={onShare} pack='ionicons'/>
+        <Icon {...props} style={styles.icon} name="ellipsis-vertical-outline" size={30} pack='ionicons' />
     )
 
     const renderLeftIcon = () => (
@@ -58,34 +51,43 @@ const HeaderChatRoom: FC = (): ReactElement => {
         return () => backHandler.remove()
     }, [])
 
+    const goAbout = () => {
+        navigate("DoctorProfile", {
+            ...profile,
+            location: 'São Paulo, 123 - CEP 12345-456 - SP',
+            description: `Olá. Eu sou o(a) ${profile?.fullName}`,
+            phone: '11 1111-1111'
+        })
+        setVisible(false)
+    }
+
+    const renderLeftDetailsIcon = (props: IconProps) => (
+        <Icon {...props} name="information-circle-outline" size={30} pack='ionicons' />
+    )
+
     const renderRightActions = () => (
-        <React.Fragment>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <TopNavigationAction
-                    icon={ShareIcon}
-                    onPress={() => setVisible(!visible)}
-                />
+        <>
+            <View style={styles.viewActions}>
                 <OverflowMenu
-                    backdropStyle={headerStyle.backdrop}
+                    backdropStyle={styles.backdrop}
                     visible={visible}
                     anchor={renderRightIcon}
                     onBackdropPress={() => setVisible(!visible)}>
                     <MenuItem
-                        title={(props) => <Text {...props} style={[props?.style, {
-                            fontSize: 20
-                        }]}>Detalhes</Text>}
-                        onPress={() => console.log("info")}
+                        accessoryLeft={renderLeftDetailsIcon}
+                        title={(props) => <Text {...props} style={[props?.style, styles.text]}>Detalhes</Text>}
+                        onPress={goAbout}
                     />
                 </OverflowMenu>
             </View>
-        </React.Fragment>
+        </>
     )
 
     return (
-        <Layout level="1" style={headerStyle.layout}>
+        <Layout level="1" style={styles.layout}>
             <TopNavigation
                 alignment="center"
-                title={() => <Text style={{ fontSize: 20 }}>{(route.params as any).username}</Text>}
+                title={() => <Text style={[styles.text, styles.titleSecondary]}>{profile?.fullName}</Text>}
                 accessoryLeft={renderLeftIcon}
                 accessoryRight={renderRightActions}
             />
