@@ -46,20 +46,23 @@ export const dashboardStyle = StyleSheet.create({
     borderStyle: 'solid',
     borderRadius: 5,
   },
-  cardText: {
+  cardText: {    
     textAlign: 'center',
     fontStyle: 'normal',
     fontWeight: 'normal',
     lineHeight: 26,
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   text: {
     textAlign: 'center',
     fontWeight: 'bold',
     marginVertical: 10
   },
-  icon: {
-    
+  iconOrange: {
+    color: 'text-warning-color'    
+  },
+  iconPrimary: {
+    color: 'text-primary-color'
   }
 })

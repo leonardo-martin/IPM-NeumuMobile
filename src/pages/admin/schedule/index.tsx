@@ -24,7 +24,7 @@ const ScheduleScreen: FC<DrawerContentComponentProps> = ({
                 <View style={scheduleStyle.cardDefault}>
                   <PhoneIcon width={40} height={40} fill={'#D55F0A'} />
                   <Text category="h6" style={scheduleStyle.cardText}>
-                    Virtual (teleconsulta)
+                    Quero uma consulta virtual (teleconsulta)
                   </Text>
                 </View>
               </Card>
@@ -32,12 +32,12 @@ const ScheduleScreen: FC<DrawerContentComponentProps> = ({
             <View style={scheduleStyle.cardGroupPrimary}>
               <Card
                 style={scheduleStyle.card}
-                onPress={() => navigation.jumpTo('PresentialSchedule')}
+                onPress={() => navigation.jumpTo('ChoiceSchedule')}
               >
                 <View style={scheduleStyle.cardDefault}>
                   <HouseIcon width={40} height={40} fill={'#D55F0A'} />
                   <Text category="h6" style={scheduleStyle.cardText}>
-                    Presencial
+                  Quero uma consulta presencial
                   </Text>
                 </View>
               </Card>

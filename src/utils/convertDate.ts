@@ -2,7 +2,7 @@ import { DateFnsService } from '@ui-kitten/date-fns'
 
 const dateService = new DateFnsService()
 
-const _DEFAULT_FORMAT_DATETIME = 'dd-MM-YYYY HH:mm:ss'
+const _DEFAULT_FORMAT_DATETIME = 'dd/MM/YYYY HH:mm:ss b'
 
 const getFormat = (format: string | undefined) => {
     return format ? format : _DEFAULT_FORMAT_DATETIME

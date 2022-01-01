@@ -1,3 +1,5 @@
+import { MutableRefObject } from "react"
+
 export const matchMessage = (message: any) => {
 
     if (message != null || message != '')
@@ -20,4 +22,13 @@ export const capitalizeFirstLetter = (text: string) => {
         splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1)
     }
     return splitStr.join(' ')
+}
+
+export const scrollToRef = (ref: MutableRefObject<any>, x?: number, y?: number) => {
+    ref.current.scrollTo({
+        x: x,
+        y: y,
+        animated: true
+    })
+
 }

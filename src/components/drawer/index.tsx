@@ -60,12 +60,12 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
           <DrawerItem
             style={drawerStyle.drawerItem}
             title='Virtual (teleconsulta)'
-            onPress={() => props.navigation.navigate('PresentialSchedule')}
+            onPress={() => props.navigation.navigate('ChoiceSchedule')}
           />
           <DrawerItem
             style={drawerStyle.drawerItem}
             title='Presencial'
-            onPress={() => props.navigation.navigate('PresentialSchedule')}
+            onPress={() => props.navigation.navigate('ChoiceSchedule')}
           />
         </DrawerGroup>
         <DrawerItem

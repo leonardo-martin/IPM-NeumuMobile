@@ -12,8 +12,8 @@ import HeaderChatRoom from '@components/header/admin/chatRoom'
 import DashboardScreen from '@pages/admin'
 import ProfileScreen from '@pages/admin/profile'
 import ScheduleScreen from '@pages/admin/schedule'
-import PresentialScreen from '@pages/admin/schedule/presential'
-import DoctorsScheduleScreen from '@pages/admin/schedule/doctorsSchedule'
+import ChoiceScheduleScreen from 'pages/admin/schedule/extra'
+import PresentialScheduleScreen from 'pages/admin/schedule/presential'
 import DoctorProfileScreen from '@pages/admin/doctorProfile'
 import ConfigurationScreen from '@pages/admin/configuration/home'
 import InformationAppScreen from '@pages/admin/configuration/infos'
@@ -53,8 +53,8 @@ const AppRoutes: FC = (): ReactElement => {
           component={ScheduleScreen}
         />
         <Screen
-          name="PresentialSchedule"
-          component={PresentialScreen}
+          name="ChoiceSchedule"
+          component={ChoiceScheduleScreen}
         />
         <Screen
           name="Profile"
@@ -73,8 +73,8 @@ const AppRoutes: FC = (): ReactElement => {
           component={MessagesScreen}
         />
         <Screen
-          name="DoctorsSchedule"
-          component={DoctorsScheduleScreen}
+          name="PresentialSchedule"
+          component={PresentialScheduleScreen}
         />
         <Screen
           name="DoctorProfile"
@@ -101,7 +101,6 @@ const AppRoutes: FC = (): ReactElement => {
           component={ChatRoomScreen}
         />
       </Group>
-
     </Navigator>
   )
 }

@@ -2,32 +2,9 @@ import React, { FC, ReactElement } from 'react'
 import { Calendar, Layout, NativeDateService, useStyleSheet } from '@ui-kitten/components'
 import { calendarStyles } from './style'
 import { useTheme } from '@contexts/theme'
+import { i18nConfig } from './config'
 
-const i18n: any = {
-    dayNames: {
-        short: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
-        long: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
-    },
-    monthNames: {
-        short: ['Jan', 'Fev', 'Маr', 'Аbr', 'Маi', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-        long: [
-            'Janeiro',
-            'Fevereiro',
-            'Маrço',
-            'Abril',
-            'Maio',
-            'Junho',
-            'Julho',
-            'Agosto',
-            'Setembro',
-            'Outubro',
-            'Novembro',
-            'Dezembro',
-        ],
-    },
-}
-
-const localeDateService = new NativeDateService('pt-BR', { i18n, startDayOfWeek: 0 })
+const localeDateService = new NativeDateService('pt-BR', { i18n: { ...i18nConfig }, startDayOfWeek: 0 })
 
 type CalendarProps = {
     date?: Date | undefined
