@@ -1,0 +1,30 @@
+diff --git a/node_modules/@ui-kitten/components/ui/autocomplete/autocomplete.component.js b/node_modules/@ui-kitten/components/ui/autocomplete/autocomplete.component.js
+index a0e1f54..32cfade 100644
+--- a/node_modules/@ui-kitten/components/ui/autocomplete/autocomplete.component.js
++++ b/node_modules/@ui-kitten/components/ui/autocomplete/autocomplete.component.js
+@@ -161,6 +161,10 @@ const styles = react_native_1.StyleSheet.create({
+     popover: {
+         maxHeight: 192,
+         overflow: 'hidden',
++        // fix autocomplete popover in Android if StatusBar is translucent
++        get marginTop() {
++            return react_native_1.StatusBar.currentHeight
++        }
+     },
+     list: {
+         flexGrow: 0,
+diff --git a/node_modules/@ui-kitten/components/ui/select/select.component.js b/node_modules/@ui-kitten/components/ui/select/select.component.js
+index e41139c..06b9871 100644
+--- a/node_modules/@ui-kitten/components/ui/select/select.component.js
++++ b/node_modules/@ui-kitten/components/ui/select/select.component.js
+@@ -355,6 +355,10 @@ const styles = react_native_1.StyleSheet.create({
+     },
+     popover: {
+         overflow: 'hidden',
++        // fix select popover in Android if StatusBar is translucent
++        get marginTop() {
++            return react_native_1.StatusBar.currentHeight
++        }
+     },
+     list: {
+         flexGrow: 0,

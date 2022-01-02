@@ -12,7 +12,8 @@
     "pods:clean": "cd ios && pod deintegrate && rm -rf Podfile.lock && cd ..",
     "test": "jest",
     "prettier:write": "npx prettier --write **/*.{ts,tsx,json,js,jsx} && npx prettier --write *.{ts,tsx,json,js,jsx}",
-    "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx ./"
+    "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx ./",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@eva-design/eva": "^2.1.1",
@@ -29,6 +30,8 @@
     "axios": "^0.21.1",
     "gerador-validador-cpf": "^5.0.2",
     "jwt-decode": "^3.1.2",
+    "patch-package": "^6.4.7",
+    "postinstall-postinstall": "^2.1.0",
     "react": "^17.0.2",
     "react-datepicker": "^4.1.1",
     "react-hook-form": "^7.13.0",
