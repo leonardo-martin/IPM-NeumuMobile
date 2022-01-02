@@ -1,8 +1,8 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StatusBar, StyleSheet } from 'react-native'
 
 export const headerStyle = StyleSheet.create({
   layout: {
-    paddingTop: 30,
+    paddingTop: Platform.OS === 'ios' ? 30 : StatusBar.currentHeight,
     backgroundColor: '#FAFAFA'
   },
   container: {

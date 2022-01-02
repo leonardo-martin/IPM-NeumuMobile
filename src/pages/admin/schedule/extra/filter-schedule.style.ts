@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-export const scheduleStyle = StyleSheet.create({
+export const filterScheduleStyle = StyleSheet.create({
   safeArea: {
     flex: 1
   },

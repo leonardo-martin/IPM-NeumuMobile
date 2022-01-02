@@ -33,7 +33,7 @@ const ListComponent: FC<ListComponentProps> = ({
     )
 
     const renderRightIcon = (props: IconProps) => (
-        <Icon {...props} name={Platform.OS === 'ios' ? 'arrow-ios-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'} pack='ionicons' />
+        <Icon {...props} name={Platform.OS === 'ios' ? 'chevron-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'} pack='ionicons' />
     )
 
     const renderItem = (info: ListRenderItemInfo<ItemInfo>) => (

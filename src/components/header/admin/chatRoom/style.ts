@@ -1,21 +1,18 @@
-import { StatusBar, StyleSheet } from 'react-native'
+import { Platform, StatusBar, StyleSheet } from 'react-native'
 
 export const headerStyle = StyleSheet.create({
   backdrop: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   layout: {
-    paddingTop: StatusBar.currentHeight,
-  },
-  icon: {
-    color: 'color-basic-600'
+    paddingTop: Platform.OS === 'ios' ? 30 : StatusBar.currentHeight,
   },
   viewActions: {
     flexDirection: 'row',
     alignItems: 'center'
   },
   text: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '600',
   },
   titleSecondary: {

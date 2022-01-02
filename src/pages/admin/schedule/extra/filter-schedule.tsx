@@ -3,7 +3,7 @@ import { AutocompleteItem, Button, Avatar, Spinner } from '@ui-kitten/components
 import { ImageBackground, View } from 'react-native'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { API_IBGE_GOV } from '@env'
-import { scheduleStyle } from './style'
+import { filterScheduleStyle } from './filter-schedule.style'
 import AutoCompleteComponent from '@components/autoComplete'
 import { City, UF } from '@models/Places'
 import specialties from '@utils/specialties'
@@ -189,11 +189,11 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
 
   return (
     <>
-      <SafeAreaLayout insets='bottom' level='1' style={scheduleStyle.safeArea}>
-        <View style={scheduleStyle.container}>
-          <View style={scheduleStyle.layout}>
+      <SafeAreaLayout insets='bottom' level='1' style={filterScheduleStyle.safeArea}>
+        <View style={filterScheduleStyle.container}>
+          <View style={filterScheduleStyle.layout}>
             <AutoCompleteComponent
-              style={scheduleStyle.autoComplete}
+              style={filterScheduleStyle.autoComplete}
               data={statesTemp}
               label="Estado"
               placeholder=''
@@ -206,7 +206,7 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
               maxLength={2}
             />
             <AutoCompleteComponent
-              style={scheduleStyle.autoComplete}
+              style={filterScheduleStyle.autoComplete}
               data={citiesTemp}
               label="Cidade"
               placeholder=''
@@ -219,7 +219,7 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
               autoCapitalize='words'
             />
             <AutoCompleteComponent
-              style={scheduleStyle.autoComplete}
+              style={filterScheduleStyle.autoComplete}
               data={specialtyTemp}
               label="Especialidade"
               placeholder=''
@@ -231,9 +231,9 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
               disabled={isDisabledSpecialty}
               autoCapitalize='sentences'
             />
-            <View style={scheduleStyle.viewButton}>
+            <View style={filterScheduleStyle.viewButton}>
               <Button
-                style={scheduleStyle.button}
+                style={filterScheduleStyle.button}
                 onPress={filterDoctors}
                 status="primary"
                 disabled={selectedCity === '' || selectedState === ''}
@@ -243,7 +243,7 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
             </View>
           </View>
           {showListDoctors ?
-            <View style={scheduleStyle.viewDoctors}>
+            <View style={filterScheduleStyle.viewDoctors}>
               <ListComponentWithAvatar data={[
                 {
                   id: 1,
@@ -350,7 +350,7 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
             :
             isLoadingActive ?
               <>
-                <View style={scheduleStyle.sppiner}>
+                <View style={filterScheduleStyle.sppiner}>
                   <Spinner size='giant' status='primary' />
                 </View>
               </> : null

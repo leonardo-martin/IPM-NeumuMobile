@@ -40,7 +40,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
   return (
     <SafeAreaLayout insets='bottom' level='1' style={styles.safeArea}>
       <View style={styles.content}>
-        <StatusBar barStyle="dark-content" backgroundColor={'transparent'} translucent={true} />
+        <StatusBar barStyle="dark-content" backgroundColor='transparent' translucent />
         <View style={styles.cardContainer}>
           <Text category="h5" status='basic' style={styles.text}>
             Como podemos te ajudar?

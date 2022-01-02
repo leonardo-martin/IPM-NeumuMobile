@@ -1,9 +1,10 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { BackHandler, Platform, View } from 'react-native'
+import { BackHandler, View } from 'react-native'
 import { Icon, IconProps, Layout, MenuItem, OverflowMenu, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { headerStyle } from './style'
 import { Message, Profile } from '@services/message.service'
+import { BackIcon, OptionsIcon } from 'components/header/icons/icons'
 
 const HeaderChatRoom: FC = (): ReactElement => {
     const [visible, setVisible] = useState(false)
@@ -16,15 +17,7 @@ const HeaderChatRoom: FC = (): ReactElement => {
 
     useEffect(() => {
         setProfile((params as Message).profile)
-    }, [params])
-
-    const BackIcon = (props: IconProps) => (
-        <Icon {...props} style={styles.icon} name={Platform.OS === 'ios' ? 'arrow-ios-back-outline' : Platform.OS === 'android' ? 'arrow-back-outline' : 'arrow-back-outline'} size={30} pack='ionicons' />
-    )
-
-    const OptionsIcon = (props: IconProps) => (
-        <Icon {...props} style={styles.icon} name="ellipsis-vertical-outline" size={30} pack='ionicons' />
-    )
+    }, [params])    
 
     const renderLeftIcon = () => (
         <TopNavigationAction

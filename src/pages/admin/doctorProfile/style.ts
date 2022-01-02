@@ -1,4 +1,4 @@
-import { StyleService } from "@ui-kitten/components";
+import { StyleService } from "@ui-kitten/components"
 
 export const doctorProfileStyle = StyleService.create({
     container: {

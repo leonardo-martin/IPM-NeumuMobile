@@ -11,7 +11,7 @@ export const FontAwesomeIconsPack = {
 function createIconsMap() {
     return new Proxy({}, {
         get(target, name) {
-            return IconProvider(name);
+            return IconProvider(name)
         },
     })
 }

@@ -127,7 +127,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
         <View style={styles.footerCard}>
             <Icon {...props} style={[props.style, {
                 ...styles.icon
-            }]} name={Platform.OS === 'ios' ? 'arrow-ios-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'}
+            }]} name={Platform.OS === 'ios' ? 'chevron-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'}
                 pack='ionicons' size={20} />
         </View>
     )
@@ -193,7 +193,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                     } else {
                         const item = dataSourceCords.find(v => dateSelected && v.value === dateService.format(dateSelected, 'dd') && monthSelected.getMonth() === dateSelected.getMonth())
                         if (item) scrollToRef(scrollViewDaysInMonthRef, item.layout.x, 0)
-                        else scrollToRef(scrollViewDaysInMonthRef, dataSourceCords[0].layout.x, 0)
+                        else scrollToRef(scrollViewDaysInMonthRef, dataSourceCords[0]?.layout.x, 0)
                     }
                 }
             }}>
