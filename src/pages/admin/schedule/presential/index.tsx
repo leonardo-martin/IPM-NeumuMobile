@@ -198,15 +198,14 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                 }
             }}>
             {
-                dateService.compareDatesSafe(new Date(monthSelected.getFullYear(), monthSelected.getMonth(), item), currentDate) === (1 || 0) ||
-                    monthSelected.getMonth() === currentDate.getMonth() && Number(item) === currentDate.getDate()
+                (dateService.compareDatesSafe(new Date(monthSelected.getFullYear(), monthSelected.getMonth(), item), currentDate) === (1 || 0)) ||
+                    (monthSelected.getMonth() === currentDate.getMonth() && Number(item) === currentDate.getDate())
                     ?
                     <Pressable
                         onPress={() => handleDateSelected(Number(item))}>
                         <View
                             style={[styles.daysInMonthView, {
                                 backgroundColor: dateSelected && item === dateService.format(dateSelected, 'dd') && dateSelected.getMonth() === monthSelected.getMonth() ? theme['color-primary-500'] : theme['color-basic-400'],
-                                padding: dateSelected && item === dateService.format(dateSelected, 'dd') && dateSelected.getMonth() === monthSelected.getMonth() ? 13 : 10,
                             }]}
                         >
                             <Text style={[styles.daysInMonthText, {
@@ -231,7 +230,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
 
 
     return (
-        <SafeAreaLayout insets='top' level='1' style={styles.safeArea}>
+        <SafeAreaLayout level='1' style={styles.safeArea}>
             <ScrollView
                 contentContainerStyle={styles.contentContainerScrollView}
                 showsVerticalScrollIndicator={false}>
@@ -291,7 +290,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                             <Icon name='caret-back-outline' size={25} pack='ionicons' style={[styles.arrowIcon, {
                                 color: count === 0 ? theme['text-primary-disabled-color'] : theme['text-primary-color']
                             }]} onPress={count === 0 ? undefined : previous} />
-                            <Text style={{ fontSize: 25, }}>{dateService.getMonthName(monthSelected, TranslationWidth.LONG)}</Text>
+                            <Text style={styles.textMonth}>{dateService.getMonthName(monthSelected, TranslationWidth.LONG)}</Text>
                             <Icon name='caret-forward-outline' size={25} pack='ionicons' style={[styles.arrowIcon, {
                                 color: count === 1 ? theme['text-primary-disabled-color'] : theme['text-primary-color']
                             }]} onPress={count === 1 ? undefined : next} />
@@ -331,7 +330,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                             </View>
                             :
                             <View style={styles.timesContainer}>
-                                <Text style={[styles.timesText, { fontWeight: '100', fontSize: 16 }]}>Selecione um dia</Text>
+                                <Text style={[styles.timesText, styles.textWithoutSelectedDate]}>Selecione o dia desejado</Text>
                             </View>
                         }
                     </View>

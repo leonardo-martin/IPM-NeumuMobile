@@ -10,7 +10,6 @@ export const doctorScheduleStyle = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        paddingBottom: 10,
         width: '100%'
     },
     viewContent: {
@@ -85,8 +84,8 @@ export const doctorScheduleStyle = StyleSheet.create({
     textConfirmModal: {
         flexShrink: 1,
         flexWrap: 'wrap',
-        textAlign: 'center',        
-        fontSize: 20,
+        textAlign: 'center',
+        fontSize: 16,
         padding: 5,
         color: 'text-hint-color'
     },
@@ -119,7 +118,7 @@ export const doctorScheduleStyle = StyleSheet.create({
     },
     text: {
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 16,
         textAlign: 'center',
         color: 'text-basic-color',
         paddingVertical: 15
@@ -131,7 +130,6 @@ export const doctorScheduleStyle = StyleSheet.create({
         justifyContent: 'center'
     },
     timesCard: {
-        width: 80,
         backgroundColor: 'color-basic-400',
         paddingHorizontal: 15,
         borderRadius: 5,
@@ -140,7 +138,7 @@ export const doctorScheduleStyle = StyleSheet.create({
     },
     timesText: {
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 16,
         textAlign: 'center',
         color: 'text-basic-color',
         paddingVertical: 5,
@@ -160,5 +158,12 @@ export const doctorScheduleStyle = StyleSheet.create({
     },
     animatedContainer: {
         flexDirection: 'row',
+    },
+    textWithoutSelectedDate: {
+        fontWeight: '100',
+        fontSize: 16
+    },
+    textMonth: {
+        fontSize: 16
     }
 })
