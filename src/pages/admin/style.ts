@@ -46,7 +46,7 @@ export const dashboardStyle = StyleSheet.create({
     borderStyle: 'solid',
     borderRadius: 5,
   },
-  cardText: {    
+  cardText: {
     textAlign: 'center',
     fontStyle: 'normal',
     fontWeight: 'normal',
@@ -60,9 +60,45 @@ export const dashboardStyle = StyleSheet.create({
     marginVertical: 10
   },
   iconOrange: {
-    color: 'text-warning-color'    
+    color: 'text-warning-color'
   },
   iconPrimary: {
     color: 'text-primary-color'
-  }
+  },
+  safeAreaModalize: {
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    overflow: 'hidden',
+  },
+  contentModalize: {
+    padding: 20,
+    backgroundColor: 'background-basic-color-2'
+  },
+  textConfirmExit: {
+    textAlign: 'center',
+    color: 'text-hint-color',
+    fontSize: 20,
+    marginVertical: 10
+  },
+  contentButton: {
+    marginVertical: 15,
+    paddingVertical: 15,
+    width: '100%',
+    backgroundColor: 'color-primary-default',
+    borderRadius: 6,
+  },
+  buttonOutline: {
+    backgroundColor: 'transparent',
+    borderColor: 'color-primary-default',
+    borderWidth: 1
+  },
+  contentButtonText: {
+    color: 'text-control-color',
+    fontSize: 15,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  buttonTextOutline: {
+    color: 'text-primary-color',
+  },
 })
