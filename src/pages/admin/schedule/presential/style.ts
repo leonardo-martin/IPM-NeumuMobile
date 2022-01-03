@@ -152,6 +152,7 @@ export const doctorScheduleStyle = StyleSheet.create({
         paddingVertical: 5,
         paddingHorizontal: 5,
         borderRadius: 30,
+        textAlign: 'center'
     },
     arrowIcon: {
         color: 'text-primary-color',
@@ -164,6 +165,7 @@ export const doctorScheduleStyle = StyleSheet.create({
         fontSize: 16
     },
     textMonth: {
-        fontSize: 16
+        fontSize: 16,
+        alignSelf: 'center'
     }
 })
