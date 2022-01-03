@@ -1,4 +1,4 @@
-package com.neumumobile.calendar;
+package com.neumumobile.natives.module;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -16,6 +16,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.neumumobile.natives.dto.CalendarEventDTO;
 
 import java.util.Objects;
 import java.util.TimeZone;

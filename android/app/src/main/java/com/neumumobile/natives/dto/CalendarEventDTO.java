@@ -1,4 +1,4 @@
-package com.neumumobile.calendar;
+package com.neumumobile.natives.dto;
 
 import androidx.annotation.NonNull;
 
