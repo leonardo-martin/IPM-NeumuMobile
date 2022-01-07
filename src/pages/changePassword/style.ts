@@ -1,16 +1,18 @@
 import { Platform, StyleSheet } from 'react-native'
 
 export const changePasswdReqStyle = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+    },
     content: {
         display: 'flex',
         alignItems: 'flex-start',
         flex: 1,
-        backgroundColor: '#FAFAFA',
         paddingHorizontal: 15
     },
     label: {
         fontSize: Platform.OS === 'ios' ? 20 : Platform.OS === 'android' ? 24 : 24,
-        color: '#626262',
+        color: 'text-hint-color',
         padding: Platform.OS === 'ios' ? 15 : Platform.OS === 'android' ? 5 : 5
     },
     controlContainer: {

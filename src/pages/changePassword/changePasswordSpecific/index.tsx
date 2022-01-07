@@ -1,13 +1,14 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { SafeAreaView, ToastAndroid, View } from 'react-native'
 import { changePasswdReqStyle } from './style'
-import { Button, Input, Spinner, Text } from '@ui-kitten/components'
+import { Button, Input, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { Controller, useForm } from 'react-hook-form'
 import { changePassReq } from '@services/login.service'
 import Toast from '@components/toast'
 import { useRoute } from '@react-navigation/native'
 import { cleanNumberMask, formatCpf, isEmailValid } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
+import { SafeAreaLayout } from '@components/safeAreaLayout'
 
 interface ChangePasswordRequestParams {
     choice: 'CPF' | 'EMAIL'
@@ -19,6 +20,7 @@ interface ChangePasswdRequest {
 
 const ChangePasswordRequest: FC = (): ReactElement => {
 
+    const styles = useStyleSheet(changePasswdReqStyle)
     const route = useRoute()
     const params = route.params as ChangePasswordRequestParams
     const [isLoading, setIsLoading] = useState(false)
@@ -65,9 +67,9 @@ const ChangePasswordRequest: FC = (): ReactElement => {
     )
 
     return (
-        <>
-            <SafeAreaView style={changePasswdReqStyle.content}>
-                <View style={changePasswdReqStyle.box}>
+        <SafeAreaLayout level='1' style={styles.safeArea}>
+            <SafeAreaView style={styles.content}>
+                <View style={styles.box}>
                     <Controller
                         control={control}
                         rules={{
@@ -88,7 +90,7 @@ const ChangePasswordRequest: FC = (): ReactElement => {
                         render={({ field: { onChange, onBlur, value } }) => (
                             <Input
                                 label={(params.choice === 'CPF' ? 'CPF' : params.choice === 'EMAIL' ? 'Endereço de E-mail' : 'Insira o valor') + " *"}
-                                style={changePasswdReqStyle.input}
+                                style={styles.input}
                                 testID='emailOrCpf'
                                 onBlur={onBlur}
                                 onChangeText={onChange}
@@ -102,12 +104,12 @@ const ChangePasswordRequest: FC = (): ReactElement => {
                         name='valueAs'
                         defaultValue=''
                     />
-                    {errors.valueAs?.type === 'minLength' && <Text category='label' style={changePasswdReqStyle.text}>{errors.valueAs?.message}</Text>}
-                    {errors.valueAs?.type === 'required' && <Text category='label' style={changePasswdReqStyle.text}>{errors.valueAs?.message}</Text>}
-                    {errors.valueAs?.type === 'validate' && <Text category='label' style={changePasswdReqStyle.text}>{'Campo inválido'}</Text>}
+                    {errors.valueAs?.type === 'minLength' && <Text category='label' style={styles.text}>{errors.valueAs?.message}</Text>}
+                    {errors.valueAs?.type === 'required' && <Text category='label' style={styles.text}>{errors.valueAs?.message}</Text>}
+                    {errors.valueAs?.type === 'validate' && <Text category='label' style={styles.text}>{'Campo inválido'}</Text>}
                     <Button status='primary' accessoryLeft={isLoading ? LoadingIndicator : undefined}
                         disabled={isLoading}
-                        style={changePasswdReqStyle.btn}
+                        style={styles.btn}
                         onPress={handleSubmit(handleRecoveryPasswd)}
                     >
                         REDEFINIR SENHA
@@ -115,7 +117,7 @@ const ChangePasswordRequest: FC = (): ReactElement => {
                     <Toast visible={visibleToast} message={message} gravity={ToastAndroid.TOP} />
                 </View>
             </SafeAreaView>
-        </>
+        </SafeAreaLayout>
     )
 }
 
