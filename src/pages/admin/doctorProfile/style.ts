@@ -20,8 +20,9 @@ export const doctorProfileStyle = StyleSheet.create({
     },
     locationContainer: {
         flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center',
-        width: '85%'
+        width: '90%'
     },
     location: {
         flexShrink: 1,
