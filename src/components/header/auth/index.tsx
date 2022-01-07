@@ -1,17 +1,13 @@
 import React, { FC, ReactElement } from 'react'
-import { Icon, IconElement, IconProps, Layout, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
+import { Layout, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
 import TitleNeumu from '@components/titleNeumu'
 import { headerStyle } from './style'
 import { useNavigation } from '@react-navigation/native'
-import { Platform } from 'react-native'
+import { BackIcon } from '../icons/icons'
 
 const HeaderAuth: FC = (): ReactElement => {
   const { goBack } = useNavigation()
   const styles = useStyleSheet(headerStyle)
-
-  const BackIcon = (props: IconProps): IconElement => (
-    <Icon {...props} style={[props.style, styles.icon]} name={Platform.OS === 'ios' ? 'chevron-back-outline' : Platform.OS === 'android' ? 'arrow-back-outline' : 'arrow-back-outline'} size={25} pack='ionicons' />
-  )
 
   const renderBackAction = () => (
     <TopNavigationAction onPress={goBack} icon={BackIcon} />
@@ -19,9 +15,9 @@ const HeaderAuth: FC = (): ReactElement => {
 
   return (
     <>
-      <Layout level="1" style={styles.layout}>
+      <Layout level='1' style={styles.layout}>
         <TopNavigation
-          style={styles.container}
+          style={styles.topNavigation}
           alignment="center"
           title={() => <TitleNeumu category="h6" />}
           accessoryLeft={renderBackAction}
