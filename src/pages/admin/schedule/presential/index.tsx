@@ -14,6 +14,7 @@ import { DateFnsService } from '@ui-kitten/date-fns'
 import { scrollToRef } from '@utils/common'
 import { i18nConfig } from '@components/calendar/config'
 import { options } from './data'
+import { Profile as DoctorProfile } from 'services/message.service'
 
 const dateService = new DateFnsService('pt-BR', { i18n: { ...i18nConfig }, startDayOfWeek: 0 })
 
@@ -138,13 +139,27 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
             <Spinner status="info" size='small' />
         </View>
     )
-
+    const navigateToDoctorProfile = () => {
+        const profile = new DoctorProfile(
+            params?.doctorId,
+            params?.doctorName,
+            '',
+            'https://bootdey.com/img/Content/avatar/avatar6.png',
+        )
+        navigation.navigate("DoctorProfile", {
+            ...profile,
+            location: params?.visitAddress.street,
+            description: `Olá. Eu sou o(a) ${profile.fullName}`,
+            phone: params?.tel
+        })
+    }
     const footerCard = (props: IconProps) => (
         <View style={styles.footerCard}>
             <Icon {...props} style={[props.style, {
                 ...styles.icon
             }]} name={Platform.OS === 'ios' ? 'chevron-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'}
-                pack='ionicons' size={20} />
+                pack='ionicons' size={20}
+                onPress={navigateToDoctorProfile} />
         </View>
     )
 

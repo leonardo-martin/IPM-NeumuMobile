@@ -88,7 +88,6 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = ({
           {profile?.fullName}
         </Text>
         <View style={styles.locationContainer}>
-          <PinIcon />
           <Text
             style={styles.location}
             status='control'>

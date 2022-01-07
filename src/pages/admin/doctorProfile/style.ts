@@ -1,6 +1,6 @@
-import { StyleService } from "@ui-kitten/components"
+import { StyleSheet } from "react-native"
 
-export const doctorProfileStyle = StyleService.create({
+export const doctorProfileStyle = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'background-basic-color-2',
@@ -21,9 +21,12 @@ export const doctorProfileStyle = StyleService.create({
     locationContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        width: '85%'
     },
     location: {
+        flexShrink: 1,
         marginVertical: 8,
+        textAlign: 'center'
     },
     profileButtonsContainer: {        
         flexDirection: 'row',
