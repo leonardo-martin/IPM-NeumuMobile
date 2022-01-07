@@ -1,6 +1,9 @@
 import { StyleSheet } from 'react-native'
 
 export const registerStyle = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+    },
     content: {
         alignItems: 'center',
         flex: 1,
@@ -59,7 +62,8 @@ export const registerStyle = StyleSheet.create({
     },
     viewBtn: {
         alignItems: 'flex-end',
-        paddingHorizontal: 15
+        paddingHorizontal: 15,
+        paddingBottom: 15,
     },
     icon: {
         color: 'color-basic-200'

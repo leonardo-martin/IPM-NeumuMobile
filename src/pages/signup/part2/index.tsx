@@ -180,241 +180,243 @@ const SignUpPart2Screen: FC = (): ReactElement => {
 
   return (
     <>
-      <SafeAreaLayout style={styles.content} level='1'>
-        <View style={styles.box}>
-          <Controller
-            control={control}
-            rules={{
-              required: {
-                value: true,
-                message: 'Campo obrigatório'
-              },
-            }}
-            render={({ field: { onBlur, name, value } }) => (
-              <AutoCompleteComponent
-                testID={name}
-                style={styles.autoComplete}
-                data={statesTemp}
-                label="Estado *"
-                placeholder=''
-                onSelect={onSelectState}
-                onBlur={onBlur}
-                onChangeText={onChangeTextState}
-                renderOption={renderOptionState}
-                accessoryRight={(props) => renderRightIcon(props, value)}
-                value={value}
-                autoCapitalize='characters'
-                maxLength={2}
-              />
-            )}
-            name='state'
-            defaultValue=''
-          />
-          {errors.state && <Text category='s1' style={styles.text}>{errors.state?.message}</Text>}
-          <Controller
-            control={control}
-            rules={{
-              required: {
-                value: true,
-                message: 'Campo obrigatório'
-              },
-            }}
-            render={({ field: { onBlur, name, value } }) => (
-              <AutoCompleteComponent
-                testID={name}
-                style={styles.autoComplete}
-                data={citiesTemp}
-                label="Cidade"
-                placeholder=''
-                onSelect={onSelectCity}
-                onBlur={onBlur}
-                onChangeText={onChangeTextCity}
-                renderOption={renderOptionCity}
-                accessoryRight={(props) => renderRightIcon(props, value, 'city')}
-                value={value}
-                disabled={isDisabledCity}
-                autoCapitalize='words'
-              />
-            )}
-            name='city'
-            defaultValue=''
-          />
-          {errors.city && <Text category='s1' style={styles.text}>{errors.city?.message}</Text>}
-          <Controller
-            control={control}
-            rules={{
-              required: {
-                value: true,
-                message: 'Campo obrigatório'
-              },
-              minLength: {
-                value: 13,
-                message: `Mín. 13 caracteres`
-              },
-              maxLength: {
-                value: 15,
-                message: `Max. 15 caracteres`
-              },
-            }}
-            render={({ field: { onChange, onBlur, value, name } }) => (
-              <Input
-                label="Telefone 1 *"
-                style={styles.input}
-                keyboardType='number-pad'
-                testID={name}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={formatPhone(value)}
-                maxLength={15}
-                underlineColorAndroid="transparent"
-              />
-            )}
-            name='phone'
-            defaultValue=''
-          />
-          {errors.phone && <Text category='s1' style={styles.text}>{errors.phone?.message}</Text>}
-          <Controller
-            control={control}
-            rules={{
-              required: false,
-              minLength: {
-                value: 13,
-                message: `Mín. 13 caracteres`
-              },
-              maxLength: {
-                value: 15,
-                message: `Max. 15 caracteres`
-              },
-            }}
-            render={({ field: { onChange, onBlur, value, name } }) => (
-              <Input
-                label="Telefone 2"
-                style={[styles.input, { paddingBottom: 10 }]}
-                keyboardType='number-pad'
-                testID={name}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={formatPhone(value)}
-                maxLength={15}
-                underlineColorAndroid="transparent"
-              />
-            )}
-            name='phone2'
-            defaultValue=''
-          />
-          {errors.phone2 && <Text category='s1' style={styles.text}>{errors.phone2?.message}</Text>}
-          <Controller
-            control={control}
-            rules={{
-              required: {
-                value: true,
-                message: 'Campo obrigatório'
-              },
-              minLength: {
-                value: 5,
-                message: `Mín. 5 caracteres`
-              },
-              maxLength: {
-                value: 30,
-                message: `Max. 30 caracteres`
-              },
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <Input
-                label="Usuário *"
-                style={styles.input}
-                keyboardType='default'
-                testID='username'
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                maxLength={30}
-                underlineColorAndroid="transparent"
-              />
-            )}
-            name='username'
-            defaultValue=''
-          />
-          {errors.username && <Text category='s1' style={styles.text}>{errors.username?.message}</Text>}
-          <Controller
-            control={control}
-            rules={{
-              required: {
-                value: true,
-                message: 'Campo obrigatório'
-              },
-              minLength: {
-                value: 8,
-                message: `Mín. 8 caracteres`
-              },
-              maxLength: {
-                value: 16,
-                message: `Max. 16 caracteres`
-              },
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <Input
-                label="Senha *"
-                style={styles.input}
-                keyboardType='default'
-                testID='password'
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                maxLength={16}
-                accessoryRight={renderIconRightPassword}
-                secureTextEntry={secureTextEntry}
-                returnKeyType="send"
-                underlineColorAndroid="transparent"
-              />
-            )}
-            name='password'
-            defaultValue=''
-          />
-          {errors.password && <Text category='s1' style={styles.text}>{errors.password?.message}</Text>}
-          <Controller
-            control={control}
-            rules={{
-              required: false,
-              minLength: {
-                value: 15,
-                message: `Mín. 15 caracteres`
-              },
-              maxLength: {
-                value: 16,
-                message: `Max. 16 caracteres`
-              },
-              validate: (e) => e !== "" ? validateCNS(e) : true
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <Input
-                label={renderLabelCNS}
-                style={styles.input}
-                keyboardType='number-pad'
-                testID='cns'
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                maxLength={16}
-                underlineColorAndroid="transparent"
-              />
-            )}
-            name='cns'
-            defaultValue=''
-          />
-          {errors.cns?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.cns?.message}</Text>}
-          {errors.cns?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>CNS inválido</Text>}
-        </View>
-      </SafeAreaLayout>
-      <SafeAreaLayout insets='bottom' level='1'>
-        <View style={styles.viewBtn}>
-          <TouchableOpacity
-            onPress={handleSubmit(submit)}
-            style={styles.button}
-          >
-            <Icon style={styles.icon} name={Platform.OS === 'ios' ? 'chevron-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'} size={20} pack='ionicons' />
-          </TouchableOpacity>
-        </View>
+      <SafeAreaLayout style={styles.safeArea} level='1'>
+        <SafeAreaLayout style={styles.content} level='1'>
+          <View style={styles.box}>
+            <Controller
+              control={control}
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Campo obrigatório'
+                },
+              }}
+              render={({ field: { onBlur, name, value } }) => (
+                <AutoCompleteComponent
+                  testID={name}
+                  style={styles.autoComplete}
+                  data={statesTemp}
+                  label="Estado *"
+                  placeholder=''
+                  onSelect={onSelectState}
+                  onBlur={onBlur}
+                  onChangeText={onChangeTextState}
+                  renderOption={renderOptionState}
+                  accessoryRight={(props) => renderRightIcon(props, value)}
+                  value={value}
+                  autoCapitalize='characters'
+                  maxLength={2}
+                />
+              )}
+              name='state'
+              defaultValue=''
+            />
+            {errors.state && <Text category='s1' style={styles.text}>{errors.state?.message}</Text>}
+            <Controller
+              control={control}
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Campo obrigatório'
+                },
+              }}
+              render={({ field: { onBlur, name, value } }) => (
+                <AutoCompleteComponent
+                  testID={name}
+                  style={styles.autoComplete}
+                  data={citiesTemp}
+                  label="Cidade"
+                  placeholder=''
+                  onSelect={onSelectCity}
+                  onBlur={onBlur}
+                  onChangeText={onChangeTextCity}
+                  renderOption={renderOptionCity}
+                  accessoryRight={(props) => renderRightIcon(props, value, 'city')}
+                  value={value}
+                  disabled={isDisabledCity}
+                  autoCapitalize='words'
+                />
+              )}
+              name='city'
+              defaultValue=''
+            />
+            {errors.city && <Text category='s1' style={styles.text}>{errors.city?.message}</Text>}
+            <Controller
+              control={control}
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Campo obrigatório'
+                },
+                minLength: {
+                  value: 13,
+                  message: `Mín. 13 caracteres`
+                },
+                maxLength: {
+                  value: 15,
+                  message: `Max. 15 caracteres`
+                },
+              }}
+              render={({ field: { onChange, onBlur, value, name } }) => (
+                <Input
+                  label="Telefone 1 *"
+                  style={styles.input}
+                  keyboardType='number-pad'
+                  testID={name}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={formatPhone(value)}
+                  maxLength={15}
+                  underlineColorAndroid="transparent"
+                />
+              )}
+              name='phone'
+              defaultValue=''
+            />
+            {errors.phone && <Text category='s1' style={styles.text}>{errors.phone?.message}</Text>}
+            <Controller
+              control={control}
+              rules={{
+                required: false,
+                minLength: {
+                  value: 13,
+                  message: `Mín. 13 caracteres`
+                },
+                maxLength: {
+                  value: 15,
+                  message: `Max. 15 caracteres`
+                },
+              }}
+              render={({ field: { onChange, onBlur, value, name } }) => (
+                <Input
+                  label="Telefone 2"
+                  style={[styles.input, { paddingBottom: 10 }]}
+                  keyboardType='number-pad'
+                  testID={name}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={formatPhone(value)}
+                  maxLength={15}
+                  underlineColorAndroid="transparent"
+                />
+              )}
+              name='phone2'
+              defaultValue=''
+            />
+            {errors.phone2 && <Text category='s1' style={styles.text}>{errors.phone2?.message}</Text>}
+            <Controller
+              control={control}
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Campo obrigatório'
+                },
+                minLength: {
+                  value: 5,
+                  message: `Mín. 5 caracteres`
+                },
+                maxLength: {
+                  value: 30,
+                  message: `Max. 30 caracteres`
+                },
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label="Usuário *"
+                  style={styles.input}
+                  keyboardType='default'
+                  testID='username'
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  maxLength={30}
+                  underlineColorAndroid="transparent"
+                />
+              )}
+              name='username'
+              defaultValue=''
+            />
+            {errors.username && <Text category='s1' style={styles.text}>{errors.username?.message}</Text>}
+            <Controller
+              control={control}
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Campo obrigatório'
+                },
+                minLength: {
+                  value: 8,
+                  message: `Mín. 8 caracteres`
+                },
+                maxLength: {
+                  value: 16,
+                  message: `Max. 16 caracteres`
+                },
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label="Senha *"
+                  style={styles.input}
+                  keyboardType='default'
+                  testID='password'
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  maxLength={16}
+                  accessoryRight={renderIconRightPassword}
+                  secureTextEntry={secureTextEntry}
+                  returnKeyType="send"
+                  underlineColorAndroid="transparent"
+                />
+              )}
+              name='password'
+              defaultValue=''
+            />
+            {errors.password && <Text category='s1' style={styles.text}>{errors.password?.message}</Text>}
+            <Controller
+              control={control}
+              rules={{
+                required: false,
+                minLength: {
+                  value: 15,
+                  message: `Mín. 15 caracteres`
+                },
+                maxLength: {
+                  value: 16,
+                  message: `Max. 16 caracteres`
+                },
+                validate: (e) => e !== "" ? validateCNS(e) : true
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label={renderLabelCNS}
+                  style={styles.input}
+                  keyboardType='number-pad'
+                  testID='cns'
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  maxLength={16}
+                  underlineColorAndroid="transparent"
+                />
+              )}
+              name='cns'
+              defaultValue=''
+            />
+            {errors.cns?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.cns?.message}</Text>}
+            {errors.cns?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>CNS inválido</Text>}
+          </View>
+        </SafeAreaLayout>
+        <SafeAreaLayout insets='bottom' level='1'>
+          <View style={styles.viewBtn}>
+            <TouchableOpacity
+              onPress={handleSubmit(submit)}
+              style={styles.button}
+            >
+              <Icon style={styles.icon} name={Platform.OS === 'ios' ? 'chevron-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'} size={20} pack='ionicons' />
+            </TouchableOpacity>
+          </View>
+        </SafeAreaLayout>
       </SafeAreaLayout>
     </>
   )
