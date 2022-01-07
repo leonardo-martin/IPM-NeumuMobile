@@ -1,6 +1,6 @@
 import { _REGEX_VALID_EMAIL, _REGEX_VALID_FULLNAME, _REGEX_VALID_NUMBERS } from "./constants"
 
-export const formatCpf = (cpf: string) => {
+export const formatCpf = (cpf: string | undefined) => {
     if (cpf !== undefined)
         return cpf
             .replace(/\D/g, '')
@@ -10,7 +10,7 @@ export const formatCpf = (cpf: string) => {
     else return ''
 }
 
-export const formatPhone = (phoneNumber: string) => {
+export const formatPhone = (phoneNumber: string | undefined) => {
     if (phoneNumber !== undefined)
         return phoneNumber
             .replace(/\D/g, '')

@@ -1,71 +1,82 @@
-import React, { FC, ReactElement, useState } from 'react'
-import { Linking, SafeAreaView, TouchableOpacity, View } from 'react-native'
-import { registerStyle } from '../style'
-import { Input, Button, Text, Modal, Card } from '@ui-kitten/components'
+import React, { FC, ReactElement } from 'react'
+import { Platform, TouchableOpacity, View } from 'react-native'
+import { Input, Text, Icon, useStyleSheet } from '@ui-kitten/components'
 import { Controller, useForm } from 'react-hook-form'
 import { UserData } from '@models/User'
 import { useNavigation } from '@react-navigation/core'
-import Icon from 'react-native-vector-icons/Ionicons'
+import { SafeAreaLayout } from '@components/safeAreaLayout'
+import { formatCpf, isEmailValid } from '@utils/mask'
+import { validate } from 'gerador-validador-cpf'
+import { registerStyle } from '../style'
 
 const SignUpPart1Screen: FC = (): ReactElement => {
 
-  const [visible, setVisible] = useState<boolean>(false)
+  const styles = useStyleSheet(registerStyle)
   const { control, handleSubmit, formState: { errors } } = useForm<UserData>()
   const navigation = useNavigation<any>()
   const submit = (data: UserData) => {
     navigation.navigate('SignUpPart2', { data: data })
   }
 
-  const renderLabelCNS = () => (
-    <React.Fragment>
-      <View style={registerStyle.labelCNSView}>
-        <Text category="label" style={registerStyle.labelCNSText}>
-          Cartão Nacional de Saúde (CNS) *
-        </Text>
-        <Icon name="help-circle-outline" size={20} color={'#8F9BB3'} onPress={() => setVisible(true)} />
-      </View>
-    </React.Fragment>
-  )
-
   return (
     <>
-      <SafeAreaView style={registerStyle.content}>
-        <View style={registerStyle.box}>
+      <SafeAreaLayout style={styles.content} level='1'>
+        <View style={styles.box}>
           <Controller
             control={control}
             rules={{
-              required: true
+              required: {
+                value: true,
+                message: 'Campo obrigatório'
+              },
+              minLength: {
+                value: 5,
+                message: `Mín. 5 caracteres`
+              },
+              maxLength: {
+                value: 60,
+                message: `Max. 60 caracteres`
+              },
             }}
-            render={({ field: { onChange, onBlur, value, ref, ...field } }) => (
+            render={({ field: { onChange, onBlur, value, name, ref } }) => (
               <Input
                 label="Nome da Mãe *"
-                style={registerStyle.input}
+                style={styles.input}
                 keyboardType='default'
-                testID='mothersName'
+                testID={name}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
                 underlineColorAndroid="transparent"
-                {...field}
                 ref={ref}
-
               />
             )}
             name='mothersName'
             defaultValue=''
           />
-          {errors.mothersName?.type === 'required' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Campo obrigatório</Text>}
+          {errors.mothersName && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.mothersName?.message}</Text>}
           <Controller
             control={control}
             rules={{
-              required: true
+              required: {
+                value: true,
+                message: 'Campo obrigatório'
+              },
+              minLength: {
+                value: 5,
+                message: `Mín. 5 caracteres`
+              },
+              maxLength: {
+                value: 60,
+                message: `Max. 60 caracteres`
+              },
             }}
-            render={({ field: { onChange, onBlur, value } }) => (
+            render={({ field: { onChange, onBlur, value, name } }) => (
               <Input
-                label="Nome *"
-                style={registerStyle.input}
+                label="Nome Completo *"
+                style={styles.input}
                 keyboardType='default'
-                testID='name'
+                testID={name}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
@@ -75,139 +86,95 @@ const SignUpPart1Screen: FC = (): ReactElement => {
             name='name'
             defaultValue=''
           />
-          {errors.name?.type === 'required' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Campo obrigatório</Text>}
+          {errors.name && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.name?.message}</Text>}
           <Controller
             control={control}
             rules={{
-              required: true,
-              minLength: 11,
-              pattern: /[0-9]/
+              required: {
+                value: true,
+                message: 'Campo obrigatório'
+              },
+              minLength: {
+                value: 14,
+                message: `Mín. 14 caracteres`
+              },
+              maxLength: {
+                value: 14,
+                message: `Max. 14 caracteres`
+              },
+              validate: (e) => validate(e)
             }}
-            render={({ field: { onChange, onBlur, value } }) => (
+            render={({ field: { onChange, onBlur, value, name } }) => (
               <Input
                 label="CPF *"
-                style={registerStyle.input}
+                style={styles.input}
                 keyboardType='number-pad'
-                testID='cpf'
+                testID={name}
                 onBlur={onBlur}
                 onChangeText={onChange}
-                value={value}
+                value={formatCpf(value)}
                 underlineColorAndroid="transparent"
+                autoCapitalize='none'
+                maxLength={14}
+                placeholder={'999.999.999-99'}
               />
             )}
             name='cpf'
             defaultValue=''
           />
-          {errors.cpf?.type === 'pattern' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Invalid</Text>}
-          {errors.cpf?.type === 'minLength' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Min 11</Text>}
-          {errors.cpf?.type === 'required' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Campo obrigatório</Text>}
+          {errors.cpf?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.cpf?.message}</Text>}
+          {errors.cpf?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.cpf?.message}</Text>}
+          {errors.cpf?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>CPF inválido</Text>}
           <Controller
             control={control}
             rules={{
-              required: true,
-              pattern: /[0-9]/
+              required: {
+                value: true,
+                message: 'Campo obrigatório'
+              },
+              minLength: {
+                value: 5,
+                message: `Mín. 5 caracteres`
+              },
+              maxLength: {
+                value: 60,
+                message: `Max. 60 caracteres`
+              },
+              validate: (e) => isEmailValid(e)
             }}
-            render={({ field: { onChange, onBlur, value } }) => (
+            render={({ field: { onChange, onBlur, value, name } }) => (
               <Input
-                label="Telefone 1 *"
-                style={registerStyle.input}
-                keyboardType='number-pad'
-                testID='phone'
+                label="E-mail *"
+                style={styles.input}
+                keyboardType='email-address'
+                testID={name}
                 onBlur={onBlur}
                 onChangeText={onChange}
-                value={value}
-                maxLength={12}
+                value={value.replace(/[^0-9A-Za-z]*/, "")}
                 underlineColorAndroid="transparent"
+                autoCapitalize='none'
+                maxLength={60}
+                placeholder={'example@example.com'}
               />
             )}
-            name='phone'
+            name='email'
             defaultValue=''
           />
-          {errors.phone?.type === 'pattern' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Invalid</Text>}
-          {errors.phone?.type === 'required' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Campo obrigatório</Text>}
-          <Controller
-            control={control}
-            rules={{
-              required: false,
-              pattern: /[0-9]/
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <Input
-                label="Telefone 2"
-                style={[registerStyle.input, { paddingBottom: 10 }]}
-                keyboardType='number-pad'
-                testID='phone2'
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                maxLength={12}
-                underlineColorAndroid="transparent"
-              />
-            )}
-            name='phone2'
-            defaultValue=''
-          />
-          {errors.phone2?.type === 'pattern' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Invalid</Text>}
-          <Controller
-            control={control}
-            rules={{
-              required: true,
-              minLength: 15,
-              pattern: /[0-9]/
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <Input
-                label={renderLabelCNS}
-                style={registerStyle.input}
-                keyboardType='number-pad'
-                testID='cns'
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                maxLength={16}
-                underlineColorAndroid="transparent"
-              />
-            )}
-            name='cns'
-            defaultValue=''
-          />
-          {errors.cns?.type === 'minLength' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Min 15</Text>}
-          {errors.cns?.type === 'pattern' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Invalid</Text>}
-          {errors.cns?.type === 'required' && <Text category='s2' style={[registerStyle.text, { paddingBottom: 10 }]}>Campo obrigatório</Text>}
-
-          <Button
-            onPress={handleSubmit(submit)}
-            style={registerStyle.button}
-            status="primary"
-          >
-            CONTINUAR
-          </Button>
-
-          {/* <Modal
-            visible={visible}
-            backdropStyle={registerStyle.backdrop}
-            onBackdropPress={() => setVisible(false)} >
-            <Card disabled={true} >
-              <View style={registerStyle.labelCNSViewCard}>
-                <Text style={registerStyle.labelCNSTextCenter}>O Cartão Nacional de Saúde (CNS) é o documento de identificação do usuário do SUS.</Text>
-              </View>
-              <TouchableOpacity
-                onPress={() => Linking.openURL('https://www.gov.br/saude/pt-br/acesso-a-informacao/acoes-e-programas/cartao-nacional-de-saude')}
-                hitSlop={{
-                  left: 10,
-                  right: 10,
-                  top: 10,
-                  bottom: 10
-                }}
-              >
-                <Text status="primary" style={registerStyle.labelCNSTextCenter}>
-                  SAIBA MAIS
-                </Text>
-              </TouchableOpacity>
-            </Card>
-          </Modal> */}
+          {errors.email?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.email?.message}</Text>}
+          {errors.email?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.email?.message}</Text>}
+          {errors.email?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>E-mail inválido</Text>}
         </View>
-      </SafeAreaView>
+      </SafeAreaLayout>
+      <SafeAreaLayout insets='bottom' level='1'>
+        <View style={styles.viewBtn}>
+          <TouchableOpacity
+            onPress={handleSubmit(submit)}
+            style={styles.button}
+          >
+            <Icon style={styles.icon} name={Platform.OS === 'ios' ? 'chevron-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'} size={20} pack='ionicons' />
+          </TouchableOpacity>
+        </View>
+      </SafeAreaLayout>
     </>
   )
 }

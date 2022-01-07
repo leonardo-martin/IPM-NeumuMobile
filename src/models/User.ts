@@ -1,4 +1,5 @@
 import { NestedValue } from "react-hook-form"
+import { PatientProfileCreatorDto } from "./PatientProfileCreator"
 
 export class SignInData {
     username: string = ''
@@ -17,6 +18,10 @@ export class UserData {
     cns?: string
     crm?: string
     specialty?: NestedValue<Specialty>
+    city: string = ''
+    state: string = ''
+    acceptTerms: boolean = false
+    creator!: PatientProfileCreatorDto
 }
 
 class Specialty {
