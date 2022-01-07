@@ -21,6 +21,7 @@ import MessagesScreen from '@pages/admin/messages'
 import ChatRoomScreen from '@pages/admin/chat'
 import EditProfileScreen from '@pages/admin/profile/extra'
 import AppointmentsScreen from '@pages/admin/appointments'
+import NotificationScreen from '@pages/admin/configuration/notification'
 
 const { Navigator, Screen, Group } = createDrawerNavigator()
 
@@ -83,6 +84,10 @@ const AppRoutes: FC = (): ReactElement => {
         <Screen
           name="Configuration"
           component={ConfigurationScreen}
+        />        
+        <Screen
+          name="Notification"
+          component={NotificationScreen}
         />
         <Screen
           name="InformationApp"

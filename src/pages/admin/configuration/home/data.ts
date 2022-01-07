@@ -12,6 +12,7 @@ export const data: ItemInfo[] = [
     {
         title: 'Notificações',
         description: '',
+        route: 'Notification',
         icon: {
             name: 'bell-outline',
             pack: 'eva'
