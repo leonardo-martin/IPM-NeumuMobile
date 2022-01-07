@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { AutocompleteItem, Button, Avatar, Spinner } from '@ui-kitten/components'
+import { AutocompleteItem, Button, Avatar, Spinner, Icon, IconProps } from '@ui-kitten/components'
 import { ImageBackground, View } from 'react-native'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { API_IBGE_GOV } from '@env'
@@ -187,6 +187,22 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
 
   }
 
+  const renderRightIcon = (props: IconProps, op?: string) => {
+    if (op === 'city' && selectedCity !== '')
+      return (
+        <Icon {...props} name='close-outline' pack='ionicons' onPress={() => clearInputs(op)} />
+      )
+    else if (op === 'specialty' && selectedSpecialty !== '')
+      return (
+        <Icon {...props} name='close-outline' pack='ionicons' onPress={() => clearInputs(op)} />
+      )
+    else if (!op && selectedState !== '')
+      return (
+        <Icon {...props} name='close-outline' pack='ionicons' onPress={clearInputs} />
+      )
+    else return <></>
+  }
+
   return (
     <>
       <SafeAreaLayout insets='bottom' level='1' style={filterScheduleStyle.safeArea}>
@@ -200,7 +216,7 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
               onSelect={onSelectState}
               onChangeText={onChangeTextState}
               renderOption={renderOptionState}
-              clearInput={clearInputs}
+              accessoryRight={(props) => renderRightIcon(props)}
               value={selectedState}
               autoCapitalize='characters'
               maxLength={2}
@@ -213,7 +229,7 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
               onSelect={onSelectCity}
               onChangeText={onChangeTextCity}
               renderOption={renderOptionCity}
-              clearInput={() => clearInputs('city')}
+              accessoryRight={(props) => renderRightIcon(props, 'city')}
               value={selectedCity}
               disabled={isDisabledCity}
               autoCapitalize='words'
@@ -226,7 +242,7 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
               onSelect={onSelectSpecialty}
               onChangeText={onChangeTextSpecialty}
               renderOption={renderOptionSpecialty}
-              clearInput={() => clearInputs('specialty')}
+              accessoryRight={(props) => renderRightIcon(props, 'specialty')}
               value={selectedSpecialty}
               disabled={isDisabledSpecialty}
               autoCapitalize='sentences'
