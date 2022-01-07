@@ -2,18 +2,20 @@ import { Platform, StyleSheet } from 'react-native'
 
 export const loginStyle = StyleSheet.create({
   content: {
-    display: 'flex',
-    alignItems: 'center',
     flex: 1,
-    alignContent: 'center',
-    backgroundColor: '#FAFAFA'
+  },
+  viewContent: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1
   },
   boxTitle: {
-    paddingVertical: 60,
+    paddingBottom: 30,
     alignItems: 'center'
   },
   title: {
-    color: '#626262',
+    color: 'text-hint-color',
     fontSize: 22,
     lineHeight: 26,
     paddingTop: 10,
@@ -39,15 +41,10 @@ export const loginStyle = StyleSheet.create({
     marginVertical: 5
   },
   input: {
-    backgroundColor: 'color-control-default',
-    borderRadius: 10,
-    borderColor: '#EBEBEB',
-    shadowRadius: 4,
-    borderWidth: 1,
-    shadowColor: 'rgba(0, 0, 0, 0.03)',
+    paddingVertical: 5
   },
   text: {
-    color: '#626262',
+    color: 'text-hint-color',
     fontWeight: Platform.OS === 'ios' ? '400' : '600'
   },
   textHere: {
