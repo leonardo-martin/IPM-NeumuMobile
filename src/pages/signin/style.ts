@@ -52,18 +52,5 @@ export const loginStyle = StyleSheet.create({
   },
   containerLogo: {
     alignItems: "center",
-  },
-  backdrop: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  buttonModal: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 20,
-    borderRadius: 30
-  },
-  textModal: {
-    fontWeight: Platform.OS === 'ios' ? 'bold' : '600'
   }
 })

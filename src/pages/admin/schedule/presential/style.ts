@@ -19,13 +19,6 @@ export const doctorScheduleStyle = StyleSheet.create({
     backdrop: {
         backgroundColor: 'rgba(0, 0, 0, 0.5)'
     },
-    modalContainer: {
-        width: '90%',
-        height: '30%'
-    },
-    modalContainerError: {
-        width: '90%',
-    },
     viewDoctorProfile: {
         justifyContent: 'flex-start',
         alignContent: 'flex-start',
@@ -78,22 +71,8 @@ export const doctorScheduleStyle = StyleSheet.create({
         textAlign: 'center',
         flexWrap: 'wrap'
     },
-    viewConfirmButtonModal: {
-        paddingVertical: 5
-    },
-    textConfirmModal: {
-        flexShrink: 1,
-        flexWrap: 'wrap',
-        textAlign: 'center',
-        fontSize: 16,
-        padding: 5,
-        color: 'text-hint-color'
-    },
     icon: {
         color: 'text-info-color',
-    },
-    iconModal: {
-        color: 'text-basic-color',
     },
     daysInMonth: {
         flexDirection: 'column',
@@ -167,5 +146,32 @@ export const doctorScheduleStyle = StyleSheet.create({
     textMonth: {
         fontSize: 16,
         alignSelf: 'center'
-    }
+    },
+    textConfirmExit: {
+        textAlign: 'center',
+        color: 'text-hint-color',
+        fontSize: 20,
+        marginVertical: 10
+    },
+    contentButton: {
+        marginVertical: 15,
+        paddingVertical: 15,
+        width: '100%',
+        backgroundColor: 'color-primary-default',
+        borderRadius: 6,
+    },
+    buttonOutline: {
+        backgroundColor: 'transparent',
+        borderColor: 'color-primary-default',
+        borderWidth: 1
+    },
+    contentButtonText: {
+        color: 'text-control-color',
+        fontSize: 15,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    buttonTextOutline: {
+        color: 'text-primary-color',
+    },
 })

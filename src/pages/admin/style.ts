@@ -65,15 +65,6 @@ export const dashboardStyle = StyleSheet.create({
   iconPrimary: {
     color: 'text-primary-color'
   },
-  safeAreaModalize: {
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    overflow: 'hidden',
-  },
-  contentModalize: {
-    padding: 20,
-    backgroundColor: 'background-basic-color-2'
-  },
   textConfirmExit: {
     textAlign: 'center',
     color: 'text-hint-color',

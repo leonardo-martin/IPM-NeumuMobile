@@ -22,6 +22,7 @@ import ChatRoomScreen from '@pages/admin/chat'
 import EditProfileScreen from '@pages/admin/profile/extra'
 import AppointmentsScreen from '@pages/admin/appointments'
 import NotificationScreen from '@pages/admin/configuration/notification'
+import ConfirmationScheduleScreen from '@pages/admin/schedule/confirmation'
 
 const { Navigator, Screen, Group } = createDrawerNavigator()
 
@@ -35,12 +36,31 @@ const AppRoutes: FC = (): ReactElement => {
     >
       <Group screenOptions={{
         swipeEnabled: true,
-        headerShown: true,
-        header: () => <HeaderAdmin />
+        headerShown: false,
       }}>
         <Screen
           name="Dashboard"
           component={DashboardScreen}
+        />
+      </Group>
+
+      <Group screenOptions={{
+        swipeEnabled: false,
+        headerShown: false,
+      }}>
+        <Screen
+          name="PresentialSchedule"
+          component={PresentialScheduleScreen}
+        />
+      </Group>
+
+      <Group screenOptions={{
+        swipeEnabled: false,
+        headerShown: false
+      }}>
+        <Screen
+          name="ConfirmationSchedule"
+          component={ConfirmationScheduleScreen}
         />
       </Group>
 
@@ -74,17 +94,13 @@ const AppRoutes: FC = (): ReactElement => {
           component={MessagesScreen}
         />
         <Screen
-          name="PresentialSchedule"
-          component={PresentialScheduleScreen}
-        />
-        <Screen
           name="DoctorProfile"
           component={DoctorProfileScreen}
         />
         <Screen
           name="Configuration"
           component={ConfigurationScreen}
-        />        
+        />
         <Screen
           name="Notification"
           component={NotificationScreen}
