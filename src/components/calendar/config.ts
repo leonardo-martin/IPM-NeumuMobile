@@ -1,6 +1,7 @@
 import { I18nConfig } from "@ui-kitten/components"
+import { DateFnsService } from "@ui-kitten/date-fns"
 
-export const i18nConfig: I18nConfig = {
+const i18nConfig: I18nConfig = {
     dayNames: {
         short: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
         long: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
@@ -23,3 +24,5 @@ export const i18nConfig: I18nConfig = {
         ],
     },
 }
+
+export const localeDateService = new DateFnsService('pt-BR', { i18n: { ...i18nConfig }, startDayOfWeek: 0 })

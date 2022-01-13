@@ -1,10 +1,8 @@
 import React, { FC, ReactElement } from 'react'
-import { Calendar, Layout, NativeDateService, useStyleSheet } from '@ui-kitten/components'
+import { Calendar, Layout, useStyleSheet } from '@ui-kitten/components'
 import { calendarStyles } from './style'
 import { useTheme } from '@contexts/theme'
-import { i18nConfig } from './config'
-
-const localeDateService = new NativeDateService('pt-BR', { i18n: { ...i18nConfig }, startDayOfWeek: 0 })
+import { localeDateService } from './config'
 
 type CalendarProps = {
     date?: Date | undefined
