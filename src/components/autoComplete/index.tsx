@@ -1,25 +1,25 @@
-import React, { FC, ReactElement } from 'react'
+import React, { FC, ForwardedRef, forwardRef, ReactElement } from 'react'
 import { Autocomplete, AutocompleteProps } from '@ui-kitten/components'
 import { City, UF } from '@models/Places'
 
 interface AutoCompleteProps extends AutocompleteProps {
+    ref?: ForwardedRef<Autocomplete>
     data: UF[] | City[] | string[]
     renderOption: (item: any, index: number) => JSX.Element
 }
 
-const AutoCompleteComponent: FC<AutoCompleteProps> = (props): ReactElement => {
+const AutoCompleteComponent: FC<AutoCompleteProps> = forwardRef<Autocomplete, AutoCompleteProps>(({ ...props }, ref): ReactElement => {
 
     return (
-        <Autocomplete
-            {...props}   >
+        <Autocomplete ref={ref} {...props}>
             {props.data.map(props.renderOption)}
         </Autocomplete>
     )
-}
+})
 
 AutoCompleteComponent.defaultProps = {
     data: [],
-    placeholder: 'Place your Text',
+    placeholder: '',
     label: '',
     disabled: false,
     autoCapitalize: 'none',
