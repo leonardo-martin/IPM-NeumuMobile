@@ -4,23 +4,20 @@ export const changePasswdReqStyle = StyleSheet.create({
     safeArea: {
         flex: 1,
     },
-    content: {
-        display: 'flex',
-        alignItems: 'flex-start',
+    content: {        
         flex: 1,
-        paddingHorizontal: 15
     },
     label: {
+        textAlign: 'center',
         fontSize: Platform.OS === 'ios' ? 20 : Platform.OS === 'android' ? 24 : 24,
-        color: 'text-hint-color',
         padding: Platform.OS === 'ios' ? 15 : Platform.OS === 'android' ? 5 : 5
     },
     controlContainer: {
-        paddingVertical: 30,
-        paddingHorizontal: 15
+        padding: 25
     },
     radioText: {
         fontSize: Platform.OS === 'ios' ? 14 : Platform.OS === 'android' ? 18 : 18,
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        color: 'color-basic-700'
     }
 })

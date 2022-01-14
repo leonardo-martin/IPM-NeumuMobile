@@ -1,14 +1,14 @@
 export class PatientProfileCreatorDto {
-    createdPatientProfileId!: string | number;
-    patientProfileCreatorTypeId!: PatientProfileCreatorTypeEnum | number;
-    data!: JSONObject;
+    createdPatientProfileId!: string | number
+    patientProfileCreatorTypeId!: PatientProfileCreatorTypeEnum | number | undefined
+    data!: JSONObject
 }
 
 export class PatientProfileCreatorPatientRelatedDto extends PatientProfileCreatorDto {
-    name!: string;
-    cpf!: string;
-    email!: string;
-    phone!: string;
+    name!: string
+    cpf!: string
+    email!: string
+    phone!: string
 }
 
 export enum PatientProfileCreatorTypeEnum {
@@ -23,5 +23,5 @@ export enum PatientProfileCreatorTypeEnum {
 
 
 interface JSONObject {
-    [key: string]: any;
+    [key: string]: any
 }
