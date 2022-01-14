@@ -7,6 +7,7 @@ import SignUpPart1Screen from '@pages/signup/part1'
 import SignUpPart2Screen from '@pages/signup/part2'
 import ChangePasswordChoice from '@pages/changePassword'
 import ChangePasswordRequest from '@pages/changePassword/changePasswordSpecific'
+import SignUpPart3Screen from '@pages/signup/part3'
 
 const { Navigator, Screen, Group } = createStackNavigator()
 
@@ -22,10 +23,23 @@ const AuthRoutes: FC = (): ReactElement => {
       <Screen name="SignIn" component={SignIn} />
       <Group screenOptions={{
         headerShown: true,
-        header: () => <HeaderAuth />
+        header: () => <HeaderAuth />,
+        gestureEnabled: false,
+        transitionSpec: {
+          open: { animation: 'timing', config: { duration: 500 } },
+          close: { animation: 'timing', config: { duration: 500 } }
+        },
+        cardStyleInterpolator: ({ current: { progress } }) => {
+          return {
+            cardStyle: {
+              opacity: progress
+            }
+          }
+        }
       }}>
         <Screen name="SignUp" component={SignUpPart1Screen} />
         <Screen name="SignUpPart2" component={SignUpPart2Screen} />
+        <Screen name="SignUpPart3" component={SignUpPart3Screen} />
         <Screen name="ChangePasswordChoice" component={ChangePasswordChoice} />
         <Screen name="ChangePasswordRequest" component={ChangePasswordRequest} />
       </Group>

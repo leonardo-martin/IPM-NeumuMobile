@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { Linking, Platform, TouchableOpacity, View } from 'react-native'
+import { Linking, Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 import { Input, Text, IconProps, Icon, useStyleSheet, AutocompleteItem } from '@ui-kitten/components'
 import { Controller, useForm } from 'react-hook-form'
 import { useRoute } from '@react-navigation/core'
@@ -11,6 +11,7 @@ import { API_IBGE_GOV } from '@env'
 import { formatPhone } from '@utils/mask'
 import { validateCNS } from '@utils/validators'
 import { registerStyle } from '../style'
+import { useNavigation } from '@react-navigation/core'
 
 const filter = (item: any, query: any) => item.sigla.toLowerCase().includes(query.toLowerCase())
 const filterCity = (item: any, query: any) => item.nome.toLowerCase().includes(query.toLowerCase())
@@ -18,20 +19,21 @@ const filterCity = (item: any, query: any) => item.nome.toLowerCase().includes(q
 const SignUpPart2Screen: FC = (): ReactElement => {
 
   const styles = useStyleSheet(registerStyle)
+  const navigation = useNavigation<any>()
   const [secureTextEntry, setSecureTextEntry] = useState(true)
   const route = useRoute()
   const { params }: any = route
-  const { control, handleSubmit, setValue, getValues, formState: { errors } } = useForm<UserData>()
+  const { control, handleSubmit, setValue, getValues, clearErrors, setFocus, formState: { errors } } = useForm<UserData>(params?.data)
 
   const submit = (data: UserData) => {
-    console.log(data)
+    navigation.navigate('SignUpPart3', { data: data })
   }
 
   useEffect(() => {
-    setValue('mothersName', params?.data.mothersName)
-    setValue('name', params?.data.name)
-    setValue('cpf', params?.data.cpf)
-    setValue('email', params?.data.email)
+    setValue('mothersName', params?.data?.mothersName?.trim())
+    setValue('name', params?.data?.name?.trim())
+    setValue('cpf', params?.data?.cpf?.trim())
+    setValue('email', params?.data?.email?.trim())
   }, [])
 
   const toggleSecureEntry = () => {
@@ -68,7 +70,8 @@ const SignUpPart2Screen: FC = (): ReactElement => {
         setValue('city', '')
         setValue('state', '')
         setStatesTemp(states)
-        setCitiesTemp(cities)
+        setCitiesTemp([])
+        setCities([])
         setIsDisabledCity(true)
         break
     }
@@ -116,6 +119,16 @@ const SignUpPart2Screen: FC = (): ReactElement => {
     const list = citiesTemp.filter(item => filterCity(item, citiesTemp[index]?.nome))
     if (list.length > 0) {
       setValue('city', citiesTemp[index]?.nome)
+      clearErrors('city')
+      setFocus('phone')     
+    }
+  }
+
+  const onSubmitEditingCity = (value: string) => {
+    const list = citiesTemp.filter(item => item.nome === value)
+    if (list.length > 0) {
+      clearErrors('city')
+      setFocus('phone')
     }
   }
 
@@ -156,6 +169,17 @@ const SignUpPart2Screen: FC = (): ReactElement => {
     if (list.length > 0) {
       setValue('state', statesTemp[index]?.sigla)
       setIsDisabledCity(false)
+      clearErrors('state')
+      setFocus('city')
+    }
+  }
+
+  const onSubmitEditingState = (value: string) => {
+    const list = statesTemp.filter(item => item.sigla === value)
+    if (list.length > 0) {
+      setIsDisabledCity(false)
+      clearErrors('state')
+      setFocus('city')
     }
   }
 
@@ -181,7 +205,7 @@ const SignUpPart2Screen: FC = (): ReactElement => {
   return (
     <>
       <SafeAreaLayout style={styles.safeArea} level='1'>
-        <SafeAreaLayout style={styles.content} level='1'>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
           <View style={styles.box}>
             <Controller
               control={control}
@@ -191,13 +215,12 @@ const SignUpPart2Screen: FC = (): ReactElement => {
                   message: 'Campo obrigatório'
                 },
               }}
-              render={({ field: { onBlur, name, value } }) => (
+              render={({ field: { onBlur, name, value, ref } }) => (
                 <AutoCompleteComponent
                   testID={name}
                   style={styles.autoComplete}
                   data={statesTemp}
                   label="Estado *"
-                  placeholder=''
                   onSelect={onSelectState}
                   onBlur={onBlur}
                   onChangeText={onChangeTextState}
@@ -206,6 +229,9 @@ const SignUpPart2Screen: FC = (): ReactElement => {
                   value={value}
                   autoCapitalize='characters'
                   maxLength={2}
+                  ref={ref}
+                  returnKeyType="next"
+                  onSubmitEditing={() => onSubmitEditingState(value)}
                 />
               )}
               name='state'
@@ -220,20 +246,21 @@ const SignUpPart2Screen: FC = (): ReactElement => {
                   message: 'Campo obrigatório'
                 },
               }}
-              render={({ field: { onBlur, name, value } }) => (
+              render={({ field: { onBlur, name, value, ref } }) => (
                 <AutoCompleteComponent
                   testID={name}
                   style={styles.autoComplete}
                   data={citiesTemp}
                   label="Cidade"
-                  placeholder=''
                   onSelect={onSelectCity}
                   onBlur={onBlur}
                   onChangeText={onChangeTextCity}
                   renderOption={renderOptionCity}
                   accessoryRight={(props) => renderRightIcon(props, value, 'city')}
                   value={value}
-                  disabled={isDisabledCity}
+                  ref={ref}
+                  returnKeyType="next"
+                  onSubmitEditing={() => onSubmitEditingCity(value)}
                   autoCapitalize='words'
                 />
               )}
@@ -257,7 +284,7 @@ const SignUpPart2Screen: FC = (): ReactElement => {
                   message: `Max. 15 caracteres`
                 },
               }}
-              render={({ field: { onChange, onBlur, value, name } }) => (
+              render={({ field: { onChange, onBlur, value, name, ref } }) => (
                 <Input
                   label="Telefone 1 *"
                   style={styles.input}
@@ -267,6 +294,9 @@ const SignUpPart2Screen: FC = (): ReactElement => {
                   onChangeText={onChange}
                   value={formatPhone(value)}
                   maxLength={15}
+                  ref={ref}
+                  returnKeyType="next"
+                  onSubmitEditing={() => setFocus('phone2')}
                   underlineColorAndroid="transparent"
                 />
               )}
@@ -287,7 +317,7 @@ const SignUpPart2Screen: FC = (): ReactElement => {
                   message: `Max. 15 caracteres`
                 },
               }}
-              render={({ field: { onChange, onBlur, value, name } }) => (
+              render={({ field: { onChange, onBlur, value, name, ref } }) => (
                 <Input
                   label="Telefone 2"
                   style={[styles.input, { paddingBottom: 10 }]}
@@ -297,6 +327,9 @@ const SignUpPart2Screen: FC = (): ReactElement => {
                   onChangeText={onChange}
                   value={formatPhone(value)}
                   maxLength={15}
+                  ref={ref}
+                  returnKeyType="next"
+                  onSubmitEditing={() => setFocus('username')}
                   underlineColorAndroid="transparent"
                 />
               )}
@@ -320,17 +353,21 @@ const SignUpPart2Screen: FC = (): ReactElement => {
                   message: `Max. 30 caracteres`
                 },
               }}
-              render={({ field: { onChange, onBlur, value } }) => (
+              render={({ field: { onChange, onBlur, value, ref, name } }) => (
                 <Input
                   label="Usuário *"
                   style={styles.input}
                   keyboardType='default'
-                  testID='username'
+                  testID={name}
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
                   maxLength={30}
+                  ref={ref}
+                  returnKeyType="next"
+                  onSubmitEditing={() => setFocus('password')}
                   underlineColorAndroid="transparent"
+                  autoCapitalize="none"
                 />
               )}
               name='username'
@@ -353,19 +390,21 @@ const SignUpPart2Screen: FC = (): ReactElement => {
                   message: `Max. 16 caracteres`
                 },
               }}
-              render={({ field: { onChange, onBlur, value } }) => (
+              render={({ field: { onChange, onBlur, value, name, ref } }) => (
                 <Input
                   label="Senha *"
                   style={styles.input}
-                  keyboardType='default'
-                  testID='password'
+                  keyboardType={!secureTextEntry ? 'visible-password' : 'default'}
+                  testID={name}
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
                   maxLength={16}
                   accessoryRight={renderIconRightPassword}
                   secureTextEntry={secureTextEntry}
-                  returnKeyType="send"
+                  returnKeyType="next"
+                  ref={ref}
+                  onSubmitEditing={() => setFocus('cns')}
                   underlineColorAndroid="transparent"
                 />
               )}
@@ -387,17 +426,20 @@ const SignUpPart2Screen: FC = (): ReactElement => {
                 },
                 validate: (e) => e !== "" ? validateCNS(e) : true
               }}
-              render={({ field: { onChange, onBlur, value } }) => (
+              render={({ field: { onChange, onBlur, value, name, ref } }) => (
                 <Input
                   label={renderLabelCNS}
                   style={styles.input}
                   keyboardType='number-pad'
-                  testID='cns'
+                  testID={name}
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
                   maxLength={16}
                   underlineColorAndroid="transparent"
+                  ref={ref}
+                  returnKeyType="send"
+                  onSubmitEditing={handleSubmit(submit)}
                 />
               )}
               name='cns'
@@ -405,18 +447,17 @@ const SignUpPart2Screen: FC = (): ReactElement => {
             />
             {errors.cns?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.cns?.message}</Text>}
             {errors.cns?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>CNS inválido</Text>}
+
+            <View style={styles.viewBtn}>
+              <TouchableOpacity
+                onPress={handleSubmit(submit)}
+                style={styles.button}
+              >
+                <Icon style={styles.icon} name={Platform.OS === 'ios' ? 'chevron-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'} size={20} pack='ionicons' />
+              </TouchableOpacity>
+            </View>
           </View>
-        </SafeAreaLayout>
-        <SafeAreaLayout insets='bottom' level='1'>
-          <View style={styles.viewBtn}>
-            <TouchableOpacity
-              onPress={handleSubmit(submit)}
-              style={styles.button}
-            >
-              <Icon style={styles.icon} name={Platform.OS === 'ios' ? 'chevron-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'} size={20} pack='ionicons' />
-            </TouchableOpacity>
-          </View>
-        </SafeAreaLayout>
+        </ScrollView>
       </SafeAreaLayout>
     </>
   )

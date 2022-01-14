@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from 'react'
-import { Platform, TouchableOpacity, View } from 'react-native'
+import { Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 import { Input, Text, Icon, useStyleSheet } from '@ui-kitten/components'
 import { Controller, useForm } from 'react-hook-form'
 import { UserData } from '@models/User'
@@ -12,7 +12,7 @@ import { registerStyle } from '../style'
 const SignUpPart1Screen: FC = (): ReactElement => {
 
   const styles = useStyleSheet(registerStyle)
-  const { control, handleSubmit, formState: { errors } } = useForm<UserData>()
+  const { control, handleSubmit, setFocus, formState: { errors } } = useForm<UserData>()
   const navigation = useNavigation<any>()
   const submit = (data: UserData) => {
     navigation.navigate('SignUpPart2', { data: data })
@@ -21,7 +21,7 @@ const SignUpPart1Screen: FC = (): ReactElement => {
   return (
     <>
       <SafeAreaLayout style={styles.safeArea} level='1'>
-        <SafeAreaLayout style={styles.content} level='1'>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
           <View style={styles.box}>
             <Controller
               control={control}
@@ -50,6 +50,9 @@ const SignUpPart1Screen: FC = (): ReactElement => {
                   value={value}
                   underlineColorAndroid="transparent"
                   ref={ref}
+                  returnKeyType="next"
+                  onSubmitEditing={() => setFocus('name')}
+                  autoCapitalize="words"
                 />
               )}
               name='mothersName'
@@ -72,7 +75,7 @@ const SignUpPart1Screen: FC = (): ReactElement => {
                   message: `Max. 60 caracteres`
                 },
               }}
-              render={({ field: { onChange, onBlur, value, name } }) => (
+              render={({ field: { onChange, onBlur, value, name, ref } }) => (
                 <Input
                   label="Nome Completo *"
                   style={styles.input}
@@ -81,7 +84,11 @@ const SignUpPart1Screen: FC = (): ReactElement => {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
+                  ref={ref}
+                  returnKeyType="next"
+                  onSubmitEditing={() => setFocus('cpf')}
                   underlineColorAndroid="transparent"
+                  autoCapitalize="words"
                 />
               )}
               name='name'
@@ -105,7 +112,7 @@ const SignUpPart1Screen: FC = (): ReactElement => {
                 },
                 validate: (e) => validate(e)
               }}
-              render={({ field: { onChange, onBlur, value, name } }) => (
+              render={({ field: { onChange, onBlur, value, name, ref } }) => (
                 <Input
                   label="CPF *"
                   style={styles.input}
@@ -117,6 +124,9 @@ const SignUpPart1Screen: FC = (): ReactElement => {
                   underlineColorAndroid="transparent"
                   autoCapitalize='none'
                   maxLength={14}
+                  ref={ref}
+                  returnKeyType="next"
+                  onSubmitEditing={() => setFocus('email')}
                   placeholder={'999.999.999-99'}
                 />
               )}
@@ -143,7 +153,7 @@ const SignUpPart1Screen: FC = (): ReactElement => {
                 },
                 validate: (e) => isEmailValid(e)
               }}
-              render={({ field: { onChange, onBlur, value, name } }) => (
+              render={({ field: { onChange, onBlur, value, name, ref } }) => (
                 <Input
                   label="E-mail *"
                   style={styles.input}
@@ -155,6 +165,9 @@ const SignUpPart1Screen: FC = (): ReactElement => {
                   underlineColorAndroid="transparent"
                   autoCapitalize='none'
                   maxLength={60}
+                  ref={ref}
+                  returnKeyType="send"
+                  onSubmitEditing={handleSubmit(submit)}
                   placeholder={'example@example.com'}
                 />
               )}
@@ -164,18 +177,16 @@ const SignUpPart1Screen: FC = (): ReactElement => {
             {errors.email?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.email?.message}</Text>}
             {errors.email?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.email?.message}</Text>}
             {errors.email?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>E-mail inválido</Text>}
+            <View style={styles.viewBtn}>
+              <TouchableOpacity
+                onPress={handleSubmit(submit)}
+                style={styles.button}
+              >
+                <Icon style={styles.icon} name={Platform.OS === 'ios' ? 'chevron-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'} size={20} pack='ionicons' />
+              </TouchableOpacity>
+            </View>
           </View>
-        </SafeAreaLayout>
-        <SafeAreaLayout insets='bottom' level='1'>
-          <View style={styles.viewBtn}>
-            <TouchableOpacity
-              onPress={handleSubmit(submit)}
-              style={styles.button}
-            >
-              <Icon style={styles.icon} name={Platform.OS === 'ios' ? 'chevron-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'} size={20} pack='ionicons' />
-            </TouchableOpacity>
-          </View>
-        </SafeAreaLayout>
+        </ScrollView>
       </SafeAreaLayout>
 
     </>
