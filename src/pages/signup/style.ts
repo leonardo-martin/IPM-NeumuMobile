@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 
 export const registerStyle = StyleSheet.create({
     safeArea: {
@@ -8,16 +8,39 @@ export const registerStyle = StyleSheet.create({
         alignItems: 'center',
         flex: 1,
     },
-    box: {
-        width: '90%',
+    contentPage3: {
         flex: 1,
-        justifyContent: 'center',
-        flexDirection: 'column',
+    },
+    scrollContent: {
+        flexGrow: 1
+    },
+    radioGroup: {
+        padding: 25,
+        paddingVertical: 15
+    },
+    box: {
+        flex: 1,
+        paddingVertical: 0,
+        padding: 25,
+        justifyContent: 'center'
+    },
+    boxMultiplesInputs: {
+        paddingVertical: 0,
+        padding: 25,
     },
     label: {
         color: 'text-basic-color',
         textAlign: 'center',
         padding: 4
+    },
+    labelTitle: {
+        fontSize: Platform.OS === 'ios' ? 20 : Platform.OS === 'android' ? 24 : 24,
+        padding: Platform.OS === 'ios' ? 15 : Platform.OS === 'android' ? 5 : 5,  
+        
+    },
+    viewLabel: {
+        alignItems: 'flex-start',
+        paddingHorizontal: 20       
     },
     text: {
         color: 'text-basic-color',
@@ -62,8 +85,7 @@ export const registerStyle = StyleSheet.create({
     },
     viewBtn: {
         alignItems: 'flex-end',
-        paddingHorizontal: 15,
-        paddingBottom: 15,
+        paddingVertical: 25
     },
     icon: {
         color: 'color-basic-200'
@@ -74,4 +96,23 @@ export const registerStyle = StyleSheet.create({
     autoComplete: {
         paddingBottom: 10
     },
+    registerBtn: {
+        borderRadius: 50,
+        marginVertical: 5
+    },
+    radioText: {
+        fontSize: Platform.OS === 'ios' ? 14 : Platform.OS === 'android' ? 18 : 18,
+        paddingHorizontal: 10,
+        color: 'color-basic-700'
+    },
+    checkbox: {
+        margin: 2,
+    },
+    viewCheckbox: {
+        alignItems: 'flex-start',
+        padding: 25
+    },
+    viewConfirmBtn: {  
+        width: '85%',        
+    }
 })
