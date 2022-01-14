@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useState, createRef, useEffect } from 'react'
+import React, { FC, ReactElement, useState, useEffect } from 'react'
 import { View, KeyboardAvoidingView, StatusBar } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { loginStyle } from './style'
@@ -24,13 +24,7 @@ const SignInScreen: FC = (): ReactElement => {
   const { signIn } = useAuth()
   const navigation = useNavigation<any>()
 
-  const inputPasswordRef = createRef<any>()
-
-  const {
-    control,
-    handleSubmit,
-    formState: { errors }
-  } = useForm<SignInData>()
+  const { control, handleSubmit, setFocus, formState: { errors } } = useForm<SignInData>()
 
   const handleSignIn = async (data: SignInData) => {
     setIsLoading(!isLoading)
@@ -91,18 +85,18 @@ const SignInScreen: FC = (): ReactElement => {
                 rules={{
                   required: true
                 }}
-                render={({ field: { onChange, onBlur, value } }) => (
+                render={({ field: { onChange, onBlur, value, ref, name } }) => (
                   <Input
                     style={styles.input}
                     label="Usuário *"
                     keyboardType="default"
-                    testID="username"
+                    testID={name}
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
                     returnKeyType="next"
-                    autoFocus={true}
-                    onSubmitEditing={() => inputPasswordRef.current.focus()}
+                    ref={ref}
+                    onSubmitEditing={() => setFocus('password')}
                     autoCapitalize="none"
                   />
                 )}
@@ -120,11 +114,12 @@ const SignInScreen: FC = (): ReactElement => {
                   required: true,
                   minLength: 8
                 }}
-                render={({ field: { onChange, onBlur, value } }) => (
+                render={({ field: { onChange, onBlur, value, ref, name } }) => (
                   <Input
                     style={styles.input}
                     label="Senha *"
-                    testID="password"
+                    keyboardType={!secureTextEntry ? 'visible-password' : 'default'}
+                    testID={name}
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
@@ -132,7 +127,7 @@ const SignInScreen: FC = (): ReactElement => {
                     secureTextEntry={secureTextEntry}
                     returnKeyType="send"
                     underlineColorAndroid="transparent"
-                    ref={inputPasswordRef}
+                    ref={ref}
                   />
                 )}
                 name="password"
