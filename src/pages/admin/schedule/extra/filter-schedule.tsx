@@ -1,6 +1,6 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { AutocompleteItem, Button, Avatar, Spinner, Icon, IconProps } from '@ui-kitten/components'
-import { ImageBackground, View } from 'react-native'
+import { ImageBackground, Keyboard, View } from 'react-native'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { API_IBGE_GOV } from '@env'
 import { filterScheduleStyle } from './filter-schedule.style'
@@ -15,8 +15,7 @@ const filterCity = (item: any, query: any) => item.nome.toLowerCase().includes(q
 const filterSpecialty = (item: any, query: any) => item.toLowerCase().includes(query.toLowerCase())
 
 const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
-  navigation,
-  state
+  navigation
 }): ReactElement => {
 
   const [states, setStates] = useState<UF[]>([])
@@ -33,6 +32,7 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
   }, [])
 
   const filterDoctors = () => {
+    Keyboard.dismiss()
     setShowListDoctors(false)
     setIsLoadingActive(true)
     setTimeout(() => {
