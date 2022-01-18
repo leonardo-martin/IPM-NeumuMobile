@@ -8,18 +8,21 @@ import { ThemeProvider } from '@contexts/theme'
 import { IoniconsIconsPack } from './ionicons-icon'
 import { FontAwesomeIconsPack } from './font-awesome-icon'
 import { FontistoIconsPack } from './fontisto-icon'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 const App: FC = (): ReactElement => {
 
   return (
     <React.Fragment>
-      <IconRegistry icons={[ IoniconsIconsPack, EvaIconsPack, FontAwesomeIconsPack, FontistoIconsPack ]} />
+      <IconRegistry icons={[IoniconsIconsPack, EvaIconsPack, FontAwesomeIconsPack, FontistoIconsPack]} />
       <ThemeProvider>
-        <NavigationContainer>
-          <AuthProvider>
-            <Routes />
-          </AuthProvider>
-        </NavigationContainer>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <AuthProvider>
+              <Routes />
+            </AuthProvider>
+          </NavigationContainer>
+        </SafeAreaProvider>
       </ThemeProvider>
     </React.Fragment>
   )

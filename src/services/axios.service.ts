@@ -1,10 +1,9 @@
 import axios from 'axios'
 import { API_BASE_URL } from '@env'
-import AsyncStorage from '@react-native-community/async-storage'
+import { AppStorage } from './app-storage.service'
 
 const getToken = async () => {
-    const token = await AsyncStorage.getItem('@RNAuth:token')
-    return token
+    return await AppStorage.getUserToken()
 }
 
 export const getAPIClient = () => {

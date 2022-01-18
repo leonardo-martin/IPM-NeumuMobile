@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Theme } from '@models/Theme'
 import { THEME_KEY, TOKEN_KEY, USER_KEY } from './contants'
 import { TokenModel } from '@models/TokenModel'
