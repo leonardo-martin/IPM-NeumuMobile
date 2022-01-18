@@ -11,12 +11,14 @@ interface AuthContextType {
     currentUser: TokenModel | null
     signIn: (data: SignInData) => Promise<void | any>
     signOut: () => void
+    loading: boolean
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
 const AuthProvider: FC = ({ children }) => {
 
+    const [loading, setLoading] = useState(true)
     const [currentUser, setCurrentUser] = useState<TokenModel | null>(null)
     const isAuthenticated = !!currentUser
 
@@ -26,9 +28,10 @@ const AuthProvider: FC = ({ children }) => {
             const storagedToken = await AppStorage.getUserToken()
 
             if (storagedUser && storagedToken) {
-                setCurrentUser(JSON.parse(storagedUser))
+                setCurrentUser(JSON.parse(storagedUser))                
                 api.defaults.headers.Authorization = `Bearer ${storagedToken}`
             }
+            setLoading(false)
         }
 
         loadStorageData()
@@ -56,7 +59,7 @@ const AuthProvider: FC = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ currentUser, isAuthenticated, signIn, signOut }}>
+        <AuthContext.Provider value={{ currentUser, isAuthenticated, signIn, signOut, loading }}>
             {children}
         </AuthContext.Provider>
     )

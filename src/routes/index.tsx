@@ -4,7 +4,14 @@ import AuthRoutes from '@routes/auth.routes'
 import AppRoutes from '@routes/app.routes'
 
 const Routes: FC = (): ReactElement => {
-    const { isAuthenticated } = useAuth()
+    const { isAuthenticated, loading } = useAuth()
+
+    if (loading) {
+        return (
+            <></>
+        )
+    }
+
     return isAuthenticated ? <AppRoutes /> : <AuthRoutes />
 }
 
