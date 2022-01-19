@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useState, useEffect } from 'react'
-import { View, KeyboardAvoidingView, StatusBar } from 'react-native'
+import { View, KeyboardAvoidingView, ScrollView, Keyboard } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { loginStyle } from './style'
 import { SignInData } from '@models/User'
@@ -26,7 +26,7 @@ const SignInScreen: FC = (): ReactElement => {
 
   const { control, handleSubmit, setFocus, formState: { errors } } = useForm<SignInData>()
 
-  const handleSignIn = async (data: SignInData) => {
+  const handleSignIn = async (data: SignInData) => {    
     setIsLoading(!isLoading)
     try {
       const response = await signIn(data)
@@ -70,122 +70,124 @@ const SignInScreen: FC = (): ReactElement => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor={'transparent'} translucent={true} />
-      <SafeAreaLayout level='1' style={styles.content}>
-        <View style={styles.viewContent}>
-          <View style={styles.boxTitle}>
-            <LogoPedroMolina width="140" height="150" />
-            <Text style={styles.title}>Seja bem vindo ao</Text>
-            <TitleNeumu category="h3" />
-          </View>
-          <View style={styles.box}>
-            <KeyboardAvoidingView behavior='position'>
-              <Controller
-                control={control}
-                rules={{
-                  required: true
-                }}
-                render={({ field: { onChange, onBlur, value, ref, name } }) => (
-                  <Input
-                    style={styles.input}
-                    label="Usuário *"
-                    keyboardType="default"
-                    testID={name}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    returnKeyType="next"
-                    ref={ref}
-                    onSubmitEditing={() => setFocus('password')}
-                    autoCapitalize="none"
-                  />
-                )}
-                name="username"
-                defaultValue="pacienttest"
-              />
-              {errors.username?.type === 'required' && (
-                <Text category="s2" style={[loginStyle.text, { paddingBottom: 10 }]}>
-                  Campo obrigatório
-                </Text>
-              )}
-              <Controller
-                control={control}
-                rules={{
-                  required: true,
-                  minLength: 8
-                }}
-                render={({ field: { onChange, onBlur, value, ref, name } }) => (
-                  <Input
-                    style={styles.input}
-                    label="Senha *"
-                    keyboardType={!secureTextEntry ? 'visible-password' : 'default'}
-                    testID={name}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    accessoryRight={renderIconRightPassword}
-                    secureTextEntry={secureTextEntry}
-                    returnKeyType="send"
-                    underlineColorAndroid="transparent"
-                    ref={ref}
-                  />
-                )}
-                name="password"
-                defaultValue="pacienttest"
-              />
-              {errors.password?.type === 'required' && (
-                <Text category="s2" style={[loginStyle.text, { paddingBottom: 10 }]}>
-                  Campo obrigatório
-                </Text>
-              )}
-              {errors.password?.type === 'minLength' && (
-                <Text category="s2" style={[loginStyle.text, { paddingBottom: 10 }]}>
-                  Min. 8 characters.
-                </Text>
-              )}
-            </KeyboardAvoidingView>
-            <View style={styles.containerRecoveryPassword}>
-              <Text
-                style={styles.text}
-                category="label"
-                testID="recoveryButton"
-              >
-                Esqueceu a senha? Clique{' '}
-              </Text>
-              <TouchableOpacity
-                hitSlop={{
-                  left: 15,
-                  right: 15,
-                  top: 15,
-                  bottom: 15
-                }}
-                onPress={recoveryPasswd}
-              >
-                <Text status='primary' style={styles.textHere}>aqui</Text>
-              </TouchableOpacity>
+      <SafeAreaLayout level='1' style={styles.safeArea}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+          <View style={styles.content}>
+            <View style={styles.boxTitle}>
+              <LogoPedroMolina width="140" height="150" />
+              <Text style={styles.title}>Seja bem vindo ao</Text>
+              <TitleNeumu category="h3" />
             </View>
-            <Toast visible={visibleToast} message={message} />
-            <View style={styles.containerButtons}>
-              <Button
-                accessoryLeft={isLoading ? LoadingIndicator : undefined}
-                disabled={isLoading}
-                style={styles.button}
-                onPress={handleSubmit(handleSignIn)}
-                status="primary"
-              >
-                ACESSAR
-              </Button>
-              <Button
-                onPress={registerName}
-                style={styles.button}
-                testID="RegisterButton"
-                status="warning"
-              >
-                CADASTRE-SE
-              </Button>
+            <View style={styles.box}>
+              <KeyboardAvoidingView behavior='position'>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true
+                  }}
+                  render={({ field: { onChange, onBlur, value, ref, name } }) => (
+                    <Input
+                      style={styles.input}
+                      label="Usuário *"
+                      keyboardType="default"
+                      testID={name}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      returnKeyType="next"
+                      ref={ref}
+                      onSubmitEditing={() => setFocus('password')}
+                      autoCapitalize="none"
+                    />
+                  )}
+                  name="username"
+                  defaultValue="pacienttest"
+                />
+                {errors.username?.type === 'required' && (
+                  <Text category="s2" style={[loginStyle.text, { paddingBottom: 10 }]}>
+                    Campo obrigatório
+                  </Text>
+                )}
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                    minLength: 8
+                  }}
+                  render={({ field: { onChange, onBlur, value, ref, name } }) => (
+                    <Input
+                      style={styles.input}
+                      label="Senha *"
+                      keyboardType={!secureTextEntry ? 'visible-password' : 'default'}
+                      testID={name}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      accessoryRight={renderIconRightPassword}
+                      secureTextEntry={secureTextEntry}
+                      returnKeyType="send"
+                      underlineColorAndroid="transparent"
+                      onSubmitEditing={handleSubmit(handleSignIn)}
+                      ref={ref}
+                    />
+                  )}
+                  name="password"
+                  defaultValue="pacienttest"
+                />
+                {errors.password?.type === 'required' && (
+                  <Text category="s2" style={[loginStyle.text, { paddingBottom: 10 }]}>
+                    Campo obrigatório
+                  </Text>
+                )}
+                {errors.password?.type === 'minLength' && (
+                  <Text category="s2" style={[loginStyle.text, { paddingBottom: 10 }]}>
+                    Min. 8 characters.
+                  </Text>
+                )}
+              </KeyboardAvoidingView>
+              <View style={styles.containerRecoveryPassword}>
+                <Text
+                  style={styles.text}
+                  category="label"
+                  testID="recoveryButton"
+                >
+                  Esqueceu a senha? Clique{' '}
+                </Text>
+                <TouchableOpacity
+                  hitSlop={{
+                    left: 15,
+                    right: 15,
+                    top: 15,
+                    bottom: 15
+                  }}
+                  onPress={recoveryPasswd}
+                >
+                  <Text status='primary' style={styles.textHere}>aqui</Text>
+                </TouchableOpacity>
+              </View>
+              <Toast visible={visibleToast} message={message} />
+              <View style={styles.containerButtons}>
+                <Button
+                  accessoryLeft={isLoading ? LoadingIndicator : undefined}
+                  disabled={isLoading}
+                  style={styles.button}
+                  onPress={handleSubmit(handleSignIn)}
+                  status="primary"
+                >
+                  ACESSAR
+                </Button>
+                <Button
+                  onPress={registerName}
+                  style={styles.button}
+                  testID="RegisterButton"
+                  status="warning"
+                >
+                  CADASTRE-SE
+                </Button>
+              </View>
             </View>
           </View>
-        </View>
+        </ScrollView>
       </SafeAreaLayout>
     </>
   )

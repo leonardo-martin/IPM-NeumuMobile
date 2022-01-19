@@ -1,17 +1,20 @@
 import { Platform, StyleSheet } from 'react-native'
 
 export const loginStyle = StyleSheet.create({
-  content: {
+  safeArea: {
     flex: 1,
   },
-  viewContent: {
+  content: {
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1
   },
+  scrollContent: {
+    flexGrow: 1
+  },
   boxTitle: {
-    paddingBottom: 30,
+    paddingVertical: 30,
     alignItems: 'center'
   },
   title: {

@@ -9,6 +9,7 @@ import { IoniconsIconsPack } from './ionicons-icon'
 import { FontAwesomeIconsPack } from './font-awesome-icon'
 import { FontistoIconsPack } from './fontisto-icon'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { StatusBar } from 'react-native'
 
 const App: FC = (): ReactElement => {
 
@@ -19,6 +20,7 @@ const App: FC = (): ReactElement => {
         <SafeAreaProvider>
           <NavigationContainer>
             <AuthProvider>
+              <StatusBar barStyle="dark-content" backgroundColor={'transparent'} translucent={true} />
               <Routes />
             </AuthProvider>
           </NavigationContainer>
