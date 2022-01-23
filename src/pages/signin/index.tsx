@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useState, useEffect } from 'react'
-import { View, KeyboardAvoidingView, ScrollView, Keyboard } from 'react-native'
+import { View, KeyboardAvoidingView, ScrollView, StatusBar, Platform } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { loginStyle } from './style'
 import { SignInData } from '@models/User'
@@ -16,8 +16,8 @@ import { SafeAreaLayout } from '@components/safeAreaLayout'
 const SignInScreen: FC = (): ReactElement => {
 
   const styles = useStyleSheet(loginStyle)
-  const [visibleToast, setVisibleToast] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [visibleToast, setVisibleToast] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const [message, setMessage] = useState<string>('')
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true)
@@ -26,12 +26,12 @@ const SignInScreen: FC = (): ReactElement => {
 
   const { control, handleSubmit, setFocus, formState: { errors } } = useForm<SignInData>()
 
-  const handleSignIn = async (data: SignInData) => {    
+  const handleSignIn = async (data: SignInData) => {
     setIsLoading(!isLoading)
     try {
       const response = await signIn(data)
       if (response) {
-        const message = response?.response?.data?.message?.message
+        const message = response.data?.message?.message
         if (message !== "" && message !== undefined) {
           const matchId = matchMessage(message)
           if (matchId === 2)
@@ -70,6 +70,7 @@ const SignInScreen: FC = (): ReactElement => {
 
   return (
     <>
+      <StatusBar hidden={Platform.OS === 'ios' ? true : false} backgroundColor='transparent' translucent />
       <SafeAreaLayout level='1' style={styles.safeArea}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
           <View style={styles.content}>
@@ -83,10 +84,18 @@ const SignInScreen: FC = (): ReactElement => {
                 <Controller
                   control={control}
                   rules={{
-                    required: true
+                    required: {
+                      value: true,
+                      message: 'Campo obrigatório'
+                    },
+                    minLength: {
+                      value: 5,
+                      message: `Mín. 5 caracteres`
+                    },
                   }}
                   render={({ field: { onChange, onBlur, value, ref, name } }) => (
                     <Input
+                      size='small'
                       style={styles.input}
                       label="Usuário *"
                       keyboardType="default"
@@ -96,29 +105,33 @@ const SignInScreen: FC = (): ReactElement => {
                       value={value}
                       returnKeyType="next"
                       ref={ref}
+                      maxLength={40}
                       onSubmitEditing={() => setFocus('password')}
                       autoCapitalize="none"
                     />
                   )}
                   name="username"
-                  defaultValue="pacienttest"
+                  defaultValue=""
                 />
-                {errors.username?.type === 'required' && (
-                  <Text category="s2" style={[loginStyle.text, { paddingBottom: 10 }]}>
-                    Campo obrigatório
-                  </Text>
-                )}
+                {errors.username && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.username?.message}</Text>}
                 <Controller
                   control={control}
                   rules={{
-                    required: true,
-                    minLength: 8
+                    required: {
+                      value: true,
+                      message: 'Campo obrigatório'
+                    },
+                    minLength: {
+                      value: 8,
+                      message: `Mín. 8 caracteres`
+                    },
                   }}
                   render={({ field: { onChange, onBlur, value, ref, name } }) => (
                     <Input
+                      size='small'
                       style={styles.input}
                       label="Senha *"
-                      keyboardType={!secureTextEntry ? 'visible-password' : 'default'}
+                      keyboardType='default'
                       testID={name}
                       onBlur={onBlur}
                       onChangeText={onChange}
@@ -129,25 +142,18 @@ const SignInScreen: FC = (): ReactElement => {
                       underlineColorAndroid="transparent"
                       onSubmitEditing={handleSubmit(handleSignIn)}
                       ref={ref}
+                      maxLength={40}
+                      autoCapitalize="none"
                     />
                   )}
                   name="password"
-                  defaultValue="pacienttest"
+                  defaultValue=""
                 />
-                {errors.password?.type === 'required' && (
-                  <Text category="s2" style={[loginStyle.text, { paddingBottom: 10 }]}>
-                    Campo obrigatório
-                  </Text>
-                )}
-                {errors.password?.type === 'minLength' && (
-                  <Text category="s2" style={[loginStyle.text, { paddingBottom: 10 }]}>
-                    Min. 8 characters.
-                  </Text>
-                )}
+                {errors.password && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.password?.message}</Text>}
               </KeyboardAvoidingView>
               <View style={styles.containerRecoveryPassword}>
                 <Text
-                  style={styles.text}
+                  style={styles.textRecoveryPassword}
                   category="label"
                   testID="recoveryButton"
                 >

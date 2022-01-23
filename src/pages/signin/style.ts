@@ -29,11 +29,14 @@ export const loginStyle = StyleSheet.create({
     width: '85%'
   },
   containerRecoveryPassword: {
-    paddingTop: '3%',
-    padding: '2%',
-    paddingBottom: '5%',
+    paddingVertical: 15,
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  textRecoveryPassword: {
+    fontWeight: Platform.OS === 'ios' ? '400' : '600',
+    color: 'text-hint-color',
+    fontSize: 14,
   },
   containerButtons: {
     flexDirection: 'column',
@@ -47,9 +50,10 @@ export const loginStyle = StyleSheet.create({
     paddingVertical: 5
   },
   text: {
-    color: 'text-hint-color',
-    fontWeight: Platform.OS === 'ios' ? '400' : '600'
-  },
+    color: 'text-basic-color',
+    alignItems: 'flex-start',
+    fontSize: 11,
+  },  
   textHere: {
     fontWeight: Platform.OS === 'ios' ? '400' : '600'
   },
