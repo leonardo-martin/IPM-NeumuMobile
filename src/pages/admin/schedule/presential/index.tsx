@@ -11,7 +11,7 @@ import { doctorScheduleStyle } from './style'
 
 import { useAuth } from '@contexts/auth'
 import { CreateAppointment } from '@models/Appointment'
-import { formatDateToString } from '@utils/convertDate'
+import { formatDateTimeToString } from '@utils/convertDate'
 import { createAppointment } from '@services/appointment.service'
 import { openMapsWithAddress } from '@utils/maps'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
@@ -79,7 +79,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
         startTime.setSeconds(0)
 
         setConfirmDate(startTime)
-        const dateString = formatDateToString(startTime)
+        const dateString = formatDateTimeToString(startTime)
 
         setScheduleData(
             new CreateAppointment(
@@ -364,7 +364,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
             <ModalizeFixed ref={modalizeRef} snapPoint={300} adjustToContentHeight={true} closeOnOverlayTap={false} >
                 <View>
                     <Text style={styles.textConfirmExit}>Confirmar o agendamento para</Text>
-                    <Text style={styles.textConfirmExit}>{formatDateToString(confirmDate)}?</Text>
+                    <Text style={styles.textConfirmExit}>{formatDateTimeToString(confirmDate)}?</Text>
                 </View>
                 <TouchableOpacity style={[styles.contentButton, {
                     backgroundColor: loading ? theme['color-primary-disabled'] : styles.contentButton.backgroundColor
