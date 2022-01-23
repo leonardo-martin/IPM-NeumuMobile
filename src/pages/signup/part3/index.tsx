@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { ScrollView, View } from 'react-native'
+import { ScrollView, ToastAndroid, View } from 'react-native'
 import { Input, Text, useStyleSheet, RadioGroup, Radio, Button, CheckBox, Spinner } from '@ui-kitten/components'
 import { Controller, useForm } from 'react-hook-form'
 import { useRoute } from '@react-navigation/core'
@@ -7,33 +7,72 @@ import { UserData } from '@models/User'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { registerStyle } from '../style'
 import { PatientProfileCreatorTypeEnum } from '@models/PatientProfileCreator'
-import { formatCpf, formatPhone, isEmailValid } from 'utils/mask'
+import { cleanNumberMask, formatCpf, formatPhone, isEmailValid } from 'utils/mask'
 import { validate } from 'gerador-validador-cpf'
-import { getRelationPatient, getExamType } from '@utils/common'
+import { getRelationPatient, getExamType, extractFieldString } from '@utils/common'
+import { createPatientProfileCreator, createUser } from '@services/user.service'
+import Toast from '@components/toast'
+import { useNavigation } from '@react-navigation/native'
 
 const SignUpPart3Screen: FC = (): ReactElement => {
 
   const styles = useStyleSheet(registerStyle)
   const route = useRoute()
   const { params }: any = route
-  const { control, handleSubmit, setValue, clearErrors, setFocus, formState: { errors } } = useForm<UserData>(params?.data)
+  const { control, handleSubmit, setValue, clearErrors, setFocus, resetField, formState: { errors } } = useForm<UserData>({
+    defaultValues: {
+      ...params?.data
+    }
+  })
+
   const [selectedIndexRelationPatient, setSelectedIndexRelationPatient] = useState(-1)
   const [patientProfileCreator, setPatientProfileCreator] = useState<number | PatientProfileCreatorTypeEnum | undefined>()
+  const [selectedIndexExamType, setSelectedIndexExamType] = useState<number>(-1)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [errorMessage, setErrorMessage] = useState<string>('')
+  const [visibleToast, setVisibleToast] = useState<boolean>(false)
+  const navigation = useNavigation<any>()
 
-  const [selectedIndexExamType, setSelectedIndexExamType] = useState(-1)
-
-  const [isLoading, setIsLoading] = useState(false)
-
-  const submit = (data: UserData) => {
+  const submit = async (data: UserData) => {
     setIsLoading(!isLoading)
     try {
-      console.log(JSON.stringify(data))
+      data.cpf = cleanNumberMask(data.cpf)
+      data.phone = cleanNumberMask(data.phone)
+      data.phone2 = cleanNumberMask(data.phone2)
+
+      if (data.creator.data['cpf'])
+        data.creator.data['cpf'] = cleanNumberMask(data.creator.data['cpf'])
+
+      if (data.creator.data['phone'])
+        data.creator.data['phone'] = cleanNumberMask(data.creator.data['phone'])
+
+      const response = await createUser(data, 'patient')
+
+      if (response.status !== 201) {
+        const message = response.data?.message
+
+        if (message.toUpperCase().includes('Unique constraint'.toUpperCase())) {
+          const field = extractFieldString(message)
+          setErrorMessage(field + ' já cadastrado')
+        } else
+          setErrorMessage('Ocorreu um erro. Tente novamente mais tarde.')
+
+        setVisibleToast(true)
+      } else {
+
+        await createPatientProfileCreator(data.creator, Number(response.data.patientId))
+
+        navigation.navigate('RegistrationConfirmation')
+      }
     } catch (error) {
-      console.error('erro no cadastro', error)
+      setErrorMessage('Erro desconhecido. Entre em contato com o administrador do sistema.')
+      setVisibleToast(true)
     } finally {
       setIsLoading(false)
     }
   }
+
+  useEffect(() => setVisibleToast(false), [visibleToast])
 
   const [indeterminate, setIndeterminate] = useState<boolean | undefined>(true)
   const [checked, setChecked] = useState<boolean | undefined>(false)
@@ -50,20 +89,11 @@ const SignUpPart3Screen: FC = (): ReactElement => {
     setSelectedIndexRelationPatient(index)
     const id = getRelationPatient(index)
 
-    setValue('creator.data.name', "")
-    setValue('creator.data.patientProfileCreatorType.description', "")
-    setValue('creator.data.cpf', "")
-    setValue('creator.data.crm', "")
-    setValue('creator.data.phone', "")
-    setValue('creator.data.email', "")
-    setValue('creator.data.others', "")
-    setValue('creator.data.neuromuscular-specialist', "")
-    setValue('creator.data.patient-relation', "")
+    resetField('creator.data')
     clearErrors('creator.data')
 
     if (id !== patientProfileCreator) {
       setSelectedIndexExamType(-1)
-      setValue('creator.data.examType', "")
     }
     setPatientProfileCreator(id)
     setValue("creator.patientProfileCreatorTypeId", id as PatientProfileCreatorTypeEnum)
@@ -78,25 +108,11 @@ const SignUpPart3Screen: FC = (): ReactElement => {
   }
 
   useEffect(() => {
-    setValue('mothersName', params?.data?.mothersName?.trim())
-    setValue('name', params?.data?.name?.trim())
-    setValue('cpf', params?.data?.cpf?.trim())
-    setValue('email', params?.data?.email?.trim())
-
-    setValue('city', params?.data?.city)
-    setValue('state', params?.data?.state)
-    setValue('phone', params?.data?.phone)
-    setValue('phone2', params?.data?.phone2)
-
-    setValue('username', params?.data?.username?.trim())
-    setValue('password', params?.data?.password)
-    setValue('cns', params?.data?.cns)
-
     setSelectedIndexExamType(-1)
     setSelectedIndexRelationPatient(-1)
     setPatientProfileCreator(undefined)
-    setValue('creator.data.examType', '')
-    setValue('creator.patientProfileCreatorTypeId', undefined)
+    resetField('creator.data.examType')
+    resetField('creator.patientProfileCreatorTypeId')
     onIndeterminateChange(false, true)
   }, [])
 
@@ -135,7 +151,7 @@ const SignUpPart3Screen: FC = (): ReactElement => {
               )}
               name='creator.patientProfileCreatorTypeId'
             />
-            {errors.creator?.patientProfileCreatorTypeId && <Text category='s1' style={styles.text}>{errors.creator?.patientProfileCreatorTypeId?.message}</Text>}
+            {errors.creator?.patientProfileCreatorTypeId && <Text category='s2' style={styles.text}>{errors.creator?.patientProfileCreatorTypeId?.message}</Text>}
           </View>
           {patientProfileCreator === PatientProfileCreatorTypeEnum.PatientSelf ?
             <>
@@ -163,7 +179,7 @@ const SignUpPart3Screen: FC = (): ReactElement => {
                   )}
                   name='creator.data.examType'
                 />
-                {errors.creator?.data?.examType && <Text category='s1' style={styles.text}>{errors.creator?.data?.examType.message}</Text>}
+                {errors.creator?.data?.examType && <Text category='s2' style={styles.text}>{errors.creator?.data?.examType.message}</Text>}
               </View>
             </>
             :
@@ -191,6 +207,7 @@ const SignUpPart3Screen: FC = (): ReactElement => {
                   }}
                   render={({ field: { onChange, onBlur, value, name, ref } }) => (
                     <Input
+                      size='small'
                       label="Nome Completo *"
                       style={styles.input}
                       keyboardType='default'
@@ -228,6 +245,7 @@ const SignUpPart3Screen: FC = (): ReactElement => {
                   }}
                   render={({ field: { onChange, onBlur, value, name, ref } }) => (
                     <Input
+                      size='small'
                       label="CPF *"
                       style={styles.input}
                       keyboardType='number-pad'
@@ -269,6 +287,7 @@ const SignUpPart3Screen: FC = (): ReactElement => {
                   }}
                   render={({ field: { onChange, onBlur, value, name, ref } }) => (
                     <Input
+                      size='small'
                       label="E-mail *"
                       style={styles.input}
                       keyboardType='email-address'
@@ -309,6 +328,7 @@ const SignUpPart3Screen: FC = (): ReactElement => {
                   }}
                   render={({ field: { onChange, onBlur, value, name, ref } }) => (
                     <Input
+                      size='small'
                       label="Telefone 1 *"
                       style={styles.input}
                       keyboardType='number-pad'
@@ -326,7 +346,7 @@ const SignUpPart3Screen: FC = (): ReactElement => {
                   name='creator.data.phone'
                   defaultValue=''
                 />
-                {errors.creator?.data?.phone && <Text category='s1' style={styles.text}>{errors.creator?.data?.phone?.message}</Text>}
+                {errors.creator?.data?.phone && <Text category='s2' style={styles.text}>{errors.creator?.data?.phone?.message}</Text>}
                 <Controller
                   control={control}
                   rules={{
@@ -345,6 +365,7 @@ const SignUpPart3Screen: FC = (): ReactElement => {
                   }}
                   render={({ field: { onChange, onBlur, value, name, ref } }) => (
                     <Input
+                      size='small'
                       label="Qual a sua relação com o paciente? *"
                       style={styles.input}
                       keyboardType='default'
@@ -386,6 +407,7 @@ const SignUpPart3Screen: FC = (): ReactElement => {
                     }}
                     render={({ field: { onChange, onBlur, value, name, ref } }) => (
                       <Input
+                        size='small'
                         style={styles.input}
                         keyboardType='default'
                         testID={name}
@@ -429,23 +451,24 @@ const SignUpPart3Screen: FC = (): ReactElement => {
               )}
               name='acceptTerms'
             />
-            {errors.acceptTerms && <Text category='s1' style={styles.text}>{errors.acceptTerms?.message}</Text>}
+            {errors.acceptTerms && <Text category='s2' style={styles.text}>{errors.acceptTerms?.message}</Text>}
           </View>
           <View style={{ flex: 1, alignItems: 'center', paddingVertical: 25 }}>
             <View style={styles.viewConfirmBtn}>
               <Button
                 accessoryLeft={isLoading ? LoadingIndicator : undefined}
-                disabled={!checked}
-                onPress={handleSubmit(submit)}
+                disabled={!checked || isLoading}
+                onPress={!isLoading ? handleSubmit(submit) : undefined}
                 style={styles.registerBtn}
                 testID="RegisterButton"
-                status="warning"
+                status='warning'
               >
                 CADASTRAR
               </Button>
             </View>
           </View>
         </ScrollView>
+        <Toast visible={visibleToast} message={errorMessage} gravity={ToastAndroid["CENTER"]} />
       </SafeAreaLayout>
     </>
   )

@@ -1,10 +1,10 @@
 import React, { FC, ForwardedRef, forwardRef, ReactElement } from 'react'
 import { Autocomplete, AutocompleteProps } from '@ui-kitten/components'
-import { City, UF } from '@models/Places'
+import { City, Country, UF } from '@models/Places'
 
 interface AutoCompleteProps extends AutocompleteProps {
     ref?: ForwardedRef<Autocomplete>
-    data: UF[] | City[] | string[]
+    data: UF[] | City[] | Country[] | string[]
     renderOption: (item: any, index: number) => JSX.Element
 }
 

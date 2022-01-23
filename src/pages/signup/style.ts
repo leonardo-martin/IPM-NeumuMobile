@@ -16,7 +16,7 @@ export const registerStyle = StyleSheet.create({
     },
     radioGroup: {
         padding: 25,
-        paddingVertical: 15
+        paddingVertical: 10
     },
     box: {
         flex: 1,
@@ -35,12 +35,11 @@ export const registerStyle = StyleSheet.create({
     },
     labelTitle: {
         fontSize: Platform.OS === 'ios' ? 20 : Platform.OS === 'android' ? 24 : 24,
-        padding: Platform.OS === 'ios' ? 15 : Platform.OS === 'android' ? 5 : 5,  
-        
+        padding: Platform.OS === 'ios' ? 15 : Platform.OS === 'android' ? 5 : 5,
     },
     viewLabel: {
         alignItems: 'flex-start',
-        paddingHorizontal: 20       
+        paddingHorizontal: 20
     },
     text: {
         color: 'text-basic-color',
@@ -93,17 +92,15 @@ export const registerStyle = StyleSheet.create({
     iconCns: {
         color: 'color-basic-600'
     },
-    autoComplete: {
-        paddingBottom: 10
-    },
     registerBtn: {
         borderRadius: 50,
         marginVertical: 5
     },
     radioText: {
-        fontSize: Platform.OS === 'ios' ? 14 : Platform.OS === 'android' ? 18 : 18,
+        fontSize: Platform.OS === 'ios' ? 14 : Platform.OS === 'android' ? 16 : 16,
         paddingHorizontal: 10,
-        color: 'color-basic-700'
+        color: 'text-hint-color',
+        fontWeight: 'normal'
     },
     checkbox: {
         margin: 2,
@@ -112,7 +109,27 @@ export const registerStyle = StyleSheet.create({
         alignItems: 'flex-start',
         padding: 25
     },
-    viewConfirmBtn: {  
-        width: '85%',        
+    viewConfirmBtn: {
+        width: '85%',
+    },
+    labelBasic: {
+        color: "text-hint-color",
+        fontFamily: "System",
+        fontSize: 12,
+        fontWeight: "800",
+        marginTop: 8,        
+        textAlign: "left"
+    },
+    backdropSpinner: {
+        position: 'absolute',
+        flex: 1,
+        zIndex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        height: '100%',
+        width: '100%',
+        backgroundColor: 'background-basic-color-2',
+        opacity: 0.6
     }
 })

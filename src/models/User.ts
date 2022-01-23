@@ -22,6 +22,14 @@ export class UserData {
     state: string = ''
     acceptTerms: boolean = false
     creator!: PatientProfileCreatorDto
+
+    dateOfBirth!: Date
+    postalCode!: string
+    address1!: string
+    address2!: string
+    addressComplement!: string
+    country!: string
+    genre!: string
 }
 
 class Specialty {

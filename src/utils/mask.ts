@@ -19,7 +19,7 @@ export const formatPhone = (phoneNumber: string | undefined) => {
     else return ''
 }
 
-export const cleanNumberMask = (value: string) => {
+export const cleanNumberMask = (value: string | undefined) => {
     if (value !== undefined)
         return value.replace(_REGEX_VALID_NUMBERS, "")
     else return ''

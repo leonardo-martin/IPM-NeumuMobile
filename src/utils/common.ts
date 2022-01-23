@@ -34,6 +34,13 @@ export const scrollToRef = (ref: MutableRefObject<any>, x?: number, y?: number) 
 
 }
 
+export const extractFieldString = (value: string) => {
+    const regExp = /\(\`([^)]+)\`\)/
+    const response = regExp.exec(value)
+    if (response) return response[1].toUpperCase()
+    else return ''
+}
+
 export const getRelationPatient = (index: number) => {
     return {
         0: PatientProfileCreatorTypeEnum.PatientSelf,
@@ -48,5 +55,13 @@ export const getExamType = (index: number) => {
     return {
         0: 'clinical',
         1: 'genetic'
+    }[index]
+}
+
+export const getGender = (index: number) => {
+    return {
+        0: 'male',
+        1: 'female',
+        2: 'none'
     }[index]
 }

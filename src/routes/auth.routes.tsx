@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from 'react'
-import { createStackNavigator } from '@react-navigation/stack'
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack'
 import HeaderAuth from '@components/header/auth'
 
 import SignIn from '@pages/signin'
@@ -8,6 +8,7 @@ import SignUpPart2Screen from '@pages/signup/part2'
 import ChangePasswordChoice from '@pages/changePassword'
 import ChangePasswordRequest from '@pages/changePassword/changePasswordSpecific'
 import SignUpPart3Screen from '@pages/signup/part3'
+import RegistrationConfirmation from '@pages/signup/confirmation'
 
 const { Navigator, Screen, Group } = createStackNavigator()
 
@@ -17,10 +18,19 @@ const AuthRoutes: FC = (): ReactElement => {
     <Navigator
       initialRouteName="SignIn"
       screenOptions={{
-        headerShown: false
+        headerShown: false,
       }}
     >
-      <Screen name="SignIn" component={SignIn} />
+      <Group screenOptions={{
+        headerMode: 'float',
+        headerShown: false,
+        gestureEnabled: false,
+        ...TransitionPresets.FadeFromBottomAndroid
+      }}>
+        <Screen name="SignIn" component={SignIn} />
+        <Screen name="RegistrationConfirmation" component={RegistrationConfirmation} />
+      </Group>
+
       <Group screenOptions={{
         headerShown: true,
         header: () => <HeaderAuth />,
