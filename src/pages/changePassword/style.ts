@@ -16,8 +16,9 @@ export const changePasswdReqStyle = StyleSheet.create({
         padding: 25
     },
     radioText: {
-        fontSize: Platform.OS === 'ios' ? 14 : Platform.OS === 'android' ? 18 : 18,
+        fontSize: Platform.OS === 'ios' ? 14 : Platform.OS === 'android' ? 16 : 16,
         paddingHorizontal: 10,
-        color: 'text-hint-color'
+        color: 'text-hint-color',
+        fontWeight: 'normal'
     }
 })
