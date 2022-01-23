@@ -298,7 +298,7 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
                     />
                   ),
                   onPress: () => navigation.navigate('PresentialSchedule', {
-                    doctorId: 2,
+                    doctorId: 1,
                     doctorName: 'Davy Jones',
                     specialty: 'Ortopedista',
                     crm: 1235,
@@ -322,7 +322,7 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
                     />
                   ),
                   onPress: () => navigation.navigate('PresentialSchedule', {
-                    doctorId: 3,
+                    doctorId: 1,
                     doctorName: 'Davy Jones',
                     specialty: 'Ortopedista',
                     crm: 1236,
@@ -346,7 +346,7 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
                     />
                   ),
                   onPress: () => navigation.navigate('PresentialSchedule', {
-                    doctorId: 4,
+                    doctorId: 1,
                     doctorName: 'Davy Jones',
                     specialty: 'Ortopedista',
                     crm: 1234,

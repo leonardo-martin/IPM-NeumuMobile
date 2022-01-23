@@ -177,7 +177,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
         navigation.navigate("DoctorProfile", {
             ...profile,
             location: params?.visitAddress.street,
-            description: `Olá. Eu sou o(a) ${profile.fullName}`,
+            description: `Olá. Eu sou ${profile.fullName}`,
             phone: params?.tel
         })
     }

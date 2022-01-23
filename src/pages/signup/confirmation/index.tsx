@@ -24,13 +24,13 @@ const flatList: FlatData[] = [
     "key": "2",
     "title": "Confirmação de E-mail",
     "description": "Você irá receber um email dentro de alguns instantes para ativar sua conta.",
-    "image": "https://image.flaticon.com/icons/png/256/2593/premium/2593557.png"
+    "image": "https://image.flaticon.com/icons/png/512/2593/premium/2593557.png"
   },
   {
     "key": "3",
     "title": "Comece a utilizar!",
     "description": "Ao confirmar sua conta, você terá acesso à todas funcionalidades do app.",
-    "image": "https://image.flaticon.com/icons/png/256/2534/2534204.png"
+    "image": "https://image.flaticon.com/icons/png/512/2534/2534204.png"
   },
 ]
 

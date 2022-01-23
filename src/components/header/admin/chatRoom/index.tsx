@@ -48,7 +48,7 @@ const HeaderChatRoom: FC = (): ReactElement => {
         navigate("DoctorProfile", {
             ...profile,
             location: 'São Paulo, 123 - CEP 12345-456 - SP',
-            description: `Olá. Eu sou o(a) ${profile?.fullName}`,
+            description: `Olá. Eu sou ${profile?.fullName}`,
             phone: '11 1111-1111'
         })
         setVisible(false)

@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useEffect, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { ImageBackground, ImageStyle, ScrollView, StyleProp } from 'react-native'
 import { Button, Icon, IconProps, useStyleSheet } from '@ui-kitten/components'
 import ProfileAvatar from './profile-avatar'
@@ -10,18 +10,27 @@ import { editProfileStyle } from './style'
 import Toast from '@components/toast'
 import { UserPermission } from '@services/permission.service'
 import { formatDateFromISOToString } from '@utils/convertDate'
+import { useFocusEffect } from '@react-navigation/native'
 
 const EditProfileScreen: FC<DrawerContentComponentProps> = ({
   navigation
 }): ReactElement => {
-  const [visibleToast, setVisibleToast] = useState(false)
-  const [message, setMessage] = useState<string>('')
+
   const styles = useStyleSheet(editProfileStyle)
 
+  const { currentUser } = useAuth()
+  const [isFetching, setIsFetching] = useState<boolean>(false)
+  const { data: userDetails, error } = useFetch(isFetching ? 'user' : null)
+  const [visibleToast, setVisibleToast] = useState(false)
+  const [message, setMessage] = useState<string>('')
   useEffect(() => setVisibleToast(false), [visibleToast])
 
-  const { currentUser } = useAuth()
-  const { data: userDetails, error } = useFetch('user')
+  useFocusEffect(
+    useCallback(() => {
+      setIsFetching(true)
+      return () => setIsFetching(false)
+    }, [])
+  )
 
   useEffect(() => {
     if (error !== undefined && userDetails === undefined) {

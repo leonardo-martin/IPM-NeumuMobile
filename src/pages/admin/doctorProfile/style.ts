@@ -3,20 +3,20 @@ import { StyleSheet } from "react-native"
 export const doctorProfileStyle = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'background-basic-color-2',
+        backgroundColor: 'background-basic-color-1',
     },
     header: {
-        paddingVertical: 24,
-        alignItems: 'center',
+        paddingVertical: 10,
+        alignItems: 'center'
     },
-    profileAvatar: {
-        width: 124,
-        height: 124,
-        borderRadius: 62,
-        marginVertical: 16,
+    image: {
+        width: 200,
+        height: 200,
+        marginVertical: 25,
     },
     profileName: {
         zIndex: 1,
+        color: 'text-primary-color',
     },
     locationContainer: {
         flexDirection: 'row',
@@ -27,45 +27,40 @@ export const doctorProfileStyle = StyleSheet.create({
     location: {
         flexShrink: 1,
         marginVertical: 8,
-        textAlign: 'center'
+        textAlign: 'center',
     },
-    profileButtonsContainer: {        
+    profileButtonsContainer: {
         flexDirection: 'row',
-        marginVertical: 32,
+        marginVertical: 10,
         marginHorizontal: 20,
     },
     profileButton: {
-        flex: 1,
-        marginHorizontal: 4,
+        margin: 5,
+        borderRadius: 100,
+        width: 45,
+        borderWidth: 1,
+        borderColor: 'border-alternative-color-1'
     },
     socialsContainer: {
         flexDirection: 'row',
         width: '75%',
         marginVertical: 8,
     },
-    profileSocial: {
-        flex: 1,
+    viewAbout: {
+        paddingBottom: 20,
+        paddingHorizontal: 15
     },
-    sectionLabel: {
-        marginTop: 24,
-        marginBottom: 8,
-        marginHorizontal: 16,
+    textAbout: {
+        fontSize: 22,
+        fontFamily: 'System',
+        fontStyle: 'italic',
+        fontWeight: '100',
+        textAlign: 'center',
+        color: 'text-basic-color'
     },
-    profileDescription: {
-        marginHorizontal: 16,
-    },
-    friendsList: {
-        marginHorizontal: 8,
-    },
-    friendItem: {
-        alignItems: 'center',
-        marginHorizontal: 8,
-    },
-    friendName: {
-        marginTop: 8,
-    },
-    postItem: {
-        flex: 1,
-        aspectRatio: 1.0,
-    },
+    divider: {
+        marginBottom: 20, 
+        marginHorizontal: 20, 
+        backgroundColor: 'background-alternative-color-1'
+    }
 })
