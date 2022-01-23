@@ -4,7 +4,7 @@ import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { appointmentItemStyle } from './style'
 import { Card, Layout, Text } from '@ui-kitten/components'
 import { Appointment } from '@models/Appointment'
-import { formatDateToString } from '@utils/convertDate'
+import { formatDateTimeToString } from '@utils/convertDate'
 import { useFetch } from '@hooks/useSwr'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 
@@ -58,7 +58,7 @@ const AppointmentTabItemScreen: FC<DrawerContentComponentProps> = ({ navigation 
                                                 <View style={appointmentItemStyle.viewCardInfo}>
                                                     <Text style={appointmentItemStyle.text}>{item.medicalDoctorSummaryDto.name}</Text>
                                                     <Text style={appointmentItemStyle.text}>{item.medicalDoctorSummaryDto.specialty}</Text>
-                                                    <Text style={appointmentItemStyle.text}>{formatDateToString(item.startTime)}</Text>
+                                                    <Text style={appointmentItemStyle.text}>{formatDateTimeToString(item.startTime)}</Text>
 
                                                 </View>
                                                 <View style={[
