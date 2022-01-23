@@ -9,6 +9,7 @@ import { useAuth } from '@contexts/auth'
 import { editProfileStyle } from './style'
 import Toast from '@components/toast'
 import { UserPermission } from '@services/permission.service'
+import { formatDateFromISOToString } from '@utils/convertDate'
 
 const EditProfileScreen: FC<DrawerContentComponentProps> = ({
   navigation
@@ -20,14 +21,16 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
   useEffect(() => setVisibleToast(false), [visibleToast])
 
   const { currentUser } = useAuth()
-  const { data: userDetails, error } = useFetch('/user')
+  const { data: userDetails, error } = useFetch('user')
 
   useEffect(() => {
-    if (error !== undefined) {
+    if (error !== undefined && userDetails === undefined) {
       setMessage('Ocorreu um erro ao obter o perfil.')
       setVisibleToast(true)
+    } else {
+      setVisibleToast(false)
     }
-  }, [error])
+  }, [error, userDetails])
 
   const onDoneButtonPress = (): void => {
     // TODO
@@ -73,6 +76,11 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
         />
         <ProfileSetting
           style={styles.profileSetting}
+          hint='Data de Nascimento'
+          value={userDetails?.dateOfBirth ? formatDateFromISOToString(userDetails?.dateOfBirth) : ''}
+        />
+        <ProfileSetting
+          style={styles.profileSetting}
           hint='CPF'
           value={userDetails?.cpf}
         />
@@ -85,6 +93,37 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
           style={styles.profileSetting}
           hint='Telefone 2'
           value={userDetails?.phone2}
+        />
+
+        <ProfileSetting
+          style={[styles.profileSetting, styles.section]}
+          hint='Endereço 1'
+          value={userDetails?.address1}
+        />
+        <ProfileSetting
+          style={styles.profileSetting}
+          hint='Endereço 2'
+          value={userDetails?.address2}
+        />
+        <ProfileSetting
+          style={styles.profileSetting}
+          hint='Complemento'
+          value={userDetails?.addressComplement}
+        />
+        <ProfileSetting
+          style={styles.profileSetting}
+          hint='Cidade'
+          value={userDetails?.city}
+        />
+        <ProfileSetting
+          style={styles.profileSetting}
+          hint='Estado'
+          value={userDetails?.state}
+        />
+        <ProfileSetting
+          style={styles.profileSetting}
+          hint='País'
+          value={userDetails?.country}
         />
 
         <ProfileSetting

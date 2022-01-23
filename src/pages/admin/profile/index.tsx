@@ -46,7 +46,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
               bottom: 10
             }}
           >
-            <Text status='danger' category='label' style={styles.textFooter}>Desconectar</Text>
+            <Text status='danger' category='label' style={styles.textFooter}>Sair</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaLayout>
