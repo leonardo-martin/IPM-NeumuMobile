@@ -55,10 +55,6 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = ({
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header} >
-        {/* <Image
-          style={styles.image as StyleProp<ImageStyle>}
-          source={{ uri: 'https://cdn-icons-png.flaticon.com/512/6181/6181895.png' }}
-        /> */}
         <Image
           style={styles.image as StyleProp<ImageStyle>}
           source={{ uri: 'https://image.flaticon.com/icons/png/512/2894/premium/2894760.png' }}
