@@ -1,11 +1,11 @@
-import React, { FC, ForwardedRef, forwardRef, ReactElement, useEffect, useRef } from 'react'
+import React, { FC, ForwardedRef, forwardRef, ReactElement } from 'react'
 import { View } from 'react-native'
 import { Modalize, ModalizeProps } from 'react-native-modalize'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useStyleSheet } from '@ui-kitten/components'
 import { LiteralUnion } from '@ui-kitten/components/devsupport'
-import { modalizeStyle } from './style'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
+import { modalizeStyle } from './style'
 
 interface ModalProps extends ModalizeProps {
     ref: ForwardedRef<Modalize>

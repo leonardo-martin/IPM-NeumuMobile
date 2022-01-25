@@ -1,15 +1,15 @@
-import React, { FC, ReactElement, useCallback, useRef } from 'react'
-import { Animated, BackHandler, StatusBar, View } from 'react-native'
-import { Modalize } from 'react-native-modalize'
+import React, { FC, ReactElement, useCallback } from 'react'
+import { BackHandler, StatusBar, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { Text, Card, Icon, useStyleSheet } from '@ui-kitten/components'
+import { Host, Portal } from 'react-native-portalize'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useFocusEffect } from '@react-navigation/native'
-import { dashboardStyle } from './style'
 import ModalizeFixed from '@components/modalize'
-import HeaderAdmin from 'components/header/admin'
-import { Host, Portal } from 'react-native-portalize'
+import HeaderAdmin from '@components/header/admin'
+import { useModalize } from '@hooks/useModalize'
+import { dashboardStyle } from './style'
 
 const DashboardScreen: FC<DrawerContentComponentProps> = ({
   navigation
@@ -17,23 +17,19 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
   const gotToProfile = () => navigation.jumpTo('Profile')
   const gotToSchedule = () => navigation.jumpTo('Schedule')
   const gotToAppointments = () => navigation.jumpTo('MyAppointments')
-  const animated = useRef(new Animated.Value(0)).current;
 
   const styles = useStyleSheet(dashboardStyle)
-  const modalizeRef = useRef<Modalize>(null)
-
-  const handleClose = () => {
-    modalizeRef.current?.close()
-  }
+  const { ref, open, close } = useModalize()
 
   const exitApp = () => {
+    close()
     BackHandler.exitApp()
   }
 
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
-        modalizeRef.current?.open()
+        open()
         return true
       }
       const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress)
@@ -46,16 +42,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
       <HeaderAdmin />
       <StatusBar barStyle="dark-content" backgroundColor='transparent' translucent />
       <SafeAreaLayout insets='bottom' level='1' style={styles.safeArea}>
-        <Animated.View style={[styles.content, {
-          borderRadius: animated.interpolate({ inputRange: [0, 1], outputRange: [0, 12] }),
-          transform: [
-            {
-              scale: animated.interpolate({ inputRange: [0, 1], outputRange: [1, 0.92] }),
-            },
-          ],
-          opacity: animated.interpolate({ inputRange: [0, 1], outputRange: [1, 0.75] }),
-        }
-        ]}>
+        <View style={styles.content}>
           <View style={styles.cardContainer}>
             <Text category="h5" status='basic' style={styles.text}>
               Como podemos te ajudar?
@@ -114,15 +101,19 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
               </Card>
             </View>
           </View>
-        </Animated.View>
+        </View>
       </SafeAreaLayout>
       <Portal>
-        <ModalizeFixed ref={modalizeRef} snapPoint={300} adjustToContentHeight={true} panGestureAnimatedValue={animated} >
+        <ModalizeFixed
+          ref={ref}
+          snapPoint={300}
+          adjustToContentHeight={true}
+          withHandle={false}>
           <Text style={styles.textConfirmExit}>Deseja realmente sair do aplicativo?</Text>
           <TouchableOpacity style={styles.contentButton} activeOpacity={0.75} onPress={exitApp}>
             <Text style={styles.contentButtonText}>{'Sim'.toUpperCase()}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.contentButton, styles.buttonOutline]} activeOpacity={0.75} onPress={handleClose}>
+          <TouchableOpacity style={[styles.contentButton, styles.buttonOutline]} activeOpacity={0.75} onPress={close}>
             <Text style={[styles.contentButtonText, styles.buttonTextOutline]}>{'Não'.toUpperCase()}</Text>
           </TouchableOpacity>
         </ModalizeFixed>
