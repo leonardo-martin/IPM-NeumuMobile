@@ -9,6 +9,8 @@ import ChangePasswordChoice from '@pages/changePassword'
 import ChangePasswordRequest from '@pages/changePassword/changePasswordSpecific'
 import SignUpPart3Screen from '@pages/signup/part3'
 import RegistrationConfirmation from '@pages/signup/confirmation'
+import RNWebView from 'components/webView'
+import { Platform } from 'react-native'
 
 const { Navigator, Screen, Group } = createStackNavigator()
 
@@ -24,11 +26,14 @@ const AuthRoutes: FC = (): ReactElement => {
       <Group screenOptions={{
         headerMode: 'float',
         headerShown: false,
-        gestureEnabled: false,
-        ...TransitionPresets.FadeFromBottomAndroid
+        ...TransitionPresets.SlideFromRightIOS
       }}>
         <Screen name="SignIn" component={SignIn} />
         <Screen name="RegistrationConfirmation" component={RegistrationConfirmation} />
+        <Screen name="WebViewScreen" component={RNWebView} options={{
+          gestureDirection: "horizontal",
+          gestureEnabled: true,
+        }} />
       </Group>
 
       <Group screenOptions={{
@@ -53,6 +58,7 @@ const AuthRoutes: FC = (): ReactElement => {
         <Screen name="ChangePasswordChoice" component={ChangePasswordChoice} />
         <Screen name="ChangePasswordRequest" component={ChangePasswordRequest} />
       </Group>
+
     </Navigator>
   )
 }

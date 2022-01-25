@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { Linking, Platform, ScrollView, TouchableOpacity, View } from 'react-native'
+import { Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 import { Input, Text, Icon, useStyleSheet, Datepicker, IconProps, PopoverPlacements, RadioGroup, Radio } from '@ui-kitten/components'
 import { Controller, useForm } from 'react-hook-form'
 import { UserData } from '@models/User'
@@ -61,7 +61,9 @@ const SignUpPart1Screen: FC = (): ReactElement => {
           Cartão Nacional de Saúde (CNS){" "}
         </Text>
         <TouchableOpacity
-          onPress={() => Linking.openURL('https://www.gov.br/saude/pt-br/acesso-a-informacao/acoes-e-programas/cartao-nacional-de-saude')}
+          onPress={() => navigation.navigate('WebViewScreen', {
+            uri: 'https://www.gov.br/saude/pt-br/acesso-a-informacao/acoes-e-programas/cartao-nacional-de-saude'
+          })}
           style={styles.toggleButton}
         >
           <Icon style={styles.iconCns} name="information-circle-outline" pack='ionicons' size={20} />
