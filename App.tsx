@@ -10,6 +10,7 @@ import { FontAwesomeIconsPack } from './font-awesome-icon'
 import { FontistoIconsPack } from './fontisto-icon'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { StatusBar } from 'react-native'
+import Toast from '@components/toast'
 
 const App: FC = (): ReactElement => {
 
@@ -18,6 +19,7 @@ const App: FC = (): ReactElement => {
       <IconRegistry icons={[IoniconsIconsPack, EvaIconsPack, FontAwesomeIconsPack, FontistoIconsPack]} />
       <ThemeProvider>
         <SafeAreaProvider>
+          <Toast />
           <NavigationContainer>
             <AuthProvider>
               <StatusBar barStyle="dark-content" backgroundColor={'transparent'} translucent={true} />

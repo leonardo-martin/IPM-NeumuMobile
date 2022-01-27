@@ -8,18 +8,16 @@ import { Input, Text, Button, Icon, IconProps, Spinner, useStyleSheet } from '@u
 import TitleNeumu from '@components/titleNeumu'
 import LogoPedroMolina from '@assets/svg/logo.svg'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import Toast from '@components/toast'
 import { matchMessage } from '@utils/common'
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
+import toast from '@helpers/toast'
 
 const SignInScreen: FC = (): ReactElement => {
 
   const styles = useStyleSheet(loginStyle)
-  const [visibleToast, setVisibleToast] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const [message, setMessage] = useState<string>('')
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true)
   const { signIn } = useAuth()
   const navigation = useNavigation<any>()
@@ -32,26 +30,27 @@ const SignInScreen: FC = (): ReactElement => {
       const response = await signIn(data)
       if (response) {
         const message = response.data?.message?.message
+        let messageToast = ''
         if (message !== "" && message !== undefined) {
           const matchId = matchMessage(message)
           if (matchId === 2)
-            setMessage('E-mail não verificado')
+            messageToast = 'E-mail não verificado'
           else if (matchId === 1)
-            setMessage('Usuário e/ou senha incorretos')
+            messageToast = 'Usuário e/ou senha incorretos'
 
         } else {
-          setMessage('Usuário e/ou senha incorretos')
+          messageToast = 'Usuário e/ou senha incorretos'
         }
-        setVisibleToast(true)
+
+        toast.danger({ message: messageToast, duration: 1000 })
       }
     } catch (error) {
-      setMessage(error as string)
+      toast.danger({ message: 'Ocorreu um erro inesperado.', duration: 1000 })
+
     } finally {
       setIsLoading(false)
     }
   }
-
-  useEffect(() => setVisibleToast(false), [visibleToast])
 
   const registerName = () => navigation.navigate('SignUp')
   const recoveryPasswd = () => navigation.navigate('ChangePasswordChoice')
@@ -171,7 +170,6 @@ const SignInScreen: FC = (): ReactElement => {
                   <Text status='primary' style={styles.textHere}>aqui</Text>
                 </TouchableOpacity>
               </View>
-              <Toast visible={visibleToast} message={message} />
               <View style={styles.containerButtons}>
                 <Button
                   accessoryLeft={isLoading ? LoadingIndicator : undefined}

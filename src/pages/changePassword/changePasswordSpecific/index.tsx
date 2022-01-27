@@ -1,14 +1,14 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { SafeAreaView, ToastAndroid, View } from 'react-native'
+import { SafeAreaView, View } from 'react-native'
 import { changePasswdReqStyle } from './style'
 import { Button, Input, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { Controller, useForm } from 'react-hook-form'
 import { changePassReq } from '@services/login.service'
-import Toast from '@components/toast'
 import { useRoute } from '@react-navigation/native'
 import { cleanNumberMask, formatCpf, isEmailValid } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
+import toast from '@helpers/toast'
 
 interface ChangePasswordRequestParams {
     choice: 'CPF' | 'EMAIL'
@@ -24,10 +24,6 @@ const ChangePasswordRequest: FC = (): ReactElement => {
     const route = useRoute()
     const params = route.params as ChangePasswordRequestParams
     const [isLoading, setIsLoading] = useState(false)
-    const [visibleToast, setVisibleToast] = useState<boolean>(false)
-    const [message, setMessage] = useState<string>('')
-
-    useEffect(() => setVisibleToast(false), [visibleToast])
 
     const { control, handleSubmit, reset, formState: { errors, isSubmitSuccessful } } = useForm<ChangePasswdRequest>()
 
@@ -41,15 +37,13 @@ const ChangePasswordRequest: FC = (): ReactElement => {
             })
 
             if (response.status !== 200 && response.status !== 201) {
-                setMessage('Ocorreu um erro. Tente novamente mais tarde')
-                setVisibleToast(true)
+                toast.danger({ message: 'Ocorreu um erro. Tente novamente mais tarde.', duration: 1000 })
             } else {
-                setMessage('Foi enviado um link para redefinir a senha. Verifique sua caixa de entrada')
-                setVisibleToast(true)
+                toast.success({ message: 'Foi enviado um link para redefinir a senha. Verifique sua caixa de entrada.', duration: 1000 })
             }
         } catch (error) {
-            setMessage('Ocorreu um erro. Contate o administrador')
-            setVisibleToast(true)
+            toast.danger({ message: 'Ocorreu um erro. Contate o administrador.', duration: 1000 })
+
         } finally {
             setIsLoading(false)
         }
@@ -114,7 +108,6 @@ const ChangePasswordRequest: FC = (): ReactElement => {
                     >
                         REDEFINIR SENHA
                     </Button>
-                    <Toast visible={visibleToast} message={message} gravity={ToastAndroid.TOP} />
                 </View>
             </SafeAreaView>
         </SafeAreaLayout>

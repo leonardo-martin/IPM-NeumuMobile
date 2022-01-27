@@ -11,6 +11,7 @@ import Toast from '@components/toast'
 import { UserPermission } from '@services/permission.service'
 import { formatDateFromISOToString } from '@utils/convertDate'
 import { useFocusEffect } from '@react-navigation/native'
+import toast from '@helpers/toast'
 
 const EditProfileScreen: FC<DrawerContentComponentProps> = ({
   navigation
@@ -21,9 +22,6 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
   const { currentUser } = useAuth()
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const { data: userDetails, error } = useFetch(isFetching ? 'user' : null)
-  const [visibleToast, setVisibleToast] = useState(false)
-  const [message, setMessage] = useState<string>('')
-  useEffect(() => setVisibleToast(false), [visibleToast])
 
   useFocusEffect(
     useCallback(() => {
@@ -34,10 +32,7 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
 
   useEffect(() => {
     if (error !== undefined && userDetails === undefined) {
-      setMessage('Ocorreu um erro ao obter o perfil.')
-      setVisibleToast(true)
-    } else {
-      setVisibleToast(false)
+      toast.danger({ message: 'Ocorreu um erro ao obter o perfil.', duration: 1000 })
     }
   }, [error, userDetails])
 
@@ -151,7 +146,6 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
           EDITAR PERFIL
         </Button>
       </ScrollView>
-      <Toast visible={visibleToast} message={message} xOffset={0} />
     </>
   )
 }

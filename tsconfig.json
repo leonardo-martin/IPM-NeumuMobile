@@ -49,8 +49,14 @@
       "@components/*": [
         "components/*"
       ],
+      "@constants/*": [
+        "constants/*"
+      ],
       "@contexts/*": [
         "contexts/*"
+      ],
+      "@helpers/*": [
+        "helpers/*"
       ],
       "@hooks/*": [
         "hooks/*"

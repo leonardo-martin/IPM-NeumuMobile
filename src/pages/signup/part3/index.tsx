@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { ScrollView, ToastAndroid, View } from 'react-native'
+import { ScrollView, View } from 'react-native'
 import { Input, Text, useStyleSheet, RadioGroup, Radio, Button, CheckBox, Spinner } from '@ui-kitten/components'
 import { Controller, useForm } from 'react-hook-form'
 import { useRoute } from '@react-navigation/core'
@@ -11,8 +11,8 @@ import { cleanNumberMask, formatCpf, formatPhone, isEmailValid } from 'utils/mas
 import { validate } from 'gerador-validador-cpf'
 import { getRelationPatient, getExamType, extractFieldString } from '@utils/common'
 import { createPatientProfileCreator, createUser } from '@services/user.service'
-import Toast from '@components/toast'
 import { useNavigation } from '@react-navigation/native'
+import toast from '@helpers/toast'
 
 const SignUpPart3Screen: FC = (): ReactElement => {
 
@@ -29,8 +29,6 @@ const SignUpPart3Screen: FC = (): ReactElement => {
   const [patientProfileCreator, setPatientProfileCreator] = useState<number | PatientProfileCreatorTypeEnum | undefined>()
   const [selectedIndexExamType, setSelectedIndexExamType] = useState<number>(-1)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [errorMessage, setErrorMessage] = useState<string>('')
-  const [visibleToast, setVisibleToast] = useState<boolean>(false)
   const navigation = useNavigation<any>()
 
   const submit = async (data: UserData) => {
@@ -53,11 +51,10 @@ const SignUpPart3Screen: FC = (): ReactElement => {
 
         if (message.toUpperCase().includes('Unique constraint'.toUpperCase())) {
           const field = extractFieldString(message)
-          setErrorMessage(field + ' já cadastrado')
+          toast.danger({ message: field + ' já cadastrado', duration: 1000 })
         } else
-          setErrorMessage('Ocorreu um erro. Tente novamente mais tarde.')
+          toast.danger({ message: 'Ocorreu um erro. Tente novamente mais tarde.', duration: 1000 })
 
-        setVisibleToast(true)
       } else {
 
         await createPatientProfileCreator(data.creator, Number(response.data.patientId))
@@ -65,14 +62,12 @@ const SignUpPart3Screen: FC = (): ReactElement => {
         navigation.navigate('RegistrationConfirmation')
       }
     } catch (error) {
-      setErrorMessage('Erro desconhecido. Entre em contato com o administrador do sistema.')
-      setVisibleToast(true)
+      toast.danger({ message: 'Ocorreu um erro inesperado', duration: 1000 })
+
     } finally {
       setIsLoading(false)
     }
   }
-
-  useEffect(() => setVisibleToast(false), [visibleToast])
 
   const [indeterminate, setIndeterminate] = useState<boolean | undefined>(true)
   const [checked, setChecked] = useState<boolean | undefined>(false)
@@ -468,7 +463,6 @@ const SignUpPart3Screen: FC = (): ReactElement => {
             </View>
           </View>
         </ScrollView>
-        <Toast visible={visibleToast} message={errorMessage} gravity={ToastAndroid["CENTER"]} />
       </SafeAreaLayout>
     </>
   )

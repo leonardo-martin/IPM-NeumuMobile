@@ -6,6 +6,7 @@ import { useFocusEffect, useRoute } from '@react-navigation/native'
 import { Profile as DoctorProfile } from '@services/message.service'
 import { doctorProfileStyle } from './style'
 import { MessageCircleIcon, PhoneCallIcon, ShareIcon } from './extra/icons'
+import toast from '@helpers/toast'
 
 const DoctorProfileScreen: FC<DrawerContentComponentProps> = ({
   navigation
@@ -38,15 +39,16 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = ({
       if (Platform.OS === 'ios') url = `tel:${profile?.phone}`
       else if (Platform.OS === 'android') url = `tel:${profile?.phone}`
 
-      const supported = await Linking.canOpenURL(url);
+      const supported = await Linking.canOpenURL(url)
 
       if (supported) {
-        await Linking.openURL(url);
-      } else {
-        console.warn('Phone app não encontrado ou há um erro na URL.');
+        await Linking.openURL(url)
+      } else {        
+        toast.danger({ message: 'Ocorreu um erro ao abrir o Phone app.', duration: 1000 })
       }
-    } else console.warn('Não há telefone atrelado ao perfil')
-  }, [profile]);
+    } else
+      toast.info({ message: 'Nenhum telefone encontrado.', duration: 1000 })
+  }, [profile])
 
   const onMessageButtonPress = (): void => {
     // TODO
@@ -91,7 +93,8 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = ({
           <Button style={styles.profileButton}
             status='control'
             accessoryLeft={MessageCircleIcon}
-            onPress={onMessageButtonPress} />
+            onPress={onMessageButtonPress}
+          />
           <Button style={styles.profileButton}
             status='control'
             accessoryLeft={ShareIcon}

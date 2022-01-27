@@ -1,6 +1,5 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { IndexPath, Layout, Select, SelectItem } from '@ui-kitten/components'
-import { selectStyle } from './style'
 
 interface Item {
     id: number | string
@@ -23,7 +22,7 @@ const SelectComponent: FC<SelectProps> = ({ items, selectedIndex, onSelect }): R
     }, [selectedIndex])
 
     return (
-        <Layout style={selectStyle.container} level='1'>
+        <Layout level='1'>
             <Select
                 selectedIndex={selectedIndex}
                 onSelect={onSelect}

@@ -19,8 +19,8 @@ import { scrollToRef } from '@utils/common'
 import { Profile as DoctorProfile } from '@services/message.service'
 import ModalizeFixed from '@components/modalize'
 import HeaderAdmin from '@components/header/admin'
-import Toast from '@components/toast'
 import { localeDateService as dateService } from '@components/calendar/config'
+import toast from '@helpers/toast'
 
 interface Data {
     id: number
@@ -52,10 +52,6 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
     const route = useRoute()
     const { params }: any = route
     const modalizeRef = useRef<Modalize>(null)
-
-    const [visibleToast, setVisibleToast] = useState(false)
-    const [errorMessage, setErrorMessage] = useState<string>('Ocorreu um erro. Tente novamente mais tarde')
-    useEffect(() => setVisibleToast(false), [visibleToast])
 
     const isFocused = useIsFocused()
 
@@ -114,8 +110,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
             })
 
         } catch (error) {
-            setErrorMessage('Ocorreu um erro. Tente novamente mais tarde')
-            setVisibleToast(true)
+            toast.danger({ message: 'Ocorreu um erro. Tente novamente mais tarde.', duration: 1000 })
         } finally {
             setLoading(false)
             handleClose()
@@ -375,7 +370,6 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                     <Text style={[styles.contentButtonText, styles.buttonTextOutline]}>{'Não'.toUpperCase()}</Text>
                 </TouchableOpacity>
             </ModalizeFixed>
-            <Toast visible={visibleToast} message={errorMessage} xOffset={0} />
         </>
     )
 }

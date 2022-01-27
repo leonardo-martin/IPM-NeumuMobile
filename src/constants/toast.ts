@@ -1,0 +1,1 @@
+export const SHOW_TOAST_MESSAGE: string = 'SHOW_TOAST_MESSAGE'
