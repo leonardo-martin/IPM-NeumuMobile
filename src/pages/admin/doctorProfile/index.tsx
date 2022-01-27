@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useCallback, useState } from 'react'
-import { Image, ImageStyle, Linking, ScrollView, Share, StyleProp, View } from 'react-native'
+import { Image, ImageStyle, Linking, Platform, ScrollView, Share, StyleProp, View } from 'react-native'
 import { Button, Divider, Text, useStyleSheet } from '@ui-kitten/components'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
@@ -31,11 +31,22 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = ({
     }, [params])
   )
 
-  const onCallButtonPress = (): void => {
-    if (profile?.phone !== undefined)
-      Linking.openURL(`tel:${profile?.phone}`)
-    else console.warn('não há telefone atrelado ao perfil')
-  }
+  const onCallButtonPress = useCallback(async () => {
+
+    if (profile?.phone !== undefined) {
+      let url = `tel:${profile?.phone}`
+      if (Platform.OS === 'ios') url = `tel:${profile?.phone}`
+      else if (Platform.OS === 'android') url = `tel:${profile?.phone}`
+
+      const supported = await Linking.canOpenURL(url);
+
+      if (supported) {
+        await Linking.openURL(url);
+      } else {
+        console.warn('Phone app não encontrado ou há um erro na URL.');
+      }
+    } else console.warn('Não há telefone atrelado ao perfil')
+  }, [profile]);
 
   const onMessageButtonPress = (): void => {
     // TODO
@@ -80,7 +91,7 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = ({
           <Button style={styles.profileButton}
             status='control'
             accessoryLeft={MessageCircleIcon}
-            onPress={onCallButtonPress} />
+            onPress={onMessageButtonPress} />
           <Button style={styles.profileButton}
             status='control'
             accessoryLeft={ShareIcon}

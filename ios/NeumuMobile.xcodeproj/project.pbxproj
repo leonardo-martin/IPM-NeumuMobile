@@ -13,6 +13,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		5D428F0682E79EDBC15BCAE0 /* libPods-NeumuMobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C91322F6EF2CB126B88BBFAA /* libPods-NeumuMobile.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		C2F67A1327836D6200A1ADA4 /* RCTCalendarModule.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F67A122783624600A1ADA4 /* RCTCalendarModule.m */; };
 		F71AABD59730A27F404D0BEA /* libPods-NeumuMobile-NeumuMobileTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A79A79E8166C524B1F21277 /* libPods-NeumuMobile-NeumuMobileTests.a */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +58,8 @@
 		C2225CDD26E9716900F6911B /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		C2225CDE26E9716900F6911B /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Solid.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		C2225CDF26E9716900F6911B /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Regular.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
+		C2F67A102783619500A1ADA4 /* RCTCalendarModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTCalendarModule.h; sourceTree = "<group>"; };
+		C2F67A122783624600A1ADA4 /* RCTCalendarModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTCalendarModule.m; sourceTree = "<group>"; };
 		C91322F6EF2CB126B88BBFAA /* libPods-NeumuMobile.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NeumuMobile.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		EE8A02E320362958A5D6FEE9 /* Pods-NeumuMobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NeumuMobile.debug.xcconfig"; path = "Target Support Files/Pods-NeumuMobile/Pods-NeumuMobile.debug.xcconfig"; sourceTree = "<group>"; };
@@ -102,6 +105,9 @@
 		13B07FAE1A68108700A75B9A /* NeumuMobile */ = {
 			isa = PBXGroup;
 			children = (
+				C2F67A102783619500A1ADA4 /* RCTCalendarModule.h */,
+				C2F67A122783624600A1ADA4 /* RCTCalendarModule.m */,
+				C2F67A0E2783615A00A1ADA4 /* natives */,
 				C2225CCF26E970C100F6911B /* Fonts */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -194,6 +200,29 @@
 				C2225CDC26E9716900F6911B /* Zocial.ttf */,
 			);
 			path = Fonts;
+			sourceTree = "<group>";
+		};
+		C2F67A0E2783615A00A1ADA4 /* natives */ = {
+			isa = PBXGroup;
+			children = (
+				C2F67A0F2783617600A1ADA4 /* module */,
+			);
+			path = natives;
+			sourceTree = "<group>";
+		};
+		C2F67A0F2783617600A1ADA4 /* module */ = {
+			isa = PBXGroup;
+			children = (
+				C2F67A11278361E200A1ADA4 /* calendar */,
+			);
+			path = module;
+			sourceTree = "<group>";
+		};
+		C2F67A11278361E200A1ADA4 /* calendar */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = calendar;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -458,6 +487,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2F67A1327836D6200A1ADA4 /* RCTCalendarModule.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
