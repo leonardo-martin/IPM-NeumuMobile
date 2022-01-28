@@ -14,9 +14,11 @@ import { dashboardStyle } from './style'
 const DashboardScreen: FC<DrawerContentComponentProps> = ({
   navigation
 }): ReactElement => {
-  const gotToProfile = () => navigation.jumpTo('Profile')
-  const gotToSchedule = () => navigation.jumpTo('Schedule')
-  const gotToAppointments = () => navigation.jumpTo('MyAppointments')
+  const goToProfile = () => navigation.jumpTo('Profile')
+  const goToSchedule = () => navigation.jumpTo('Schedule')
+  const goToAppointments = () => navigation.jumpTo('MyAppointments')
+  const goToHelpMe = () => navigation.jumpTo('Help')
+
 
   const styles = useStyleSheet(dashboardStyle)
   const { ref, open, close } = useModalize()
@@ -48,7 +50,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
               Como podemos te ajudar?
             </Text>
             <View style={styles.cardGroupPrimary}>
-              <Card onPress={gotToSchedule}>
+              <Card onPress={goToSchedule}>
                 <View style={styles.cardDefault}>
                   <Icon style={styles.iconOrange} name="calendar-outline" size={50} pack='ionicons' />
                   <Text category="h6" style={[styles.cardText, {
@@ -60,7 +62,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
               </Card>
             </View>
             <View style={styles.cardGroupSecondary}>
-              <Card style={styles.card} onPress={gotToProfile}>
+              <Card style={styles.card} onPress={goToProfile}>
                 <View style={styles.cardDefault}>
                   <Icon style={styles.iconPrimary} name='prescription' size={40} pack='fontisto' />
                 </View>
@@ -68,7 +70,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                   Meu perfil
                 </Text>
               </Card>
-              <Card style={styles.card} onPress={gotToAppointments}>
+              <Card style={styles.card} onPress={goToAppointments}>
                 <View style={styles.cardDefault}>
                   <Icon style={styles.iconPrimary} name='stethoscope' size={40} pack='font-awesome' />
                 </View>
@@ -91,7 +93,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                   Sobre
                 </Text>
               </Card>
-              <Card style={styles.card}>
+              <Card style={styles.card}  onPress={goToHelpMe}>
                 <View style={styles.cardDefault}>
                   <Icon style={styles.iconPrimary} name="help-circle-outline" size={40} pack='ionicons' />
                 </View>

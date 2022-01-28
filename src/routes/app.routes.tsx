@@ -23,6 +23,7 @@ import EditProfileScreen from '@pages/admin/profile/extra'
 import AppointmentsScreen from '@pages/admin/appointments'
 import NotificationScreen from '@pages/admin/configuration/notification'
 import ConfirmationScheduleScreen from '@pages/admin/schedule/confirmation'
+import HelpScreen from '@pages/admin/help'
 
 const { Navigator, Screen, Group } = createDrawerNavigator()
 
@@ -52,15 +53,13 @@ const AppRoutes: FC = (): ReactElement => {
           name="PresentialSchedule"
           component={PresentialScheduleScreen}
         />
-      </Group>
-
-      <Group screenOptions={{
-        swipeEnabled: false,
-        headerShown: false
-      }}>
         <Screen
           name="ConfirmationSchedule"
           component={ConfirmationScheduleScreen}
+        />
+        <Screen
+          name="Help"
+          component={HelpScreen}
         />
       </Group>
 

@@ -1,12 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Theme } from '@models/Theme'
-import { THEME_KEY, TOKEN_KEY, USER_KEY } from './contants'
+import { THEME_KEY, TOKEN_KEY, USER_KEY } from '@constants/storage'
 import { TokenModel } from '@models/TokenModel'
 
 export class AppStorage {
 
     static clear = async (): Promise<void> => {
         await AsyncStorage.clear()
+    }
+
+    static setItem = async (key: string, value: string): Promise<void> => {
+        await AsyncStorage.setItem(key, value)
+    }
+
+    static getItem = async (key: string): Promise<string | null> => {
+        return await AsyncStorage.getItem(key)
     }
 
     static removeItem = async (key: string): Promise<void> => {

@@ -9,8 +9,7 @@ import ChangePasswordChoice from '@pages/changePassword'
 import ChangePasswordRequest from '@pages/changePassword/changePasswordSpecific'
 import SignUpPart3Screen from '@pages/signup/part3'
 import RegistrationConfirmation from '@pages/signup/confirmation'
-import RNWebView from 'components/webView'
-import { Platform } from 'react-native'
+import RNWebView from '@components/webView'
 
 const { Navigator, Screen, Group } = createStackNavigator()
 

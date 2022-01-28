@@ -5,6 +5,7 @@ import { signInRequest } from '@services/auth.service'
 import jwt_decode from 'jwt-decode'
 import { api } from '@services/api.service'
 import { AppStorage } from '@services/app-storage.service'
+import { THEME_KEY, TOKEN_KEY, USER_KEY } from '@constants/storage'
 
 interface AuthContextType {
     isAuthenticated: boolean
@@ -54,7 +55,9 @@ const AuthProvider: FC = ({ children }) => {
     }
 
     const signOut = async () => {
-        AppStorage.clear()
+        await AppStorage.removeItem(THEME_KEY)
+        await AppStorage.removeItem(TOKEN_KEY)
+        await AppStorage.removeItem(USER_KEY)        
         setCurrentUser(null)
     }
 
