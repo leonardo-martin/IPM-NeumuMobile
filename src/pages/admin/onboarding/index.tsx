@@ -69,7 +69,7 @@ const Onboarding: FC<OnboardingProps> = ({ setOnboarded }): ReactElement => {
                 <View onLayout={onLayout} style={{
                     ...styles.skipContainer,
                     width,
-                    minHeight: size
+                    height: size
                 }}>
                     {(selectedIndex !== (flatList.length - 1)) ?
                         <TouchableOpacity onPress={skipOnboarding}>
@@ -77,6 +77,7 @@ const Onboarding: FC<OnboardingProps> = ({ setOnboarded }): ReactElement => {
                         </TouchableOpacity>
                         : null}
                 </View>
+
                 <Animated.FlatList
                     ref={flatRef}
                     data={flatList}

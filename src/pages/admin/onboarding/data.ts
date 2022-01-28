@@ -16,7 +16,7 @@ export const flatList: FlatData[] = [
     {
         "key": "3",
         "title": "Let's Go!",
-        "description": "Junte-se a nós e faça parte do TeleNeumu.",
+        "description": "",
         "image": require('../../../assets/onboarding/success.png')
     },
 ]

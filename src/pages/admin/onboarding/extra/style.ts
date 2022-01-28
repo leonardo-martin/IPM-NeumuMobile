@@ -24,7 +24,7 @@ export const onboardingItemStyles = StyleSheet.create({
     view: {
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'baseline'
+        alignItems: 'center'
     },
     icon: {
         color: 'text-basic-color',

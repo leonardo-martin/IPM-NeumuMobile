@@ -13,11 +13,12 @@ export const onboardingStyles = StyleSheet.create({
     skipContainer: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        padding: 20
+        padding: 10,
+        paddingHorizontal: 20
     },
     indicator: {
         position: 'absolute',
-        bottom: 80,
+        bottom: 40,
         flexDirection: 'row'
     },
     indicatorItem: {

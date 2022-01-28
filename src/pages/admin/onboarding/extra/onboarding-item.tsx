@@ -1,6 +1,6 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { Animated, Easing, Image, ImageStyle, Platform, Pressable, StyleProp, useWindowDimensions, View } from 'react-native'
-import { Icon, Text, useStyleSheet } from '@ui-kitten/components'
+import { Animated, Easing, Image, ImageStyle, Platform, StyleProp, useWindowDimensions, View } from 'react-native'
+import { Button, Text, useStyleSheet } from '@ui-kitten/components'
 import { FlatData } from '@models/FlatData'
 import { onboardingItemStyles } from './style'
 import { flatList } from '../data'
@@ -51,15 +51,12 @@ const OnboardingItem: FC<OnboardingItemProps> = ({ item, index, exitOnboarding }
                 }]}
             />
             <View style={{ flex: 0.3 }}>
+                <Text style={styles.title}>{item.title}</Text>
                 {index === (flatList.length - 1) && item.key === `${(index + 1)}` ?
-                    <Pressable onPress={exitOnboarding}>
-                        <View style={styles.view}>
-                            <Text style={styles.title}>{item.title}</Text>
-                            <Icon style={styles.icon} name='arrow-forward-circle-outline'
-                                size={25} pack='ionicons' />
-                        </View>
-                    </Pressable> : <Text style={styles.title}>{item.title}</Text>}
-                <Text style={styles.description}>{item.description}</Text>
+                    <View style={styles.view}>
+                        <Button onPress={exitOnboarding} appearance='outline' size='small'>Começar</Button>
+                    </View>
+                    : <Text style={styles.description}>{item.description}</Text>}
             </View>
         </View>
     )
