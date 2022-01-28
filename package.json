@@ -40,7 +40,7 @@
     "react-native-datepicker": "^1.7.2",
     "react-native-device-info": "^8.4.8",
     "react-native-dotenv": "^3.2.0",
-    "react-native-gesture-handler": "^2.1.0",
+    "react-native-gesture-handler": "^2.2.0",
     "react-native-modalize": "^2.0.13",
     "react-native-pager-view": "^5.4.9",
     "react-native-portalize": "^1.0.7",
