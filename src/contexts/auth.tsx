@@ -30,7 +30,7 @@ const AuthProvider: FC = ({ children }) => {
 
             if (storagedUser && storagedToken) {
                 setCurrentUser(JSON.parse(storagedUser))                
-                api.defaults.headers.Authorization = `Bearer ${storagedToken}`
+                api.defaults.headers.common['Authorization'] = `Bearer ${storagedToken}`
             }
             setLoading(false)
         }
@@ -45,7 +45,7 @@ const AuthProvider: FC = ({ children }) => {
                 const { accessToken } = response.data
                 const user = jwt_decode(accessToken) as TokenModel
                 setCurrentUser(user)
-                api.defaults.headers.Authorization = `Bearer ${accessToken}`
+                api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
                 AppStorage.setUserContext(user)
                 AppStorage.setUserToken(accessToken)
             }
