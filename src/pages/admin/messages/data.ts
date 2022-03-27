@@ -1,4 +1,5 @@
 import { Message, Profile } from "@services/message.service"
+import { BOOTDEY_URI } from "@constants/uri"
 
 export const initialMessages: Message[] = [
   new Message(
@@ -10,7 +11,7 @@ export const initialMessages: Message[] = [
       1,
       'Jack',
       'Sparrow',
-      'https://bootdey.com/img/Content/avatar/avatar6.png',
+      BOOTDEY_URI + '/img/Content/avatar/avatar6.png',
     ),
   ),
   new Message(
@@ -22,7 +23,7 @@ export const initialMessages: Message[] = [
       2,
       'Elizabeth',
       'Swann',
-      'https://bootdey.com/img/Content/avatar/avatar6.png',
+      BOOTDEY_URI + '/img/Content/avatar/avatar6.png',
     ),
   ),
   new Message(
@@ -34,7 +35,7 @@ export const initialMessages: Message[] = [
       3,
       'Will',
       'Turner',
-      'https://bootdey.com/img/Content/avatar/avatar6.png',
+      BOOTDEY_URI + '/img/Content/avatar/avatar6.png',
     ),
   ),
 ]

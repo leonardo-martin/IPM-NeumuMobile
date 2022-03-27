@@ -7,6 +7,7 @@ import { useAuth } from '@contexts/auth'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { data } from './data'
 import ListComponent from '@components/list'
+import { BOOTDEY_URI } from '@constants/uri'
 
 const ProfileScreen: FC<DrawerContentComponentProps> = ({
   navigation
@@ -19,7 +20,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
         <View style={styles.contentContainer}>
           <Avatar style={styles.avatar as StyleProp<ImageStyle>}
             shape='round'
-            source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar6.png' }}
+            source={{ uri:  BOOTDEY_URI + '/img/Content/avatar/avatar6.png' }}
             ImageComponent={ImageBackground} />
           <View style={styles.body}>
             <View style={styles.bodyContent}>

@@ -21,6 +21,7 @@ import ModalizeFixed from '@components/modalize'
 import HeaderAdmin from '@components/header/admin'
 import { localeDateService as dateService } from '@components/calendar/config'
 import toast from '@helpers/toast'
+import { BOOTDEY_URI } from '@constants/uri'
 
 interface Data {
     id: number
@@ -167,7 +168,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
             params?.doctorId,
             params?.doctorName,
             '',
-            'https://bootdey.com/img/Content/avatar/avatar6.png',
+            BOOTDEY_URI + '/img/Content/avatar/avatar6.png',
         )
         navigation.navigate("DoctorProfile", {
             ...profile,
@@ -255,7 +256,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                             <View style={styles.viewDoctorProfile}>
                                 <Avatar
                                     style={styles.avatarDoctor as StyleProp<ImageStyle>}
-                                    source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar1.png' }}
+                                    source={{ uri: BOOTDEY_URI + '/img/Content/avatar/avatar1.png' }}
                                     ImageComponent={ImageBackground} />
                                 <View>
                                     <Text

@@ -7,10 +7,9 @@ import { Profile as DoctorProfile } from '@services/message.service'
 import { doctorProfileStyle } from './style'
 import { MessageCircleIcon, PhoneCallIcon, ShareIcon } from './extra/icons'
 import toast from '@helpers/toast'
+import { FLATICON_URI } from 'constants/uri'
 
-const DoctorProfileScreen: FC<DrawerContentComponentProps> = ({
-  navigation
-}): ReactElement => {
+const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
 
   const styles = useStyleSheet(doctorProfileStyle)
   const route = useRoute()
@@ -70,7 +69,7 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = ({
       <View style={styles.header} >
         <Image
           style={styles.image as StyleProp<ImageStyle>}
-          source={{ uri: 'https://image.flaticon.com/icons/png/512/2894/premium/2894760.png' }}
+          source={{ uri: FLATICON_URI + '/icons/png/512/2894/premium/2894760.png' }}
         />
         <Text
           style={styles.profileName}

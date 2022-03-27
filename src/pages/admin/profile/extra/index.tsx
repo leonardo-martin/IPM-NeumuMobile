@@ -7,11 +7,11 @@ import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFetch } from '@hooks/useSwr'
 import { useAuth } from '@contexts/auth'
 import { editProfileStyle } from './style'
-import Toast from '@components/toast'
 import { UserPermission } from '@services/permission.service'
 import { formatDateFromISOToString } from '@utils/convertDate'
 import { useFocusEffect } from '@react-navigation/native'
 import toast from '@helpers/toast'
+import { BOOTDEY_URI } from '@constants/uri'
 
 const EditProfileScreen: FC<DrawerContentComponentProps> = ({
   navigation
@@ -69,7 +69,7 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
         contentContainerStyle={styles.contentContainer}>
         <ProfileAvatar
           style={styles.profileAvatar as StyleProp<ImageStyle>}
-          source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar6.png' }}
+          source={{ uri:  BOOTDEY_URI + '/img/Content/avatar/avatar6.png' }}
           ImageComponent={ImageBackground}
           editButton={renderPhotoButton}
         />

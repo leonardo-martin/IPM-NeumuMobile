@@ -9,6 +9,7 @@ import { City, UF } from '@models/Places'
 import specialties from '@utils/specialties'
 import ListComponentWithAvatar from '@components/menuList'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
+import { BOOTDEY_URI } from '@constants/uri'
 
 const filter = (item: any, query: any) => item.sigla.toLowerCase().includes(query.toLowerCase())
 const filterCity = (item: any, query: any) => item.nome.toLowerCase().includes(query.toLowerCase())
@@ -269,7 +270,7 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
                     <Avatar
                       {...props}
                       style={[props.style, { tintColor: null }]}
-                      source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar1.png' }}
+                      source={{ uri: BOOTDEY_URI + '/img/Content/avatar/avatar1.png' }}
                       ImageComponent={ImageBackground}
                     />
                   ),
@@ -293,7 +294,7 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
                     <Avatar
                       {...props}
                       style={[props.style, { tintColor: null }]}
-                      source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar2.png' }}
+                      source={{ uri: BOOTDEY_URI + '/img/Content/avatar/avatar2.png' }}
                       ImageComponent={ImageBackground}
                     />
                   ),
@@ -317,7 +318,7 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
                     <Avatar
                       {...props}
                       style={[props.style, { tintColor: null }]}
-                      source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar4.png' }}
+                      source={{ uri: BOOTDEY_URI + '/img/Content/avatar/avatar4.png' }}
                       ImageComponent={ImageBackground}
                     />
                   ),
@@ -341,7 +342,7 @@ const ChoiceScheduleScreen: FC<DrawerContentComponentProps> = ({
                     <Avatar
                       {...props}
                       style={[props.style, { tintColor: null }]}
-                      source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar7.png' }}
+                      source={{ uri: BOOTDEY_URI + '/img/Content/avatar/avatar7.png' }}
                       ImageComponent={ImageBackground}
                     />
                   ),
