@@ -33,6 +33,6 @@ export const drawerStyle = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    paddingVertical: 10    
+    paddingVertical: 5    
   },
 })

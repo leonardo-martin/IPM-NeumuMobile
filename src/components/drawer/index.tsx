@@ -10,7 +10,7 @@ import PhoneIcon from '@assets/svg/phone.svg'
 import HouseIcon from '@assets/svg/house.svg'
 import { BOOTDEY_URI } from '@constants/uri'
 
-const _VERSION: string = AppInfoService.getVersion()
+const _VERSION: string = AppInfoService.getVersion() + '.' + AppInfoService.getBuildNumber()
 const iconSizeDefault = 20
 
 const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
@@ -46,7 +46,7 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
     <SafeAreaLayout insets='bottom'>
       <React.Fragment>
         <View style={drawerStyle.footer}>
-          <Text>Versão {_VERSION}</Text>
+          <Text category={'label'}>v{_VERSION}</Text>
         </View>
       </React.Fragment>
     </SafeAreaLayout>

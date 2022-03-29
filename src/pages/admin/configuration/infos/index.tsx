@@ -7,7 +7,7 @@ import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { infoAppStyle } from './style'
 import LogoPedroMolina from '@assets/svg/logo.svg'
 
-const _VERSION: string = AppInfoService.getVersion()
+const _VERSION: string = AppInfoService.getVersion() + '.' + AppInfoService.getBuildNumber()
 
 const InformationAppScreen: FC = (): ReactElement => {
 
@@ -21,7 +21,7 @@ const InformationAppScreen: FC = (): ReactElement => {
                         <Text category="label" status='primary' style={infoAppStyle.text}>{" "}ATOS{" "}</Text>
                         <Text category="label" status='basic' style={infoAppStyle.text}>Brasil</Text>
                     </View>
-                    <Text category="c2" style={infoAppStyle.text}>Versão {_VERSION}</Text>
+                    <Text category="c2" style={infoAppStyle.text}>v{_VERSION}</Text>
                 </View>
             </View>
         </SafeAreaLayout>
