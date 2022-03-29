@@ -27,6 +27,15 @@ export const data: ItemInfo[] = [
         },
     },
     {
+        title: 'Termos e Condições de Uso',
+        description: '',
+        route: 'TermsAndConditions',
+        icon: {
+            name: 'bookmark-outline',
+            pack: 'eva'
+        },
+    },
+    {
         title: 'Informações do Aplicativo',
         description: 'Versão',
         route: 'InformationApp',
