@@ -5,7 +5,7 @@ import { Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kit
 import { BackIcon } from '@components/header/icons/icons'
 import { confirmationScheduleStyle } from './styles'
 import { CommonActions, useFocusEffect, useRoute } from '@react-navigation/native'
-import { CreateAppointment } from 'models/Appointment'
+import { CreateAppointment } from '@models/Appointment'
 import { BackHandler, View } from 'react-native'
 
 const ConfirmationScheduleScreen: FC<DrawerContentComponentProps> = ({

@@ -83,6 +83,7 @@ project.ext.react = [
 
 apply from: "../../node_modules/react-native/react.gradle"
 
+
 /**
  * Set this to true to create two separate APKs instead of one:
  *   - An APK that only works on ARM devices
@@ -152,7 +153,16 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('RELEASE_KEYSTORE_FILE')) {
+                storeFile file(project.property('RELEASE_KEYSTORE_FILE'))
+                storePassword project.property('RELEASE_STORE_PASSWORD')
+                keyAlias project.property('RELEASE_KEY_ALIAS')
+                keyPassword project.property('RELEASE_KEY_PASSWORD')
+            }
+        }
     }
+
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
@@ -160,7 +170,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -219,6 +229,17 @@ dependencies {
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.implementation
     into 'libs'
+}
+
+task printProperties {
+    doFirst {
+        println '############# gradle.properties #############'
+        println 'Keystore FileName     = ' + project.property('RELEASE_KEYSTORE_FILE')
+        println 'Keystore Password     = ' + project.property('RELEASE_STORE_PASSWORD')
+        println 'Keystore Key Alias    = ' + project.property('RELEASE_KEY_ALIAS')
+        println 'Keystore Key Password = ' + project.property('RELEASE_KEY_PASSWORD')
+        println '############# gradle.properties #############'
+    }
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

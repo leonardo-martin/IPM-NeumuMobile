@@ -7,7 +7,7 @@ import { Profile as DoctorProfile } from '@services/message.service'
 import { doctorProfileStyle } from './style'
 import { MessageCircleIcon, PhoneCallIcon, ShareIcon } from './extra/icons'
 import toast from '@helpers/toast'
-import { FLATICON_URI } from 'constants/uri'
+import { FLATICON_URI } from '@constants/uri'
 
 const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
 
