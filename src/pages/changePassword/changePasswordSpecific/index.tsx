@@ -39,8 +39,9 @@ const ChangePasswordRequest: FC = (): ReactElement => {
             if (response.status !== 200 && response.status !== 201) {
                 toast.danger({ message: 'Ocorreu um erro. Tente novamente mais tarde.', duration: 1000 })
             } else {
-                toast.success({ message: 'Foi enviado um link para redefinir a senha. Verifique sua caixa de entrada.', duration: 1000 })
+                toast.success({ message: 'Foi enviado um link para redefinir a senha. Verifique sua caixa de entrada.', duration: 5000 })
             }
+
         } catch (error) {
             toast.danger({ message: 'Ocorreu um erro. Contate o administrador.', duration: 1000 })
 

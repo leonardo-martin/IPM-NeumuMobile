@@ -257,7 +257,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                                 <Avatar
                                     style={styles.avatarDoctor as StyleProp<ImageStyle>}
                                     source={{ uri: BOOTDEY_URI + '/img/Content/avatar/avatar1.png' }}
-                                    ImageComponent={ImageBackground} />
+                                     />
                                 <View>
                                     <Text
                                         category="h5"

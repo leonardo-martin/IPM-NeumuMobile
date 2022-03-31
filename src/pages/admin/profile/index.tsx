@@ -21,7 +21,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
           <Avatar style={styles.avatar as StyleProp<ImageStyle>}
             shape='round'
             source={{ uri:  BOOTDEY_URI + '/img/Content/avatar/avatar6.png' }}
-            ImageComponent={ImageBackground} />
+             />
           <View style={styles.body}>
             <View style={styles.bodyContent}>
               <Text style={styles.profileName}>@{currentUser ? currentUser.user : ''}</Text>
