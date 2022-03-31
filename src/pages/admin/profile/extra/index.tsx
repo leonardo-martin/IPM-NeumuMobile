@@ -12,6 +12,7 @@ import { formatDateFromISOToString } from '@utils/convertDate'
 import { useFocusEffect } from '@react-navigation/native'
 import toast from '@helpers/toast'
 import { BOOTDEY_URI } from '@constants/uri'
+import { formatPhone } from '@utils/mask'
 
 const EditProfileScreen: FC<DrawerContentComponentProps> = ({
   navigation
@@ -70,7 +71,6 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
         <ProfileAvatar
           style={styles.profileAvatar as StyleProp<ImageStyle>}
           source={{ uri:  BOOTDEY_URI + '/img/Content/avatar/avatar6.png' }}
-          ImageComponent={ImageBackground}
           editButton={renderPhotoButton}
         />
         <ProfileSetting
@@ -91,12 +91,12 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
         <ProfileSetting
           style={styles.profileSetting}
           hint='Telefone 1'
-          value={userDetails?.phone1}
+          value={formatPhone(userDetails?.phone1)}
         />
         <ProfileSetting
           style={styles.profileSetting}
           hint='Telefone 2'
-          value={userDetails?.phone2}
+          value={formatPhone(userDetails?.phone2)}
         />
 
         <ProfileSetting
