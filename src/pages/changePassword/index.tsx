@@ -1,8 +1,8 @@
-import React, { FC, ReactElement, useEffect, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native'
 import { changePasswdReqStyle } from './style'
 import { Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 
 const ChangePasswordChoice: FC = (): ReactElement => {
@@ -11,17 +11,21 @@ const ChangePasswordChoice: FC = (): ReactElement => {
     const { navigate } = useNavigation<any>()
     const styles = useStyleSheet(changePasswdReqStyle)
 
+    useFocusEffect(
+        useCallback(() => {
+            setSelectedIndex(-1)
+        }, [])
+    )
+
     useEffect(() => {
         if (selectedIndex === 0) {
             navigate('ChangePasswordRequest', {
                 choice: 'CPF'
             })
-            setSelectedIndex(-1)
         } else if (selectedIndex === 1) {
             navigate('ChangePasswordRequest', {
                 choice: 'EMAIL'
             })
-            setSelectedIndex(-1)
         }
     }, [selectedIndex])
 

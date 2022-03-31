@@ -1,4 +1,4 @@
-import { PatientProfileCreatorTypeEnum } from "models/PatientProfileCreator"
+import { PatientProfileCreatorTypeEnum } from "@models/PatientProfileCreator"
 import { MutableRefObject } from "react"
 
 export const matchMessage = (message: any) => {
@@ -41,7 +41,7 @@ export const extractFieldString = (value: string) => {
     else return ''
 }
 
-export const getRelationPatient = (index: number) => {
+export const getRelationPatient = (index: number): string | undefined => {
     return {
         0: PatientProfileCreatorTypeEnum.PatientSelf,
         1: PatientProfileCreatorTypeEnum.PatientRelated,
@@ -51,14 +51,24 @@ export const getRelationPatient = (index: number) => {
     }[index]
 }
 
-export const getExamType = (index: number) => {
+export const getRelationPastExams = (index: number): string | undefined => {
+    return {
+        0: 'Confirmado DFEU 1',
+        1: 'Confirmado DFEU 2',
+        2: 'Não Confirmado DFEU',
+        3: 'Resultado Pendente',
+        4: 'Não Testado'
+    }[index]
+}
+
+export const getExamType = (index: number): string | undefined => {
     return {
         0: 'clinical',
         1: 'genetic'
     }[index]
 }
 
-export const getGender = (index: number) => {
+export const getGender = (index: number): string | undefined => {
     return {
         0: 'male',
         1: 'female',

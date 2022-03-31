@@ -1,5 +1,53 @@
 import { Platform, StyleSheet } from 'react-native'
 
+export const signupStyle = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+    },
+    button: {
+        width: 50,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10,
+        borderRadius: 30,
+        backgroundColor: 'color-primary-default'
+    },
+    stepIndicator: {
+        backgroundColor: 'color-primary-default',
+        width: 40,
+        height: 40,
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    termsModal: {
+        padding: 25
+    },
+    checkbox: {
+        margin: 2,
+    },
+    viewCheckbox: {
+        alignItems: 'flex-start',
+        paddingVertical: 20
+    },
+    text: {
+        color: 'text-basic-color',
+        alignItems: 'flex-start',
+        fontSize: 11,
+        padding: 4
+    },
+    content: {
+        flex: 1,
+        paddingHorizontal: 15
+    },
+    viewBtn: {
+        flexDirection: 'row',
+        alignSelf: 'center',
+        paddingVertical: 15
+    }
+})
+
 export const registerStyle = StyleSheet.create({
     safeArea: {
         flex: 1,
@@ -11,18 +59,13 @@ export const registerStyle = StyleSheet.create({
     contentPage3: {
         flex: 1,
     },
-    scrollContent: {
-        flexGrow: 1
-    },
     radioGroup: {
         padding: 25,
         paddingVertical: 10
     },
     box: {
         flex: 1,
-        paddingVertical: 0,
-        padding: 25,
-        justifyContent: 'center'
+        padding: 15
     },
     boxMultiplesInputs: {
         paddingVertical: 0,
@@ -34,12 +77,12 @@ export const registerStyle = StyleSheet.create({
         padding: 4
     },
     labelTitle: {
-        fontSize: Platform.OS === 'ios' ? 20 : Platform.OS === 'android' ? 24 : 24,
+        fontSize: 16,
         padding: Platform.OS === 'ios' ? 15 : Platform.OS === 'android' ? 5 : 5,
+        textAlign: 'justify'
     },
     viewLabel: {
-        alignItems: 'flex-start',
-        paddingHorizontal: 20
+        alignItems: 'flex-start'
     },
     text: {
         color: 'text-basic-color',
@@ -49,15 +92,6 @@ export const registerStyle = StyleSheet.create({
     },
     input: {
         paddingVertical: 5
-    },
-    button: {
-        width: 50,
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 10,
-        borderRadius: 100,
-        backgroundColor: 'color-primary-default'
     },
     toggleButton: {
         width: 20,
@@ -86,9 +120,6 @@ export const registerStyle = StyleSheet.create({
         alignItems: 'flex-end',
         paddingVertical: 25
     },
-    icon: {
-        color: 'color-basic-200'
-    },
     iconCns: {
         color: 'color-basic-600'
     },
@@ -102,13 +133,6 @@ export const registerStyle = StyleSheet.create({
         color: 'text-hint-color',
         fontWeight: 'normal'
     },
-    checkbox: {
-        margin: 2,
-    },
-    viewCheckbox: {
-        alignItems: 'flex-start',
-        padding: 25
-    },
     viewConfirmBtn: {
         width: '85%',
     },
@@ -117,7 +141,7 @@ export const registerStyle = StyleSheet.create({
         fontFamily: "System",
         fontSize: 12,
         fontWeight: "800",
-        marginTop: 8,        
+        marginTop: 8,
         textAlign: "left"
     },
     backdropSpinner: {
@@ -131,5 +155,5 @@ export const registerStyle = StyleSheet.create({
         width: '100%',
         backgroundColor: 'background-basic-color-2',
         opacity: 0.6
-    }
+    },
 })

@@ -20,8 +20,9 @@ export class UserData {
     specialty?: NestedValue<Specialty>
     city: string = ''
     state: string = ''
-    acceptTerms: boolean = false
     creator!: PatientProfileCreatorDto
+
+    abrafeuRegistrationOptIn!: string
 
     dateOfBirth!: Date
     postalCode!: string
@@ -30,6 +31,8 @@ export class UserData {
     addressComplement!: string
     country!: string
     genre!: string
+
+    pastExams?: ExamDNA
 }
 
 class Specialty {
@@ -44,4 +47,11 @@ export class UserAccRecoveryPasswdRequest {
 export class UserAccRecoveryPasswd {
     token: string = ''
     newPassword: string = ''
+}
+
+interface ExamDNA {
+    exam?: string,
+    doctor?: {
+        crm?: string
+    }
 }

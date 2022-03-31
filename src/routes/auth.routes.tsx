@@ -3,13 +3,11 @@ import { createStackNavigator, TransitionPresets } from '@react-navigation/stack
 import HeaderAuth from '@components/header/auth'
 
 import SignIn from '@pages/signin'
-import SignUpPart1Screen from '@pages/signup/part1'
-import SignUpPart2Screen from '@pages/signup/part2'
 import ChangePasswordChoice from '@pages/changePassword'
 import ChangePasswordRequest from '@pages/changePassword/changePasswordSpecific'
-import SignUpPart3Screen from '@pages/signup/part3'
 import RegistrationConfirmation from '@pages/signup/confirmation'
 import RNWebView from '@components/webView'
+import SignUpScreen from '@pages/signup'
 
 const { Navigator, Screen, Group } = createStackNavigator()
 
@@ -51,10 +49,14 @@ const AuthRoutes: FC = (): ReactElement => {
           }
         }
       }}>
-        <Screen name="SignUp" component={SignUpPart1Screen} />
-        <Screen name="SignUpPart2" component={SignUpPart2Screen} />
-        <Screen name="SignUpPart3" component={SignUpPart3Screen} />
-        <Screen name="ChangePasswordChoice" component={ChangePasswordChoice} />
+        <Screen name='SignUp' component={SignUpScreen}
+          options={{
+            ...TransitionPresets.ModalSlideFromBottomIOS
+          }} />
+        <Screen name="ChangePasswordChoice" component={ChangePasswordChoice}
+          options={{
+            ...TransitionPresets.ModalSlideFromBottomIOS
+          }} />
         <Screen name="ChangePasswordRequest" component={ChangePasswordRequest} />
       </Group>
 

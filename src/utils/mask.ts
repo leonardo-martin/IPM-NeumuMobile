@@ -1,8 +1,8 @@
 import { _REGEX_VALID_EMAIL, _REGEX_VALID_FULLNAME, _REGEX_VALID_NUMBERS } from "./constants"
 
-export const formatCpf = (cpf: string | undefined) => {
-    if (cpf !== undefined)
-        return cpf
+export const formatCpf = (value: string | undefined) => {
+    if (value !== undefined && typeof value === 'string')
+        return value
             .replace(/\D/g, '')
             .replace(/(\d{3})(\d)/, "$1.$2")
             .replace(/(\d{3})(\d)/, "$1.$2")
@@ -10,35 +10,35 @@ export const formatCpf = (cpf: string | undefined) => {
     else return ''
 }
 
-export const formatPhone = (phoneNumber: string | undefined) => {
-    if (phoneNumber !== undefined)
-        return phoneNumber
-            .replace(/\D/g, '')
-            .replace(/^(\d{2})\B/, '($1) ')
-            .replace(/(\d{1})?(\d{4})(\d{4})/, '$1$2-$3')
-    else return ''
+export const formatPhone = (value: string | undefined) => {
+    if (value !== undefined && typeof value === 'string') {
+        value = value.replace(/\D/g, "")
+        value = value.replace(/^(\d{2})(\d)/g, "($1) $2")
+        value = value.replace(/(\d)(\d{4})$/, "$1-$2")
+        return value
+    } else return ''
 }
 
 export const cleanNumberMask = (value: string | undefined) => {
-    if (value !== undefined)
+    if (value !== undefined && typeof value === 'string')
         return value.replace(_REGEX_VALID_NUMBERS, "")
     else return ''
 }
 
 export const onlyNumbers = (value: string) => {
-    if (value !== undefined)
+    if (value !== undefined && typeof value === 'string')
         return value.replace(_REGEX_VALID_NUMBERS, "")
     else return ''
 }
 
 export const onlyLetters = (value: string) => {
-    if (value !== undefined)
+    if (value !== undefined && typeof value === 'string')
         return value.replace(_REGEX_VALID_FULLNAME, "").replace(/\s+/g, ' ')
     else return ''
 }
 
 export const formatUsername = (value: string) => {
-    if (value !== undefined)
+    if (value !== undefined && typeof value === 'string')
         return value.replace(/[^0-9a-z]/g, "")
     else return ''
 }
