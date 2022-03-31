@@ -16,6 +16,7 @@ export const data: ItemInfo[] = [
         icon: {
             name: 'unlock-outline',
             pack: 'eva'
-        }
+        },
+        route: 'ChangePasswordChoice'
     },
 ]
