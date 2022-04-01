@@ -23,7 +23,7 @@ keytool -genkeypair -v -storetype PKCS12 -keystore release.keystore -alias andro
     --> TYPE 'yes'
 ```
 
-2. Crie os as chaves **RELEASE_KEYSTORE_FILE**, **RELEASE_STORE_PASSWORD**, **RELEASE_KEY_ALIAS**, **RELEASE_KEY_PASSWORD** com seus respectivos valores no arquivo gradle.properties:
+2. Crie os as chaves **APPCENTER_KEYSTORE_FILE**, **APPCENTER_KEYSTORE_PASSWORD**, **APPCENTER_KEY_ALIAS**, **APPCENTER_KEY_PASSWORD** com seus respectivos valores no arquivo gradle.properties:
 
 ```
 vi ~/.gradle/gradle.properties
@@ -53,9 +53,9 @@ cd android/ && ./gradlew -q printProperties && cd ..
 ### Testing Release
 
 ```
-npx react-native run-android --variant=release
+npx react-native run-android --variant=releaseSigningConfig
 or
-yarn android --variant=release
+yarn android --variant=releaseSigningConfig
 ```
 
 ---
