@@ -1,6 +1,6 @@
 import React, { FC, ReactElement } from 'react'
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack'
-import Onboarding from '@pages/admin/onboarding'
+import Onboarding from '@pages/onboarding'
 
 interface OnboardingProps {
     setOnboarded: (value: boolean) => void
