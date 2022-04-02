@@ -1,4 +1,4 @@
-apply plugin: "com.android.application"
+apply plugin: 'com.android.application'
 
 import com.android.build.OutputFile
 
@@ -79,11 +79,10 @@ import com.android.build.OutputFile
 
 project.ext.react = [
     enableHermes: true,  // clean and rebuild if changing
-    nodeExecutableAndArgs: ["node", "--max_old_space_size=8192"]
+    nodeExecutableAndArgs: ['node', '--max_old_space_size=8192']
 ]
 
-apply from: "../../node_modules/react-native/react.gradle"
-
+apply from: '../../node_modules/react-native/react.gradle'
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -120,7 +119,7 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  * on project.ext.react, JavaScript will not be compiled to Hermes Bytecode
  * and the benefits of using Hermes will therefore be sharply reduced.
  */
-def enableHermes = project.ext.react.get("enableHermes", false);
+def enableHermes = project.ext.react.get('enableHermes', false)
 
 android {
     ndkVersion rootProject.ext.ndkVersion
@@ -133,18 +132,18 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.neumumobile"
+        applicationId 'com.neumumobile'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
     }
     splits {
         abi {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
             universalApk false  // If true, also generate a universal APK
-            include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+            include 'armeabi-v7a', 'x86', 'arm64-v8a', 'x86_64'
         }
     }
     signingConfigs {
@@ -154,11 +153,11 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-        releaseSigningConfig {
-            storeFile (rootProject.file("app/release.keystore") != null ? rootProject.file("app/release.keystore") : file(project.property('APPCENTER_KEYSTORE_FILE')))
-            storePassword (System.getProperty("APPCENTER_KEYSTORE_PASSWORD") != null ? System.getProperty("APPCENTER_KEYSTORE_PASSWORD") : project.property('APPCENTER_KEYSTORE_PASSWORD'))
-            keyAlias (System.getProperty("APPCENTER_KEY_ALIAS") != null ? System.getProperty("APPCENTER_KEY_ALIAS") : project.property('APPCENTER_KEY_ALIAS'))
-            keyPassword (System.getProperty("APPCENTER_KEY_PASSWORD") != null ? System.getProperty("APPCENTER_KEY_PASSWORD") : project.property('APPCENTER_KEY_PASSWORD'))
+        release {
+            storeFile (rootProject.file('app/release.keystore') != null ? rootProject.file('app/release.keystore') : file(project.property('APPCENTER_KEYSTORE_FILE')))
+            storePassword (System.getProperty('APPCENTER_KEYSTORE_PASSWORD') != null ? System.getProperty('APPCENTER_KEYSTORE_PASSWORD') : project.property('APPCENTER_KEYSTORE_PASSWORD'))
+            keyAlias (System.getProperty('APPCENTER_KEY_ALIAS') != null ? System.getProperty('APPCENTER_KEY_ALIAS') : project.property('APPCENTER_KEY_ALIAS'))
+            keyPassword (System.getProperty('APPCENTER_KEY_PASSWORD') != null ? System.getProperty('APPCENTER_KEY_PASSWORD') : project.property('APPCENTER_KEY_PASSWORD'))
         }
     }
 
@@ -169,9 +168,9 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.releaseSigningConfig
+            // signingConfig signingConfigs.releaseSigningConfig // (Comment this line (App Center). Uncomment only if you are releasing to playstore.) 
             minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -181,26 +180,25 @@ android {
             // For each separate APK per architecture, set a unique version code as described here:
             // https://developer.android.com/studio/build/configure-apk-splits.html
             // Example: versionCode 1 will generate 1001 for armeabi-v7a, 1002 for x86, etc.
-            def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
+            def versionCodes = ['armeabi-v7a': 1, 'x86': 2, 'arm64-v8a': 3, 'x86_64': 4]
             def abi = output.getFilter(OutputFile.ABI)
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
                         defaultConfig.versionCode * 1000 + versionCodes.get(abi)
             }
-
         }
     }
 }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleDynamicVersion
-    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation 'com.facebook.react:react-native:+'  // From node_modules
 
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
-      exclude group:'com.facebook.fbjni'
+        exclude group:'com.facebook.fbjni'
     }
 
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
@@ -213,9 +211,9 @@ dependencies {
     }
 
     if (enableHermes) {
-        def hermesPath = "../../node_modules/hermes-engine/android/";
-        debugImplementation files(hermesPath + "hermes-debug.aar")
-        releaseImplementation files(hermesPath + "hermes-release.aar")
+        def hermesPath = '../../node_modules/hermes-engine/android/'
+        debugImplementation files(hermesPath + 'hermes-debug.aar')
+        releaseImplementation files(hermesPath + 'hermes-release.aar')
     } else {
         implementation jscFlavor
     }
@@ -233,13 +231,13 @@ task copyDownloadableDepsToLibs(type: Copy) {
 task printProperties {
     doFirst {
         println '############# gradle.properties #############'
-        println 'storeFile          = ' + (rootProject.file("app/release.keystore") != null ? rootProject.file("app/release.keystore") : file(project.property('APPCENTER_KEYSTORE_FILE')))
-        println 'storePassword      = ' + (System.getProperty("APPCENTER_KEYSTORE_PASSWORD") != null ? System.getProperty("APPCENTER_KEYSTORE_PASSWORD") : project.property('APPCENTER_KEYSTORE_PASSWORD'))
-        println 'keyAlias           = ' + (System.getProperty("APPCENTER_KEY_ALIAS") != null ? System.getProperty("APPCENTER_KEY_ALIAS") : project.property('APPCENTER_KEY_ALIAS'))
-        println 'keyPassword        = ' + (System.getProperty("APPCENTER_KEY_PASSWORD") != null ? System.getProperty("APPCENTER_KEY_PASSWORD") : project.property('APPCENTER_KEY_PASSWORD'))
+        println 'storeFile          = ' + (rootProject.file('app/release.keystore') != null ? rootProject.file('app/release.keystore') : file(project.property('APPCENTER_KEYSTORE_FILE')))
+        println 'storePassword      = ' + (System.getProperty('APPCENTER_KEYSTORE_PASSWORD') != null ? System.getProperty('APPCENTER_KEYSTORE_PASSWORD') : project.property('APPCENTER_KEYSTORE_PASSWORD'))
+        println 'keyAlias           = ' + (System.getProperty('APPCENTER_KEY_ALIAS') != null ? System.getProperty('APPCENTER_KEY_ALIAS') : project.property('APPCENTER_KEY_ALIAS'))
+        println 'keyPassword        = ' + (System.getProperty('APPCENTER_KEY_PASSWORD') != null ? System.getProperty('APPCENTER_KEY_PASSWORD') : project.property('APPCENTER_KEY_PASSWORD'))
         println '############# gradle.properties #############'
     }
 }
 
-apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
-apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+apply from: file('../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle'); applyNativeModulesAppBuildGradle(project)
+apply from: '../../node_modules/react-native-vector-icons/fonts.gradle'
