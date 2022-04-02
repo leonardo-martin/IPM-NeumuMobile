@@ -61,7 +61,6 @@ buck-out/
 
 # files
 package-lock.json
-yarn.lock
 
 # local env files
 .env
