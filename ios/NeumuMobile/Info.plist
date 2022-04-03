@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSRemindersUsageDescription</key>
-	<string>$(EXECUTABLE_NAME) gostaria de ter acesso a agenda do dispositivo.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>$(EXECUTABLE_NAME) gostaria de ter acesso a câmera do dispositivo.</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>$(EXECUTABLE_NAME) gostaria de ter acesso ao calendário do dispositivo.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -28,6 +22,10 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>tel</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -41,8 +39,14 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCalendarsUsageDescription</key>
+	<string>$(EXECUTABLE_NAME) gostaria de ter acesso ao calendário do dispositivo.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>$(EXECUTABLE_NAME) gostaria de ter acesso a câmera do dispositivo.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSRemindersUsageDescription</key>
+	<string>$(EXECUTABLE_NAME) gostaria de ter acesso a agenda do dispositivo.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
@@ -76,9 +80,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>tel</string>
-	</array>
 </dict>
 </plist>
