@@ -8,13 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* NeumuMobileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* NeumuMobileTests.m */; };
-		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		3669EFA2038B01320C5B2570 /* libPods-NeumuMobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B01F07AE10BC5A051E8EC01 /* libPods-NeumuMobile.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		C2F67A1327836D6200A1ADA4 /* RCTCalendarModule.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F67A122783624600A1ADA4 /* RCTCalendarModule.m */; };
-		E5BAE08FC7C9FFA727F06285 /* libPods-NeumuMobile-NeumuMobileTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C2EDFA8F54394CBFD2575F54 /* libPods-NeumuMobile-NeumuMobileTests.a */; };
+		C279C93127F8AB4A00A6A74A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = C279C93027F8AB4A00A6A74A /* AppDelegate.mm */; };
+		C8CD26106D63986F07CCCA37 /* libPods-NeumuMobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D6B86B2416CC7DF8D3BC7D /* libPods-NeumuMobile.a */; };
+		F3C2307188D335B058BF5842 /* libPods-NeumuMobile-NeumuMobileTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 483AA3250723B9B5C6FFEB4E /* libPods-NeumuMobile-NeumuMobileTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,20 +27,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		00D6B86B2416CC7DF8D3BC7D /* libPods-NeumuMobile.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NeumuMobile.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356EE1AD99517003FC87E /* NeumuMobileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NeumuMobileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* NeumuMobileTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NeumuMobileTests.m; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* NeumuMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NeumuMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = NeumuMobile/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = NeumuMobile/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = NeumuMobile/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = NeumuMobile/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = NeumuMobile/main.m; sourceTree = "<group>"; };
-		156F4A977EB8A53908B1CD3B /* Pods-NeumuMobile-NeumuMobileTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NeumuMobile-NeumuMobileTests.debug.xcconfig"; path = "Target Support Files/Pods-NeumuMobile-NeumuMobileTests/Pods-NeumuMobile-NeumuMobileTests.debug.xcconfig"; sourceTree = "<group>"; };
-		15CC89E0619B9909D55EC1B2 /* Pods-NeumuMobile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NeumuMobile.release.xcconfig"; path = "Target Support Files/Pods-NeumuMobile/Pods-NeumuMobile.release.xcconfig"; sourceTree = "<group>"; };
-		4B01F07AE10BC5A051E8EC01 /* libPods-NeumuMobile.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NeumuMobile.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F0E448DAF5814D7EE13B39D /* Pods-NeumuMobile-NeumuMobileTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NeumuMobile-NeumuMobileTests.debug.xcconfig"; path = "Target Support Files/Pods-NeumuMobile-NeumuMobileTests/Pods-NeumuMobile-NeumuMobileTests.debug.xcconfig"; sourceTree = "<group>"; };
+		37B0659A4882A99BAF0FFDDB /* Pods-NeumuMobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NeumuMobile.debug.xcconfig"; path = "Target Support Files/Pods-NeumuMobile/Pods-NeumuMobile.debug.xcconfig"; sourceTree = "<group>"; };
+		3A3F145062F9CAB6423FC639 /* Pods-NeumuMobile-NeumuMobileTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NeumuMobile-NeumuMobileTests.release.xcconfig"; path = "Target Support Files/Pods-NeumuMobile-NeumuMobileTests/Pods-NeumuMobile-NeumuMobileTests.release.xcconfig"; sourceTree = "<group>"; };
+		483AA3250723B9B5C6FFEB4E /* libPods-NeumuMobile-NeumuMobileTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NeumuMobile-NeumuMobileTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		64A5C845C47A42ECE34B03CF /* Pods-NeumuMobile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NeumuMobile.release.xcconfig"; path = "Target Support Files/Pods-NeumuMobile/Pods-NeumuMobile.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = NeumuMobile/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		BFB22FFB59B50C0D036DA0E7 /* Pods-NeumuMobile-NeumuMobileTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NeumuMobile-NeumuMobileTests.release.xcconfig"; path = "Target Support Files/Pods-NeumuMobile-NeumuMobileTests/Pods-NeumuMobile-NeumuMobileTests.release.xcconfig"; sourceTree = "<group>"; };
 		C2225CD026E9716800F6911B /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		C2225CD126E9716800F6911B /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Octicons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		C2225CD226E9716800F6911B /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialCommunityIcons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
@@ -58,11 +58,8 @@
 		C2225CDD26E9716900F6911B /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		C2225CDE26E9716900F6911B /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Solid.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		C2225CDF26E9716900F6911B /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Regular.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
-		C2EDFA8F54394CBFD2575F54 /* libPods-NeumuMobile-NeumuMobileTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NeumuMobile-NeumuMobileTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C2F67A102783619500A1ADA4 /* RCTCalendarModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTCalendarModule.h; sourceTree = "<group>"; };
-		C2F67A122783624600A1ADA4 /* RCTCalendarModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTCalendarModule.m; sourceTree = "<group>"; };
+		C279C93027F8AB4A00A6A74A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = NeumuMobile/AppDelegate.mm; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		FBEBBB81CEE126F856656285 /* Pods-NeumuMobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NeumuMobile.debug.xcconfig"; path = "Target Support Files/Pods-NeumuMobile/Pods-NeumuMobile.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,7 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E5BAE08FC7C9FFA727F06285 /* libPods-NeumuMobile-NeumuMobileTests.a in Frameworks */,
+				F3C2307188D335B058BF5842 /* libPods-NeumuMobile-NeumuMobileTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,7 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3669EFA2038B01320C5B2570 /* libPods-NeumuMobile.a in Frameworks */,
+				C8CD26106D63986F07CCCA37 /* libPods-NeumuMobile.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,11 +102,9 @@
 		13B07FAE1A68108700A75B9A /* NeumuMobile */ = {
 			isa = PBXGroup;
 			children = (
-				C2F67A102783619500A1ADA4 /* RCTCalendarModule.h */,
-				C2F67A122783624600A1ADA4 /* RCTCalendarModule.m */,
 				C2225CCF26E970C100F6911B /* Fonts */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
-				13B07FB01A68108700A75B9A /* AppDelegate.m */,
+				C279C93027F8AB4A00A6A74A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
@@ -121,10 +116,10 @@
 		1C417540B75DB80708655B0A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				FBEBBB81CEE126F856656285 /* Pods-NeumuMobile.debug.xcconfig */,
-				15CC89E0619B9909D55EC1B2 /* Pods-NeumuMobile.release.xcconfig */,
-				156F4A977EB8A53908B1CD3B /* Pods-NeumuMobile-NeumuMobileTests.debug.xcconfig */,
-				BFB22FFB59B50C0D036DA0E7 /* Pods-NeumuMobile-NeumuMobileTests.release.xcconfig */,
+				37B0659A4882A99BAF0FFDDB /* Pods-NeumuMobile.debug.xcconfig */,
+				64A5C845C47A42ECE34B03CF /* Pods-NeumuMobile.release.xcconfig */,
+				1F0E448DAF5814D7EE13B39D /* Pods-NeumuMobile-NeumuMobileTests.debug.xcconfig */,
+				3A3F145062F9CAB6423FC639 /* Pods-NeumuMobile-NeumuMobileTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -133,8 +128,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				4B01F07AE10BC5A051E8EC01 /* libPods-NeumuMobile.a */,
-				C2EDFA8F54394CBFD2575F54 /* libPods-NeumuMobile-NeumuMobileTests.a */,
+				00D6B86B2416CC7DF8D3BC7D /* libPods-NeumuMobile.a */,
+				483AA3250723B9B5C6FFEB4E /* libPods-NeumuMobile-NeumuMobileTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -208,12 +203,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "NeumuMobileTests" */;
 			buildPhases = (
-				E2D56AE409B4889297C61312 /* [CP] Check Pods Manifest.lock */,
+				6D700D540E2F5A0AC5838FAF /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				626963C9CD1E64D319B973B0 /* [CP] Copy Pods Resources */,
-				330A9D8CFD6AA73CAAC09C4D /* [CP] Embed Pods Frameworks */,
+				6D96675000705A78067CDFD3 /* [CP] Embed Pods Frameworks */,
+				C7847BD5F10C9E2508EAE3FF /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -229,14 +224,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "NeumuMobile" */;
 			buildPhases = (
-				9C36056833EF9D8944C4356E /* [CP] Check Pods Manifest.lock */,
+				B778945F8949ED2FDDDD5C3C /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				6FFE27817B60BEDC47AAB334 /* [CP] Copy Pods Resources */,
-				A4D6F026FE4C84902B95A3F7 /* [CP] Embed Pods Frameworks */,
+				8BD74C4B412386C95F20B5C3 /* [CP] Embed Pods Frameworks */,
+				7EED28C4A88A9A180DD3221E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -317,7 +312,29 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=\"'node --max_old_space_size=8192'\n../node_modules/react-native/scripts/react-native-xcode.sh\"\n";
 		};
-		330A9D8CFD6AA73CAAC09C4D /* [CP] Embed Pods Frameworks */ = {
+		6D700D540E2F5A0AC5838FAF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NeumuMobile-NeumuMobileTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6D96675000705A78067CDFD3 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -334,24 +351,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NeumuMobile-NeumuMobileTests/Pods-NeumuMobile-NeumuMobileTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		626963C9CD1E64D319B973B0 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-NeumuMobile-NeumuMobileTests/Pods-NeumuMobile-NeumuMobileTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-NeumuMobile-NeumuMobileTests/Pods-NeumuMobile-NeumuMobileTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NeumuMobile-NeumuMobileTests/Pods-NeumuMobile-NeumuMobileTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6FFE27817B60BEDC47AAB334 /* [CP] Copy Pods Resources */ = {
+		7EED28C4A88A9A180DD3221E /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -368,7 +368,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NeumuMobile/Pods-NeumuMobile-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9C36056833EF9D8944C4356E /* [CP] Check Pods Manifest.lock */ = {
+		8BD74C4B412386C95F20B5C3 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-NeumuMobile/Pods-NeumuMobile-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-NeumuMobile/Pods-NeumuMobile-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NeumuMobile/Pods-NeumuMobile-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B778945F8949ED2FDDDD5C3C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -390,43 +407,21 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A4D6F026FE4C84902B95A3F7 /* [CP] Embed Pods Frameworks */ = {
+		C7847BD5F10C9E2508EAE3FF /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-NeumuMobile/Pods-NeumuMobile-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-NeumuMobile-NeumuMobileTests/Pods-NeumuMobile-NeumuMobileTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-NeumuMobile/Pods-NeumuMobile-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-NeumuMobile-NeumuMobileTests/Pods-NeumuMobile-NeumuMobileTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NeumuMobile/Pods-NeumuMobile-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E2D56AE409B4889297C61312 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-NeumuMobile-NeumuMobileTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NeumuMobile-NeumuMobileTests/Pods-NeumuMobile-NeumuMobileTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -463,8 +458,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2F67A1327836D6200A1ADA4 /* RCTCalendarModule.m in Sources */,
-				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				C279C93127F8AB4A00A6A74A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -482,7 +476,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 156F4A977EB8A53908B1CD3B /* Pods-NeumuMobile-NeumuMobileTests.debug.xcconfig */;
+			baseConfigurationReference = 1F0E448DAF5814D7EE13B39D /* Pods-NeumuMobile-NeumuMobileTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				EXCLUDED_ARCHS = i386;
@@ -491,7 +485,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = NeumuMobileTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -512,13 +506,13 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BFB22FFB59B50C0D036DA0E7 /* Pods-NeumuMobile-NeumuMobileTests.release.xcconfig */;
+			baseConfigurationReference = 3A3F145062F9CAB6423FC639 /* Pods-NeumuMobile-NeumuMobileTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				EXCLUDED_ARCHS = i386;
 				INFOPLIST_FILE = NeumuMobileTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -539,17 +533,20 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FBEBBB81CEE126F856656285 /* Pods-NeumuMobile.debug.xcconfig */;
+			baseConfigurationReference = 37B0659A4882A99BAF0FFDDB /* Pods-NeumuMobile.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 29K4U3GF92;
 				ENABLE_BITCODE = NO;
-				EXCLUDED_ARCHS = i386;
+				EXCLUDED_ARCHS = "";
+				GENERATE_PROFILING_CODE = NO;
 				INFOPLIST_FILE = NeumuMobile/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -562,8 +559,9 @@
 					"-lc++",
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.teleneumu.NeumuMobile;
 				PRODUCT_NAME = NeumuMobile;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -572,16 +570,19 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 15CC89E0619B9909D55EC1B2 /* Pods-NeumuMobile.release.xcconfig */;
+			baseConfigurationReference = 64A5C845C47A42ECE34B03CF /* Pods-NeumuMobile.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 29K4U3GF92;
-				EXCLUDED_ARCHS = i386;
+				EXCLUDED_ARCHS = "";
+				GENERATE_PROFILING_CODE = NO;
 				INFOPLIST_FILE = NeumuMobile/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -594,8 +595,9 @@
 					"-lc++",
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.teleneumu.NeumuMobile;
 				PRODUCT_NAME = NeumuMobile;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -650,7 +652,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -708,7 +710,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
