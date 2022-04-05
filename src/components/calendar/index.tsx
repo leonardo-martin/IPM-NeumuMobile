@@ -2,7 +2,7 @@ import React, { FC, ReactElement } from 'react'
 import { Calendar, Layout, useStyleSheet } from '@ui-kitten/components'
 import { calendarStyles } from './style'
 import { useTheme } from '@contexts/theme'
-import { localeDateService } from './config'
+import { useDatepickerService } from '@hooks/useDatepickerService'
 
 type CalendarProps = {
     date?: Date | undefined
@@ -16,6 +16,7 @@ const CalendarComponent: FC<CalendarProps> = ({
     boundingMonth, onSelect, min, max, date
 }): ReactElement => {
 
+    const { localeDateService } = useDatepickerService()
     const filterWeekend = (date: Date) => date.getDay() !== 0 && date.getDay() !== 6
     const { theme } = useTheme()
     const styles = useStyleSheet(calendarStyles(theme))

@@ -5,13 +5,13 @@ import { Controller } from 'react-hook-form'
 import { formatCpf, isEmailValid } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
 import { registerStyle } from '../style'
-import { localeDateService as dateService } from '@components/calendar/config'
 import { getGender } from '@utils/common'
 import { validateCNS } from '@utils/validators'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 
 import { Modalize } from 'react-native-modalize'
 import { useModalize } from '@hooks/useModalize'
+import { useDatepickerService } from '@hooks/useDatepickerService'
 import RNWebView from '@components/webView'
 import WebView from 'react-native-webview'
 import { GOV_BR_URI } from '@constants/uri'
@@ -22,6 +22,7 @@ const { height: initialHeight } = Dimensions.get('window')
 
 const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement => {
 
+  const { localeDateService } = useDatepickerService()
   const { ref, open: openModal } = useModalize()
   const refWebView = useRef<WebView>(null)
   const [height, setHeight] = useState(initialHeight)
@@ -64,7 +65,7 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
     <React.Fragment>
       <View style={styles.labelCNSView}>
         <Text category="label" style={styles.labelCNSText}>
-          Cartão Nacional de Saúde (CNS){" "}
+          Cartão Nacional de Saúde (CNS) * {" "}
         </Text>
         <TouchableOpacity
           onPress={openModal}
@@ -83,40 +84,6 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
   return (
     <>
       <View style={styles.box}>
-        <Controller
-          control={form.control}
-          rules={{
-            required: {
-              value: true,
-              message: 'Campo obrigatório'
-            },
-            minLength: {
-              value: 5,
-              message: `Mín. 5 caracteres`
-            },
-          }}
-          render={({ field: { onChange, onBlur, value, name, ref } }) => (
-            <Input
-              size='small'
-              label="Nome da Mãe *"
-              style={styles.input}
-              keyboardType='default'
-              testID={name}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              underlineColorAndroid="transparent"
-              ref={ref}
-              maxLength={60}
-              returnKeyType="next"
-              onSubmitEditing={() => form.setFocus('name')}
-              autoCapitalize="words"
-            />
-          )}
-          name='mothersName'
-          defaultValue=''
-        />
-        {form.formState.errors.mothersName && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.mothersName?.message}</Text>}
         <Controller
           control={form.control}
           rules={{
@@ -151,6 +118,40 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
           defaultValue=''
         />
         {form.formState.errors.name && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.name?.message}</Text>}
+        <Controller
+          control={form.control}
+          rules={{
+            required: {
+              value: true,
+              message: 'Campo obrigatório'
+            },
+            minLength: {
+              value: 5,
+              message: `Mín. 5 caracteres`
+            },
+          }}
+          render={({ field: { onChange, onBlur, value, name, ref } }) => (
+            <Input
+              size='small'
+              label="Nome da Mãe *"
+              style={styles.input}
+              keyboardType='default'
+              testID={name}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              underlineColorAndroid="transparent"
+              ref={ref}
+              maxLength={60}
+              returnKeyType="next"
+              onSubmitEditing={() => form.setFocus('name')}
+              autoCapitalize="words"
+            />
+          )}
+          name='mothersName'
+          defaultValue=''
+        />
+        {form.formState.errors.mothersName && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.mothersName?.message}</Text>}
         <Controller
           control={form.control}
           rules={{
@@ -207,8 +208,8 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
               onBlur={onBlur}
               ref={ref}
               testID={name}
-              dateService={dateService}
-              max={dateService.addDay(dateService.today(), -1)}
+              dateService={localeDateService}
+              max={localeDateService.addDay(localeDateService.today(), -1)}
               placement={PopoverPlacements.BOTTOM}
               min={new Date(1900, 0, 0)}
             />
@@ -336,6 +337,7 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
             <Input
               size='small'
               label="Senha *"
+              caption={'No mínimo 8 caracteres'}
               style={styles.input}
               keyboardType='default'
               testID={name}
@@ -359,7 +361,7 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
         <Controller
           control={form.control}
           rules={{
-            required: false,
+            required: true,
             minLength: {
               value: 15,
               message: `Mín. 15 caracteres`
