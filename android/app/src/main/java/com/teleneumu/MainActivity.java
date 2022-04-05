@@ -1,4 +1,4 @@
-package com.neumumobile;
+package com.teleneumu;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

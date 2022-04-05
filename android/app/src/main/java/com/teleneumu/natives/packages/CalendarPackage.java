@@ -1,4 +1,4 @@
-package com.neumumobile.natives.packages;
+package com.teleneumu.natives.packages;
 
 import androidx.annotation.NonNull;
 
@@ -6,7 +6,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-import com.neumumobile.natives.module.CalendarModule;
+import com.teleneumu.natives.module.CalendarModule;
 
 import java.util.ArrayList;
 import java.util.Collections;

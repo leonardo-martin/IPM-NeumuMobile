@@ -1,4 +1,4 @@
-package com.neumumobile.natives.dto;
+package com.teleneumu.natives.dto;
 
 import androidx.annotation.NonNull;
 
