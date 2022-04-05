@@ -312,7 +312,7 @@ const SignUpPart2Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
               size='small'
-              label="Endereço 1 *"
+              label="Endereço Residencial 1 *"
               style={styles.input}
               keyboardType='default'
               testID={name}
@@ -342,7 +342,7 @@ const SignUpPart2Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
               size='small'
-              label="Endereço 2"
+              label="Endereço Residencial 2"
               style={styles.input}
               keyboardType='default'
               testID={name}
