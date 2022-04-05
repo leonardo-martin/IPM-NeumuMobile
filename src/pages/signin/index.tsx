@@ -96,7 +96,7 @@ const SignInScreen: FC = (): ReactElement => {
                     <Input
                       size='small'
                       style={styles.input}
-                      label="Usuário *"
+                      label="Usuário / CPF / E-mail *"
                       keyboardType="default"
                       testID={name}
                       onBlur={onBlur}
