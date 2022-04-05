@@ -13,6 +13,21 @@ index a0e1f54..32cfade 100644
      },
      list: {
          flexGrow: 0,
+diff --git a/node_modules/@ui-kitten/components/ui/datepicker/baseDatepicker.component.js b/node_modules/@ui-kitten/components/ui/datepicker/baseDatepicker.component.js
+index 1ddbfb5..7e11843 100644
+--- a/node_modules/@ui-kitten/components/ui/datepicker/baseDatepicker.component.js
++++ b/node_modules/@ui-kitten/components/ui/datepicker/baseDatepicker.component.js
+@@ -135,6 +135,10 @@ BaseDatepickerComponent.defaultProps = {
+ const styles = react_native_1.StyleSheet.create({
+     popover: {
+         borderWidth: 0,
++        // fix autocomplete popover in Android if StatusBar is translucent
++        get marginTop() {
++            return react_native_1.StatusBar.currentHeight
++        }
+     },
+     control: {
+         flexDirection: 'row',
 diff --git a/node_modules/@ui-kitten/components/ui/select/select.component.js b/node_modules/@ui-kitten/components/ui/select/select.component.js
 index e41139c..06b9871 100644
 --- a/node_modules/@ui-kitten/components/ui/select/select.component.js
