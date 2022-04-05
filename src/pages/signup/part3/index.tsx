@@ -9,6 +9,8 @@ import { getRelationPatient, getRelationPastExams } from '@utils/common'
 import { useFocusEffect } from '@react-navigation/native'
 import { SignUpProps } from '..'
 
+const options = ['Paciente', 'Outro']
+
 const items = [
   'Confirmado DFEU 1',
   'Confirmado DFEU 2',
@@ -48,7 +50,15 @@ const SignUpPart3Screen: FC<SignUpPart3Props> = ({ form, handleIsAllowSubmit, on
   )
 
   const handleRadioSelected = (index: number) => {
-    if (index !== selectedIndexRelationPatient) setSelectedIndexGeneticProgram(-1)
+    if (index !== selectedIndexRelationPatient) {
+      setSelectedIndexGeneticProgram(-1)
+      form.resetField('abrafeuRegistrationOptIn')
+      form.resetField('pastExams.doctor.crm')
+      form.resetField('pastExams.exam')
+      setSelectedIndexExamDNA(-1)
+      setShowFields(false)
+      handleIsAllowSubmit(false)
+    }
     setSelectedIndexRelationPatient(index)
     const id = getRelationPatient(index)
     id ? setPatientProfileCreator(id as PatientProfileCreatorTypeEnum) : null
@@ -70,6 +80,7 @@ const SignUpPart3Screen: FC<SignUpPart3Props> = ({ form, handleIsAllowSubmit, on
     form.clearErrors('abrafeuRegistrationOptIn')
     if (index === 1) handleIsAllowSubmit(true), setShowFields(false)
     else setShowFields(true), handleIsAllowSubmit(false)
+
 
     setSelectedIndexExamDNA(-1)
     form.resetField('pastExams.doctor.crm')
@@ -109,7 +120,11 @@ const SignUpPart3Screen: FC<SignUpPart3Props> = ({ form, handleIsAllowSubmit, on
               testID={name}
               selectedIndex={selectedIndexRelationPatient}
               onChange={handleRadioSelected}>
-              <Radio onBlur={onBlur}>{evaProps => <Text {...evaProps} category='label' style={styles.radioText}>Paciente</Text>}</Radio>
+              {options.map((_, i) => {
+                return (
+                  <Radio key={_ + i} onBlur={onBlur}>{evaProps => <Text {...evaProps} category='label' style={styles.radioText}>{_}</Text>}</Radio>
+                )
+              })}
             </RadioGroup>
           )}
           name='creator.patientProfileCreatorTypeId'
@@ -149,7 +164,7 @@ const SignUpPart3Screen: FC<SignUpPart3Props> = ({ form, handleIsAllowSubmit, on
         :
         null
       }
-      {showFields && (
+      {showFields && patientProfileCreator === PatientProfileCreatorTypeEnum.PatientSelf && (
         <>
           <View style={styles.box}>
             <Controller
@@ -204,7 +219,6 @@ const SignUpPart3Screen: FC<SignUpPart3Props> = ({ form, handleIsAllowSubmit, on
                   testID={name}
                   selectedIndex={selectedIndexExamDNA}
                   onChange={handleRadioSelectedExamDNA}>
-
                   {items.map((_, i) => {
                     return (
                       <Radio key={_ + i} onBlur={onBlur}>{evaProps => <Text {...evaProps} category='label' style={styles.radioText}>{_}</Text>}</Radio>

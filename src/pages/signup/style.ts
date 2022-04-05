@@ -64,7 +64,6 @@ export const registerStyle = StyleSheet.create({
         paddingVertical: 10
     },
     box: {
-        flex: 1,
         padding: 15
     },
     boxMultiplesInputs: {

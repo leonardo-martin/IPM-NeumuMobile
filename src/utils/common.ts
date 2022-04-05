@@ -44,10 +44,10 @@ export const extractFieldString = (value: string) => {
 export const getRelationPatient = (index: number): string | undefined => {
     return {
         0: PatientProfileCreatorTypeEnum.PatientSelf,
-        1: PatientProfileCreatorTypeEnum.PatientRelated,
-        2: PatientProfileCreatorTypeEnum.MedicalDoctorNoProfile,
-        3: PatientProfileCreatorTypeEnum.SpecialistNoProfile,
-        4: PatientProfileCreatorTypeEnum.Other
+        // 1: PatientProfileCreatorTypeEnum.PatientRelated,
+        // 2: PatientProfileCreatorTypeEnum.MedicalDoctorNoProfile,
+        // 3: PatientProfileCreatorTypeEnum.SpecialistNoProfile,
+        1: PatientProfileCreatorTypeEnum.Other
     }[index]
 }
 

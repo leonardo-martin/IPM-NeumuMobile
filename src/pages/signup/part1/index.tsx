@@ -36,6 +36,8 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
     useCallback(() => {
       const genre = form.getValues('genre')
       if (genre) setSelectedIndex(genre === 'male' ? 0 : genre === 'female' ? 1 : 2)
+
+      form.setValue('dateOfBirth', localeDateService.addDay(localeDateService.today(), -1))
     }, [])
   )
 
@@ -109,7 +111,7 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
               ref={ref}
               maxLength={60}
               returnKeyType="next"
-              onSubmitEditing={() => form.setFocus('cpf')}
+              onSubmitEditing={() => form.setFocus('mothersName')}
               underlineColorAndroid="transparent"
               autoCapitalize="words"
             />
@@ -144,7 +146,7 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
               ref={ref}
               maxLength={60}
               returnKeyType="next"
-              onSubmitEditing={() => form.setFocus('name')}
+              onSubmitEditing={() => form.setFocus('cpf')}
               autoCapitalize="words"
             />
           )}
@@ -181,6 +183,7 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
               ref={ref}
               returnKeyType="next"
               placeholder={'999.999.999-99'}
+              onSubmitEditing={() => form.setFocus('dateOfBirth')}
             />
           )}
           name='cpf'
@@ -337,7 +340,7 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
             <Input
               size='small'
               label="Senha *"
-              caption={'No mínimo 8 caracteres'}
+              caption={value.toString().length < 8 ? 'No mínimo 8 caracteres' : undefined}
               style={styles.input}
               keyboardType='default'
               testID={name}
@@ -361,7 +364,10 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
         <Controller
           control={form.control}
           rules={{
-            required: true,
+            required: {
+              value: true,
+              message: 'Campo obrigatório'
+            },
             minLength: {
               value: 15,
               message: `Mín. 15 caracteres`
@@ -386,8 +392,10 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
             />
           )}
           name='cns'
-          defaultValue=''
+          defaultValue='144494069520001'
         />
+        {form.formState.errors.cns?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.cns?.message}</Text>}
+
         {form.formState.errors.cns?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.cns?.message}</Text>}
         {form.formState.errors.cns?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>CNS inválido</Text>}
       </View>
