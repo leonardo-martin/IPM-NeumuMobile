@@ -392,7 +392,7 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
             />
           )}
           name='cns'
-          defaultValue='144494069520001'
+          defaultValue=''
         />
         {form.formState.errors.cns?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.cns?.message}</Text>}
 

@@ -69,7 +69,7 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement =>
       <View style={styles.header} >
         <Image
           style={styles.image as StyleProp<ImageStyle>}
-          source={{ uri: FLATICON_URI + '/icons/png/512/2894/premium/2894760.png' }}
+          source={{ uri: FLATICON_URI + '/512/2894/premium/2894760.png' }}
         />
         <Text
           style={styles.profileName}
