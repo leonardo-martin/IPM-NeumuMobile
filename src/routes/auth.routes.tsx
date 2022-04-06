@@ -8,6 +8,7 @@ import ChangePasswordRequest from '@pages/changePassword/changePasswordSpecific'
 import RegistrationConfirmation from '@pages/signup/confirmation'
 import RNWebView from '@components/webView'
 import SignUpScreen from '@pages/signup'
+import ChangePasswordConfirm from 'pages/changePassword/confirmation'
 
 const { Navigator, Screen, Group } = createStackNavigator()
 
@@ -27,6 +28,10 @@ const AuthRoutes: FC = (): ReactElement => {
       }}>
         <Screen name="SignIn" component={SignIn} />
         <Screen name="RegistrationConfirmation" component={RegistrationConfirmation} />
+        <Screen name="ChangePasswordConfirmation" component={ChangePasswordConfirm}
+          options={{
+            ...TransitionPresets.ModalSlideFromBottomIOS
+          }} />
         <Screen name="WebViewScreen" component={RNWebView} options={{
           gestureDirection: "horizontal",
           gestureEnabled: true,

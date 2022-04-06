@@ -4,7 +4,7 @@ import { changePasswdReqStyle } from './style'
 import { Button, Input, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { Controller, useForm } from 'react-hook-form'
 import { changePassReq } from '@services/login.service'
-import { useRoute } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { cleanNumberMask, formatCpf, isEmailValid } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
@@ -20,6 +20,7 @@ interface ChangePasswdRequest {
 
 const ChangePasswordRequest: FC = (): ReactElement => {
 
+    const navigation = useNavigation<any>()
     const styles = useStyleSheet(changePasswdReqStyle)
     const route = useRoute()
     const params = route.params as ChangePasswordRequestParams
@@ -39,7 +40,7 @@ const ChangePasswordRequest: FC = (): ReactElement => {
             if (response.status !== 200 && response.status !== 201) {
                 toast.danger({ message: 'Ocorreu um erro. Tente novamente mais tarde.', duration: 1000 })
             } else {
-                toast.success({ message: 'Foi enviado um link para redefinir a senha. Verifique sua caixa de entrada.', duration: 5000 })
+                navigation.navigate('ChangePasswordConfirmation')
             }
 
         } catch (error) {

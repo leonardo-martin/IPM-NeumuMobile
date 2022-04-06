@@ -27,6 +27,7 @@ import HelpScreen from '@pages/admin/help'
 import ChangePasswordChoice from '@pages/changePassword'
 import ChangePasswordRequest from '@pages/changePassword/changePasswordSpecific'
 import Terms from '@pages/admin/configuration/terms'
+import ChangePasswordConfirm from '@pages/changePassword/confirmation'
 
 const { Navigator, Screen, Group } = createDrawerNavigator()
 
@@ -60,6 +61,7 @@ const AppRoutes: FC = (): ReactElement => {
           name="ConfirmationSchedule"
           component={ConfirmationScheduleScreen}
         />
+        <Screen name="ChangePasswordConfirmation" component={ChangePasswordConfirm} />
       </Group>
 
       <Group screenOptions={{
