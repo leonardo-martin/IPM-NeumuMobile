@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useState, useEffect } from 'react'
-import { View, KeyboardAvoidingView, ScrollView, StatusBar, Platform } from 'react-native'
+import { View, KeyboardAvoidingView, ScrollView, StatusBar, Platform, Keyboard } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { loginStyle } from './style'
 import { SignInData } from '@models/User'
@@ -25,6 +25,7 @@ const SignInScreen: FC = (): ReactElement => {
   const { control, handleSubmit, setFocus, formState: { errors } } = useForm<SignInData>()
 
   const handleSignIn = async (data: SignInData) => {
+    Keyboard.dismiss()
     setIsLoading(!isLoading)
     try {
       const response = await signIn(data)
@@ -71,7 +72,7 @@ const SignInScreen: FC = (): ReactElement => {
     <>
       <StatusBar hidden={Platform.OS === 'ios' ? true : false} backgroundColor='transparent' translucent />
       <SafeAreaLayout level='1' style={styles.safeArea}>
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps='handled'>
           <View style={styles.content}>
             <View style={styles.boxTitle}>
               <LogoPedroMolina width="140" height="150" />

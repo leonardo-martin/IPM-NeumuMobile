@@ -141,7 +141,7 @@ const Stepper: FC<StepperProps> = ({
                     )
                 })}
             </View>
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps='handled'>
                 {content[active]}
                 {showButton && (
                     <View
