@@ -104,6 +104,7 @@ export const registerStyle = StyleSheet.create({
     labelCNSView: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between'
     },
     labelCNSText: {
         color: '#8F9BB3',
@@ -155,4 +156,7 @@ export const registerStyle = StyleSheet.create({
         backgroundColor: 'background-basic-color-2',
         opacity: 0.6
     },
+    backdropDatepicker: {
+        backgroundColor: 'color-basic-control-transparent-600',
+    }
 })

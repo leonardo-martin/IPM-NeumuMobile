@@ -36,8 +36,6 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
     useCallback(() => {
       const genre = form.getValues('genre')
       if (genre) setSelectedIndex(genre === 'male' ? 0 : genre === 'female' ? 1 : 2)
-
-      form.setValue('dateOfBirth', localeDateService.addDay(localeDateService.today(), -1))
     }, [])
   )
 
@@ -203,8 +201,8 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Datepicker
               size='small'
-              label='Data de Nascimento *'
-              placeholder='Data de Nascimento'
+              label={'Data de Nascimento *'}
+              placeholder='01/01/1900'
               date={value}
               onSelect={onChange}
               accessoryRight={CalendarIcon}
@@ -215,6 +213,8 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
               max={localeDateService.addDay(localeDateService.today(), -1)}
               placement={PopoverPlacements.BOTTOM}
               min={new Date(1900, 0, 0)}
+              backdropStyle={styles.backdropDatepicker}
+              boundingMonth={false}
             />
           )}
           name='dateOfBirth'
@@ -339,8 +339,7 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
               size='small'
-              label="Senha *"
-              caption={value.toString().length < 8 ? 'No mínimo 8 caracteres' : undefined}
+              label="Senha * (8 caracteres)"
               style={styles.input}
               keyboardType='default'
               testID={name}
