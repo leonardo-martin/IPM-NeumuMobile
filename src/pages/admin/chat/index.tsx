@@ -6,8 +6,8 @@ import { Chat } from './extra/chat.component'
 import { AttachmentsMenu } from './extra/attachments-menu.component'
 import { CameraIcon, FileIcon, CornerDownRightIcon, PinIcon, PlusIcon } from './extra/icons'
 import { Message } from './extra/data'
-import { formatTimeToString } from '@utils/convertDate'
 import { chatRoomStyle } from './style'
+import { useDatepickerService } from '@hooks/useDatepickerService'
 
 const attachments: any[] = [
   { accessory: CameraIcon },
@@ -23,6 +23,7 @@ const keyboardOffset = (height: number): number => Platform.select({
 const ChatRoomScreen: FC = (): ReactElement => {
 
   const styles = useStyleSheet(chatRoomStyle)
+  const { localeDateService } = useDatepickerService()
 
   const [messages, setMessages] = React.useState<Message[]>([])
   const [message, setMessage] = React.useState<string | undefined>()
@@ -40,7 +41,7 @@ const ChatRoomScreen: FC = (): ReactElement => {
   }
 
   const onSendButtonPress = (): void => {
-    setMessages([...messages, new Message(message, formatTimeToString(new Date(), 'HH:mm b'), true, null)])
+    setMessages([...messages, new Message(message, localeDateService.format(localeDateService.today(), 'HH:mm b'), true, null)])
     setMessage(undefined)
     Keyboard.dismiss()
     setAttachmentsMenuVisible(false)

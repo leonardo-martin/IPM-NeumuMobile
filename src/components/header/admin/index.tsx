@@ -4,7 +4,7 @@ import { Layout, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-k
 import { useDrawerStatus } from '@react-navigation/drawer'
 import { headerStyle } from './style'
 import TitleNeumu from '@components/titleNeumu'
-import { BackIcon, ChatIcon, MenuIcon } from '../icons/icons'
+import { BackIcon, ChatIcon, MenuIcon } from '../icons'
 
 const HeaderAdmin: FC = (): ReactElement => {
   const { goBack, dispatch, canGoBack, navigate } = useNavigation<any>()

@@ -11,7 +11,6 @@ import { doctorScheduleStyle } from './style'
 
 import { useAuth } from '@contexts/auth'
 import { CreateAppointment } from '@models/Appointment'
-import { formatDateTimeToString } from '@utils/convertDate'
 import { createAppointment } from '@services/appointment.service'
 import { openMapsWithAddress } from '@utils/maps'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
@@ -22,6 +21,7 @@ import HeaderAdmin from '@components/header/admin'
 import toast from '@helpers/toast'
 import { BOOTDEY_URI } from '@constants/uri'
 import { useDatepickerService } from '@hooks/useDatepickerService'
+import { _DEFAULT_FORMAT_DATETIME } from '@constants/date'
 
 interface Data {
     id: number
@@ -83,7 +83,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
         startTime.setSeconds(0)
 
         setConfirmDate(startTime)
-        const dateString = formatDateTimeToString(startTime)
+        const dateString = localeDateService.format(startTime, _DEFAULT_FORMAT_DATETIME)
 
         setScheduleData(
             new CreateAppointment(
@@ -363,7 +363,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
             <ModalizeFixed ref={modalizeRef} snapPoint={300} adjustToContentHeight={true} closeOnOverlayTap={false} >
                 <View>
                     <Text style={styles.textConfirmExit}>Confirmar o agendamento para</Text>
-                    <Text style={styles.textConfirmExit}>{formatDateTimeToString(confirmDate)}?</Text>
+                    <Text style={styles.textConfirmExit}>{localeDateService.format(confirmDate, _DEFAULT_FORMAT_DATETIME)}?</Text>
                 </View>
                 <TouchableOpacity style={[styles.contentButton, {
                     backgroundColor: loading ? theme['color-primary-disabled'] : styles.contentButton.backgroundColor

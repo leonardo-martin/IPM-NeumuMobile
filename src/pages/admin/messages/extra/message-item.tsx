@@ -31,8 +31,6 @@ const MessageItem: FC<MessageItemProps> = ({ message, onPress }): React.ReactEle
   const renderProfileAvatar = (): React.ReactElement => (
     <Avatar
       style={styles.avatar as StyleProp<ImageProps>}
-      width={40}
-      height={40}
       source={{ uri: message.profile.photo }}
     />
   )

@@ -4,7 +4,7 @@ import { Icon, IconProps, Layout, MenuItem, OverflowMenu, Text, TopNavigation, T
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { headerStyle } from './style'
 import { Message, Profile } from '@services/message.service'
-import { BackIcon, OptionsIcon } from '@components/header/icons/icons'
+import { BackIcon, OptionsIcon } from '@components/header/icons'
 
 const HeaderChatRoom: FC = (): ReactElement => {
     const [visible, setVisible] = useState(false)

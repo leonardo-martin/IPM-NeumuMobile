@@ -1,5 +1,6 @@
-import { PatientProfileCreatorTypeEnum } from "@models/PatientProfileCreator"
 import { MutableRefObject } from "react"
+import { PatientProfileCreatorTypeEnum } from "@models/PatientProfileCreator"
+import { AscendingOrder } from "@models/Common"
 
 export const matchMessage = (message: any) => {
 
@@ -74,4 +75,31 @@ export const getGender = (index: number): string | undefined => {
         1: 'female',
         2: 'none'
     }[index]
+}
+
+export const sortByStringField = (a: any, b: any, fieldName: string) => {
+
+    var nameA
+    var nameB
+
+    if (a[fieldName]) {
+        nameA = typeof a[fieldName] === 'string' ? a[fieldName].toUpperCase() : a[fieldName]
+        nameB = typeof b[fieldName] === 'string' ? b[fieldName].toUpperCase() : b[fieldName]
+    }
+    if (nameA < nameB)
+        return -1
+    else if (nameA > nameB)
+        return 1
+    return 0
+
+}
+
+export const sortByDate = (a: Date, b: Date, order: AscendingOrder) => {
+
+    if (order === AscendingOrder.ASC)
+        return a.getTime() - b.getTime()
+    else if (order === AscendingOrder.DESC)
+        return b.getTime() - a.getTime()
+
+    return a.getTime() - b.getTime()
 }

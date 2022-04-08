@@ -2,7 +2,7 @@ import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
-import { BackIcon } from '@components/header/icons/icons'
+import { BackIcon } from '@components/header/icons'
 import { confirmationScheduleStyle } from './styles'
 import { CommonActions, useFocusEffect, useRoute } from '@react-navigation/native'
 import { CreateAppointment } from '@models/Appointment'

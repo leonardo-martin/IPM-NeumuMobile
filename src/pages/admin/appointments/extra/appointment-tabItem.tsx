@@ -4,14 +4,18 @@ import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { appointmentItemStyle } from './style'
 import { Card, Layout, Text } from '@ui-kitten/components'
 import { Appointment } from '@models/Appointment'
-import { formatDateTimeToString } from '@utils/convertDate'
 import { useFetch } from '@hooks/useSwr'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
+import { useDatepickerService } from '@hooks/useDatepickerService'
+import { _DEFAULT_FORMAT_DATETIME } from '@constants/date'
+import { sortByDate } from '@utils/common'
+import { AscendingOrder } from '@models/Common'
 
 const AppointmentTabItemScreen: FC<DrawerContentComponentProps> = ({ navigation }): ReactElement => {
 
     const [refreshing, setRefreshing] = useState<boolean>(true)
     const [appointmentsData, setAppointmentsData] = useState<Appointment[]>([])
+    const { localeDateService } = useDatepickerService()
 
     const { data, error } = useFetch<Appointment[]>(refreshing ? 'appointment/get-appointment-list-patient' : null)
 
@@ -49,7 +53,7 @@ const AppointmentTabItemScreen: FC<DrawerContentComponentProps> = ({ navigation 
                     </View>
                     :
                     <View style={appointmentItemStyle.view}>
-                        {appointmentsData?.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+                        {appointmentsData?.sort((a, b) => sortByDate(a.startTime, b.startTime, AscendingOrder.DESC))
                             .map((item, index) => {
                                 return (
                                     <Layout key={index} style={appointmentItemStyle.layoutContainer}>
@@ -58,7 +62,7 @@ const AppointmentTabItemScreen: FC<DrawerContentComponentProps> = ({ navigation 
                                                 <View style={appointmentItemStyle.viewCardInfo}>
                                                     <Text style={appointmentItemStyle.text}>{item.medicalDoctorSummaryDto.name}</Text>
                                                     <Text style={appointmentItemStyle.text}>{item.medicalDoctorSummaryDto.specialty}</Text>
-                                                    <Text style={appointmentItemStyle.text}>{formatDateTimeToString(item.startTime)}</Text>
+                                                    <Text style={appointmentItemStyle.text}>{localeDateService.format(item.startTime, _DEFAULT_FORMAT_DATETIME)}</Text>
 
                                                 </View>
                                                 <View style={[

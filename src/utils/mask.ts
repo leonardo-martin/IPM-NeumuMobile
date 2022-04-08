@@ -46,3 +46,8 @@ export const formatUsername = (value: string) => {
 export const isEmailValid = (value: string) => {
     return _REGEX_VALID_EMAIL.test(value)
 }
+
+export const isJustNumber = (value: string) => {
+    const reg = new RegExp(/^[0-9]+$/)
+    return reg.test(value)
+}

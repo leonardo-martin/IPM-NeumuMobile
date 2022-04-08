@@ -157,6 +157,6 @@ export const registerStyle = StyleSheet.create({
         opacity: 0.6
     },
     backdropDatepicker: {
-        backgroundColor: 'color-basic-control-transparent-600',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     }
 })

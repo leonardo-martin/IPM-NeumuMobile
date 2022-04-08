@@ -53,9 +53,18 @@ export const profileStyle = StyleSheet.create({
   icon: {
     color: 'text-info-color',
   },
+  iconExam: {
+    color: 'text-control-color',
+  },
   viewLocation: {
     marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
   },
+  listFooter: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 15
+  }
 })

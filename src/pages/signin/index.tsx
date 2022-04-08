@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useState, useEffect } from 'react'
+import React, { FC, ReactElement, useState } from 'react'
 import { View, KeyboardAvoidingView, ScrollView, StatusBar, Platform, Keyboard } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { loginStyle } from './style'
@@ -12,6 +12,7 @@ import { matchMessage } from '@utils/common'
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import toast from '@helpers/toast'
+import { isJustNumber } from '@utils/mask'
 
 const SignInScreen: FC = (): ReactElement => {
 
@@ -92,6 +93,7 @@ const SignInScreen: FC = (): ReactElement => {
                       value: 5,
                       message: `Mín. 5 caracteres`
                     },
+                    validate: (e) => e !== "" ? (isJustNumber(e) ? false : true) : true
                   }}
                   render={({ field: { onChange, onBlur, value, ref, name } }) => (
                     <Input
@@ -113,7 +115,9 @@ const SignInScreen: FC = (): ReactElement => {
                   name="username"
                   defaultValue=""
                 />
-                {errors.username && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.username?.message}</Text>}
+                {errors.username?.type === 'required' && <Text category='s2' style={styles.text}>{errors.username?.message}</Text>}
+                {errors.username?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.username?.message}</Text>}
+                {errors.username?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>Necessário ao menos 1 letra</Text>}
                 <Controller
                   control={control}
                   rules={{

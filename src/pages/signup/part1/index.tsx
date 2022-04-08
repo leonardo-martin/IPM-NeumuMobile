@@ -2,7 +2,7 @@ import React, { FC, ReactElement, useRef, useEffect, useState, useCallback } fro
 import { Dimensions, TouchableOpacity, View } from 'react-native'
 import { Input, Text, Icon, useStyleSheet, Datepicker, IconProps, PopoverPlacements, RadioGroup, Radio } from '@ui-kitten/components'
 import { Controller } from 'react-hook-form'
-import { formatCpf, isEmailValid } from '@utils/mask'
+import { formatCpf, isEmailValid, isJustNumber } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
 import { registerStyle } from '../style'
 import { getGender } from '@utils/common'
@@ -301,6 +301,7 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
               value: 5,
               message: `Mín. 5 caracteres`
             },
+            validate: (e) => e !== "" ? (isJustNumber(e) ? false : true) : true
           }}
           render={({ field: { onChange, onBlur, value, ref, name } }) => (
             <Input
@@ -323,7 +324,9 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
           name='username'
           defaultValue=''
         />
-        {form.formState.errors.username && <Text category='s2' style={styles.text}>{form.formState.errors.username?.message}</Text>}
+        {form.formState.errors.username?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.username?.message}</Text>}
+        {form.formState.errors.username?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.username?.message}</Text>}
+        {form.formState.errors.username?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>Necessário ao menos 1 letra</Text>}
         <Controller
           control={form.control}
           rules={{
@@ -394,7 +397,6 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
           defaultValue=''
         />
         {form.formState.errors.cns?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.cns?.message}</Text>}
-
         {form.formState.errors.cns?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.cns?.message}</Text>}
         {form.formState.errors.cns?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>CNS inválido</Text>}
       </View>

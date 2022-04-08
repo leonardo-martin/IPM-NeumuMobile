@@ -37,3 +37,12 @@ export const OptionsIcon = (props: IconProps): IconElement => {
         }]} name="ellipsis-vertical-outline" size={25} pack='ionicons' />
     )
 }
+
+export const FolderAddIcon = (props: IconProps): IconElement => {
+    const theme = useTheme()
+    return (
+        <Icon {...props} style={[props.style, {
+            color: theme['color-basic-600']
+        }]} name="folder-add-outline" size={25} pack='eva' />
+    )
+}

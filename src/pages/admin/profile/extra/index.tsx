@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
-import { ImageBackground, ImageStyle, ScrollView, StyleProp } from 'react-native'
+import { ImageStyle, ScrollView, StyleProp } from 'react-native'
 import { Button, Icon, IconProps, useStyleSheet } from '@ui-kitten/components'
 import ProfileAvatar from './profile-avatar'
 import ProfileSetting from './profile-setting'
@@ -8,18 +8,18 @@ import { useFetch } from '@hooks/useSwr'
 import { useAuth } from '@contexts/auth'
 import { editProfileStyle } from './style'
 import { UserPermission } from '@services/permission.service'
-import { formatDateFromISOToString } from '@utils/convertDate'
 import { useFocusEffect } from '@react-navigation/native'
 import toast from '@helpers/toast'
 import { BOOTDEY_URI } from '@constants/uri'
 import { formatPhone } from '@utils/mask'
+import { useDatepickerService } from '@hooks/useDatepickerService'
 
 const EditProfileScreen: FC<DrawerContentComponentProps> = ({
   navigation
 }): ReactElement => {
 
   const styles = useStyleSheet(editProfileStyle)
-
+  const { localeDateService} = useDatepickerService()
   const { currentUser } = useAuth()
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const { data: userDetails, error } = useFetch(isFetching ? 'user' : null)
@@ -81,7 +81,7 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
         <ProfileSetting
           style={styles.profileSetting}
           hint='Data de Nascimento'
-          value={userDetails?.dateOfBirth ? formatDateFromISOToString(userDetails?.dateOfBirth) : ''}
+          value={userDetails?.dateOfBirth ? localeDateService.format(localeDateService.parse(userDetails?.dateOfBirth, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"), 'DD/MM/YYYY') : ''}
         />
         <ProfileSetting
           style={styles.profileSetting}

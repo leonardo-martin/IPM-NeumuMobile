@@ -3,7 +3,7 @@ import { Layout, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-k
 import TitleNeumu from '@components/titleNeumu'
 import { headerStyle } from './style'
 import { useNavigation } from '@react-navigation/native'
-import { BackIcon } from '../icons/icons'
+import { BackIcon } from '../icons'
 
 const HeaderAuth: FC = (): ReactElement => {
   const { goBack } = useNavigation()

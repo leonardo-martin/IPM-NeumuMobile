@@ -28,6 +28,8 @@ import ChangePasswordChoice from '@pages/changePassword'
 import ChangePasswordRequest from '@pages/changePassword/changePasswordSpecific'
 import Terms from '@pages/admin/configuration/terms'
 import ChangePasswordConfirm from '@pages/changePassword/confirmation'
+import MyExamsScreen from '@pages/admin/profile/myExams'
+import HeaderMyExams from 'components/header/admin/myExams'
 
 const { Navigator, Screen, Group } = createDrawerNavigator()
 
@@ -112,12 +114,15 @@ const AppRoutes: FC = (): ReactElement => {
         <Screen name="ChangePasswordChoice" component={ChangePasswordChoice} />
         <Screen name="ChangePasswordRequest" component={ChangePasswordRequest} />
         <Screen name="TermsAndConditions" component={Terms} />
-        <Screen
-          name="Help"
-          component={HelpScreen}
-        />
+        <Screen name="Help" component={HelpScreen} />
       </Group>
 
+      <Group screenOptions={{
+        swipeEnabled: false,
+        headerShown: false,
+      }}>
+        <Screen name="MyExams" component={MyExamsScreen} />
+      </Group>
       <Group screenOptions={{
         swipeEnabled: false,
         headerShown: true,

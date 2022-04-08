@@ -113,7 +113,7 @@ const RegistrationConfirmation: FC = (): ReactElement => {
   const renderItem = (info: ListRenderItemInfo<FlatData>) => (
     <View style={styles.contentItem}>
       <View style={styles.item}>
-        <Image source={{ uri: info.item.image }} style={styles.image as StyleProp<ImageStyle>} />
+        <Image source={info.item.image} style={styles.image as StyleProp<ImageStyle>} />
       </View>
       <View style={styles.itemDetails}>
         <Text style={styles.itemTitle}>{info.item.title}</Text>

@@ -134,7 +134,7 @@ const SignUpScreen: FC = (): ReactElement => {
                                 checked={checked}
                                 indeterminate={indeterminate}
                                 onChange={onIndeterminateChange}>
-                                Li e concordo com os Termos e Condições.
+                                Ao marcar esta caixa, eu confirmo que li e aceito o Termos e Condições de Uso.
                             </CheckBox>
                             <View style={styles.viewBtn}>
                                 <Button
