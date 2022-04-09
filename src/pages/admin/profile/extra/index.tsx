@@ -11,15 +11,16 @@ import { UserPermission } from '@services/permission.service'
 import { useFocusEffect } from '@react-navigation/native'
 import toast from '@helpers/toast'
 import { BOOTDEY_URI } from '@constants/uri'
-import { formatPhone } from '@utils/mask'
+import { formatCpf, formatPhone } from '@utils/mask'
 import { useDatepickerService } from '@hooks/useDatepickerService'
+import HeaderProfile from '@components/header/admin/profile'
 
 const EditProfileScreen: FC<DrawerContentComponentProps> = ({
   navigation
 }): ReactElement => {
 
   const styles = useStyleSheet(editProfileStyle)
-  const { localeDateService} = useDatepickerService()
+  const { localeDateService, format } = useDatepickerService()
   const { currentUser } = useAuth()
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const { data: userDetails, error } = useFetch(isFetching ? 'user' : null)
@@ -65,12 +66,13 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
 
   return (
     <>
+      <HeaderProfile />
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}>
         <ProfileAvatar
           style={styles.profileAvatar as StyleProp<ImageStyle>}
-          source={{ uri:  BOOTDEY_URI + '/img/Content/avatar/avatar6.png' }}
+          source={{ uri: BOOTDEY_URI + '/img/Content/avatar/avatar6.png' }}
           editButton={renderPhotoButton}
         />
         <ProfileSetting
@@ -81,26 +83,30 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
         <ProfileSetting
           style={styles.profileSetting}
           hint='Data de Nascimento'
-          value={userDetails?.dateOfBirth ? localeDateService.format(localeDateService.parse(userDetails?.dateOfBirth, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"), 'DD/MM/YYYY') : ''}
+          value={userDetails?.dateOfBirth ? localeDateService.format(localeDateService.parse(userDetails?.dateOfBirth, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"), format) : ''}
         />
         <ProfileSetting
           style={styles.profileSetting}
           hint='CPF'
-          value={userDetails?.cpf}
+          value={userDetails?.cpf ? formatCpf(userDetails?.cpf) : userDetails?.cpf}
         />
         <ProfileSetting
           style={styles.profileSetting}
           hint='Telefone 1'
-          value={formatPhone(userDetails?.phone1)}
+          value={userDetails?.phone1 ? formatPhone(userDetails?.phone1) : userDetails?.phone1}
         />
         <ProfileSetting
           style={styles.profileSetting}
           hint='Telefone 2'
-          value={formatPhone(userDetails?.phone2)}
+          value={userDetails?.phone2 ? formatPhone(userDetails?.phone2) : userDetails?.phone2}
         />
-
         <ProfileSetting
           style={[styles.profileSetting, styles.section]}
+          hint='CEP'
+          value={userDetails?.postalCode}
+        />
+        <ProfileSetting
+          style={[styles.profileSetting]}
           hint='Endereço 1'
           value={userDetails?.address1}
         />
@@ -141,6 +147,7 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
           value={userDetails?.email}
         />
         <Button
+          disabled
           style={styles.editButton}
           onPress={onDoneButtonPress}>
           EDITAR PERFIL

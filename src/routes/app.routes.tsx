@@ -30,6 +30,7 @@ import Terms from '@pages/admin/configuration/terms'
 import ChangePasswordConfirm from '@pages/changePassword/confirmation'
 import MyExamsScreen from '@pages/admin/profile/myExams'
 import HeaderMyExams from 'components/header/admin/myExams'
+import MyNotesScreen from 'pages/admin/profile/myNotes'
 
 const { Navigator, Screen, Group } = createDrawerNavigator()
 
@@ -64,6 +65,17 @@ const AppRoutes: FC = (): ReactElement => {
           component={ConfirmationScheduleScreen}
         />
         <Screen name="ChangePasswordConfirmation" component={ChangePasswordConfirm} />
+
+        <Screen name="MyNotes" component={MyNotesScreen} />
+        <Screen name="MyExams" component={MyExamsScreen} />
+        <Screen
+          name="Profile"
+          component={ProfileScreen}
+        />
+        <Screen
+          name="EditProfile"
+          component={EditProfileScreen}
+        />
       </Group>
 
       <Group screenOptions={{
@@ -78,14 +90,6 @@ const AppRoutes: FC = (): ReactElement => {
         <Screen
           name="ChoiceSchedule"
           component={ChoiceScheduleScreen}
-        />
-        <Screen
-          name="Profile"
-          component={ProfileScreen}
-        />
-        <Screen
-          name="EditProfile"
-          component={EditProfileScreen}
         />
         <Screen
           name="MyAppointments"
@@ -117,12 +121,6 @@ const AppRoutes: FC = (): ReactElement => {
         <Screen name="Help" component={HelpScreen} />
       </Group>
 
-      <Group screenOptions={{
-        swipeEnabled: false,
-        headerShown: false,
-      }}>
-        <Screen name="MyExams" component={MyExamsScreen} />
-      </Group>
       <Group screenOptions={{
         swipeEnabled: false,
         headerShown: true,

@@ -8,6 +8,5 @@ export const modalizeStyle = StyleSheet.create({
   },
   content: {
     padding: 20,
-    backgroundColor: 'background-basic-color-2'
   },
 })

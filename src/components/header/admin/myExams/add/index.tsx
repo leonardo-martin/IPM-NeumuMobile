@@ -14,7 +14,7 @@ interface RegisterModalProps {
     visible: boolean
 }
 
-const RegisterModal: FC<RegisterModalProps> = forwardRef<Modal, React.PropsWithChildren<RegisterModalProps>>(({ onRefresh, onVisible, visible }, ref): ReactElement => {
+const RegisterModal: FC<RegisterModalProps> = forwardRef<Modal, React.PropsWithChildren<RegisterModalProps>>(({ onRefresh, onVisible, visible, ...props }, ref): ReactElement => {
 
     const combinedRef = useCombinedRefs(ref, ref)
     const form = useForm<Exam & ExamImage>()
@@ -72,13 +72,13 @@ const RegisterModal: FC<RegisterModalProps> = forwardRef<Modal, React.PropsWithC
             setFileResponse(response)
             console.log(response)
         } catch (err) {
-        
+
         }
     }, [])
 
     return (
         <Modal
-            ref={combinedRef}
+            {...{ ...props, ref: combinedRef }}
             style={styles.modal}
             visible={visible}
             backdropStyle={styles.backdrop}
@@ -125,7 +125,7 @@ const RegisterModal: FC<RegisterModalProps> = forwardRef<Modal, React.PropsWithC
                         }}
                         render={({ field: { onChange, onBlur, value, name, ref } }) => (
                             <Input
-                                size='small'
+                                size='large'
                                 label={evaProps => <Text {...evaProps}>DESCRIÇÃO *</Text>}
                                 style={styles.input}
                                 keyboardType='default'

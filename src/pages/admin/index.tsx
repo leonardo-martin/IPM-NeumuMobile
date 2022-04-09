@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useCallback } from 'react'
+import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { BackHandler, StatusBar, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
@@ -10,15 +10,17 @@ import ModalizeFixed from '@components/modalize'
 import HeaderAdmin from '@components/header/admin'
 import { useModalize } from '@hooks/useModalize'
 import { dashboardStyle } from './style'
+import FloatingButton from '@components/floatingButton'
 
 const DashboardScreen: FC<DrawerContentComponentProps> = ({
   navigation
 }): ReactElement => {
+
   const goToProfile = () => navigation.jumpTo('Profile')
   const goToSchedule = () => navigation.jumpTo('Schedule')
   const goToAppointments = () => navigation.jumpTo('MyAppointments')
   const goToHelpMe = () => navigation.jumpTo('Help')
-
+  const [visibleFloatingButton, setVisibleFloatingButton] = useState<boolean>(true)
 
   const styles = useStyleSheet(dashboardStyle)
   const { ref, open, close } = useModalize()
@@ -32,6 +34,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
     useCallback(() => {
       const onBackPress = () => {
         open()
+        setVisibleFloatingButton(false)
         return true
       }
       const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress)
@@ -44,7 +47,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
       <HeaderAdmin />
       <StatusBar barStyle="dark-content" backgroundColor='transparent' translucent />
       <SafeAreaLayout insets='bottom' level='1' style={styles.safeArea}>
-        <View style={styles.content}>
+        <View style={[styles.content, { position: 'relative' }]}>
           <View style={styles.cardContainer}>
             <Text category="h5" status='basic' style={styles.text}>
               Como podemos te ajudar?
@@ -93,7 +96,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                   Sobre
                 </Text>
               </Card>
-              <Card style={styles.card}  onPress={goToHelpMe}>
+              <Card style={styles.card} onPress={goToHelpMe}>
                 <View style={styles.cardDefault}>
                   <Icon style={styles.iconPrimary} name="help-circle-outline" size={40} pack='ionicons' />
                 </View>
@@ -109,6 +112,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
         <ModalizeFixed
           ref={ref}
           snapPoint={300}
+          onClosed={() => setVisibleFloatingButton(true)}
           adjustToContentHeight={true}
           withHandle={false}>
           <Text style={styles.textConfirmExit}>Deseja realmente sair do aplicativo?</Text>
@@ -119,6 +123,13 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
             <Text style={[styles.contentButtonText, styles.buttonTextOutline]}>{'Não'.toUpperCase()}</Text>
           </TouchableOpacity>
         </ModalizeFixed>
+      </Portal>
+      <Portal>
+        <FloatingButton containerStyle={{
+          bottom: 80,
+          right: 60,
+          opacity: visibleFloatingButton ? 1 : 0
+        }} />
       </Portal>
     </Host>
   )

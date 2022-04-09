@@ -8,6 +8,7 @@ import ListComponent from '@components/list'
 import { BOOTDEY_URI } from '@constants/uri'
 import { profileStyle } from './style'
 import { data } from './data'
+import HeaderProfile from '@components/header/admin/profile'
 
 const ProfileScreen: FC<DrawerContentComponentProps> = ({
   navigation
@@ -37,6 +38,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
 
   return (
     <>
+      <HeaderProfile />
       <SafeAreaLayout level='2' style={styles.safeArea}>
         <View style={styles.contentContainer}>
           <Avatar style={styles.avatar as StyleProp<ImageStyle>}

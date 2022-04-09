@@ -3,8 +3,8 @@ import { Layout, Modal, Text, TopNavigation, TopNavigationAction, useStyleSheet 
 import { useNavigation } from '@react-navigation/native'
 import { BackIcon, FolderAddIcon } from '@components/header/icons'
 import { Exam, ExamImage } from '@models/Exam'
-import { headerStyle } from './style'
 import RegisterModal from './add'
+import { headerStyle } from '../style'
 
 interface HeaderMyExamsProps {
     onRefresh: Dispatch<React.SetStateAction<Exam & ExamImage | undefined>>

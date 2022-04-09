@@ -5,7 +5,6 @@ export const dashboardStyle = StyleSheet.create({
     flex: 1
   },
   content: {
-    display: 'flex',
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
