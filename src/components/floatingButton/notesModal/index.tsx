@@ -6,7 +6,6 @@ import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { _DEFAULT_FORMAT_DATE } from '@constants/date'
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { Notes } from '@models/Notes'
 import { modalStyle } from './style'
 
@@ -60,9 +59,9 @@ const NewNoteModal: FC<NewNoteModalProps> = forwardRef<Modal, React.PropsWithChi
                 <View style={styles.headerModal}>
                     <Text status='basic' category='label'>Criar Nota</Text>
                     {route.name === 'MyNotes' ?
-                        <TouchableWithoutFeedback onPress={handleVisibleModal}>
+                        <TouchableOpacity onPress={handleVisibleModal}>
                             <Icon name='close-outline' size={20} style={styles.icon} />
-                        </TouchableWithoutFeedback>
+                        </TouchableOpacity>
                         :
                         <TouchableOpacity onPress={() => goTo('MyNotes')}>
                             <Text status='primary' category='c1'>Meu Diário</Text>

@@ -20,17 +20,13 @@ const FilterModal: FC<FilterModalProps> = forwardRef<Modal, React.PropsWithChild
     const combinedRef = useCombinedRefs(ref, ref)
     const styles = useStyleSheet(modalStyle)
 
-    const handleVisibleModal = () => {
-        props.onVisible(!props.visible)
-    }
-
     return (
         <Modal
             ref={combinedRef}
             style={styles.modal}
             visible={props.visible}
             backdropStyle={styles.backdrop}
-            onBackdropPress={handleVisibleModal}>
+            onBackdropPress={() => props.onVisible(!props.visible)}>
             <Card disabled={true} style={styles.card} >
                 <RangeCalendar
                     range={props.range}

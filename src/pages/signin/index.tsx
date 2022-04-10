@@ -1,23 +1,27 @@
-import React, { FC, ReactElement, useState } from 'react'
+import React, { createRef, FC, ReactElement, useState } from 'react'
 import { View, KeyboardAvoidingView, ScrollView, StatusBar, Platform, Keyboard } from 'react-native'
+import { Input, Text, Button, Icon, IconProps, Spinner, useStyleSheet, Modal } from '@ui-kitten/components'
 import { useForm, Controller } from 'react-hook-form'
-import { loginStyle } from './style'
+import { useNavigation } from '@react-navigation/native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+
 import { SignInData } from '@models/User'
 import { useAuth } from '@contexts/auth'
-import { Input, Text, Button, Icon, IconProps, Spinner, useStyleSheet } from '@ui-kitten/components'
 import TitleNeumu from '@components/titleNeumu'
 import LogoPedroMolina from '@assets/svg/logo.svg'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { matchMessage } from '@utils/common'
-import { useNavigation } from '@react-navigation/native'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import toast from '@helpers/toast'
 import { isJustNumber } from '@utils/mask'
+import RegisterModal from '@components/registerModal'
+import { loginStyle } from './style'
 
 const SignInScreen: FC = (): ReactElement => {
 
+  const ref = createRef<Modal>()
   const styles = useStyleSheet(loginStyle)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [visibleModal, setVisibleModal] = useState<boolean>(false)
 
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true)
   const { signIn } = useAuth()
@@ -54,7 +58,9 @@ const SignInScreen: FC = (): ReactElement => {
     }
   }
 
-  const registerName = () => navigation.navigate('SignUp')
+  const registerName = () => {
+    setVisibleModal(true)
+  }
   const recoveryPasswd = () => navigation.navigate('ChangePasswordChoice')
 
   const toggleSecureEntry = () => {
@@ -68,6 +74,13 @@ const SignInScreen: FC = (): ReactElement => {
   const LoadingIndicator = () => (
     <Spinner size='small' status='basic' />
   )
+
+  const register = (selected: number | undefined) => {
+    navigation.navigate('SignUp', {
+      registerType: selected
+    })
+    setVisibleModal(!visibleModal)
+  }
 
   return (
     <>
@@ -195,6 +208,12 @@ const SignInScreen: FC = (): ReactElement => {
                 </Button>
               </View>
             </View>
+            <RegisterModal
+              ref={ref}
+              onActionButton={register}
+              onVisible={setVisibleModal}
+              visible={visibleModal}
+            />
           </View>
         </ScrollView>
       </SafeAreaLayout>
