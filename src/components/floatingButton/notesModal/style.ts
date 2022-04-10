@@ -20,7 +20,7 @@ export const modalStyle = StyleSheet.create({
   },
   viewCardBtn: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     paddingTop: 10
   },
   button: {
@@ -28,6 +28,12 @@ export const modalStyle = StyleSheet.create({
   },
   icon: {
     color: 'text-basic-color'
+  },
+  headerModal: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10
   }
 })
 

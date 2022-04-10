@@ -57,12 +57,7 @@ const NewNoteModal: FC<NewNoteModalProps> = forwardRef<Modal, React.PropsWithChi
             backdropStyle={styles.backdrop}
             onBackdropPress={handleVisibleModal}>
             <Card disabled={true} >
-                <View style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    paddingVertical: 10
-                }}>
+                <View style={styles.headerModal}>
                     <Text status='basic' category='label'>Criar Nota</Text>
                     {route.name === 'MyNotes' ?
                         <TouchableWithoutFeedback onPress={handleVisibleModal}>
@@ -139,6 +134,11 @@ const NewNoteModal: FC<NewNoteModalProps> = forwardRef<Modal, React.PropsWithChi
                     defaultValue=''
                 />
                 <View style={styles.viewCardBtn}>
+                    <Button status='danger'
+                        onPress={handleVisibleModal}
+                        style={styles.button}>
+                        Cancelar
+                    </Button>
                     <Button status='success'
                         onPress={form.handleSubmit(submitForm)}
                         style={styles.button}>

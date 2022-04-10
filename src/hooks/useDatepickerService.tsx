@@ -1,6 +1,5 @@
-import { I18nConfig } from "@ui-kitten/components"
-import { DateFnsService } from "@ui-kitten/date-fns"
-import { _DEFAULT_FORMAT_DATE } from "constants/date"
+import { I18nConfig, NativeDateService } from "@ui-kitten/components"
+import { _DEFAULT_FORMAT_DATE } from "@constants/date"
 
 const i18n: I18nConfig = {
     dayNames: {
@@ -27,7 +26,7 @@ const i18n: I18nConfig = {
 }
 
 export const useDatepickerService = (format = _DEFAULT_FORMAT_DATE) => {
-    const localeDateService = new DateFnsService('pt-BR', { i18n, startDayOfWeek: 0, format })
+    const localeDateService = new NativeDateService('pt-BR', { i18n, startDayOfWeek: 0, format })
 
     return { localeDateService, format }
 }

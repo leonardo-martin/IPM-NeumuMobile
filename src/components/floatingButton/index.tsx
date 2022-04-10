@@ -1,9 +1,10 @@
-import React, { createRef, FC, ReactElement, useState } from 'react'
+import React, { createRef, FC, ReactElement, useCallback, useState } from 'react'
 import { StyleProp, View, ViewStyle, Animated, TouchableWithoutFeedback } from 'react-native'
 import { Icon, Modal, useStyleSheet } from '@ui-kitten/components'
 
 import { floatingButtonStyle } from './style'
 import NewNoteModal from './notesModal'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 
 interface FloatingButtonProps {
     containerStyle?: StyleProp<ViewStyle>
@@ -17,14 +18,13 @@ const FloatingButton: FC<FloatingButtonProps> = ({ containerStyle }): ReactEleme
     const animation = useState(new Animated.Value(0))[0]
     const [visibleModal, setVisibleModal] = useState<boolean>(false)
 
-    const toggleMenu = () => {
-        const toValue = isOpen ? 0 : 1
+    const toggleMenu = (opened: boolean) => {
+        const toValue = opened ? 0 : 1
         Animated.spring(animation, {
             toValue,
             friction: 5,
             useNativeDriver: true
         }).start()
-
         setIsOpen(!isOpen)
     }
 
@@ -40,8 +40,18 @@ const FloatingButton: FC<FloatingButtonProps> = ({ containerStyle }): ReactEleme
 
     const toggleNote = () => {
         setVisibleModal(true)
-        toggleMenu()
+        toggleMenu(isOpen)
     }
+
+    const navi = useNavigation()
+    useFocusEffect(
+        useCallback(() => {
+            navi.addListener('focus', () => {
+                toggleMenu(true)
+                return;
+            })
+        }, [])
+    )
 
     return (
         <>
@@ -56,11 +66,11 @@ const FloatingButton: FC<FloatingButtonProps> = ({ containerStyle }): ReactEleme
                     </Animated.View>
                 </TouchableWithoutFeedback>
 
-                <TouchableWithoutFeedback onPress={toggleMenu}>
+                <TouchableWithoutFeedback onPress={() => toggleMenu(isOpen)}>
                     <Animated.View style={[styles.button, styles.menu, {
                         transform: [{ rotate }]
                     }]}>
-                        <Icon name='add-outline'
+                        <Icon name='add'
                             size={25}
                             style={styles.icon} />
                     </Animated.View>

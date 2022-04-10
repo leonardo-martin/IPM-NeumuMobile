@@ -12,7 +12,7 @@ import { Exam, ExamImage } from '@models/Exam'
 import { useFocusEffect } from '@react-navigation/native'
 import { sortByDate } from '@utils/common'
 import { myExamsStyle } from './style'
-import FilterModal from './extra/filterModal'
+import FilterModal from '@components/filterModal'
 
 const MyExamsScreen: FC<DrawerContentComponentProps> = ({
     navigation
@@ -129,27 +129,32 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = ({
         getExamList()
     }
 
+    const headerListComponent = () => (
+        <View style={styles.container}>
+            <View style={styles.viewTop}>
+                <Text style={[styles.text, { paddingHorizontal: 5 }]}>TOTAL:</Text>
+                <Text status='primary' style={styles.text}>{data.length}</Text>
+            </View>
+            <View style={styles.viewTop}>
+                {isFiltered && (
+                    <TouchableOpacity onPress={clearFilter}>
+                        <Text status='danger' category='c1' style={{ paddingHorizontal: 5, fontWeight: 'bold' }}>LIMPAR</Text>
+                    </TouchableOpacity>
+                )}
+                <TouchableOpacity disabled={originalData.length === 0} onPress={handleVisibleModal}>
+                    <Icon name='options-outline' style={styles.iconFilter} size={20} pack='ionicons' />
+                </TouchableOpacity>
+            </View>
+        </View>
+    )
+
     return (
         <>
             <HeaderMyExams onRefresh={setAddedItem} />
-            <SafeAreaLayout level='2' style={styles.safeArea}>
-                <View style={styles.container}>
-                    <View style={styles.viewTop}>
-                        <Text style={[styles.text, { paddingHorizontal: 5 }]}>TOTAL:</Text>
-                        <Text status='primary' style={styles.text}>{data.length}</Text>
-                    </View>
-                    <View style={styles.viewTop}>
-                        {isFiltered && (
-                            <TouchableOpacity onPress={clearFilter}>
-                                <Text status='danger' category='c1' style={{ paddingHorizontal: 5, fontWeight: 'bold' }}>LIMPAR</Text>
-                            </TouchableOpacity>
-                        )}
-                        <TouchableOpacity disabled={originalData.length === 0} onPress={handleVisibleModal}>
-                            <Icon name='options-outline' style={styles.iconFilter} size={20} pack='ionicons' />
-                        </TouchableOpacity>
-                    </View>
-                </View>
+            <SafeAreaLayout level='1' style={styles.safeArea}>
                 <List
+                    style={{ backgroundColor: 'transparent' }}
+                    ListHeaderComponent={headerListComponent}
                     data={data}
                     renderItem={renderItem}
                     refreshControl={

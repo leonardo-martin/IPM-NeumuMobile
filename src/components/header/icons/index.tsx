@@ -43,7 +43,7 @@ export const FolderAddIcon = (props: IconProps): IconElement => {
     return (
         <Icon {...props} style={[props.style, {
             color: theme['color-basic-600']
-        }]} name="folder-add-outline" size={25} pack='eva' />
+        }]} name="folder-add" size={25} pack='eva' />
     )
 }
 
@@ -52,7 +52,7 @@ export const ReceiptIcon = (props: IconProps): IconElement => {
     return (
         <Icon {...props} style={[props.style, {
             color: theme['color-basic-600']
-        }]} name="receipt-outline" size={25} pack='ionicons' />
+        }]} name="receipt" size={25} pack='ionicons' />
     )
 }
 
@@ -61,6 +61,6 @@ export const PlusIcon = (props: IconProps): IconElement => {
     return (
         <Icon {...props} style={[props.style, {
             color: theme['color-basic-600']
-        }]} name="add-outline" size={25} pack='ionicons' />
+        }]} name="add" size={25} pack='ionicons' />
     )
 }

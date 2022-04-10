@@ -31,7 +31,7 @@ export const floatingButtonStyle = StyleSheet.create({
         backgroundColor: 'text-control-color'
     },
     icon: {
-        color: 'text-control-color',
+        color: 'color-basic-100',
         fontWeight: 'bold',
     },
     iconSecondary: {

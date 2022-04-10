@@ -1,11 +1,12 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { ListRenderItemInfo } from 'react-native'
-import { Icon, IconProps, Input, Layout, List, useStyleSheet } from '@ui-kitten/components'
+import { ListRenderItemInfo, View } from 'react-native'
+import { Icon, IconProps, Input, List, useStyleSheet } from '@ui-kitten/components'
 import MessageItem from './extra/message-item'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { Message } from '@services/message.service'
 import { initialMessages } from './data'
 import { messagesStyle } from './style'
+import { SafeAreaLayout } from 'components/safeAreaLayout'
 
 const MessagesScreen: FC<DrawerContentComponentProps> = ({
     navigation
@@ -49,8 +50,9 @@ const MessagesScreen: FC<DrawerContentComponentProps> = ({
 
     return (
         <>
-            <Layout style={styles.header} level='1'>
+            <SafeAreaLayout style={styles.safeArea} level='1' >
                 <Input
+                    style={styles.input}
                     placeholder='Pesquisar'
                     onChangeText={setSearchQuery}
                     value={searchQuery}
@@ -60,12 +62,12 @@ const MessagesScreen: FC<DrawerContentComponentProps> = ({
                     accessoryLeft={SearchIcon}
                     accessoryRight={searchQuery !== '' ? CloseIcon : undefined}
                 />
-            </Layout>
-            <List
-                style={styles.list}
-                data={messages}
-                renderItem={renderItem}
-            />
+                <List
+                    data={messages}
+                    renderItem={renderItem}
+                />
+            </SafeAreaLayout>
+
         </>
     )
 }

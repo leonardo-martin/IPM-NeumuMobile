@@ -41,7 +41,7 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement =>
       const supported = await Linking.canOpenURL(url)
 
       if (supported) {
-        await Linking.openURL(url);
+        await Linking.openURL(url)
       } else {        
         toast.danger({ message: 'Ocorreu um erro ao abrir o Phone app.', duration: 1000 })
       }

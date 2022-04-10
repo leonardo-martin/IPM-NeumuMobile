@@ -315,9 +315,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                                 horizontal={true}
                                 ref={scrollViewDaysInMonthRef}>
                                 <List
-                                    style={{
-                                        backgroundColor: theme['background-basic-color-1']
-                                    }}
+                                    style={{ backgroundColor: 'transparent' }}
                                     key={numColumns}
                                     data={daysInMonth}
                                     renderItem={renderItem}

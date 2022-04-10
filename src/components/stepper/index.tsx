@@ -102,7 +102,7 @@ const Stepper: FC<StepperProps> = ({
                                     style={{
                                         flex: 1,
                                         height: 1,
-                                        backgroundColor: 'grey',
+                                        backgroundColor: 'gray',
                                         opacity: 1,
                                         marginHorizontal: 10,
                                     }}

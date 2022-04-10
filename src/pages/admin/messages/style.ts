@@ -1,13 +1,8 @@
 import { StyleSheet } from 'react-native'
 
 export const messagesStyle = StyleSheet.create({
-    list: {
-        flex: 1,
-    },
-    header: {
-        paddingHorizontal: 16,
-        paddingTop: 16,
-        paddingBottom: 8,
+    safeArea: {
+        flex: 1
     },
     item: {
         paddingVertical: 16,
@@ -15,5 +10,8 @@ export const messagesStyle = StyleSheet.create({
         borderBottomColor: 'background-basic-color-3',
         marginVertical: 4
     },
+    input: {
+        paddingHorizontal: 16
+    }
 })
 

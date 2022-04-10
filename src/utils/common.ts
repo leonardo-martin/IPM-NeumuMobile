@@ -94,7 +94,7 @@ export const sortByStringField = (a: any, b: any, fieldName: string) => {
 
 }
 
-export const sortByDate = (a: Date, b: Date, order: AscendingOrder) => {
+export const sortByDate = (a: Date, b: Date, order: AscendingOrder | undefined) => {
 
     if (order === AscendingOrder.ASC)
         return a.getTime() - b.getTime()

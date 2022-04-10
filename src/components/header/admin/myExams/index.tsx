@@ -1,7 +1,7 @@
 import React, { createRef, Dispatch, FC, ReactElement, useState } from 'react'
 import { Layout, Modal, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
-import { BackIcon, FolderAddIcon } from '@components/header/icons'
+import { BackIcon, PlusIcon } from '@components/header/icons'
 import { Exam, ExamImage } from '@models/Exam'
 import RegisterModal from './add'
 import { headerStyle } from '../style'
@@ -30,7 +30,7 @@ const HeaderMyExams: FC<HeaderMyExamsProps> = ({ onRefresh }): ReactElement => {
 
     const renderRightIcon = () => (
         <TopNavigationAction
-            icon={FolderAddIcon}
+            icon={PlusIcon}
             onPress={handleVisibleModal}
         />
     )
