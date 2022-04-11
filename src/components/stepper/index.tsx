@@ -183,11 +183,10 @@ const Stepper: FC<StepperProps> = ({
                                     styles.button,
                                     buttonDoneStyle,
                                     {
-                                        opacity: isAllowSubmit ? 1 : .5
+                                        opacity: 1
                                     }
                                 ]}
-                                disabled={!isAllowSubmit}
-                                onPress={isAllowSubmit ? onFinish : undefined}
+                                onPress={onFinish}
                             >
                                 {iconButton ?
                                     DoneIcon() :

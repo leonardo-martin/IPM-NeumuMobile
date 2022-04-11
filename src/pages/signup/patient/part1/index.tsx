@@ -4,10 +4,10 @@ import { Input, Text, Icon, useStyleSheet, Datepicker, IconProps, PopoverPlaceme
 import { Controller } from 'react-hook-form'
 import { formatCpf, isEmailValid, isJustNumber } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
-import { registerStyle } from '../style'
 import { getGender } from '@utils/common'
 import { validateCNS } from '@utils/validators'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+import { registerStyle } from '@pages/signup/style'
 
 import { Modalize } from 'react-native-modalize'
 import { useModalize } from '@hooks/useModalize'
@@ -15,12 +15,11 @@ import { useDatepickerService } from '@hooks/useDatepickerService'
 import RNWebView from '@components/webView'
 import WebView from 'react-native-webview'
 import { GOV_BR_URI } from '@constants/uri'
-import { SignUpProps } from '..'
-
+import { PatientSignUpProps } from '@models/SignUpProps'
 
 const { height: initialHeight } = Dimensions.get('window')
 
-const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement => {
+const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): ReactElement => {
 
   const { localeDateService } = useDatepickerService()
   const { ref, open: openModal } = useModalize()
@@ -163,7 +162,7 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
               value: 14,
               message: `Mín. 14 caracteres`
             },
-            validate: (e) => validate(e)
+            validate: (e) => e ? validate(e) : undefined
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
@@ -263,7 +262,7 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
               value: 5,
               message: `Mín. 5 caracteres`
             },
-            validate: (e) => isEmailValid(e)
+            validate: (e) => e ? isEmailValid(e) : undefined
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
@@ -274,7 +273,7 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
               testID={name}
               onBlur={onBlur}
               onChangeText={onChange}
-              value={value.replace(/[^0-9A-Za-z]*/, "")}
+              value={value ? value.replace(/[^0-9A-Za-z]*/, "") : value}
               underlineColorAndroid="transparent"
               autoCapitalize='none'
               maxLength={60}
@@ -301,7 +300,7 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
               value: 5,
               message: `Mín. 5 caracteres`
             },
-            validate: (e) => e !== "" ? (isJustNumber(e) ? false : true) : true
+            validate: (e) => e && e !== "" ? (isJustNumber(e) ? false : true) : true
           }}
           render={({ field: { onChange, onBlur, value, ref, name } }) => (
             <Input
@@ -414,4 +413,4 @@ const SignUpPart1Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
   )
 }
 
-export default SignUpPart1Screen
+export default PatientSignUpPart1Screen

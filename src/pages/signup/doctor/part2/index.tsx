@@ -6,14 +6,14 @@ import AutoCompleteComponent from '@components/autoComplete'
 import { City, Country, UF } from '@models/Places'
 import { API_IBGE_GOV, API_POSTAL_CODE_SEARCH } from '@env'
 import { formatPhone } from '@utils/mask'
-import { registerStyle } from '../style'
-import { SignUpProps } from '..'
+import { registerStyle } from '@pages/signup/style'
+import { DoctorSignUpProps } from '@models/SignUpProps'
 
 const filter = (item: any, query: any) => item.sigla.toLowerCase().includes(query.toLowerCase())
 const filterCity = (item: any, query: any) => item.nome.toLowerCase().includes(query.toLowerCase())
 const filterCountry = (item: any, query: any) => item.nome.toLowerCase().includes(query.toLowerCase())
 
-const SignUpPart2Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement => {
+const DoctorSignUpPart2Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): ReactElement => {
 
   const styles = useStyleSheet(registerStyle)
 
@@ -63,7 +63,7 @@ const SignUpPart2Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
     }
   }
 
-  const onSubmitEditingCountry = (value: string) => {
+  const onSubmitEditingCountry = (value?: string) => {
     const list = countriesTemp.filter(item => item.nome === value)
     if (list.length > 0) {
       if (value !== country) {
@@ -119,7 +119,7 @@ const SignUpPart2Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
     }
   }
 
-  const onSubmitEditingState = (value: string) => {
+  const onSubmitEditingState = (value?: string) => {
     const list = statesTemp.filter(item => item.sigla === value)
     if (list.length > 0) {
       setIsDisabledCity(false)
@@ -167,7 +167,7 @@ const SignUpPart2Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
     }
   }
 
-  const onSubmitEditingCity = (value: string) => {
+  const onSubmitEditingCity = (value?: string) => {
     const list = citiesTemp.filter(item => item.nome === value)
     if (list.length > 0) {
       form.clearErrors('city')
@@ -203,7 +203,7 @@ const SignUpPart2Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
     }
   }
 
-  const renderRightIcon = (props: IconProps, value: string, op?: string) => {
+  const renderRightIcon = (props: IconProps, value?: string, op?: string) => {
     if ((op === 'city' || op === 'state') && value)
       return (
         <Icon {...props} name='close-outline' pack='ionicons' onPress={() => clearInputs(op)} />
@@ -289,7 +289,7 @@ const SignUpPart2Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
               ref={ref}
               returnKeyType="next"
               underlineColorAndroid="transparent"
-              onSubmitEditing={() => loadDataFromPostalCode(value)}
+              onSubmitEditing={() => value ? loadDataFromPostalCode(value) : undefined}
               disabled={isLoadingPostalCode}
             />
           )}
@@ -635,4 +635,4 @@ const SignUpPart2Screen: FC<SignUpProps> = ({ form, onSubmit }): ReactElement =>
   )
 }
 
-export default SignUpPart2Screen
+export default DoctorSignUpPart2Screen

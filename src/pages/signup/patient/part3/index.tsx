@@ -2,12 +2,12 @@ import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react
 import { View } from 'react-native'
 import { Input, Text, useStyleSheet, RadioGroup, Radio } from '@ui-kitten/components'
 import { Controller } from 'react-hook-form'
-import { registerStyle } from '../style'
+import { registerStyle } from '@pages/signup/style'
 import { PatientProfileCreatorTypeEnum } from '@models/PatientProfileCreator'
 import { onlyNumbers } from '@utils/mask'
 import { getRelationPatient, getRelationPastExams } from '@utils/common'
 import { useFocusEffect } from '@react-navigation/native'
-import { SignUpProps } from '..'
+import { PatientSignUpProps } from '@models/SignUpProps'
 
 const options = ['Paciente', 'Outro']
 
@@ -19,11 +19,7 @@ const items = [
   'Não Testado'
 ]
 
-interface SignUpPart3Props extends SignUpProps {
-  handleIsAllowSubmit: (value: boolean) => void
-}
-
-const SignUpPart3Screen: FC<SignUpPart3Props> = ({ form, handleIsAllowSubmit, onSubmit }): ReactElement => {
+const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): ReactElement => {
 
   const styles = useStyleSheet(registerStyle)
 
@@ -57,7 +53,6 @@ const SignUpPart3Screen: FC<SignUpPart3Props> = ({ form, handleIsAllowSubmit, on
       form.resetField('pastExams.exam')
       setSelectedIndexExamDNA(-1)
       setShowFields(false)
-      handleIsAllowSubmit(false)
     }
     setSelectedIndexRelationPatient(index)
     const id = getRelationPatient(index)
@@ -78,8 +73,8 @@ const SignUpPart3Screen: FC<SignUpPart3Props> = ({ form, handleIsAllowSubmit, on
 
     form.setValue('abrafeuRegistrationOptIn', (index === 1) ? 'false' : 'true')
     form.clearErrors('abrafeuRegistrationOptIn')
-    if (index === 1) handleIsAllowSubmit(true), setShowFields(false)
-    else setShowFields(true), handleIsAllowSubmit(false)
+    if (index === 1)  setShowFields(false)
+    else setShowFields(true)
 
 
     setSelectedIndexExamDNA(-1)
@@ -91,13 +86,6 @@ const SignUpPart3Screen: FC<SignUpPart3Props> = ({ form, handleIsAllowSubmit, on
     setSelectedIndexExamDNA(index)
     const exam = getRelationPastExams(index)
     exam ? form.setValue('pastExams.exam', exam) : null
-    if (form.getValues('pastExams.doctor.crm') !== '') handleIsAllowSubmit(true)
-  }
-
-  const handleCRM = (value: string) => {
-    value !== '' && selectedIndexExamDNA !== -1 && value.length >= 5 ?
-      handleIsAllowSubmit(true) : handleIsAllowSubmit(false)
-
   }
 
   return (
@@ -182,13 +170,10 @@ const SignUpPart3Screen: FC<SignUpPart3Props> = ({ form, handleIsAllowSubmit, on
                   label="CRM do Médico Responsável *"
                   style={styles.input}
                   keyboardType='number-pad'
-                  placeholder='CRM'
+                  placeholder=''
                   testID={name}
                   onBlur={onBlur}
-                  onChangeText={(e) => {
-                    onChange(e)
-                    handleCRM(e)
-                  }}
+                  onChangeText={onChange}
                   value={value ? onlyNumbers(value) : value}
                   ref={ref}
                   maxLength={6}
@@ -236,4 +221,4 @@ const SignUpPart3Screen: FC<SignUpPart3Props> = ({ form, handleIsAllowSubmit, on
   )
 }
 
-export default SignUpPart3Screen
+export default PatientSignUpPart3Screen

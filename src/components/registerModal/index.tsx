@@ -9,8 +9,8 @@ import { modalStyle } from './style'
 
 const options = [
     'Paciente',
-    // 'Operador',
-    'Especialista / Médico'
+    'Médico',
+    // 'Especialista'
 ]
 
 interface UserType {
