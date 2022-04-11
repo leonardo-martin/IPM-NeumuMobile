@@ -29,8 +29,7 @@ import ChangePasswordRequest from '@pages/changePassword/changePasswordSpecific'
 import Terms from '@pages/admin/configuration/terms'
 import ChangePasswordConfirm from '@pages/changePassword/confirmation'
 import MyExamsScreen from '@pages/admin/profile/myExams'
-import HeaderMyExams from 'components/header/admin/myExams'
-import MyNotesScreen from 'pages/admin/profile/myNotes'
+import MyNotesScreen from '@pages/admin/profile/myNotes'
 
 const { Navigator, Screen, Group } = createDrawerNavigator()
 
