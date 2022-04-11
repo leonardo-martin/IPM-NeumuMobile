@@ -1,8 +1,8 @@
-import React, { createRef, FC, ReactElement, useState } from 'react'
+import React, { createRef, FC, ReactElement, useCallback, useState } from 'react'
 import { View, KeyboardAvoidingView, ScrollView, StatusBar, Platform, Keyboard } from 'react-native'
 import { Input, Text, Button, Icon, IconProps, Spinner, useStyleSheet, Modal } from '@ui-kitten/components'
 import { useForm, Controller } from 'react-hook-form'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 import { SignInData } from '@models/User'
@@ -26,8 +26,14 @@ const SignInScreen: FC = (): ReactElement => {
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true)
   const { signIn } = useAuth()
   const navigation = useNavigation<any>()
+  const form = useForm<SignInData>()
 
-  const { control, handleSubmit, setFocus, formState: { errors } } = useForm<SignInData>()
+  useFocusEffect(
+    useCallback(() => {
+      form.reset()
+      setIsLoading(false)
+    }, [])
+  )
 
   const handleSignIn = async (data: SignInData) => {
     Keyboard.dismiss()
@@ -47,14 +53,12 @@ const SignInScreen: FC = (): ReactElement => {
         } else {
           messageToast = 'Usuário e/ou senha incorretos'
         }
-
+        setIsLoading(false)
         toast.danger({ message: messageToast, duration: 1000 })
       }
     } catch (error) {
-      toast.danger({ message: 'Ocorreu um erro inesperado.', duration: 1000 })
-
-    } finally {
       setIsLoading(false)
+      toast.danger({ message: 'Ocorreu um erro inesperado.', duration: 1000 })
     }
   }
 
@@ -77,7 +81,7 @@ const SignInScreen: FC = (): ReactElement => {
 
   const register = (selected: number | undefined) => {
     navigation.navigate('SignUp', {
-      registerType: selected
+      type: selected
     })
     setVisibleModal(!visibleModal)
   }
@@ -96,7 +100,7 @@ const SignInScreen: FC = (): ReactElement => {
             <View style={styles.box}>
               <KeyboardAvoidingView behavior='position'>
                 <Controller
-                  control={control}
+                  control={form.control}
                   rules={{
                     required: {
                       value: true,
@@ -121,18 +125,18 @@ const SignInScreen: FC = (): ReactElement => {
                       returnKeyType="next"
                       ref={ref}
                       maxLength={40}
-                      onSubmitEditing={() => setFocus('password')}
+                      onSubmitEditing={() => form.setFocus('password')}
                       autoCapitalize="none"
                     />
                   )}
                   name="username"
                   defaultValue=""
                 />
-                {errors.username?.type === 'required' && <Text category='s2' style={styles.text}>{errors.username?.message}</Text>}
-                {errors.username?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.username?.message}</Text>}
-                {errors.username?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>Necessário ao menos 1 letra</Text>}
+                {form.formState.errors.username?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.username?.message}</Text>}
+                {form.formState.errors.username?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.username?.message}</Text>}
+                {form.formState.errors.username?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>Necessário ao menos 1 letra</Text>}
                 <Controller
-                  control={control}
+                  control={form.control}
                   rules={{
                     required: {
                       value: true,
@@ -157,7 +161,7 @@ const SignInScreen: FC = (): ReactElement => {
                       secureTextEntry={secureTextEntry}
                       returnKeyType="send"
                       underlineColorAndroid="transparent"
-                      onSubmitEditing={handleSubmit(handleSignIn)}
+                      onSubmitEditing={form.handleSubmit(handleSignIn)}
                       ref={ref}
                       maxLength={40}
                       autoCapitalize="none"
@@ -166,7 +170,7 @@ const SignInScreen: FC = (): ReactElement => {
                   name="password"
                   defaultValue=""
                 />
-                {errors.password && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{errors.password?.message}</Text>}
+                {form.formState.errors.password && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.password?.message}</Text>}
               </KeyboardAvoidingView>
               <View style={styles.containerRecoveryPassword}>
                 <Text
@@ -193,7 +197,7 @@ const SignInScreen: FC = (): ReactElement => {
                   accessoryLeft={isLoading ? LoadingIndicator : undefined}
                   disabled={isLoading}
                   style={styles.button}
-                  onPress={handleSubmit(handleSignIn)}
+                  onPress={form.handleSubmit(handleSignIn)}
                   status="primary"
                 >
                   ACESSAR
