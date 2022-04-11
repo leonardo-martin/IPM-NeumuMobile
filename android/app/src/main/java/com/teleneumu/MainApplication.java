@@ -10,7 +10,6 @@ import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import com.facebook.react.bridge.JSIModulePackage;
-import com.teleneumu.natives.packages.CalendarPackage;
 import com.swmansion.reanimated.ReanimatedJSIModulePackage;
 import java.util.List;
 import java.util.Arrays;
@@ -30,7 +29,6 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
-          packages.addAll(Arrays.asList(new CalendarPackage()));
           return packages;
         }
 
