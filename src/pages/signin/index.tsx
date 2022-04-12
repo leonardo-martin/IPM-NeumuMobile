@@ -1,4 +1,4 @@
-import React, { createRef, FC, ReactElement, useCallback, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { View, KeyboardAvoidingView, ScrollView, StatusBar, Platform, Keyboard } from 'react-native'
 import { Input, Text, Button, Icon, IconProps, Spinner, useStyleSheet, Modal } from '@ui-kitten/components'
 import { useForm, Controller } from 'react-hook-form'
@@ -13,12 +13,13 @@ import { matchMessage } from '@utils/common'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import toast from '@helpers/toast'
 import { isJustNumber } from '@utils/mask'
-import RegisterModal from '@components/registerModal'
+import RegisterModal from 'components/modal/registerModal'
 import { loginStyle } from './style'
+import { useModal } from '@hooks/useModal'
 
 const SignInScreen: FC = (): ReactElement => {
 
-  const ref = createRef<Modal>()
+  const { ref } = useModal<Modal>()
   const styles = useStyleSheet(loginStyle)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [visibleModal, setVisibleModal] = useState<boolean>(false)

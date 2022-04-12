@@ -1,10 +1,11 @@
-import React, { createRef, FC, ReactElement, useCallback, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { StyleProp, View, ViewStyle, Animated, TouchableWithoutFeedback } from 'react-native'
 import { Icon, Modal, useStyleSheet } from '@ui-kitten/components'
 
 import { floatingButtonStyle } from './style'
-import NewNoteModal from './notesModal'
+import NewNoteModal from '../modal/notesModal'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { useModal } from '@hooks/useModal'
 
 interface FloatingButtonProps {
     containerStyle?: StyleProp<ViewStyle>
@@ -12,7 +13,7 @@ interface FloatingButtonProps {
 
 const FloatingButton: FC<FloatingButtonProps> = ({ containerStyle }): ReactElement => {
 
-    const ref = createRef<Modal>()
+    const { ref } = useModal<Modal>()
     const styles = useStyleSheet(floatingButtonStyle)
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const animation = useState(new Animated.Value(0))[0]

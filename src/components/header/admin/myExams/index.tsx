@@ -1,10 +1,11 @@
-import React, { createRef, Dispatch, FC, ReactElement, useState } from 'react'
+import React, { Dispatch, FC, ReactElement, useState } from 'react'
 import { Layout, Modal, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
 import { BackIcon, PlusIcon } from '@components/header/icons'
 import { Exam, ExamImage } from '@models/Exam'
 import RegisterModal from './add'
 import { headerStyle } from '../style'
+import { useModal } from '@hooks/useModal'
 
 interface HeaderMyExamsProps {
     onRefresh: Dispatch<React.SetStateAction<Exam & ExamImage | undefined>>
@@ -12,7 +13,7 @@ interface HeaderMyExamsProps {
 
 const HeaderMyExams: FC<HeaderMyExamsProps> = ({ onRefresh }): ReactElement => {
 
-    const ref = createRef<Modal>()
+    const { ref } = useModal<Modal>()
     const styles = useStyleSheet(headerStyle)
     const [visibleModal, setVisibleModal] = useState<boolean>(false)
     const { goBack } = useNavigation<any>()

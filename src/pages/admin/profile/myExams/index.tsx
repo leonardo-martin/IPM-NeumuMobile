@@ -1,4 +1,4 @@
-import React, { createRef, FC, ReactElement, useCallback, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { Animated, ListRenderItemInfo, Platform, RefreshControl, TouchableOpacity, View } from 'react-native'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
@@ -12,7 +12,8 @@ import { Exam, ExamImage } from '@models/Exam'
 import { useFocusEffect } from '@react-navigation/native'
 import { sortByDate } from '@utils/common'
 import { myExamsStyle } from './style'
-import FilterModal from '@components/filterModal'
+import FilterModal from 'components/modal/filterModal'
+import { useModal } from '@hooks/useModal'
 
 const MyExamsScreen: FC<DrawerContentComponentProps> = ({
     navigation
@@ -20,7 +21,7 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = ({
 
     const theme = useTheme()
     const styles = useStyleSheet(myExamsStyle)
-    const ref = createRef<Modal>()
+    const { ref } = useModal<Modal>()
 
     const [visibleModal, setVisibleModal] = useState<boolean>(false)
     const [refreshing, setRefreshing] = useState<boolean>(false)
@@ -167,7 +168,7 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = ({
                 <FilterModal
                     ref={ref}
                     onVisible={setVisibleModal}
-                    visible={visibleModal}
+                    isVisible={visibleModal}
                     handleRange={setRange}
                     onFilter={filterData}
                     range={range}

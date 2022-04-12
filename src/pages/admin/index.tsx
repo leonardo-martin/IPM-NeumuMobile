@@ -2,15 +2,16 @@ import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { BackHandler, StatusBar, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { Text, Card, Icon, useStyleSheet } from '@ui-kitten/components'
+import { Text, Card, Icon, useStyleSheet, Modal } from '@ui-kitten/components'
 import { Host, Portal } from 'react-native-portalize'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useFocusEffect } from '@react-navigation/native'
 import ModalizeFixed from '@components/modalize'
 import HeaderAdmin from '@components/header/admin'
-import { useModalize } from '@hooks/useModalize'
 import { dashboardStyle } from './style'
 import FloatingButton from '@components/floatingButton'
+import { useModal } from '@hooks/useModal'
+import { Modalize } from 'react-native-modalize'
 
 const DashboardScreen: FC<DrawerContentComponentProps> = ({
   navigation
@@ -23,17 +24,17 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
   const [visibleFloatingButton, setVisibleFloatingButton] = useState<boolean>(true)
 
   const styles = useStyleSheet(dashboardStyle)
-  const { ref, open, close } = useModalize()
+  const { ref } = useModal<Modalize>()
 
   const exitApp = () => {
-    close()
+    ref.current?.close()
     BackHandler.exitApp()
   }
 
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
-        open()
+        ref.current?.open()
         setVisibleFloatingButton(false)
         return true
       }
@@ -111,6 +112,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
       <Portal>
         <ModalizeFixed
           ref={ref}
+          alwaysOpen={0}
           snapPoint={300}
           onClosed={() => setVisibleFloatingButton(true)}
           adjustToContentHeight={true}
@@ -119,7 +121,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
           <TouchableOpacity style={styles.contentButton} activeOpacity={0.75} onPress={exitApp}>
             <Text style={styles.contentButtonText}>{'Sim'.toUpperCase()}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.contentButton, styles.buttonOutline]} activeOpacity={0.75} onPress={close}>
+          <TouchableOpacity style={[styles.contentButton, styles.buttonOutline]} activeOpacity={0.75} onPress={() => ref.current?.close()}>
             <Text style={[styles.contentButtonText, styles.buttonTextOutline]}>{'Não'.toUpperCase()}</Text>
           </TouchableOpacity>
         </ModalizeFixed>

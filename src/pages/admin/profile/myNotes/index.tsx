@@ -1,4 +1,4 @@
-import React, { createRef, FC, ReactElement, useCallback, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { CalendarRange, Icon, Modal, Text, useStyleSheet } from '@ui-kitten/components'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
@@ -7,22 +7,24 @@ import { TouchableOpacity, View } from 'react-native'
 import { _DATE_FROM_ISO_8601 } from '@constants/date'
 import Timeline from '@components/timeline'
 import HeaderMyNotes from '@components/header/admin/myNotes'
-import NewNoteModal from '@components/floatingButton/notesModal'
+import NewNoteModal from 'components/modal/notesModal'
 import { AscendingOrder } from '@models/Common'
 
 import { useFocusEffect } from '@react-navigation/native'
 import { getPatientCalendar } from '@services/calendar.service'
 import { useAuth } from '@contexts/auth'
-import FilterModal from '@components/filterModal'
+import FilterModal from 'components/modal/filterModal'
 import { TimelineTimeItem } from '@models/Timeline'
+import { useModal } from '@hooks/useModal'
 
 const MyNotesScreen: FC<DrawerContentComponentProps> = ({
     navigation
 }): ReactElement => {
 
     const { currentUser } = useAuth()
-    const addRef = createRef<Modal>()
-    const filterRef = createRef<Modal>()
+    const { ref: addRef } = useModal<Modal>()
+    const { ref: filterRef } = useModal<Modal>()
+    
     const styles = useStyleSheet(notesStyle)
     const [visibleModal, setVisibleModal] = useState<boolean>(false)
     const [visibleFilterModal, setVisibleFilterModal] = useState<boolean>(false)
@@ -104,7 +106,7 @@ const MyNotesScreen: FC<DrawerContentComponentProps> = ({
             <FilterModal
                 ref={filterRef}
                 onVisible={setVisibleFilterModal}
-                visible={visibleFilterModal}
+                isVisible={visibleFilterModal}
                 handleRange={setRange}
                 onFilter={filterData}
                 range={range}

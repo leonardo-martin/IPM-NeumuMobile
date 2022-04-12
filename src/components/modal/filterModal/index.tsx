@@ -8,7 +8,7 @@ import { modalStyle } from './style'
 interface FilterModalProps {
     ref: ForwardedRef<Modal>
     onVisible: Dispatch<React.SetStateAction<boolean>>
-    visible: boolean
+    isVisible: boolean
     handleRange: Dispatch<React.SetStateAction<CalendarRange<Date>>>
     range: CalendarRange<Date>
     onFilter: () => void
@@ -24,9 +24,9 @@ const FilterModal: FC<FilterModalProps> = forwardRef<Modal, React.PropsWithChild
         <Modal
             ref={combinedRef}
             style={styles.modal}
-            visible={props.visible}
+            visible={props.isVisible}
             backdropStyle={styles.backdrop}
-            onBackdropPress={() => props.onVisible(!props.visible)}>
+            onBackdropPress={() => props.onVisible(!props.isVisible)}>
             <Card disabled={true} style={styles.card} >
                 <RangeCalendar
                     range={props.range}

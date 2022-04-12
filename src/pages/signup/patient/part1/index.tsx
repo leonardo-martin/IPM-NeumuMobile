@@ -10,7 +10,7 @@ import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { registerStyle } from '@pages/signup/style'
 
 import { Modalize } from 'react-native-modalize'
-import { useModalize } from '@hooks/useModalize'
+import { useModal } from '@hooks/useModal'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import RNWebView from '@components/webView'
 import WebView from 'react-native-webview'
@@ -22,7 +22,7 @@ const { height: initialHeight } = Dimensions.get('window')
 const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): ReactElement => {
 
   const { localeDateService } = useDatepickerService()
-  const { ref, open: openModal } = useModalize()
+  const { ref } = useModal<Modalize>()
   const refWebView = useRef<WebView>(null)
   const [height, setHeight] = useState(initialHeight)
   const isFocused = useIsFocused()
@@ -67,7 +67,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           Cartão Nacional de Saúde (CNS) * {" "}
         </Text>
         <TouchableOpacity
-          onPress={openModal}
+          onPress={() => ref.current?.open()}
           style={styles.toggleButton}
         >
           <Icon style={styles.iconCns} name="information-circle-outline" pack='ionicons' size={20} />
