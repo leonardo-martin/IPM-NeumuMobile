@@ -109,11 +109,11 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
             endTime.setMinutes(endTime.getMinutes() + 30)
 
             navigation.navigate('ConfirmationSchedule', {
-                title: 'Consulta Presencial - TeleNeumu',
+                title: 'TeleNeumu | Consulta Presencial',
                 description: 'Esta é uma marcação de uma consulta presencial com o seu médico',
                 location: params?.visitAddress.street,
-                dtStart: confirmDate.getTime().toString(),
-                dtEnd: endTime.getTime().toString(),
+                startDate: confirmDate.getTime().toString(),
+                endDate: endTime.getTime().toString(),
                 allDay: false
             })
 

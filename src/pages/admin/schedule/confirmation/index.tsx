@@ -1,57 +1,35 @@
-import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
+import { BackHandler, View } from 'react-native'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { Button, Modal, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
-import { BackIcon } from '@components/header/icons'
-import { confirmationScheduleStyle } from './styles'
 import { CommonActions, useFocusEffect, useRoute } from '@react-navigation/native'
-import { CreateAppointment } from '@models/Appointment'
-import { BackHandler, Linking, View } from 'react-native'
-import RNCalendarEvents, { Calendar, CalendarEventWritable } from "react-native-calendar-events"
-import LocalCalendarModalComponent from '@components/modal/localCalendarModal'
-import { addCalendarEvent } from 'services/calendar.service'
+import { Calendar } from "react-native-calendar-events"
 import { useModal } from '@hooks/useModal'
-
-const data = {
-    title: 'Consulta Presencial - TeleNeumu',
-    description: 'Esta é uma marcação de uma consulta presencial com o seu médico',
-    location: 'street',
-    dtStart: new Date().getTime().toString(),
-    dtEnd: new Date().getTime().toString(),
-    allDay: false
-}
+import { BackIcon } from '@components/header/icons'
+import { SafeAreaLayout } from '@components/safeAreaLayout'
+import LocalCalendarModalComponent from '@components/modal/localCalendarModal'
+import { addCalendarEvent } from '@services/calendar.service'
+import { EventCalendar } from '@models/Calendar'
+import { confirmationScheduleStyle } from './styles'
 
 const ConfirmationScheduleScreen: FC<DrawerContentComponentProps> = ({
     navigation
 }): ReactElement => {
 
     const [isVisibleCalendars, setIsVisibleCalendars] = useState(false)
-    const [event, setEvent] = useState<CalendarEventWritable>({} as CalendarEventWritable)
     const openLocalCalendarModal = () => setIsVisibleCalendars(true)
     const closeLocalCalendarModal = () => setIsVisibleCalendars(false)
-
+    const { ref } = useModal<Modal>()
 
     const styles = useStyleSheet(confirmationScheduleStyle)
     const { params } = useRoute()
-    const [appointment, setAppointment] = useState<CreateAppointment | undefined>(undefined)
+    const [event, setEvent] = useState<EventCalendar | undefined>()
     const actions = CommonActions.reset({
         index: 0,
         routes: [
             { name: 'Dashboard' },
         ],
     })
-
-    useEffect(() => {
-        const schedule = params as CreateAppointment
-        setAppointment(schedule)
-    }, [params])
-
-    const renderBackAction = (): ReactElement => (
-        <TopNavigationAction
-            icon={BackIcon}
-            onPress={() => navigation.dispatch(actions)}
-        />
-    )
 
     useFocusEffect(
         useCallback(() => {
@@ -64,44 +42,25 @@ const ConfirmationScheduleScreen: FC<DrawerContentComponentProps> = ({
         }, [])
     )
 
-    // const addEvent = async () => {
-    //     const result = await RNCalendarEvents.checkPermissions((false));
-    //     console.log(result)
+    useEffect(() => {
+        setEvent(params as EventCalendar)
+    }, [params])
 
-    //     switch (result) {
-    //         case 'authorized':
-    //             const calendars: Calendar[] = await RNCalendarEvents.findCalendars()
-    //             console.log(calendars)
-    //             const eventId = await RNCalendarEvents.saveEvent('Teste', {
-    //                 startDate: new Date().toISOString(),
-    //                 endDate: new Date().toISOString(),
-    //                 allDay: false,
-    //                 description: 'Teste',
-    //                 location: 'TeleNeumu',
-    //                 notes: 'Evento teste',
-    //             } as CalendarEventWritable)
-    //             console.log(eventId)
-    //             break
-    //         case 'restricted':
-    //             Linking.openSettings()
-    //             break
-    //         case 'denied':
-    //             Linking.openSettings()
-    //             break
-    //         default:
-    //             await RNCalendarEvents.requestPermissions((false))
-    //             break
-    //     }
-
-
-    // }
+    const renderBackAction = (): ReactElement => (
+        <TopNavigationAction
+            icon={BackIcon}
+            onPress={() => navigation.dispatch(actions)}
+        />
+    )
 
     const saveEvent = async (calendar: Calendar) => {
-        await addCalendarEvent(event, calendar);
-        closeLocalCalendarModal();
+        if (event) {
+            const eventId = await addCalendarEvent(event, calendar, event.title)
+            console.log(eventId)
+            closeLocalCalendarModal()
+        }
     }
 
-    const { ref } = useModal<Modal>()
     return (
         <>
             <SafeAreaLayout insets='top' level='1' style={styles.safeArea}>
@@ -109,17 +68,14 @@ const ConfirmationScheduleScreen: FC<DrawerContentComponentProps> = ({
                     accessoryLeft={renderBackAction}
                 />
                 <View style={{ justifyContent: 'center', alignItems: 'center', alignContent: 'center', flex: 1, alignSelf: 'center' }}>
-                    {/* <Text style={{
-                        flexShrink: 1, flexWrap: 'wrap', textAlign: 'center', padding: 25, fontSize: 18
-                    }}>{JSON.stringify(appointment)}</Text> */}
                     <Button status='primary' onPress={openLocalCalendarModal}>Adicionar ao calendário</Button>
-
                     <LocalCalendarModalComponent
                         ref={ref}
+                        openModal={openLocalCalendarModal}
                         isVisible={isVisibleCalendars}
                         closeModal={closeLocalCalendarModal}
                         handleCalendarSelected={saveEvent}
-                        label={'Select a calendar'}
+                        label={'Meus Calendários (Disponíveis)'}
                     />
                 </View>
             </SafeAreaLayout>

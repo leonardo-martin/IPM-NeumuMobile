@@ -69,7 +69,7 @@ const RegisterModal: FC<RegisterModalProps> = forwardRef<Modal, React.PropsWithC
                         rules={{
                             required: {
                                 value: true,
-                                message: 'Seleciona uma opção'
+                                message: 'Selecione uma opção'
                             }
                         }}
                         render={({ field: { name, ref, onChange, value } }) => (
