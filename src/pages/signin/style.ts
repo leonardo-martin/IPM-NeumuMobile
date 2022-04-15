@@ -31,7 +31,7 @@ export const loginStyle = StyleSheet.create({
   containerRecoveryPassword: {
     paddingVertical: 15,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'flex-end'
   },
   textRecoveryPassword: {
     fontWeight: Platform.OS === 'ios' ? '400' : '600',
@@ -61,10 +61,11 @@ export const loginStyle = StyleSheet.create({
     alignItems: "center",
   },
   checkboxText: {
-    fontWeight: '400',
+    fontWeight: Platform.OS === 'ios' ? '400' : 'normal',
     color: 'text-hint-color'
   },
   containerCheckbox: {
-    paddingTop: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   }
 })

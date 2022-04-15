@@ -212,27 +212,19 @@ const SignInScreen: FC = (): ReactElement => {
                   checked={checked} onChange={onCheckedChange}>
                   {evaProps => <Text style={[evaProps?.style, styles.checkboxText]}>Memorizar acesso</Text>}
                 </CheckBox>
+
+                <View style={styles.containerRecoveryPassword}>
+                  <TouchableOpacity onPress={recoveryPasswd}>
+                    <Text
+                      style={styles.textRecoveryPassword}
+                      category="label"
+                      testID="recoveryButton">
+                      Alterar senha
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-              <View style={styles.containerRecoveryPassword}>
-                <Text
-                  style={styles.textRecoveryPassword}
-                  category="label"
-                  testID="recoveryButton"
-                >
-                  Esqueceu a senha? Clique{' '}
-                </Text>
-                <TouchableOpacity
-                  hitSlop={{
-                    left: 15,
-                    right: 15,
-                    top: 15,
-                    bottom: 15
-                  }}
-                  onPress={recoveryPasswd}
-                >
-                  <Text status='primary' style={styles.textHere}>aqui</Text>
-                </TouchableOpacity>
-              </View>
+
               <View style={styles.containerButtons}>
                 <Button
                   accessoryLeft={isLoading ? LoadingIndicator : undefined}
