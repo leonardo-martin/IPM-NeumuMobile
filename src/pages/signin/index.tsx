@@ -1,6 +1,6 @@
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { View, KeyboardAvoidingView, ScrollView, StatusBar, Platform, Keyboard } from 'react-native'
-import { Input, Text, Button, Icon, IconProps, Spinner, useStyleSheet, Modal, CheckBox, Toggle } from '@ui-kitten/components'
+import { Input, Text, Button, Icon, IconProps, Spinner, useStyleSheet, Modal, CheckBox } from '@ui-kitten/components'
 import { useForm, Controller } from 'react-hook-form'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -206,15 +206,12 @@ const SignInScreen: FC = (): ReactElement => {
                 />
                 {form.formState.errors.password && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.password?.message}</Text>}
               </KeyboardAvoidingView>
-              <View style={{
-                paddingTop: 5,
-              }}>
+              <View style={styles.containerCheckbox}>
                 <CheckBox
                   status='primary'
                   checked={checked} onChange={onCheckedChange}>
                   {evaProps => <Text style={[evaProps?.style, styles.checkboxText]}>Memorizar acesso</Text>}
                 </CheckBox>
-
               </View>
               <View style={styles.containerRecoveryPassword}>
                 <Text

@@ -136,7 +136,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Datepicker
               size='small'
-              label={'Data de Nascimento *'}
+              label='Data de Nascimento *'
               placeholder='01/01/1900'
               date={value}
               onSelect={onChange}
@@ -266,7 +266,10 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
         <Controller
           control={form.control}
           rules={{
-            required: true,
+            required: {
+              value: true,
+              message: 'Campo obrigatório'
+            },
             minLength: {
               value: 5,
               message: `Mín. 5 caracteres`
@@ -275,7 +278,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
               size='small'
-              label="CRM *"
+              label="Conselho Regional de Medicina (CRM) *"
               style={styles.input}
               keyboardType='number-pad'
               placeholder=''
@@ -296,7 +299,10 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
         <Controller
           control={form.control}
           rules={{
-            required: true,
+            required: {
+              value: true,
+              message: 'Campo obrigatório'
+            },
             minLength: {
               value: 5,
               message: `Mín. 5 caracteres`
@@ -324,7 +330,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
           name='specialty.description'
           defaultValue=''
         />
-        {form.formState.errors.crm && <Text category='s2' style={styles.text}>{form.formState.errors.crm?.message}</Text>}
+        {form.formState.errors.specialty?.description && <Text category='s2' style={styles.text}>{form.formState.errors.specialty.description?.message}</Text>}
 
       </View>
     </>

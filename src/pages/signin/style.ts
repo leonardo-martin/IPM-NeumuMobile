@@ -53,7 +53,7 @@ export const loginStyle = StyleSheet.create({
     color: 'text-basic-color',
     alignItems: 'flex-start',
     fontSize: 11,
-  },  
+  },
   textHere: {
     fontWeight: Platform.OS === 'ios' ? '400' : '600'
   },
@@ -63,5 +63,8 @@ export const loginStyle = StyleSheet.create({
   checkboxText: {
     fontWeight: '400',
     color: 'text-hint-color'
+  },
+  containerCheckbox: {
+    paddingTop: 5,
   }
 })

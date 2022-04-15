@@ -104,7 +104,7 @@ export class UserPatientData extends UserData {
 export class UserDoctorData extends UserData {
 
     crm?: string
-    specialty?: NestedValue<Specialty>
+    specialty?: Specialty
 
     constructor(name?: string,
         cpf?: string,
@@ -122,7 +122,7 @@ export class UserDoctorData extends UserData {
         addressComplement?: string,
         country?: string,
         genre?: string,
-        crm?: string, specialty?: NestedValue<Specialty>) {
+        crm?: string, specialty?: Specialty) {
 
         super(name, cpf, email, phone, phone2, username,
             password, city, state, dateOfBirth, postalCode, address1, address2, addressComplement, country, genre)
