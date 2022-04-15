@@ -1,6 +1,7 @@
 import React, { FC, ForwardedRef, forwardRef, ReactElement } from 'react'
 import { Autocomplete, AutocompleteProps } from '@ui-kitten/components'
 import { City, Country, UF } from '@models/Places'
+import { useCombinedRefs } from '@hooks/useCombinedRefs'
 
 interface AutoCompleteProps extends AutocompleteProps {
     ref?: ForwardedRef<Autocomplete>
@@ -10,8 +11,10 @@ interface AutoCompleteProps extends AutocompleteProps {
 
 const AutoCompleteComponent: FC<AutoCompleteProps> = forwardRef<Autocomplete, AutoCompleteProps>(({ ...props }, ref): ReactElement => {
 
+    const combinedRef = useCombinedRefs(ref, ref)
+
     return (
-        <Autocomplete ref={ref} {...props}>
+        <Autocomplete ref={combinedRef} {...props}>
             {props.data.map(props.renderOption)}
         </Autocomplete>
     )
