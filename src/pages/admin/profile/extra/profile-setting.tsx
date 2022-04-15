@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { StyleSheet } from 'react-native'
-import { Divider, Layout, Text, LayoutProps } from '@ui-kitten/components'
+import { Divider, Layout, Text, LayoutProps, Input } from '@ui-kitten/components'
 
 export interface ProfileSettingProps extends LayoutProps {
   hint: string
@@ -21,9 +21,13 @@ const ProfileSetting: FC<ProfileSettingProps> = ({ style, hint, value,
           category='s1'>
           {hint}
         </Text>
-        <Text category='s1'>
-          {value}
-        </Text>
+        <Input
+          value={value}
+          editable={false}
+          size='small'
+          style={{
+            width: '50%'
+          }} />
       </Layout>
       <Divider />
     </React.Fragment>
