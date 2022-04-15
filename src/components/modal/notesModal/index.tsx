@@ -122,8 +122,9 @@ const NewNoteModal: FC<NewNoteModalProps> = forwardRef<Modal, React.PropsWithChi
                             onBlur={onBlur}
                             onChangeText={onChange}
                             value={value}
-                            multiline={true}
-                            textStyle={{ minHeight: 64 }}
+                            multiline
+                            scrollEnabled
+                            textStyle={{ minHeight: 64, textAlignVertical: 'top' }}
                             ref={ref}
                             returnKeyType="send"
                             underlineColorAndroid="transparent"

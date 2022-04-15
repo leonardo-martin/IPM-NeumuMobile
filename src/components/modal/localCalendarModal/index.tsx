@@ -78,7 +78,7 @@ const LocalCalendarModalComponent: FC<LocalCalendarModalProps> = forwardRef<Moda
                                         message: 'Selecione uma opção'
                                     },
                                 }}
-                                render={({ field: { onChange, value, name, ref } }) => (
+                                render={({ field: { onChange, onBlur, value, name, ref } }) => (
                                     <RadioGroup
                                         ref={ref}
                                         testID={name}
@@ -87,6 +87,7 @@ const LocalCalendarModalComponent: FC<LocalCalendarModalProps> = forwardRef<Moda
                                         {calendars.map((calendar) =>
                                             <Radio disabled={!calendar.allowsModifications} key={calendar.id}
                                                 testID={calendar.id}
+                                                onBlur={onBlur}
                                                 style={[styles.radio, {
                                                     display: !calendar.allowsModifications ? 'none' : undefined
                                                 }]}>

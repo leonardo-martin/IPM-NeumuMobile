@@ -5,16 +5,17 @@ import { Controller, useForm } from 'react-hook-form'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { Exam, ExamImage } from '@models/Exam'
 import { modalStyle } from './style'
-import DocumentPicker, { DocumentPickerResponse } from 'react-native-document-picker'
+import { DocumentPickerResponse } from 'react-native-document-picker'
+import { getFileFromDevice } from '@services/document.service'
 
-interface RegisterModalProps {
+interface AddExamModalProps {
     ref: ForwardedRef<Modal>
     onRefresh: Dispatch<React.SetStateAction<Exam & ExamImage | undefined>>
     onVisible: Dispatch<React.SetStateAction<boolean>>
     visible: boolean
 }
 
-const RegisterModal: FC<RegisterModalProps> = forwardRef<Modal, React.PropsWithChildren<RegisterModalProps>>(({ onRefresh, onVisible, visible, ...props }, ref): ReactElement => {
+const AddExamModal: FC<AddExamModalProps> = forwardRef<Modal, React.PropsWithChildren<AddExamModalProps>>(({ onRefresh, onVisible, visible, ...props }, ref): ReactElement => {
 
     const combinedRef = useCombinedRefs(ref, ref)
     const form = useForm<Exam & ExamImage>()
@@ -63,18 +64,15 @@ const RegisterModal: FC<RegisterModalProps> = forwardRef<Modal, React.PropsWithC
         <Spinner size='small' status='basic' />
     )
 
-    const handleDocumentSelection = useCallback(async () => {
+    const handleDocumentSelection = async () => {
         try {
-            const response = await DocumentPicker.pick({
-                presentationStyle: 'fullScreen',
-                allowMultiSelection: false,
-            })
+            const response = await getFileFromDevice()
             setFileResponse(response)
             console.log(response)
         } catch (err) {
 
         }
-    }, [])
+    }
 
     return (
         <Modal
@@ -136,9 +134,10 @@ const RegisterModal: FC<RegisterModalProps> = forwardRef<Modal, React.PropsWithC
                                 ref={ref}
                                 returnKeyType="send"
                                 underlineColorAndroid="transparent"
-                                multiline={true}
-                                textStyle={{ minHeight: 90 }}
+                                multiline
+                                textStyle={{ minHeight: 90, textAlignVertical: 'top' }}
                                 onPressIn={clearError}
+                                scrollEnabled
                             />
                         )}
                         name='examDescription'
@@ -194,4 +193,4 @@ const RegisterModal: FC<RegisterModalProps> = forwardRef<Modal, React.PropsWithC
     )
 })
 
-export default RegisterModal
+export default AddExamModal

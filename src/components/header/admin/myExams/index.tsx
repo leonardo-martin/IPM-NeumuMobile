@@ -3,9 +3,9 @@ import { Layout, Modal, Text, TopNavigation, TopNavigationAction, useStyleSheet 
 import { useNavigation } from '@react-navigation/native'
 import { BackIcon, PlusIcon } from '@components/header/icons'
 import { Exam, ExamImage } from '@models/Exam'
-import RegisterModal from './add'
 import { headerStyle } from '../style'
 import { useModal } from '@hooks/useModal'
+import AddExamModal from 'components/modal/addExamModal'
 
 interface HeaderMyExamsProps {
     onRefresh: Dispatch<React.SetStateAction<Exam & ExamImage | undefined>>
@@ -44,7 +44,7 @@ const HeaderMyExams: FC<HeaderMyExamsProps> = ({ onRefresh }): ReactElement => {
                 accessoryLeft={renderLeftIcon}
                 accessoryRight={renderRightIcon}
             />
-            <RegisterModal ref={ref} onRefresh={onRefresh} onVisible={setVisibleModal} visible={visibleModal}/>
+            <AddExamModal ref={ref} onRefresh={onRefresh} onVisible={setVisibleModal} visible={visibleModal}/>
         </Layout>
     )
 }
