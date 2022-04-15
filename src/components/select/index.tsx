@@ -1,42 +1,60 @@
-import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { IndexPath, Layout, Select, SelectItem } from '@ui-kitten/components'
+import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useEffect, useState } from 'react'
+import { Icon, IndexPath, Select, SelectItem, SelectProps } from '@ui-kitten/components'
+import { useCombinedRefs } from '@hooks/useCombinedRefs'
+import { ImageProps, View } from 'react-native'
 
-interface Item {
+export interface SelectItemData {
     id: number | string
     title: string
-    disabled: boolean
+    disabled?: boolean
 }
 
-type SelectProps = {
-    items: Item[]
-    selectedIndex: IndexPath | IndexPath[] | undefined
-    onSelect?: (index: IndexPath | IndexPath[]) => void
-}
+type SelectCustomProps = {
+    ref?: ForwardedRef<Select>
+    items: SelectItemData[]
+    clearSelected?: Dispatch<React.SetStateAction<IndexPath | IndexPath[] | undefined>>
+} & SelectProps
 
-const SelectComponent: FC<SelectProps> = ({ items, selectedIndex, onSelect }): ReactElement => {
+const SelectComponent: FC<SelectCustomProps> = forwardRef<Select, SelectCustomProps>(({ items, ...props }, ref): ReactElement => {
 
-    const [displayValue, setDisplayValue] = useState<string>(items[Number(selectedIndex) - 1].title)
+    const combinedRef = useCombinedRefs(ref, ref)
+    const [displayValue, setDisplayValue] = useState<string>('')
 
     useEffect(() => {
-        setDisplayValue(items[Number(selectedIndex) - 1].title)
-    }, [selectedIndex])
+        if (props.selectedIndex)
+            setDisplayValue(items[Number(props.selectedIndex) - 1].title)
+        else setDisplayValue('')
+    }, [props.selectedIndex])
+
+    const renderRightIcon = (_props: Partial<ImageProps> | undefined) => (
+        <>
+            {displayValue !== '' && props.clearSelected ?
+                <View {..._props}>
+                    <Icon
+                        {..._props}
+                        name='close-outline'
+                        size={20}
+                        onPress={() => props.clearSelected && props.clearSelected(undefined)} />
+                </View>
+                : null}
+        </>
+    )
 
     return (
-        <Layout level='1'>
-            <Select
-                selectedIndex={selectedIndex}
-                onSelect={onSelect}
-                value={displayValue}
-            >
-                {items.map(item =>
-                    <SelectItem
-                        disabled={item.disabled}
-                        key={item.id}
-                        title={item.title} />
-                )}
-            </Select>
-        </Layout>
+        <Select
+            ref={combinedRef}
+            {...props}
+            value={displayValue}
+            accessoryRight={props.selectedIndex ? renderRightIcon : undefined}
+        >
+            {items.map(item =>
+                <SelectItem
+                    disabled={item.disabled}
+                    key={item.id}
+                    title={item.title} />
+            )}
+        </Select>
     )
-}
+})
 
 export default SelectComponent
