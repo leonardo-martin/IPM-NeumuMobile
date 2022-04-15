@@ -1,12 +1,12 @@
-import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback, useState } from 'react'
-import { TouchableOpacity, View } from 'react-native'
-import { Button, Card, Icon, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useState } from 'react'
+import { View } from 'react-native'
+import { Button, Card, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { Controller, useForm } from 'react-hook-form'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { Exam, ExamImage } from '@models/Exam'
 import { modalStyle } from './style'
 import { DocumentPickerResponse } from 'react-native-document-picker'
-import { getFileFromDevice } from '@services/document.service'
+import AttachmentBoxComponent from '@components/attachmentBox'
 
 interface AddExamModalProps {
     ref: ForwardedRef<Modal>
@@ -63,16 +63,6 @@ const AddExamModal: FC<AddExamModalProps> = forwardRef<Modal, React.PropsWithChi
     const LoadingIndicator = () => (
         <Spinner size='small' status='basic' />
     )
-
-    const handleDocumentSelection = async () => {
-        try {
-            const response = await getFileFromDevice()
-            setFileResponse(response)
-            console.log(response)
-        } catch (err) {
-
-        }
-    }
 
     return (
         <Modal
@@ -146,28 +136,10 @@ const AddExamModal: FC<AddExamModalProps> = forwardRef<Modal, React.PropsWithChi
                     {form.formState.errors.examDescription && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.examDescription?.message}</Text>}
                 </View>
 
-                <TouchableOpacity
-                    style={styles.attachDoc}
-                    onPress={handleDocumentSelection}
-                >
-                    {!fileResponse ?
-                        <>
-                            <Text style={styles.text} category='label' appearance='hint'>ANEXAR</Text>
-                            <Icon name='attach-outline' style={styles.icon} size={20} pack='ionicons' />
-                        </>
-                        :
-                        <View style={{
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}>
-                            <Text style={styles.textFile} category='s1'>{fileResponse[0].name}</Text>
-                            <TouchableOpacity onPress={() => setFileResponse(undefined)}>
-                                <Icon name='close-outline' style={styles.iconRed} size={30} pack='ionicons' />
-                            </TouchableOpacity>
-                        </View>
-                    }
-                </TouchableOpacity>
+                <AttachmentBoxComponent
+                    handleFile={setFileResponse}
+                    file={fileResponse}
+                    label='Anexar Documentação' />
 
                 {isError && (
                     <View style={{ paddingBottom: 10 }}>
