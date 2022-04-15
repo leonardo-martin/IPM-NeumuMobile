@@ -54,7 +54,11 @@ const OnboardingItem: FC<OnboardingItemProps> = ({ item, index, exitOnboarding }
                 <Text style={styles.title}>{item.title}</Text>
                 {index === (flatList.length - 1) && item.key === `${(index + 1)}` ?
                     <View style={styles.view}>
-                        <Button onPress={exitOnboarding} appearance='ghost' size='small'>Vamos lá!</Button>
+                        <Button
+                            onPress={exitOnboarding}
+                            appearance='filled'
+                            status='info'
+                            size='large'>Vamos lá!</Button>
                     </View>
                     : <Text style={styles.description}>{item.description}</Text>}
             </View>
