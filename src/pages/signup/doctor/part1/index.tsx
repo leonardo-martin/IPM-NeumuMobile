@@ -2,7 +2,7 @@ import React, { FC, ReactElement, useEffect, useState, useCallback } from 'react
 import { View } from 'react-native'
 import { Input, Text, Icon, useStyleSheet, Datepicker, IconProps, PopoverPlacements, RadioGroup, Radio } from '@ui-kitten/components'
 import { Controller } from 'react-hook-form'
-import { formatCpf, isEmailValid, isJustNumber, onlyNumbers } from '@utils/mask'
+import { formatCpf, isEmailValid, onlyNumbers } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
 import { getGender } from '@utils/common'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
@@ -80,6 +80,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               onSubmitEditing={() => form.setFocus('cpf')}
               underlineColorAndroid="transparent"
               autoCapitalize="words"
+              textContentType="name"
             />
           )}
           name='name'
@@ -170,16 +171,16 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               selectedIndex={selectedIndex}
               onChange={handleGender}>
               <Radio
-                status='primary'>
-                {evaProps => <Text {...evaProps} category='label' style={styles.radioText}>Masculino</Text>}
+                status='basic'>
+                {evaProps => <Text {...evaProps}>Masculino</Text>}
               </Radio>
               <Radio
-                status='primary'>
-                {evaProps => <Text {...evaProps} category='label' style={styles.radioText}>Feminino</Text>}
+                status='basic'>
+                {evaProps => <Text {...evaProps}>Feminino</Text>}
               </Radio>
               <Radio
-                status='primary'>
-                {evaProps => <Text {...evaProps} category='label' style={styles.radioText}>Prefiro não informar</Text>}
+                status='basic'>
+                {evaProps => <Text {...evaProps}>Prefiro não informar</Text>}
               </Radio>
             </RadioGroup>
           )}
@@ -208,14 +209,15 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               testID={name}
               onBlur={onBlur}
               onChangeText={onChange}
-              value={value ? value.replace(/[^0-9A-Za-z]*/, "") : value}
+              value={value ? value.replace(/[^0-9A-Za-z]*/, "").toLowerCase() : value}
               underlineColorAndroid="transparent"
               autoCapitalize='none'
               maxLength={60}
               ref={ref}
               returnKeyType="next"
-              onSubmitEditing={() => form.setFocus('username')}
+              onSubmitEditing={() => form.setFocus('password')}
               placeholder={'example@example.com'}
+              textContentType="emailAddress"
             />
           )}
           name='email'
@@ -224,43 +226,6 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
         {form.formState.errors.email?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.email?.message}</Text>}
         {form.formState.errors.email?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.email?.message}</Text>}
         {form.formState.errors.email?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>E-mail inválido</Text>}
-        <Controller
-          control={form.control}
-          rules={{
-            required: {
-              value: true,
-              message: 'Campo obrigatório'
-            },
-            minLength: {
-              value: 5,
-              message: `Mín. 5 caracteres`
-            },
-            validate: (e) => e && e !== "" ? (isJustNumber(e) ? false : true) : true
-          }}
-          render={({ field: { onChange, onBlur, value, ref, name } }) => (
-            <Input
-              size='small'
-              label="Usuário *"
-              style={styles.input}
-              keyboardType='default'
-              testID={name}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              maxLength={40}
-              ref={ref}
-              returnKeyType="next"
-              onSubmitEditing={() => form.setFocus('password')}
-              underlineColorAndroid="transparent"
-              autoCapitalize="none"
-            />
-          )}
-          name='username'
-          defaultValue=''
-        />
-        {form.formState.errors.username?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.username?.message}</Text>}
-        {form.formState.errors.username?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.username?.message}</Text>}
-        {form.formState.errors.username?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>Necessário ao menos 1 letra</Text>}
         <Controller
           control={form.control}
           rules={{
@@ -291,6 +256,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               onSubmitEditing={() => form.setFocus('crm')}
               underlineColorAndroid="transparent"
               autoCapitalize="none"
+              textContentType="password"
             />
           )}
           name='password'
@@ -300,7 +266,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
         <Controller
           control={form.control}
           rules={{
-            required: false,
+            required: true,
             minLength: {
               value: 5,
               message: `Mín. 5 caracteres`
@@ -320,10 +286,42 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               ref={ref}
               maxLength={6}
               underlineColorAndroid="transparent"
-              onSubmitEditing={form.handleSubmit(onSubmit)}
+              onSubmitEditing={() => form.setFocus('specialty.description')}
             />
           )}
           name='crm'
+          defaultValue=''
+        />
+        {form.formState.errors.crm && <Text category='s2' style={styles.text}>{form.formState.errors.crm?.message}</Text>}
+        <Controller
+          control={form.control}
+          rules={{
+            required: true,
+            minLength: {
+              value: 5,
+              message: `Mín. 5 caracteres`
+            },
+          }}
+          render={({ field: { onChange, onBlur, value, name, ref } }) => (
+            <Input
+              size='small'
+              label="Especialidade *"
+              style={styles.input}
+              keyboardType='default'
+              placeholder=''
+              testID={name}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              ref={ref}
+              maxLength={50}
+              underlineColorAndroid="transparent"
+              onSubmitEditing={form.handleSubmit(onSubmit)}
+              autoCapitalize='words'
+              returnKeyType="send"
+            />
+          )}
+          name='specialty.description'
           defaultValue=''
         />
         {form.formState.errors.crm && <Text category='s2' style={styles.text}>{form.formState.errors.crm?.message}</Text>}

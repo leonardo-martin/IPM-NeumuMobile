@@ -86,7 +86,7 @@ export const registerStyle = StyleSheet.create({
     text: {
         color: 'text-basic-color',
         alignItems: 'flex-start',
-        fontSize: 11,
+        fontSize: 12,
         padding: 4
     },
     input: {
@@ -100,6 +100,9 @@ export const registerStyle = StyleSheet.create({
     },
     backdrop: {
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modal: {
+        width: '90%'
     },
     labelCNSView: {
         flexDirection: 'row',
@@ -127,12 +130,6 @@ export const registerStyle = StyleSheet.create({
         borderRadius: 50,
         marginVertical: 5
     },
-    radioText: {
-        fontSize: Platform.OS === 'ios' ? 14 : Platform.OS === 'android' ? 16 : 16,
-        paddingHorizontal: 10,
-        color: 'text-hint-color',
-        fontWeight: 'normal'
-    },
     viewConfirmBtn: {
         width: '85%',
     },
@@ -158,5 +155,12 @@ export const registerStyle = StyleSheet.create({
     },
     backdropDatepicker: {
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    titleModal: {
+        fontWeight: 'bold',
+        fontSize: 14,
+        paddingVertical: 15,
+        color: 'text-basic-color',
+        alignItems: 'flex-start',
     }
 })

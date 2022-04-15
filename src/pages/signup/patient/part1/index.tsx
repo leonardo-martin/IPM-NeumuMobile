@@ -2,7 +2,7 @@ import React, { FC, ReactElement, useRef, useEffect, useState, useCallback } fro
 import { Dimensions, TouchableOpacity, View } from 'react-native'
 import { Input, Text, Icon, useStyleSheet, Datepicker, IconProps, PopoverPlacements, RadioGroup, Radio } from '@ui-kitten/components'
 import { Controller } from 'react-hook-form'
-import { formatCpf, isEmailValid, isJustNumber } from '@utils/mask'
+import { formatCpf, isEmailValid } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
 import { getGender } from '@utils/common'
 import { validateCNS } from '@utils/validators'
@@ -111,6 +111,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               onSubmitEditing={() => form.setFocus('mothersName')}
               underlineColorAndroid="transparent"
               autoCapitalize="words"
+              textContentType="name"
             />
           )}
           name='name'
@@ -200,7 +201,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Datepicker
               size='small'
-              label={'Data de Nascimento *'}
+              label='Data de Nascimento *'
               placeholder='01/01/1900'
               date={value}
               onSelect={onChange}
@@ -225,7 +226,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           rules={{
             required: {
               value: true,
-              message: 'Campo obrigatório'
+              message: 'Selecione uma opção'
             }
           }}
           render={({ field: { name, ref } }) => (
@@ -235,16 +236,16 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               selectedIndex={selectedIndex}
               onChange={handleGender}>
               <Radio
-                status='primary'>
-                {evaProps => <Text {...evaProps} category='label' style={styles.radioText}>Masculino</Text>}
+                status='basic'>
+                {evaProps => <Text {...evaProps}>Masculino</Text>}
               </Radio>
               <Radio
-                status='primary'>
-                {evaProps => <Text {...evaProps} category='label' style={styles.radioText}>Feminino</Text>}
+                status='basic'>
+                {evaProps => <Text {...evaProps}>Feminino</Text>}
               </Radio>
               <Radio
-                status='primary'>
-                {evaProps => <Text {...evaProps} category='label' style={styles.radioText}>Prefiro não informar</Text>}
+                status='basic'>
+                {evaProps => <Text {...evaProps}>Prefiro não informar</Text>}
               </Radio>
             </RadioGroup>
           )}
@@ -273,14 +274,15 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               testID={name}
               onBlur={onBlur}
               onChangeText={onChange}
-              value={value ? value.replace(/[^0-9A-Za-z]*/, "") : value}
+              value={value ? value.replace(/[^0-9A-Za-z]*/, "").toLowerCase() : value}
               underlineColorAndroid="transparent"
               autoCapitalize='none'
               maxLength={60}
               ref={ref}
               returnKeyType="next"
-              onSubmitEditing={() => form.setFocus('username')}
+              onSubmitEditing={() => form.setFocus('password')}
               placeholder={'example@example.com'}
+              textContentType="emailAddress"
             />
           )}
           name='email'
@@ -289,43 +291,6 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
         {form.formState.errors.email?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.email?.message}</Text>}
         {form.formState.errors.email?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.email?.message}</Text>}
         {form.formState.errors.email?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>E-mail inválido</Text>}
-        <Controller
-          control={form.control}
-          rules={{
-            required: {
-              value: true,
-              message: 'Campo obrigatório'
-            },
-            minLength: {
-              value: 5,
-              message: `Mín. 5 caracteres`
-            },
-            validate: (e) => e && e !== "" ? (isJustNumber(e) ? false : true) : true
-          }}
-          render={({ field: { onChange, onBlur, value, ref, name } }) => (
-            <Input
-              size='small'
-              label="Usuário *"
-              style={styles.input}
-              keyboardType='default'
-              testID={name}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              maxLength={40}
-              ref={ref}
-              returnKeyType="next"
-              onSubmitEditing={() => form.setFocus('password')}
-              underlineColorAndroid="transparent"
-              autoCapitalize="none"
-            />
-          )}
-          name='username'
-          defaultValue=''
-        />
-        {form.formState.errors.username?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.username?.message}</Text>}
-        {form.formState.errors.username?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.username?.message}</Text>}
-        {form.formState.errors.username?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>Necessário ao menos 1 letra</Text>}
         <Controller
           control={form.control}
           rules={{
@@ -356,6 +321,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               onSubmitEditing={() => form.setFocus('cns')}
               underlineColorAndroid="transparent"
               autoCapitalize="none"
+              textContentType="password"
             />
           )}
           name='password'

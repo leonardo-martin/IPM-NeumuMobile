@@ -1,3 +1,5 @@
+import { JSONObject } from "./Common"
+
 export class PatientProfileCreatorDto {
     createdPatientProfileId!: string | number
     patientProfileCreatorTypeId!: PatientProfileCreatorTypeEnum | number | undefined
@@ -13,15 +15,7 @@ export class PatientProfileCreatorPatientRelatedDto extends PatientProfileCreato
 
 export enum PatientProfileCreatorTypeEnum {
     Other = "0",
-    PatientSelf = "1",
-    PatientRelated = "2",
-    MedicalDoctorNoProfile = "3",
-    MedicalDoctor = "4",
-    SpecialistNoProfile = "5",
-    Specialist = "6",
+    PatientSelf = "1"
 }
 
-
-interface JSONObject {
-    [key: string]: any
-}
+export type RelationshipPatient = "Amigo" | "Cuidador" | "Familiar" | "Tutor Legal" | "Profissional de Saúde"

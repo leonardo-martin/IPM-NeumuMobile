@@ -291,6 +291,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               underlineColorAndroid="transparent"
               onSubmitEditing={() => value ? loadDataFromPostalCode(value) : undefined}
               disabled={isLoadingPostalCode}
+              textContentType="postalCode"
             />
           )}
           name='postalCode'
@@ -324,6 +325,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               underlineColorAndroid="transparent"
               onSubmitEditing={() => form.setFocus('address2')}
               disabled={isLoadingPostalCode}
+              textContentType="streetAddressLine1"
             />
           )}
           name='address1'
@@ -355,6 +357,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               underlineColorAndroid="transparent"
               onSubmitEditing={() => form.setFocus('addressComplement')}
               disabled={isLoadingPostalCode}
+              textContentType="streetAddressLine2"
             />
           )}
           name='address2'
@@ -593,6 +596,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               onSubmitEditing={() => form.setFocus('phone2')}
               underlineColorAndroid="transparent"
               disabled={isLoadingPostalCode}
+              textContentType="telephoneNumber"
             />
           )}
           name='phone'
@@ -624,6 +628,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               onSubmitEditing={form.handleSubmit(onSubmit)}
               underlineColorAndroid="transparent"
               disabled={isLoadingPostalCode}
+              textContentType="telephoneNumber"
             />
           )}
           name='phone2'
