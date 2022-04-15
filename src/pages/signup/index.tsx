@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useRef, useState } from 'react'
+import React, { FC, ReactElement, useEffect, useRef, useState } from 'react'
 import { View } from 'react-native'
 import { Button, CheckBox, Spinner, useStyleSheet, useTheme } from '@ui-kitten/components'
 import Stepper from '@components/stepper'
@@ -67,6 +67,9 @@ const SignUpScreen: FC = (): ReactElement => {
             data.cpf = cleanNumberMask(data.cpf)
             data.phone = cleanNumberMask(data.phone)
             data.phone2 = cleanNumberMask(data.phone2)
+
+            // defined that the username is your CPF
+            data.username = data.cpf
 
             if (params?.type === 0) {
                 const newData = data as UserPatientData
