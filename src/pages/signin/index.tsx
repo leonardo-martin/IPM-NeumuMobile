@@ -1,6 +1,6 @@
-import React, { FC, ReactElement, useCallback, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { View, KeyboardAvoidingView, ScrollView, StatusBar, Platform, Keyboard } from 'react-native'
-import { Input, Text, Button, Icon, IconProps, Spinner, useStyleSheet, Modal } from '@ui-kitten/components'
+import { Input, Text, Button, Icon, IconProps, Spinner, useStyleSheet, Modal, CheckBox, Toggle } from '@ui-kitten/components'
 import { useForm, Controller } from 'react-hook-form'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -13,8 +13,14 @@ import { matchMessage } from '@utils/common'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import toast from '@helpers/toast'
 import RegisterModal from 'components/modal/registerModal'
-import { loginStyle } from './style'
 import { useModal } from '@hooks/useModal'
+import { AppStorage } from '@services/app-storage.service'
+import { loginStyle } from './style'
+import Keychain from 'react-native-keychain'
+
+const _optionsKeychain: Keychain.Options = {
+  service: 'sec_login', storage: Keychain.STORAGE_TYPE.RSA
+}
 
 const SignInScreen: FC = (): ReactElement => {
 
@@ -22,16 +28,32 @@ const SignInScreen: FC = (): ReactElement => {
   const styles = useStyleSheet(loginStyle)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [visibleModal, setVisibleModal] = useState<boolean>(false)
+  const [checked, setChecked] = useState<boolean>(false)
 
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true)
   const { signIn } = useAuth()
   const navigation = useNavigation<any>()
   const form = useForm<SignInData>()
 
+  const getStoredUsernameAndPassword = async () => {
+    const isRemember = await AppStorage.getItem('REMEMBER_ACCESS')
+    if (isRemember === 'true') {
+      setChecked(true)
+      const userCredentials = await Keychain.getGenericPassword(_optionsKeychain)
+      if (userCredentials) {
+        form.setValue('username', userCredentials.username)
+        form.setValue('password', userCredentials.password)
+      }
+    }
+    else await Keychain.resetGenericPassword(_optionsKeychain)
+
+  }
+
   useFocusEffect(
     useCallback(() => {
       form.reset()
       setIsLoading(false)
+      getStoredUsernameAndPassword()
     }, [])
   )
 
@@ -85,6 +107,17 @@ const SignInScreen: FC = (): ReactElement => {
     })
     setVisibleModal(!visibleModal)
   }
+
+  const onCheckedChange = (isChecked: boolean) => {
+    setChecked(isChecked)
+  }
+
+  useEffect(() => {
+    const getStorage = async () => {
+      await AppStorage.setItem('REMEMBER_ACCESS', checked ? 'true' : 'false')
+    }
+    getStorage()
+  }, [checked])
 
   return (
     <>
@@ -173,6 +206,16 @@ const SignInScreen: FC = (): ReactElement => {
                 />
                 {form.formState.errors.password && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.password?.message}</Text>}
               </KeyboardAvoidingView>
+              <View style={{
+                paddingTop: 5,
+              }}>
+                <CheckBox
+                  status='primary'
+                  checked={checked} onChange={onCheckedChange}>
+                  {evaProps => <Text style={[evaProps?.style, styles.checkboxText]}>Memorizar acesso</Text>}
+                </CheckBox>
+
+              </View>
               <View style={styles.containerRecoveryPassword}>
                 <Text
                   style={styles.textRecoveryPassword}

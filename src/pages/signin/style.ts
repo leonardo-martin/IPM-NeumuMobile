@@ -59,5 +59,9 @@ export const loginStyle = StyleSheet.create({
   },
   containerLogo: {
     alignItems: "center",
+  },
+  checkboxText: {
+    fontWeight: '400',
+    color: 'text-hint-color'
   }
 })

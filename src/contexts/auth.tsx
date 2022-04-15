@@ -6,6 +6,7 @@ import jwt_decode from 'jwt-decode'
 import { api } from '@services/api.service'
 import { AppStorage } from '@services/app-storage.service'
 import { THEME_KEY, TOKEN_KEY, USER_KEY } from '@constants/storage'
+import Keychain from 'react-native-keychain'
 
 interface AuthContextType {
     isAuthenticated: boolean
@@ -14,6 +15,10 @@ interface AuthContextType {
     signOut: () => void
     loading: boolean
 }
+
+const _optionsKeychain: Keychain.Options = {
+    service: 'sec_login', storage: Keychain.STORAGE_TYPE.RSA
+  }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
@@ -48,6 +53,8 @@ const AuthProvider: FC = ({ children }) => {
                 api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
                 AppStorage.setUserContext(user)
                 AppStorage.setUserToken(accessToken)
+
+                await Keychain.setGenericPassword(data.username, data.password, _optionsKeychain)
             }
         } catch (error) {
             return error
