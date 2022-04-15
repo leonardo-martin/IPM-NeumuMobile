@@ -77,14 +77,17 @@ export const getGender = (index: number): string | undefined => {
     }[index]
 }
 
-export const sortByStringField = (a: any, b: any, fieldName: string) => {
+export const sortByStringField = (a: any, b: any, _fieldName?: string) => {
 
     var nameA
     var nameB
 
-    if (a[fieldName]) {
-        nameA = typeof a[fieldName] === 'string' ? a[fieldName].toUpperCase() : a[fieldName]
-        nameB = typeof b[fieldName] === 'string' ? b[fieldName].toUpperCase() : b[fieldName]
+    if (_fieldName) {
+        nameA = typeof a[_fieldName] === 'string' ? a[_fieldName].toUpperCase() : a[_fieldName]
+        nameB = typeof b[_fieldName] === 'string' ? b[_fieldName].toUpperCase() : b[_fieldName]
+    } else {
+        nameA = a
+        nameB = b
     }
     if (nameA < nameB)
         return -1

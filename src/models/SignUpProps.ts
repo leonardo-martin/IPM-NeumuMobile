@@ -5,16 +5,16 @@ export interface RegisterParams {
     type: number
 }
 
-interface SignUpFuncs {
+interface SignUpExtra {
     onSubmit: (data: UserPatientData | UserDoctorData) => void
-    register: RegisterParams
+    register?: RegisterParams
 }
 
-export interface PatientSignUpProps extends SignUpFuncs {
+export interface PatientSignUpProps extends SignUpExtra {
     form: UseFormReturn<UserPatientData, any>
     
 }
 
-export interface DoctorSignUpProps extends SignUpFuncs {
+export interface DoctorSignUpProps extends SignUpExtra {
     form: UseFormReturn<UserDoctorData, any>
 }

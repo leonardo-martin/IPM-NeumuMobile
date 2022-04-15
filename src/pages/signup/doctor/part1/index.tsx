@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useEffect, useState, useCallback } from 'react'
-import { View } from 'react-native'
+import { Keyboard, View } from 'react-native'
 import { Input, Text, Icon, useStyleSheet, Datepicker, IconProps, PopoverPlacements, RadioGroup, Radio } from '@ui-kitten/components'
 import { Controller } from 'react-hook-form'
 import { formatCpf, isEmailValid, onlyNumbers } from '@utils/mask'
@@ -115,7 +115,6 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               maxLength={14}
               ref={ref}
               returnKeyType="next"
-              placeholder={'999.999.999-99'}
               onSubmitEditing={() => form.setFocus('dateOfBirth')}
             />
           )}
@@ -137,7 +136,6 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
             <Datepicker
               size='small'
               label='Data de Nascimento *'
-              placeholder='01/01/1900'
               date={value}
               onSelect={onChange}
               accessoryRight={CalendarIcon}
@@ -150,6 +148,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               min={new Date(1900, 0, 0)}
               backdropStyle={styles.backdropDatepicker}
               boundingMonth={false}
+              onPress={() => Keyboard.dismiss()}
             />
           )}
           name='dateOfBirth'
@@ -216,7 +215,6 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               ref={ref}
               returnKeyType="next"
               onSubmitEditing={() => form.setFocus('password')}
-              placeholder={'example@example.com'}
               textContentType="emailAddress"
             />
           )}
@@ -248,7 +246,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
-              maxLength={40}
+              maxLength={20}
               accessoryRight={renderIconRightPassword}
               secureTextEntry={secureTextEntry}
               returnKeyType="next"
@@ -331,7 +329,6 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
           defaultValue=''
         />
         {form.formState.errors.specialty?.description && <Text category='s2' style={styles.text}>{form.formState.errors.specialty.description?.message}</Text>}
-
       </View>
     </>
   )

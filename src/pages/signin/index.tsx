@@ -196,7 +196,7 @@ const SignInScreen: FC = (): ReactElement => {
                       underlineColorAndroid="transparent"
                       onSubmitEditing={form.handleSubmit(handleSignIn)}
                       ref={ref}
-                      maxLength={40}
+                      maxLength={20}
                       autoCapitalize="none"
                       textContentType="password"
                     />

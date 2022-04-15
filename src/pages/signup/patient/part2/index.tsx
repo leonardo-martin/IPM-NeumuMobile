@@ -279,6 +279,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
             <Input
               size='small'
               label="CEP *"
+              onEndEditing={(props) => loadDataFromPostalCode(props.nativeEvent.text)}
               style={styles.input}
               keyboardType='number-pad'
               testID={name}
@@ -290,7 +291,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               returnKeyType="next"
               underlineColorAndroid="transparent"
               onSubmitEditing={() => value ? loadDataFromPostalCode(value) : undefined}
-              disabled={isLoadingPostalCode}
+              editable={isLoadingPostalCode}
               textContentType="postalCode"
             />
           )}
@@ -324,7 +325,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               returnKeyType="next"
               underlineColorAndroid="transparent"
               onSubmitEditing={() => form.setFocus('address2')}
-              disabled={isLoadingPostalCode}
+              editable={isLoadingPostalCode}
               textContentType="streetAddressLine1"
             />
           )}
@@ -356,7 +357,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               returnKeyType="next"
               underlineColorAndroid="transparent"
               onSubmitEditing={() => form.setFocus('addressComplement')}
-              disabled={isLoadingPostalCode}
+              editable={isLoadingPostalCode}
               textContentType="streetAddressLine2"
             />
           )}
@@ -388,7 +389,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               returnKeyType="next"
               underlineColorAndroid="transparent"
               onSubmitEditing={() => form.setFocus('country')}
-              disabled={isLoadingPostalCode}
+              editable={isLoadingPostalCode}
             />
           )}
           name='addressComplement'
@@ -419,7 +420,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               ref={ref}
               returnKeyType="next"
               onSubmitEditing={() => onSubmitEditingCountry(value)}
-              disabled={isLoadingPostalCode}
+              editable={isLoadingPostalCode}
             />
           )}
           name='country'
@@ -453,7 +454,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
                   ref={ref}
                   returnKeyType="next"
                   onSubmitEditing={() => onSubmitEditingState(value)}
-                  disabled={isLoadingPostalCode}
+                  editable={isLoadingPostalCode}
                   onFocus={() => value === '' ? findPlaces() : undefined}
                 />
               )}
@@ -485,7 +486,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
                   returnKeyType="next"
                   autoCapitalize='words'
                   onSubmitEditing={() => onSubmitEditingCity(value)}
-                  disabled={isLoadingPostalCode}
+                  editable={isLoadingPostalCode}
                   onFocus={() => value === '' ? findCities() : undefined}
                 />
               )}
@@ -524,7 +525,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
                   autoCapitalize='characters'
                   underlineColorAndroid="transparent"
                   onSubmitEditing={() => form.setFocus('city')}
-                  disabled={isLoadingPostalCode}
+                  editable={isLoadingPostalCode}
                 />
               )}
               name='state'
@@ -559,7 +560,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
                   autoCapitalize='words'
                   underlineColorAndroid="transparent"
                   onSubmitEditing={() => form.setFocus('phone')}
-                  disabled={isLoadingPostalCode}
+                  editable={isLoadingPostalCode}
                 />
               )}
               name='city'
@@ -595,7 +596,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               returnKeyType="next"
               onSubmitEditing={() => form.setFocus('phone2')}
               underlineColorAndroid="transparent"
-              disabled={isLoadingPostalCode}
+              editable={isLoadingPostalCode}
               textContentType="telephoneNumber"
             />
           )}
@@ -627,7 +628,7 @@ const PatientSignUpPart2Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               returnKeyType="send"
               onSubmitEditing={form.handleSubmit(onSubmit)}
               underlineColorAndroid="transparent"
-              disabled={isLoadingPostalCode}
+              editable={isLoadingPostalCode}
               textContentType="telephoneNumber"
             />
           )}

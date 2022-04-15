@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useRef, useEffect, useState, useCallback } from 'react'
-import { Dimensions, TouchableOpacity, View } from 'react-native'
+import { Dimensions, Keyboard, TouchableOpacity, View } from 'react-native'
 import { Input, Text, Icon, useStyleSheet, Datepicker, IconProps, PopoverPlacements, RadioGroup, Radio } from '@ui-kitten/components'
 import { Controller } from 'react-hook-form'
 import { formatCpf, isEmailValid } from '@utils/mask'
@@ -180,7 +180,6 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               maxLength={14}
               ref={ref}
               returnKeyType="next"
-              placeholder={'999.999.999-99'}
               onSubmitEditing={() => form.setFocus('dateOfBirth')}
             />
           )}
@@ -202,7 +201,6 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
             <Datepicker
               size='small'
               label='Data de Nascimento *'
-              placeholder='01/01/1900'
               date={value}
               onSelect={onChange}
               accessoryRight={CalendarIcon}
@@ -215,6 +213,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               min={new Date(1900, 0, 0)}
               backdropStyle={styles.backdropDatepicker}
               boundingMonth={false}
+              onPress={() => Keyboard.dismiss()}
             />
           )}
           name='dateOfBirth'
@@ -281,7 +280,6 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               ref={ref}
               returnKeyType="next"
               onSubmitEditing={() => form.setFocus('password')}
-              placeholder={'example@example.com'}
               textContentType="emailAddress"
             />
           )}
@@ -313,7 +311,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
-              maxLength={40}
+              maxLength={20}
               accessoryRight={renderIconRightPassword}
               secureTextEntry={secureTextEntry}
               returnKeyType="next"
