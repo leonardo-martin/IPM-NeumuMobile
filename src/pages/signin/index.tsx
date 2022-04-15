@@ -12,7 +12,6 @@ import LogoPedroMolina from '@assets/svg/logo.svg'
 import { matchMessage } from '@utils/common'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import toast from '@helpers/toast'
-import { isJustNumber } from '@utils/mask'
 import RegisterModal from 'components/modal/registerModal'
 import { loginStyle } from './style'
 import { useModal } from '@hooks/useModal'
@@ -111,23 +110,23 @@ const SignInScreen: FC = (): ReactElement => {
                       value: 5,
                       message: `Mín. 5 caracteres`
                     },
-                    validate: (e) => e !== "" ? (isJustNumber(e) ? false : true) : true
                   }}
                   render={({ field: { onChange, onBlur, value, ref, name } }) => (
                     <Input
                       size='small'
                       style={styles.input}
-                      label="Usuário / CPF / E-mail *"
+                      label="E-mail / CPF *"
                       keyboardType="default"
                       testID={name}
                       onBlur={onBlur}
                       onChangeText={onChange}
-                      value={value}
+                      value={value ? value.toLowerCase() : value}
                       returnKeyType="next"
                       ref={ref}
                       maxLength={40}
                       onSubmitEditing={() => form.setFocus('password')}
                       autoCapitalize="none"
+                      textContentType="username"
                     />
                   )}
                   name="username"
@@ -166,6 +165,7 @@ const SignInScreen: FC = (): ReactElement => {
                       ref={ref}
                       maxLength={40}
                       autoCapitalize="none"
+                      textContentType="password"
                     />
                   )}
                   name="password"

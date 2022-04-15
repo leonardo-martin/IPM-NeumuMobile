@@ -153,27 +153,3 @@ class ExamDNA {
         crm?: string
     }
 }
-
-
-
-
-
-
-// class Test1 {
-//     constructor(cpf: string) {
-//         this.cpf = cpf
-//     }
-//     cpf: string = ''
-//     name: string = ''
-// }
-
-// export class Test extends Test1 {
-//     message?: string = ''
-
-//     constructor(cpf: string, message?: string) {
-//         super(cpf)
-//         this.message = message
-
-//         Object.setPrototypeOf(this, Test.prototype);
-//     }
-// }
