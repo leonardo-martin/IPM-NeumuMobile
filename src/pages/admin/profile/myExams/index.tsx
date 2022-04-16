@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useCallback, useState } from 'react'
-import { Animated, ListRenderItemInfo, Platform, RefreshControl, TouchableOpacity, View } from 'react-native'
+import { Animated, ListRenderItemInfo, RefreshControl, TouchableOpacity, View } from 'react-native'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { CalendarRange, Icon, IconProps, List, ListItem, Modal, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
@@ -11,9 +11,9 @@ import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { Exam, ExamImage } from '@models/Exam'
 import { useFocusEffect } from '@react-navigation/native'
 import { sortByDate } from '@utils/common'
-import { myExamsStyle } from './style'
-import FilterModal from 'components/modal/filterModal'
+import FilterModal from '@components/modal/filterModal'
 import { useModal } from '@hooks/useModal'
+import { myExamsStyle } from './style'
 
 const MyExamsScreen: FC<DrawerContentComponentProps> = ({
     navigation
@@ -57,19 +57,26 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = ({
         }, [addedItem])
     )
 
-    const leftSwipe = (_progress: Animated.AnimatedInterpolation, dragX: Animated.AnimatedInterpolation, item: Exam) => {
+    const leftSwipe = (_progress: Animated.AnimatedInterpolation, dragX: Animated.AnimatedInterpolation, index: number) => {
         const scale = dragX.interpolate({
             inputRange: [-80, 0],
-            outputRange: [1, 0],
+            outputRange: [1, 0.9],
             extrapolate: 'clamp'
         })
+
+        const opacity = dragX.interpolate({
+            inputRange: [-80, -20, 0],
+            outputRange: [1, 0.9, 0],
+            extrapolate: 'clamp'
+        })
+
         return (
-            <TouchableOpacity onPress={() => onDeleteItem(item)} activeOpacity={0.5}>
-                <View style={styles.deleteBox}>
-                    <Animated.View style={[{ transform: [{ scale: scale }] }]}>
+            <TouchableOpacity onPress={() => onDeleteItem(index)} activeOpacity={0.5}>
+                <Animated.View style={[styles.deleteBox, { opacity: opacity }]}>
+                    <Animated.Text style={[{ transform: [{ scale: scale }] }]}>
                         <Icon name='trash-bin-outline' style={styles.icon} size={20} pack='ionicons' />
-                    </Animated.View>
-                </View>
+                    </Animated.Text>
+                </Animated.View>
             </TouchableOpacity>
         )
     }
@@ -82,7 +89,7 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = ({
                 category='c1'>
                 {exam.dateToString}
             </Text>
-            <Icon {...props} name={Platform.OS === 'ios' ? 'chevron-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'} pack='ionicons' />
+            <Icon {...props} name='chevron-forward-outline' pack='ionicons' />
         </View>
     )
 
@@ -90,16 +97,15 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = ({
         <Icon {...props} color={theme['color-basic-1100']} name='reader-outline' pack='ionicons' />
     )
 
-    const onDeleteItem = (item: Exam) => {
-        var lista = data
-        const index = lista.indexOf(item)
-        if (index > -1) lista.splice(index, 1)
-        setData([...lista])
+    const onDeleteItem = (index: number) => {
+        const arr = [...data]
+        arr.splice(index, 1)
+        setData(arr)
     }
 
     const renderItem = (info: ListRenderItemInfo<Exam>) => (
         <Swipeable
-            renderRightActions={(progress, drag) => leftSwipe(progress, drag, info.item)}
+            renderRightActions={(progress, drag) => leftSwipe(progress, drag, info.index)}
             overshootLeft={false}>
             <ListItem
                 style={styles.containerItem}
@@ -158,6 +164,7 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = ({
                     ListHeaderComponent={headerListComponent}
                     data={data}
                     renderItem={renderItem}
+                    keyExtractor={item => item.id.toString()}
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
