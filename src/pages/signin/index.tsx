@@ -61,7 +61,7 @@ const SignInScreen: FC = (): ReactElement => {
     Keyboard.dismiss()
     setIsLoading(!isLoading)
     try {
-      const response = await signIn(data)
+      const response = await signIn(data, checked)
       if (response) {
         const message = response.data?.message?.message
         let messageToast = ''
@@ -111,13 +111,6 @@ const SignInScreen: FC = (): ReactElement => {
   const onCheckedChange = (isChecked: boolean) => {
     setChecked(isChecked)
   }
-
-  useEffect(() => {
-    const getStorage = async () => {
-      await AppStorage.setItem('REMEMBER_ACCESS', checked ? 'true' : 'false')
-    }
-    getStorage()
-  }, [checked])
 
   return (
     <>

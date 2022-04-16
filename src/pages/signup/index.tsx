@@ -1,6 +1,6 @@
-import React, { FC, ReactElement, useEffect, useRef, useState } from 'react'
+import React, { FC, ReactElement, useRef, useState } from 'react'
 import { View } from 'react-native'
-import { Button, CheckBox, Spinner, useStyleSheet, useTheme } from '@ui-kitten/components'
+import { Button, CheckBox, Spinner, useStyleSheet } from '@ui-kitten/components'
 import Stepper from '@components/stepper'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { Modalize } from 'react-native-modalize'
@@ -20,6 +20,8 @@ import PatientSignUpPart3Screen from './patient/part3'
 import DoctorSignUpPart1Screen from './doctor/part1'
 import DoctorSignUpPart2Screen from './doctor/part2'
 import { signupStyle } from './style'
+import RegisterHeader from '@components/header/register'
+import { Host, Portal } from 'react-native-portalize'
 
 const SignUpScreen: FC = (): ReactElement => {
 
@@ -38,7 +40,6 @@ const SignUpScreen: FC = (): ReactElement => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const navigation = useNavigation<any>()
     const [active, setActive] = useState(0)
-    const theme = useTheme()
     const styles = useStyleSheet(signupStyle)
 
     const [sending, setSending] = useState<boolean>(false)
@@ -142,55 +143,55 @@ const SignUpScreen: FC = (): ReactElement => {
     ]
 
     return (
-        <>
+        <Host>
+            <RegisterHeader
+                form={forms[params.type]}
+                active={active}
+                onBack={onBack}
+                onNext={onNext}
+                onFinish={onDone}
+                numberScreens={steps[params.type].length}
+            />
             <SafeAreaLayout level='1' style={styles.safeArea}>
                 <View style={styles.content}>
                     <Stepper
                         active={active}
                         content={steps[params.type] ? steps[params.type] : []}
-                        onBack={onBack}
-                        onFinish={forms[params.type] ? forms[params.type].handleSubmit(onDone) : () => { }}
-                        onNext={forms[params.type] ? forms[params.type].handleSubmit(onNext) : () => { }}
-                        buttonStyle={styles.button}
-                        buttonDoneStyle={{
-                            ...styles.button,
-                            backgroundColor: theme['color-success-default']
-                        }}
                         stepStyle={styles.stepIndicator}
-                        iconButton={true}
                     />
                 </View>
-                <Modalize
-                    ref={modalizeRef}
-                    withReactModal={true}
-                    closeOnOverlayTap={!sending}
-                >
-                    <View style={styles.termsModal}>
-                        <TermsConditions />
-                        <View style={styles.viewCheckbox}>
-                            <CheckBox
-                                testID={'acceptTerms'}
-                                style={styles.checkbox}
-                                checked={checked}
-                                indeterminate={indeterminate}
-                                onChange={onIndeterminateChange}>
-                                Ao marcar esta caixa, eu confirmo que li e aceito o Termos e Condições de Uso.
-                            </CheckBox>
-                            <View style={styles.viewBtn}>
-                                <Button
-                                    accessoryLeft={isLoading ? LoadingIndicator : undefined}
-                                    disabled={!checked || isLoading}
-                                    onPress={forms[params.type] ? forms[params.type].handleSubmit(submit) : undefined}
-                                    status='warning'
-                                >
-                                    CADASTRAR
-                                </Button>
+                <Portal>
+                    <Modalize
+                        ref={modalizeRef}
+                        closeOnOverlayTap={!sending}
+                    >
+                        <View style={styles.termsModal}>
+                            <TermsConditions />
+                            <View style={styles.viewCheckbox}>
+                                <CheckBox
+                                    testID={'acceptTerms'}
+                                    style={styles.checkbox}
+                                    checked={checked}
+                                    indeterminate={indeterminate}
+                                    onChange={onIndeterminateChange}>
+                                    Ao marcar esta caixa, eu confirmo que li e aceito o Termos e Condições de Uso.
+                                </CheckBox>
+                                <View style={styles.viewBtn}>
+                                    <Button
+                                        accessoryLeft={isLoading ? LoadingIndicator : undefined}
+                                        disabled={!checked || isLoading}
+                                        onPress={forms[params.type] ? forms[params.type].handleSubmit(submit) : undefined}
+                                        status='warning'
+                                    >
+                                        CADASTRAR
+                                    </Button>
+                                </View>
                             </View>
                         </View>
-                    </View>
-                </Modalize>
+                    </Modalize>
+                </Portal>
             </SafeAreaLayout>
-        </>
+        </Host>
     )
 }
 

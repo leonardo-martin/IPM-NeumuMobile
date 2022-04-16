@@ -14,6 +14,8 @@ import { DoctorSignUpProps } from '@models/SignUpProps'
 const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): ReactElement => {
 
   const { localeDateService } = useDatepickerService()
+  const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
+
   const isFocused = useIsFocused()
 
   const [selectedIndex, setSelectedIndex] = useState(-1)
@@ -24,6 +26,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
     useCallback(() => {
       const genre = form.getValues('genre')
       if (genre) setSelectedIndex(genre === 'male' ? 0 : genre === 'female' ? 1 : 2)
+      form.setValue('dateOfBirth', dateForOver)
     }, [])
   )
 
@@ -135,7 +138,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Datepicker
               size='small'
-              label='Data de Nascimento *'
+              label='Data de Nascimento (18+) *'
               date={value}
               onSelect={onChange}
               accessoryRight={CalendarIcon}
@@ -143,7 +146,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               ref={ref}
               testID={name}
               dateService={localeDateService}
-              max={localeDateService.addDay(localeDateService.today(), -1)}
+              max={dateForOver}
               placement={PopoverPlacements.BOTTOM}
               min={new Date(1900, 0, 0)}
               backdropStyle={styles.backdropDatepicker}

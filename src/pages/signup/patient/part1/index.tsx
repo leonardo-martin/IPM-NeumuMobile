@@ -2,26 +2,29 @@ import React, { FC, ReactElement, useRef, useEffect, useState, useCallback } fro
 import { Dimensions, Keyboard, TouchableOpacity, View } from 'react-native'
 import { Input, Text, Icon, useStyleSheet, Datepicker, IconProps, PopoverPlacements, RadioGroup, Radio } from '@ui-kitten/components'
 import { Controller } from 'react-hook-form'
-import { formatCpf, isEmailValid } from '@utils/mask'
+import WebView from 'react-native-webview'
+import { Modalize } from 'react-native-modalize'
+import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+
 import { validate } from 'gerador-validador-cpf'
 import { getGender } from '@utils/common'
 import { validateCNS } from '@utils/validators'
-import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { registerStyle } from '@pages/signup/style'
-
-import { Modalize } from 'react-native-modalize'
+import { formatCpf, isEmailValid } from '@utils/mask'
 import { useModal } from '@hooks/useModal'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import RNWebView from '@components/webView'
-import WebView from 'react-native-webview'
 import { GOV_BR_URI } from '@constants/uri'
 import { PatientSignUpProps } from '@models/SignUpProps'
+import { Portal } from 'react-native-portalize'
 
 const { height: initialHeight } = Dimensions.get('window')
 
 const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): ReactElement => {
 
   const { localeDateService } = useDatepickerService()
+  const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
+
   const { ref } = useModal<Modalize>()
   const refWebView = useRef<WebView>(null)
   const [height, setHeight] = useState(initialHeight)
@@ -35,6 +38,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
     useCallback(() => {
       const genre = form.getValues('genre')
       if (genre) setSelectedIndex(genre === 'male' ? 0 : genre === 'female' ? 1 : 2)
+      form.setValue('dateOfBirth', dateForOver)
     }, [])
   )
 
@@ -200,7 +204,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Datepicker
               size='small'
-              label='Data de Nascimento *'
+              label='Data de Nascimento (18+) *'
               date={value}
               onSelect={onChange}
               accessoryRight={CalendarIcon}
@@ -208,7 +212,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               ref={ref}
               testID={name}
               dateService={localeDateService}
-              max={localeDateService.addDay(localeDateService.today(), -1)}
+              max={dateForOver}
               placement={PopoverPlacements.BOTTOM}
               min={new Date(1900, 0, 0)}
               backdropStyle={styles.backdropDatepicker}
@@ -363,16 +367,18 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
         {form.formState.errors.cns?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.cns?.message}</Text>}
         {form.formState.errors.cns?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>CNS inválido</Text>}
       </View>
-      <Modalize ref={ref}
-        withReactModal={true}
-        onLayout={onLayout}
-      >
-        <RNWebView
-          ref={refWebView}
-          source={{ uri: GOV_BR_URI + '/saude/pt-br/acesso-a-informacao/acoes-e-programas/cartao-nacional-de-saude' }}
-          style={{ height }}
-        />
-      </Modalize>
+      <Portal>
+        <Modalize
+          ref={ref}
+          onLayout={onLayout}
+        >
+          <RNWebView
+            ref={refWebView}
+            source={{ uri: GOV_BR_URI + '/saude/pt-br/acesso-a-informacao/acoes-e-programas/cns' }}
+            style={{ height }}
+          />
+        </Modalize>
+      </Portal>
     </>
   )
 }

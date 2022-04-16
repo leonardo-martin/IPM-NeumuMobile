@@ -52,7 +52,7 @@ const RNWebView: FC<RNWebViewProps> = forwardRef<WebView, React.PropsWithChildre
       <SafeAreaLayout style={styles.safeArea}>
         <WebView
           {...{ ...props, ref: combinedRef }}
-          source={source ? source : props.source}
+          source={props.source}
           renderLoading={() => (
             <View style={styles.spinnerView}>
               <Spinner size='giant' status='primary' />

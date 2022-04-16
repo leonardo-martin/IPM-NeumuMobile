@@ -11,14 +11,14 @@ import Keychain from 'react-native-keychain'
 interface AuthContextType {
     isAuthenticated: boolean
     currentUser: TokenModel | null
-    signIn: (data: SignInData) => Promise<void | any>
+    signIn: (data: SignInData, rememberChecked: boolean) => Promise<void | any>
     signOut: () => void
     loading: boolean
 }
 
 const _optionsKeychain: Keychain.Options = {
     service: 'sec_login', storage: Keychain.STORAGE_TYPE.RSA
-  }
+}
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
@@ -34,7 +34,7 @@ const AuthProvider: FC = ({ children }) => {
             const storagedToken = await AppStorage.getUserToken()
 
             if (storagedUser && storagedToken) {
-                setCurrentUser(JSON.parse(storagedUser))                
+                setCurrentUser(JSON.parse(storagedUser))
                 api.defaults.headers.common['Authorization'] = `Bearer ${storagedToken}`
             }
             setLoading(false)
@@ -43,7 +43,7 @@ const AuthProvider: FC = ({ children }) => {
         loadStorageData()
     }, [])
 
-    const signIn = async (data: SignInData) => {
+    const signIn = async (data: SignInData, rememberChecked: boolean) => {
         try {
             const response = await signInRequest(data)
             if (response?.status === 201) {
@@ -54,7 +54,13 @@ const AuthProvider: FC = ({ children }) => {
                 AppStorage.setUserContext(user)
                 AppStorage.setUserToken(accessToken)
 
-                await Keychain.setGenericPassword(data.username, data.password, _optionsKeychain)
+                if (rememberChecked) {
+                    await Keychain.setGenericPassword(data.username, data.password, _optionsKeychain)
+                    await AppStorage.setItem('REMEMBER_ACCESS', 'true')
+                } else {
+                    await Keychain.resetGenericPassword(_optionsKeychain)
+                    await AppStorage.removeItem('REMEMBER_ACCESS')
+                }
             }
         } catch (error) {
             return error
@@ -64,7 +70,7 @@ const AuthProvider: FC = ({ children }) => {
     const signOut = async () => {
         await AppStorage.removeItem(THEME_KEY)
         await AppStorage.removeItem(TOKEN_KEY)
-        await AppStorage.removeItem(USER_KEY)        
+        await AppStorage.removeItem(USER_KEY)
         setCurrentUser(null)
     }
 

@@ -1,26 +1,13 @@
 import React, { FC, useState, ReactElement, useEffect } from 'react'
-import { Icon, IconElement, useStyleSheet } from '@ui-kitten/components'
-import { View, Text, TouchableOpacity, ViewStyle, TextStyle, ScrollView, Platform } from 'react-native'
+import { useStyleSheet } from '@ui-kitten/components'
+import { View, Text, ViewStyle, TextStyle, ScrollView } from 'react-native'
 import { stepperStyle } from './style'
 
 interface StepperProps {
     active: number
     content: ReactElement[]
-    onNext: () => void
-    onBack: () => void
-    onFinish: () => void
-    wrapperStyle?: ViewStyle
     stepStyle?: ViewStyle
     stepTextStyle?: TextStyle
-    buttonStyle?: ViewStyle
-    buttonDoneStyle?: ViewStyle
-    buttonTextStyle?: TextStyle
-    showButton?: boolean
-    iconButton?: boolean
-    nextButtonText?: string
-    prevButtonText?: string
-    finishButtonText?: string
-    isAllowSubmit?: boolean
 }
 
 const search = (keyName: number, myArray: number[]): boolean => {
@@ -30,20 +17,8 @@ const search = (keyName: number, myArray: number[]): boolean => {
 const Stepper: FC<StepperProps> = ({
     active,
     content,
-    onBack,
-    onNext,
-    onFinish,
     stepStyle,
     stepTextStyle,
-    buttonStyle,
-    buttonDoneStyle,
-    buttonTextStyle,
-    showButton,
-    iconButton,
-    nextButtonText,
-    prevButtonText,
-    finishButtonText,
-    isAllowSubmit
 }): ReactElement => {
 
     const styles = useStyleSheet(stepperStyle)
@@ -67,29 +42,6 @@ const Stepper: FC<StepperProps> = ({
         }
 
     }, [active])
-
-    const PrevIcon = (): IconElement => {
-        return (
-            <Icon style={styles.icon}
-                name={Platform.OS === 'ios' ? 'chevron-back-outline' : Platform.OS === 'android' ? 'arrow-back-outline' : 'arrow-back-outline'}
-                size={20} pack='ionicons' />
-        )
-    }
-
-    const NextIcon = (): IconElement => {
-        return (
-            <Icon style={styles.icon}
-                name={Platform.OS === 'ios' ? 'chevron-forward-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'}
-                size={20} pack='ionicons' />
-        )
-    }
-
-    const DoneIcon = (): IconElement => {
-        return (
-            <Icon style={styles.icon}
-                name={'checkmark-done'} size={20} pack='ionicons' />
-        )
-    }
 
     return (
         <>
@@ -143,59 +95,6 @@ const Stepper: FC<StepperProps> = ({
             </View>
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps='handled'>
                 {content[active]}
-                {showButton && (
-                    <View
-                        style={[styles.contentIndicator, {
-                            justifyContent: (active === 0) ? 'flex-end' : 'space-between',
-                        }]}
-                    >
-                        {active !== 0 && (
-                            <TouchableOpacity
-                                style={[
-                                    styles.button,
-                                    buttonStyle
-                                ]}
-                                onPress={onBack}
-                            >
-                                {iconButton ?
-                                    PrevIcon() :
-                                    <Text style={[styles.label, buttonTextStyle]}>{prevButtonText}</Text>
-                                }
-                            </TouchableOpacity>
-                        )}
-                        {content.length - 1 !== active && (
-                            <TouchableOpacity
-                                style={[
-                                    styles.button,
-                                    buttonStyle
-                                ]}
-                                onPress={onNext}
-                            >
-                                {iconButton ?
-                                    NextIcon() :
-                                    <Text style={[styles.label, buttonTextStyle]}>{nextButtonText}</Text>
-                                }
-                            </TouchableOpacity>
-                        )}
-                        {content.length - 1 === active && (
-                            <TouchableOpacity
-                                style={[
-                                    styles.button,
-                                    buttonDoneStyle,
-                                    {
-                                        opacity: 1
-                                    }
-                                ]}
-                                onPress={onFinish}
-                            >
-                                {iconButton ?
-                                    DoneIcon() :
-                                    <Text style={[styles.label, buttonTextStyle]}>{finishButtonText}</Text>
-                                }
-                            </TouchableOpacity>
-                        )}
-                    </View>
-                )}
             </ScrollView>
         </>
     )
@@ -214,10 +113,6 @@ Stepper.defaultProps = {
     content: [
         <DefaultContentComponent title="Component 1" />,
         <DefaultContentComponent title="Component 2" />
-    ],
-    showButton: true,
-    nextButtonText: 'Next',
-    prevButtonText: 'Prev',
-    finishButtonText: 'Finish'
+    ]
 }
 export default Stepper
