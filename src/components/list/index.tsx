@@ -1,9 +1,9 @@
 import React, { FC, ReactElement } from 'react'
 import { ListRenderItemInfo, Platform } from 'react-native'
-import { List, ListItem, IconProps, Icon } from '@ui-kitten/components'
+import { List, ListItem, IconProps, Icon, ListProps } from '@ui-kitten/components'
 
-import { listStyle } from './style'
 import { useNavigation } from '@react-navigation/native'
+import { listStyle } from './style'
 
 type Icons = {
     name: string
@@ -19,12 +19,10 @@ export interface ItemInfo {
 
 type ListComponentProps = {
     data: ItemInfo[]
-    ListHeaderComponent?: () => JSX.Element
-    ListFooterComponent?: () => JSX.Element
-}
+} & ListProps
 
 const ListComponent: FC<ListComponentProps> = ({
-    data, ListFooterComponent: renderFooter, ListHeaderComponent: renderHeader
+    data, ...props
 }): ReactElement => {
 
     const navigation = useNavigation<any>()
@@ -49,26 +47,11 @@ const ListComponent: FC<ListComponentProps> = ({
 
     return (
         <List
+            {...props}
             data={data}
             renderItem={renderItem}
-            ListFooterComponent={renderFooter ? renderFooter : undefined}
-            ListHeaderComponent={renderHeader ? renderHeader : undefined}
         />
     )
 }
 
 export default ListComponent
-
-ListComponent.defaultProps = {
-    data: [
-        {
-            title: 'Default',
-            description: '',
-            icon: {
-                name: 'question-mark-outline',
-                pack: 'eva'
-            },
-            route: ''
-        }
-    ]
-}

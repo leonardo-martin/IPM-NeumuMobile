@@ -108,6 +108,7 @@ const Timeline: FC<TimelineProps> = ({
     return (
         <View style={styles.container}>
             <List
+                showsVerticalScrollIndicator={false}
                 style={styles.list}
                 data={listData}
                 renderItem={renderItem}

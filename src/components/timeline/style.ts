@@ -1,6 +1,6 @@
 import { Dimensions, StyleSheet } from "react-native"
 
-const { width } = Dimensions.get('screen')
+const { width } = Dimensions.get('window')
 
 export const timelineStyle = StyleSheet.create({
     container: {

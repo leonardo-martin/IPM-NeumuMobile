@@ -17,7 +17,6 @@ export const dashboardStyle = StyleSheet.create({
   },
   cardGroupPrimary: {
     marginVertical: 10,
-    marginHorizontal: 10
   },
   cardDefault: {
     flexDirection: 'row',
@@ -27,15 +26,13 @@ export const dashboardStyle = StyleSheet.create({
   },
   cardGroupSecondary: {
     flexDirection: 'row',
-    alignContent: 'space-around',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     width: '100%',
     marginVertical: 10
   },
   card: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignContent: 'center',
     alignItems: 'center',
     width: '45%',
     maxWidth: '90%',

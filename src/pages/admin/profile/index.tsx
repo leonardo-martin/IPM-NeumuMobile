@@ -31,8 +31,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
         onPress={goToMyExams}
         appearance='filled'
         status='success'
-        accessoryLeft={renderIconDocumentAttach}
-      >Meus Exames</Button>
+        accessoryLeft={renderIconDocumentAttach}>Meus Exames</Button>
     </View>
   )
 
@@ -40,26 +39,30 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
     <>
       <HeaderProfile />
       <SafeAreaLayout level='2' style={styles.safeArea}>
-        <View style={styles.contentContainer}>
-          <Avatar style={styles.avatar as StyleProp<ImageStyle>}
-            shape='round'
-            source={{ uri: BOOTDEY_URI + '/img/Content/avatar/avatar6.png' }}
-          />
-          <View style={styles.body}>
-            <View style={styles.bodyContent}>
-              <Text style={styles.profileName}>@{currentUser ? currentUser.user : ''}</Text>
-              <View style={styles.viewLocation}>
-                <Icon style={styles.icon} name="location-outline" size={15} pack='ionicons' />
-                <Text status='info'>São Paulo, SP - Brasil</Text>
-              </View>
-              <Text style={styles.description}></Text>
-            </View>
-          </View>
-        </View>
         <ListComponent
           data={data}
+          showsVerticalScrollIndicator={false}
+          ListHeaderComponent={() => (
+            <>
+              <View style={styles.contentContainer}>
+                <Avatar style={styles.avatar as StyleProp<ImageStyle>}
+                  shape='round'
+                  source={{ uri: BOOTDEY_URI + '/img/Content/avatar/avatar6.png' }} />
+                <View style={styles.body}>
+                  <View style={styles.bodyContent}>
+                    <Text style={styles.profileName}>@{currentUser ? currentUser.user : ''}</Text>
+                    <View style={styles.viewLocation}>
+                      <Icon style={styles.icon} name="location-outline" size={15} pack='ionicons' />
+                      <Text status='info'>São Paulo, SP - Brasil</Text>
+                    </View>
+                    <Text style={styles.description}></Text>
+                  </View>
+                </View>
+              </View>
+            </>
+          )}
           ListFooterComponent={renderFooterComponent}
-        />
+          renderItem={undefined} />
         <View style={styles.footer}>
           <TouchableOpacity
             style={styles.buttonContainer}
@@ -69,11 +72,11 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
               right: 10,
               top: 10,
               bottom: 10
-            }}
-          >
+            }}>
             <Text status='danger' category='label' style={styles.textFooter}>Sair</Text>
           </TouchableOpacity>
         </View>
+
       </SafeAreaLayout>
     </>
   )

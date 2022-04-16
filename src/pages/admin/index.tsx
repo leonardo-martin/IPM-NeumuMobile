@@ -1,6 +1,6 @@
 import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { BackHandler, StatusBar, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { Text, Card, Icon, useStyleSheet } from '@ui-kitten/components'
 import { Host, Portal } from 'react-native-portalize'
@@ -47,67 +47,69 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
     <Host>
       <HeaderAdmin />
       <StatusBar barStyle="dark-content" backgroundColor='transparent' translucent />
-      <SafeAreaLayout insets='bottom' level='1' style={styles.safeArea}>
-        <View style={[styles.content, { position: 'relative' }]}>
-          <View style={styles.cardContainer}>
-            <Text category="h5" status='basic' style={styles.text}>
-              Como podemos te ajudar?
-            </Text>
-            <View style={styles.cardGroupPrimary}>
-              <Card onPress={goToSchedule}>
-                <View style={styles.cardDefault}>
-                  <Icon style={styles.iconOrange} name="calendar-outline" size={50} pack='ionicons' />
-                  <Text category="h6" style={[styles.cardText, {
-                    marginHorizontal: -8, flex: 1
-                  }]}>
-                    Quero agendar uma consulta
+      <SafeAreaLayout insets='top' level='1' style={styles.safeArea}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
+          <View style={[styles.content]}>
+            <View style={styles.cardContainer}>
+              <Text category="h5" status='basic' style={styles.text}>
+                Como podemos te ajudar?
+              </Text>
+              <View style={styles.cardGroupPrimary}>
+                <Card onPress={goToSchedule}>
+                  <View style={styles.cardDefault}>
+                    <Icon style={styles.iconOrange} name="calendar-outline" size={50} pack='ionicons' />
+                    <Text category="h6" style={[styles.cardText, {
+                      marginHorizontal: -8, flex: 1
+                    }]}>
+                      Quero agendar uma consulta
+                    </Text>
+                  </View>
+                </Card>
+              </View>
+              <View style={styles.cardGroupSecondary}>
+                <Card style={styles.card} onPress={goToProfile}>
+                  <View style={styles.cardDefault}>
+                    <Icon style={styles.iconPrimary} name='prescription' size={40} pack='fontisto' />
+                  </View>
+                  <Text category="h6" style={styles.cardText}>
+                    Meu perfil
                   </Text>
-                </View>
-              </Card>
-            </View>
-            <View style={styles.cardGroupSecondary}>
-              <Card style={styles.card} onPress={goToProfile}>
-                <View style={styles.cardDefault}>
-                  <Icon style={styles.iconPrimary} name='prescription' size={40} pack='fontisto' />
-                </View>
-                <Text category="h6" style={styles.cardText}>
-                  Meu perfil
-                </Text>
-              </Card>
-              <Card style={styles.card} onPress={goToAppointments}>
-                <View style={styles.cardDefault}>
-                  <Icon style={styles.iconPrimary} name='stethoscope' size={40} pack='font-awesome' />
-                </View>
-                <Text category="h6" style={styles.cardText}>
-                  Minhas consultas
-                </Text>
-              </Card>
-            </View>
-            <View style={styles.cardGroupSecondary}>
-              <Card style={styles.card}>
-                <View style={styles.cardDefault}>
-                  <Icon
-                    style={styles.iconPrimary}
-                    name="information-circle-outline"
-                    size={40}
-                    pack='ionicons'
-                  />
-                </View>
-                <Text category="h6" style={styles.cardText}>
-                  Sobre
-                </Text>
-              </Card>
-              <Card style={styles.card} onPress={goToHelpMe}>
-                <View style={styles.cardDefault}>
-                  <Icon style={styles.iconPrimary} name="help-circle-outline" size={40} pack='ionicons' />
-                </View>
-                <Text category="h6" style={styles.cardText}>
-                  Ajuda
-                </Text>
-              </Card>
+                </Card>
+                <Card style={styles.card} onPress={goToAppointments}>
+                  <View style={styles.cardDefault}>
+                    <Icon style={styles.iconPrimary} name='stethoscope' size={40} pack='font-awesome' />
+                  </View>
+                  <Text category="h6" style={styles.cardText}>
+                    Minhas consultas
+                  </Text>
+                </Card>
+              </View>
+              <View style={styles.cardGroupSecondary}>
+                <Card style={styles.card}>
+                  <View style={styles.cardDefault}>
+                    <Icon
+                      style={styles.iconPrimary}
+                      name="information-circle-outline"
+                      size={40}
+                      pack='ionicons'
+                    />
+                  </View>
+                  <Text category="h6" style={styles.cardText}>
+                    Sobre
+                  </Text>
+                </Card>
+                <Card style={styles.card} onPress={goToHelpMe}>
+                  <View style={styles.cardDefault}>
+                    <Icon style={styles.iconPrimary} name="help-circle-outline" size={40} pack='ionicons' />
+                  </View>
+                  <Text category="h6" style={styles.cardText}>
+                    Ajuda
+                  </Text>
+                </Card>
+              </View>
             </View>
           </View>
-        </View>
+        </ScrollView>
       </SafeAreaLayout>
       <Portal>
         <ModalizeFixed
