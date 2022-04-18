@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from 'react'
+import React, { FC, ReactElement, useState } from 'react'
 import { Keyboard, Platform } from 'react-native'
 import { Button, Input, useStyleSheet } from '@ui-kitten/components'
 import { KeyboardAvoidingView } from './extra/keyboard-avoiding-view.component'
@@ -25,9 +25,9 @@ const ChatRoomScreen: FC = (): ReactElement => {
   const styles = useStyleSheet(chatRoomStyle)
   const { localeDateService } = useDatepickerService()
 
-  const [messages, setMessages] = React.useState<Message[]>([])
-  const [message, setMessage] = React.useState<string | undefined>()
-  const [attachmentsMenuVisible, setAttachmentsMenuVisible] = React.useState<boolean>(false)
+  const [messages, setMessages] = useState<Message[]>([])
+  const [message, setMessage] = useState<string | undefined>()
+  const [attachmentsMenuVisible, setAttachmentsMenuVisible] = useState<boolean>(false)
 
   const sendButtonEnabled = (): boolean => {
     if (message && message.length > 0)
@@ -47,7 +47,7 @@ const ChatRoomScreen: FC = (): ReactElement => {
     setAttachmentsMenuVisible(false)
   }
 
-  const renderAttachmentsMenu = (): React.ReactElement => (
+  const renderAttachmentsMenu = (): ReactElement => (
     <AttachmentsMenu
       attachments={attachments}
       onSelectPhoto={toggleAttachmentsMenu}

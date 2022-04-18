@@ -1,5 +1,5 @@
 import { Modal } from '@ui-kitten/components'
-import React, { createRef } from 'react'
+import { createRef } from 'react'
 import { Modalize } from 'react-native-modalize'
 
 interface TModalResponse<T> {

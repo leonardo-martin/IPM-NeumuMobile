@@ -1,28 +1,30 @@
-import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
-import { View, KeyboardAvoidingView, ScrollView, StatusBar, Platform, Keyboard } from 'react-native'
-import { Input, Text, Button, Icon, IconProps, Spinner, useStyleSheet, Modal, CheckBox } from '@ui-kitten/components'
-import { useForm, Controller } from 'react-hook-form'
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-
-import { SignInData } from '@models/User'
-import { useAuth } from '@contexts/auth'
-import TitleNeumu from '@components/titleNeumu'
 import LogoPedroMolina from '@assets/svg/logo.svg'
-import { matchMessage } from '@utils/common'
+import RegisterModal from '@components/modal/registerModal'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
+import TitleNeumu from '@components/titleNeumu'
 import toast from '@helpers/toast'
-import RegisterModal from 'components/modal/registerModal'
+import { useAppDispatch } from '@hooks/redux'
 import { useModal } from '@hooks/useModal'
+import { SignInData } from '@models/User'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { AppStorage } from '@services/app-storage.service'
-import { loginStyle } from './style'
+import { authLogin } from '@services/auth.service'
+import { Button, CheckBox, Icon, IconProps, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import { matchMessage } from '@utils/common'
+import React, { FC, ReactElement, useCallback, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, StatusBar, View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import Keychain from 'react-native-keychain'
+import { loginStyle } from './style'
 
 const _optionsKeychain: Keychain.Options = {
   service: 'sec_login', storage: Keychain.STORAGE_TYPE.RSA
 }
 
 const SignInScreen: FC = (): ReactElement => {
+
+  const dispatch = useAppDispatch()
 
   const { ref } = useModal<Modal>()
   const styles = useStyleSheet(loginStyle)
@@ -31,7 +33,6 @@ const SignInScreen: FC = (): ReactElement => {
   const [checked, setChecked] = useState<boolean>(false)
 
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true)
-  const { signIn } = useAuth()
   const navigation = useNavigation<any>()
   const form = useForm<SignInData>()
 
@@ -45,14 +46,14 @@ const SignInScreen: FC = (): ReactElement => {
         form.setValue('password', userCredentials.password)
       }
     }
-    else await Keychain.resetGenericPassword(_optionsKeychain)
-
+    else {
+      form.reset()
+      await Keychain.resetGenericPassword(_optionsKeychain)
+    }
   }
 
   useFocusEffect(
     useCallback(() => {
-      form.reset()
-      setIsLoading(false)
       getStoredUsernameAndPassword()
     }, [])
   )
@@ -61,7 +62,7 @@ const SignInScreen: FC = (): ReactElement => {
     Keyboard.dismiss()
     setIsLoading(!isLoading)
     try {
-      const response = await signIn(data, checked)
+      const response = await dispatch(authLogin(data, checked))
       if (response) {
         const message = response.data?.message?.message
         let messageToast = ''
@@ -76,12 +77,13 @@ const SignInScreen: FC = (): ReactElement => {
           messageToast = 'Usuário e/ou senha incorretos'
         }
         setIsLoading(false)
-        toast.danger({ message: messageToast, duration: 1000 })
+        toast.danger({ message: messageToast, duration: 2000 })
       }
     } catch (error) {
       setIsLoading(false)
-      toast.danger({ message: 'Ocorreu um erro inesperado.', duration: 1000 })
+      toast.danger({ message: 'Ocorreu um erro inesperado.', duration: 2000 })
     }
+
   }
 
   const registerName = () => {

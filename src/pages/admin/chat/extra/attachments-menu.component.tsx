@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import {
   ListRenderItemInfo,
   StyleSheet,
@@ -16,11 +16,11 @@ export interface AttachmentsMenuProps {
   onDismiss: () => void
 }
 
-export type AttachmentsMenuElement = React.ReactElement<AttachmentsMenuProps>
+export type AttachmentsMenuElement = ReactElement<AttachmentsMenuProps>
 
-export const AttachmentsMenu = (props: AttachmentsMenuProps): React.ReactElement => {
+export const AttachmentsMenu = (props: AttachmentsMenuProps): ReactElement => {
 
-  const renderAttachment = (info: ListRenderItemInfo<any>): React.ReactElement => (
+  const renderAttachment = (info: ListRenderItemInfo<any>): ReactElement => (
     <Button
       style={styles.attachmentsAction}
       appearance='outline'

@@ -26,7 +26,7 @@ const ListComponent: FC<ListComponentProps> = ({
 }): ReactElement => {
 
     const navigation = useNavigation<any>()
-    const renderLeftIcon = (props: IconProps, icon?: Icons): React.ReactElement => (
+    const renderLeftIcon = (props: IconProps, icon?: Icons): ReactElement => (
         <Icon {...props} name={icon?.name} pack={icon?.pack} />
     )
 

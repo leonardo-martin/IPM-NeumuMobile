@@ -1,21 +1,24 @@
-import React, { ReactElement } from 'react'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { Avatar, DrawerGroup, Text, DrawerItem, Drawer, IconProps, Icon, IndexPath, useTheme } from '@ui-kitten/components'
-import { ImageBackground, View } from 'react-native'
-import { drawerStyle } from './style'
-import { useAuth } from '@contexts/auth'
-import { AppInfoService } from '@services/app-info.service'
-import { SafeAreaLayout } from '@components/safeAreaLayout'
-import PhoneIcon from '@assets/svg/phone.svg'
 import HouseIcon from '@assets/svg/house.svg'
+import PhoneIcon from '@assets/svg/phone.svg'
+import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { BOOTDEY_URI } from '@constants/uri'
+import { useAppDispatch, useAppSelector } from '@hooks/redux'
+import { DrawerContentComponentProps } from '@react-navigation/drawer'
+import { AppInfoService } from '@services/app-info.service'
+import { logout } from '@store/ducks/auth'
+import { Avatar, Drawer, DrawerGroup, DrawerItem, Icon, IconProps, IndexPath, Text, useTheme } from '@ui-kitten/components'
+import React, { ReactElement } from 'react'
+import { ImageBackground, View } from 'react-native'
+import { RootState } from '@store/index'
+import { drawerStyle } from './style'
 
 const _VERSION: string = AppInfoService.getVersion() + '.' + AppInfoService.getBuildNumber()
 const iconSizeDefault = 20
 
 const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
 
-  const { currentUser, signOut } = useAuth()
+  const dispatch = useAppDispatch()
+  const { sessionUser } = useAppSelector((state: RootState) => state.auth)
   const theme = useTheme()
   const selectedIndex = new IndexPath(0)
 
@@ -36,7 +39,7 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
           ImageComponent={ImageBackground}
         />
         <Text style={drawerStyle.profileName} category='h6'>
-          {currentUser?.user}
+          {sessionUser?.user}
         </Text>
       </View>
     </SafeAreaLayout>
@@ -119,7 +122,7 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
         <DrawerItem
           style={drawerStyle.drawerItem}
           title='Sair'
-          onPress={signOut}
+          onPress={() => dispatch(logout())}
           accessoryLeft={(props: IconProps) => (
             <Icon {...props} name='log-out-outline' size={iconSizeDefault} pack='ionicons' />
           )}

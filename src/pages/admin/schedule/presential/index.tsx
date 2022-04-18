@@ -1,27 +1,28 @@
+import HeaderAdmin from '@components/header/admin'
+import ModalizeFixed from '@components/modalize'
+import { SafeAreaLayout } from '@components/safeAreaLayout'
+import { _DEFAULT_FORMAT_DATETIME } from '@constants/date'
+import { BOOTDEY_URI } from '@constants/uri'
+import toast from '@helpers/toast'
+import { useAppSelector } from '@hooks/redux'
+import { useDatepickerService } from '@hooks/useDatepickerService'
+import { CreateAppointment } from '@models/Appointment'
+import { useRoute } from '@react-navigation/core'
+import { DrawerContentComponentProps } from '@react-navigation/drawer'
+import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+import { createAppointment } from '@services/appointment.service'
+import { Profile as DoctorProfile } from '@services/message.service'
+import { RootState } from '@store/index'
+import { Avatar, Button, Card, Icon, IconProps, List, Text, TranslationWidth, useStyleSheet, useTheme } from '@ui-kitten/components'
+import { scrollToRef } from '@utils/common'
+import { openMapsWithAddress } from '@utils/maps'
 import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, ImageStyle, LayoutRectangle, Platform, Pressable, ScrollView, StyleProp, View } from 'react-native'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { useRoute } from '@react-navigation/core'
-import { Modalize } from 'react-native-modalize'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { Avatar, Button, Card, Icon, IconProps, List, Text, TranslationWidth, useStyleSheet, useTheme } from '@ui-kitten/components'
-import { useIsFocused, useFocusEffect } from '@react-navigation/native'
+import { Modalize } from 'react-native-modalize'
 import { options } from './data'
 import { doctorScheduleStyle } from './style'
 
-import { useAuth } from '@contexts/auth'
-import { CreateAppointment } from '@models/Appointment'
-import { createAppointment } from '@services/appointment.service'
-import { openMapsWithAddress } from '@utils/maps'
-import { SafeAreaLayout } from '@components/safeAreaLayout'
-import { scrollToRef } from '@utils/common'
-import { Profile as DoctorProfile } from '@services/message.service'
-import ModalizeFixed from '@components/modalize'
-import HeaderAdmin from '@components/header/admin'
-import toast from '@helpers/toast'
-import { BOOTDEY_URI } from '@constants/uri'
-import { useDatepickerService } from '@hooks/useDatepickerService'
-import { _DEFAULT_FORMAT_DATETIME } from '@constants/date'
 
 interface Data {
     id: number
@@ -34,7 +35,8 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
 }): ReactElement => {
 
     const { localeDateService } = useDatepickerService()
-    const { currentUser } = useAuth()
+    const { sessionUser } = useAppSelector((state: RootState) => state.auth)
+
     const theme = useTheme()
     const styles = useStyleSheet(doctorScheduleStyle)
     const scrollViewDaysInMonthRef = useRef<ScrollView>(null)
@@ -87,7 +89,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
 
         setScheduleData(
             new CreateAppointment(
-                currentUser?.userId,
+                sessionUser?.userId,
                 params?.doctorId,
                 dateString,
                 dateString,

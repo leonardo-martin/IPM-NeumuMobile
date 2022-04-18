@@ -1,13 +1,18 @@
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { View } from 'react-native'
-import { Input, Text, useStyleSheet, RadioGroup, Radio } from '@ui-kitten/components'
+import { Input, Text, useStyleSheet, RadioGroup, Radio, Modal, Card } from '@ui-kitten/components'
 import { Controller } from 'react-hook-form'
 import { registerStyle } from '@pages/signup/style'
-import { PatientProfileCreatorTypeEnum } from '@models/PatientProfileCreator'
+import { PatientProfileCreatorTypeEnum, RelationshipPatient } from '@models/PatientProfileCreator'
 import { onlyNumbers } from '@utils/mask'
 import { getRelationPatient, getRelationPastExams } from '@utils/common'
 import { useFocusEffect } from '@react-navigation/native'
 import { PatientSignUpProps } from '@models/SignUpProps'
+import { useModal } from '@hooks/useModal'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { getFileFromDevice } from '@services/document.service'
+import { DocumentPickerResponse } from 'react-native-document-picker'
+import CardPatientRelationshipComponent from '@components/cardPatientRelationship'
 
 const options = ['Paciente', 'Outro']
 
@@ -18,16 +23,27 @@ const items = [
   'Resultado Pendente',
   'Não Testado'
 ]
+const creatorRelationship: RelationshipPatient[] = [
+  "Amigo",
+  "Cuidador",
+  "Familiar",
+  "Tutor Legal",
+  "Profissional de Saúde"
+]
 
 const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): ReactElement => {
 
   const styles = useStyleSheet(registerStyle)
+  const { ref } = useModal<Modal>()
+  const [isVisible, setIsVisible] = useState<boolean>()
+  const [relationship, setRelationship] = useState<RelationshipPatient | undefined>()
 
   const [selectedIndexRelationPatient, setSelectedIndexRelationPatient] = useState(-1)
   const [patientProfileCreator, setPatientProfileCreator] = useState<number | PatientProfileCreatorTypeEnum | undefined>()
   const [selectedIndexExamDNA, setSelectedIndexExamDNA] = useState(-1)
   const [selectedIndexGeneticProgram, setSelectedIndexGeneticProgram] = useState<number>(-1)
   const [showFields, setShowFields] = useState<boolean>(false)
+  const [fileResponse, setFileResponse] = useState<DocumentPickerResponse[] | undefined>()
 
   useFocusEffect(
     useCallback(() => {
@@ -51,14 +67,18 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
       form.resetField('abrafeuRegistrationOptIn')
       form.resetField('pastExams.doctor.crm')
       form.resetField('pastExams.exam')
+      form.resetField('creator')
       setSelectedIndexExamDNA(-1)
       setShowFields(false)
+      setRelationship(undefined)
     }
     setSelectedIndexRelationPatient(index)
     const id = getRelationPatient(index)
     id ? setPatientProfileCreator(id as PatientProfileCreatorTypeEnum) : null
     form.setValue("creator.patientProfileCreatorTypeId", id as PatientProfileCreatorTypeEnum)
     form.clearErrors("creator.patientProfileCreatorTypeId")
+
+    if (id === PatientProfileCreatorTypeEnum.Other && !relationship) setIsVisible(true)
 
   }
 
@@ -73,9 +93,8 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
 
     form.setValue('abrafeuRegistrationOptIn', (index === 1) ? 'false' : 'true')
     form.clearErrors('abrafeuRegistrationOptIn')
-    if (index === 1)  setShowFields(false)
+    if (index === 1) setShowFields(false)
     else setShowFields(true)
-
 
     setSelectedIndexExamDNA(-1)
     form.resetField('pastExams.doctor.crm')
@@ -86,6 +105,16 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
     setSelectedIndexExamDNA(index)
     const exam = getRelationPastExams(index)
     exam ? form.setValue('pastExams.exam', exam) : null
+  }
+
+  const handleDocumentSelection = async () => {
+    try {
+      const response = await getFileFromDevice()
+      setFileResponse(response)
+      console.log(response)
+    } catch (err) {
+
+    }
   }
 
   return (
@@ -99,7 +128,7 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           rules={{
             required: {
               value: true,
-              message: 'Campo obrigatório'
+              message: 'Selecione uma opção'
             },
           }}
           render={({ field: { onBlur, name, ref } }) => (
@@ -110,7 +139,7 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               onChange={handleRadioSelected}>
               {options.map((_, i) => {
                 return (
-                  <Radio key={_ + i} onBlur={onBlur}>{evaProps => <Text {...evaProps} category='label' style={styles.radioText}>{_}</Text>}</Radio>
+                  <Radio key={_ + i} onBlur={onBlur}>{evaProps => <Text {...evaProps} >{_}</Text>}</Radio>
                 )
               })}
             </RadioGroup>
@@ -130,7 +159,7 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               rules={{
                 required: {
                   value: true,
-                  message: 'Campo obrigatório'
+                  message: 'Selecione uma opção'
                 },
               }}
               render={({ field: { onBlur, name, ref } }) => (
@@ -140,8 +169,8 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
                   selectedIndex={selectedIndexGeneticProgram}
                   onChange={handleRadioSelectedGeneticProgram}
                 >
-                  <Radio onBlur={onBlur}>{evaProps => <Text {...evaProps} category='label' style={styles.radioText}>Sim</Text>}</Radio>
-                  <Radio onBlur={onBlur}>{evaProps => <Text {...evaProps} category='label' style={styles.radioText}>Não</Text>}</Radio>
+                  <Radio onBlur={onBlur}>{evaProps => <Text {...evaProps}>Sim</Text>}</Radio>
+                  <Radio onBlur={onBlur}>{evaProps => <Text {...evaProps}>Não</Text>}</Radio>
                 </RadioGroup>
               )}
               name='abrafeuRegistrationOptIn'
@@ -150,7 +179,49 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           </View>
         </>
         :
-        null
+        patientProfileCreator === PatientProfileCreatorTypeEnum.Other && relationship ?
+          <>
+            <View style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 15,
+              paddingVertical: 5,
+              justifyContent: 'space-between'
+            }}>
+              <View style={{
+                flexDirection: 'row'
+              }}>
+                <Text category='c1' status='basic'>Selecionado:{" "}</Text>
+                <Text category='label' status='basic'>{relationship}</Text>
+              </View>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity onPress={() => setIsVisible(true)}>
+                  <Text category='label' status='danger'>Alterar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.box}>
+
+              <CardPatientRelationshipComponent
+                relationship={relationship}
+                form={form}
+                styles={styles}
+                onSubmit={onSubmit} />
+              {/* 
+              
+              
+              <Text style={styles.labelTitle}>CEP Residencial</Text>
+            
+              <Text style={styles.labelTitle}>Bairro</Text>
+              <Text style={styles.labelTitle}>Estado</Text>
+              <Text style={styles.labelTitle}>Cidade</Text>
+
+              
+              */}
+            </View>
+          </>
+          : null
       }
       {showFields && patientProfileCreator === PatientProfileCreatorTypeEnum.PatientSelf && (
         <>
@@ -158,7 +229,10 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
             <Controller
               control={form.control}
               rules={{
-                required: false,
+                required: {
+                  value: true,
+                  message: 'Campo obrigatório'
+                },
                 minLength: {
                   value: 5,
                   message: `Mín. 5 caracteres`
@@ -195,7 +269,7 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               rules={{
                 required: {
                   value: selectedIndexGeneticProgram === 0,
-                  message: 'Campo obrigatório'
+                  message: 'Selecione uma opção'
                 },
               }}
               render={({ field: { onBlur, name, ref } }) => (
@@ -206,7 +280,7 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
                   onChange={handleRadioSelectedExamDNA}>
                   {items.map((_, i) => {
                     return (
-                      <Radio key={_ + i} onBlur={onBlur}>{evaProps => <Text {...evaProps} category='label' style={styles.radioText}>{_}</Text>}</Radio>
+                      <Radio key={_ + i} onBlur={onBlur}>{evaProps => <Text {...evaProps} >{_}</Text>}</Radio>
                     )
                   })}
                 </RadioGroup>
@@ -217,6 +291,42 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           </View>
         </>
       )}
+      <Modal
+        style={styles.modal}
+        backdropStyle={styles.backdrop}
+        visible={isVisible}
+        ref={ref}>
+        <Card disabled>
+          <Text style={styles.titleModal}>Qual sua relação com o paciente?</Text>
+          <Controller
+            control={form.control}
+            rules={{
+              required: {
+                value: true,
+                message: 'Selecione um opção'
+              },
+            }}
+            render={({ field: { onBlur, name, ref, onChange, value } }) => (
+              <RadioGroup
+                testID={name}
+                ref={ref}
+                selectedIndex={value}
+                onChange={(index) => {
+                  onChange(index)
+                  setRelationship(creatorRelationship.find((_, i) => i === index))
+                  setIsVisible(false)
+                  form.clearErrors('creator.data')
+                }}
+              >
+                {creatorRelationship.map((item, i) => (
+                  <Radio key={item} onBlur={onBlur}>{evaProps => <Text {...evaProps} >{item}</Text>}</Radio>
+                ))}
+              </RadioGroup>
+            )}
+            name='creator.data.creatorRelationship'
+          />
+        </Card>
+      </Modal>
     </>
   )
 }

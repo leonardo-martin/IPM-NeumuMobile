@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { ReactElement } from 'react'
 import { View, ViewProps } from 'react-native'
 import { StyleType } from '@ui-kitten/components'
 import { ChatMessageElement } from './chat-message.component'
@@ -6,10 +6,10 @@ import { Message } from './data'
 
 export interface ChatMessageGroupProps extends ViewProps {
   data: Message[]
-  renderItem: (message: Message, style: StyleType) => React.ReactElement
+  renderItem: (message: Message, style: StyleType) => ReactElement
 }
 
-export const ChatMessageGroup = (props: ChatMessageGroupProps): React.ReactElement => {
+export const ChatMessageGroup = (props: ChatMessageGroupProps): ReactElement => {
 
   const { data, renderItem, ...viewProps } = props
 

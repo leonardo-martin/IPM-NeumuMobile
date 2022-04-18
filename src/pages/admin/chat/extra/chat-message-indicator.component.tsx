@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { StyleSheet, TransformsStyle, View, ViewProps, ViewStyle } from 'react-native'
 
 export interface ChatMessageIndicatorProps extends ViewProps {
   reverse: boolean
 }
 
-export type ChatMessageIndicatorElement = React.ReactElement<ChatMessageIndicatorProps>
+export type ChatMessageIndicatorElement = ReactElement<ChatMessageIndicatorProps>
 
-export const ChatMessageIndicator = (props: ChatMessageIndicatorProps): React.ReactElement => {
+export const ChatMessageIndicator = (props: ChatMessageIndicatorProps): ReactElement => {
 
   const { style, ...viewProps } = props
   const flatStyle: ViewStyle = StyleSheet.flatten(style)

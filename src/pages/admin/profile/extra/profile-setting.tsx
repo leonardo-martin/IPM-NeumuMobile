@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, ReactElement } from 'react'
 import { StyleSheet } from 'react-native'
 import { Divider, Layout, Text, LayoutProps, Input } from '@ui-kitten/components'
 
@@ -8,7 +8,7 @@ export interface ProfileSettingProps extends LayoutProps {
 }
 
 const ProfileSetting: FC<ProfileSettingProps> = ({ style, hint, value,
-  ...layoutProps }): React.ReactElement => {
+  ...layoutProps }): ReactElement => {
 
   return (
     <React.Fragment>

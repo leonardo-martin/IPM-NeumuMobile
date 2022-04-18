@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactElement, useEffect } from 'react'
 import {
   Animated,
   Easing,
@@ -9,7 +9,7 @@ import {
   Platform,
   TouchableWithoutFeedback,
   TransformsStyle,
-  ViewProps,
+  ViewProps
 } from 'react-native'
 
 export interface KeyboardAvoidingViewProps extends ViewProps {
@@ -39,11 +39,11 @@ const defaultProps: Partial<KeyboardAvoidingViewProps> = {
 
 const translateY = new Animated.Value(0)
 
-export const KeyboardAvoidingView = (props: KeyboardAvoidingViewProps): React.ReactElement => {
+export const KeyboardAvoidingView = (props: KeyboardAvoidingViewProps): ReactElement => {
 
   const { style, offset, autoDismiss, ...viewProps } = { ...defaultProps, ...props }
 
-  React.useEffect(() => {
+  useEffect(() => {
     const showEventSubscription: EmitterSubscription = Keyboard.addListener(
       showEvent,
       onKeyboardShow,

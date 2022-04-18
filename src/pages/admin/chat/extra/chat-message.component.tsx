@@ -1,18 +1,18 @@
-import React from 'react'
+import { StyleService, Text, TextElement, useStyleSheet } from '@ui-kitten/components'
+import React, { ReactElement } from 'react'
 import { View, ViewProps } from 'react-native'
-import { StyleService, StyleType, Text, TextElement, useStyleSheet } from '@ui-kitten/components'
 import { ChatMessageIndicator } from './chat-message-indicator.component'
 import { Message } from './data'
 
 export interface ChatMessageProps extends ViewProps {
   message: Message
   shouldShowIndicator?: boolean
-  children: (message: Message, style: StyleType) => React.ReactElement
+  children?: React.ReactNode
 }
 
-export type ChatMessageElement = React.ReactElement<ChatMessageProps>
+export type ChatMessageElement = ReactElement<ChatMessageProps>
 
-export const ChatMessage = (props: ChatMessageProps): React.ReactElement => {
+export const ChatMessage = (props: ChatMessageProps): ReactElement => {
 
   const styles = useStyleSheet(themedStyles)
 
@@ -27,13 +27,7 @@ export const ChatMessage = (props: ChatMessageProps): React.ReactElement => {
     </Text>
   )
 
-  const renderContentElement = (): React.ReactElement => {
-    return children(message, {
-      container: [message.reply ? styles.contentOut : styles.contentIn],
-    })
-  }
-
-  const renderIndicator = (): React.ReactElement => (
+  const renderIndicator = (): ReactElement => (
     <ChatMessageIndicator
       style={[message.reply ? styles.indicatorOut : styles.indicatorIn, styles.indicator]}
       reverse={message.reply}
@@ -45,7 +39,7 @@ export const ChatMessage = (props: ChatMessageProps): React.ReactElement => {
       {...viewProps}
       style={[message.reply ? styles.containerOut : styles.containerIn, styles.container, style]}>
       {shouldShowIndicator && renderIndicator()}
-      {renderContentElement()}
+      {children}
       {renderDateElement()} 
     </View>
   )
@@ -61,12 +55,7 @@ const themedStyles = StyleService.create({
   containerOut: {
     flexDirection: 'row-reverse',
   },
-  contentIn: {
-    backgroundColor: 'color-basic-600',
-  },
-  contentOut: {
-    backgroundColor: 'color-primary-default',
-  },
+  
   date: {
     marginHorizontal: 18,
   },

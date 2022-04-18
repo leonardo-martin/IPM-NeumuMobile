@@ -49,7 +49,7 @@ const FloatingButton: FC<FloatingButtonProps> = ({ containerStyle }): ReactEleme
         useCallback(() => {
             navi.addListener('focus', () => {
                 toggleMenu(true)
-                return;
+                return
             })
         }, [])
     )

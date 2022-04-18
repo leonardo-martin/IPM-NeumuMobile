@@ -12,11 +12,13 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType>({} as ThemeContextType)
 
-const ThemeProvider: FC = ({ children }) => {
+const ThemeProvider: FC<{
+    children?: React.ReactNode
+}> = ({ children }) => {
 
     const [theme, setTheme] = useState<Theme>('light')
 
-    useEffect(() => {        
+    useEffect(() => {
         (async () => {
             const themeStorage = await AppStorage.getTheme()
             if (!themeStorage) AppStorage.setTheme(theme)

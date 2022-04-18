@@ -1,81 +1,19 @@
-import React, { FC, createContext, useState, useEffect, useContext } from 'react'
-import { TokenModel } from '@models/TokenModel'
-import { SignInData } from '@models/User'
-import { signInRequest } from '@services/auth.service'
-import jwt_decode from 'jwt-decode'
-import { api } from '@services/api.service'
-import { AppStorage } from '@services/app-storage.service'
-import { THEME_KEY, TOKEN_KEY, USER_KEY } from '@constants/storage'
-import Keychain from 'react-native-keychain'
+import React, { createContext, FC, useContext, useState } from 'react'
 
 interface AuthContextType {
     isAuthenticated: boolean
-    currentUser: TokenModel | null
-    signIn: (data: SignInData, rememberChecked: boolean) => Promise<void | any>
-    signOut: () => void
-    loading: boolean
 }
 
-const _optionsKeychain: Keychain.Options = {
-    service: 'sec_login', storage: Keychain.STORAGE_TYPE.RSA
-}
+export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
-const AuthContext = createContext<AuthContextType>({} as AuthContextType)
+const AuthProvider: FC<{
+    children?: React.ReactNode
+}> = ({ children }) => {
 
-const AuthProvider: FC = ({ children }) => {
-
-    const [loading, setLoading] = useState(true)
-    const [currentUser, setCurrentUser] = useState<TokenModel | null>(null)
-    const isAuthenticated = !!currentUser
-
-    useEffect(() => {
-        const loadStorageData = async () => {
-            const storagedUser = await AppStorage.getUserContext()
-            const storagedToken = await AppStorage.getUserToken()
-
-            if (storagedUser && storagedToken) {
-                setCurrentUser(JSON.parse(storagedUser))
-                api.defaults.headers.common['Authorization'] = `Bearer ${storagedToken}`
-            }
-            setLoading(false)
-        }
-
-        loadStorageData()
-    }, [])
-
-    const signIn = async (data: SignInData, rememberChecked: boolean) => {
-        try {
-            const response = await signInRequest(data)
-            if (response?.status === 201) {
-                const { accessToken } = response.data
-                const user = jwt_decode(accessToken) as TokenModel
-                setCurrentUser(user)
-                api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
-                AppStorage.setUserContext(user)
-                AppStorage.setUserToken(accessToken)
-
-                if (rememberChecked) {
-                    await Keychain.setGenericPassword(data.username, data.password, _optionsKeychain)
-                    await AppStorage.setItem('REMEMBER_ACCESS', 'true')
-                } else {
-                    await Keychain.resetGenericPassword(_optionsKeychain)
-                    await AppStorage.removeItem('REMEMBER_ACCESS')
-                }
-            }
-        } catch (error) {
-            return error
-        }
-    }
-
-    const signOut = async () => {
-        await AppStorage.removeItem(THEME_KEY)
-        await AppStorage.removeItem(TOKEN_KEY)
-        await AppStorage.removeItem(USER_KEY)
-        setCurrentUser(null)
-    }
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
 
     return (
-        <AuthContext.Provider value={{ currentUser, isAuthenticated, signIn, signOut, loading }}>
+        <AuthContext.Provider value={{ isAuthenticated }}>
             {children}
         </AuthContext.Provider>
     )

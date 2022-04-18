@@ -1,5 +1,10 @@
-import { NestedValue } from "react-hook-form"
 import { PatientProfileCreatorDto } from "./PatientProfileCreator"
+
+export interface AuthenticationPayload {
+    accessToken: string
+    username: string
+    tokenExpireTime: number
+}
 
 export class SignInData {
     username!: string

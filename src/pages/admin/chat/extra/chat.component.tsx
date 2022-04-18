@@ -1,6 +1,6 @@
-import React from 'react'
+import { List, ListProps } from '@ui-kitten/components'
+import React, { ReactElement, useRef } from 'react'
 import { ListRenderItemInfo, StyleSheet } from 'react-native'
-import { List, ListProps, StyleType } from '@ui-kitten/components'
 import { ChatMessageContent } from './chat-message-content.component'
 import { ChatMessageGroup } from './chat-message-group.component'
 import { ChatMessage } from './chat-message.component'
@@ -14,9 +14,9 @@ export interface ChatProps extends Omit<ListProps, 'renderItem'> {
 
 const chatService: ChatService = new ChatService()
 
-export const Chat = (props: ChatProps): React.ReactElement => {
+export const Chat = (props: ChatProps): ReactElement => {
 
-  const listRef: React.RefObject<any> = React.useRef()
+  const listRef: React.RefObject<any> = useRef()
   let contentHeight: number = 0
 
   const { followEnd, contentContainerStyle, data, ...listProps } = props
@@ -44,23 +44,19 @@ export const Chat = (props: ChatProps): React.ReactElement => {
     listProps.onContentSizeChange && listProps.onContentSizeChange(width, height)
   }
 
-  const renderMessageContent = (message: Message, style: StyleType): React.ReactElement => (
-    <ChatMessageContent style={style.container}>
-      {message}
-    </ChatMessageContent>
-  )
-
-  const renderMessage = (message: Message): React.ReactElement => (
+  const renderMessage = (message: Message): ReactElement => (
     <ChatMessage
       style={styles.message}
       message={message}
       shouldShowIndicator={shouldShowMessageIndicator(message)}
     >
-      {renderMessageContent}
+      <ChatMessageContent style={
+        [message.reply ? styles.contentOut : styles.contentIn]
+      } message={message} />
     </ChatMessage>
   )
 
-  const renderMessageGroup = (info: ListRenderItemInfo<Message[]>): React.ReactElement => (
+  const renderMessageGroup = (info: ListRenderItemInfo<Message[]>): ReactElement => (
     <ChatMessageGroup
       style={styles.group}
       data={info.item}
@@ -89,5 +85,11 @@ const styles = StyleSheet.create({
   },
   message: {
     marginVertical: 4,
+  },
+  contentIn: {
+    backgroundColor: 'color-basic-600',
+  },
+  contentOut: {
+    backgroundColor: 'color-primary-default',
   },
 })

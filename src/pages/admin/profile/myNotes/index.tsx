@@ -1,30 +1,30 @@
-import React, { FC, ReactElement, useCallback, useState } from 'react'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { CalendarRange, Icon, Modal, Text, useStyleSheet } from '@ui-kitten/components'
-import { SafeAreaLayout } from '@components/safeAreaLayout'
-import { notesStyle } from './style'
-import { TouchableOpacity, View } from 'react-native'
-import { _DATE_FROM_ISO_8601 } from '@constants/date'
-import Timeline from '@components/timeline'
 import HeaderMyNotes from '@components/header/admin/myNotes'
-import NewNoteModal from 'components/modal/notesModal'
+import { SafeAreaLayout } from '@components/safeAreaLayout'
+import Timeline from '@components/timeline'
+import { useAppSelector } from '@hooks/redux'
+import { useModal } from '@hooks/useModal'
 import { AscendingOrder } from '@models/Common'
-
+import { TimelineTimeItem } from '@models/Timeline'
+import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect } from '@react-navigation/native'
 import { getPatientCalendar } from '@services/calendar.service'
-import { useAuth } from '@contexts/auth'
+import { RootState } from '@store/index'
+import { CalendarRange, Icon, Modal, Text, useStyleSheet } from '@ui-kitten/components'
 import FilterModal from 'components/modal/filterModal'
-import { TimelineTimeItem } from '@models/Timeline'
-import { useModal } from '@hooks/useModal'
+import NewNoteModal from 'components/modal/notesModal'
+import React, { FC, ReactElement, useCallback, useState } from 'react'
+import { TouchableOpacity, View } from 'react-native'
+import { notesStyle } from './style'
+
 
 const MyNotesScreen: FC<DrawerContentComponentProps> = ({
     navigation
 }): ReactElement => {
 
-    const { currentUser } = useAuth()
+    const { sessionUser } = useAppSelector((state: RootState) => state.auth)
     const { ref: addRef } = useModal<Modal>()
     const { ref: filterRef } = useModal<Modal>()
-    
+
     const styles = useStyleSheet(notesStyle)
     const [visibleModal, setVisibleModal] = useState<boolean>(false)
     const [visibleFilterModal, setVisibleFilterModal] = useState<boolean>(false)
@@ -35,8 +35,8 @@ const MyNotesScreen: FC<DrawerContentComponentProps> = ({
     const [range, setRange] = useState<CalendarRange<Date>>({})
 
     const getPatientCalendarList = useCallback(async () => {
-        if (currentUser) {
-            const result = await getPatientCalendar(range.startDate?.toISOString(), range.startDate?.toISOString(), currentUser.userId.toString())
+        if (sessionUser) {
+            const result = await getPatientCalendar(range.startDate?.toISOString(), range.startDate?.toISOString(), sessionUser.userId.toString())
             setData(result.data)
         }
     }, [range, isFiltered])

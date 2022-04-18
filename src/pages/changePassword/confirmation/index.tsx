@@ -1,15 +1,16 @@
+import { SafeAreaLayout } from '@components/safeAreaLayout'
+import { CommonActions, useFocusEffect, useNavigation } from '@react-navigation/native'
+import { Button, Text, useStyleSheet } from '@ui-kitten/components'
+import { useAppSelector } from 'hooks/redux'
 import React, { FC, ReactElement, useCallback } from 'react'
 import { BackHandler, Image, ImageStyle, StyleProp, View } from 'react-native'
-
-import { SafeAreaLayout } from '@components/safeAreaLayout'
-import { Button, Text, useStyleSheet } from '@ui-kitten/components'
-import { CommonActions, useFocusEffect, useNavigation } from '@react-navigation/native'
-import { useAuth } from '@contexts/auth'
+import { RootState } from 'store'
 import { changePasswdConfirmStyle } from './style'
+
 
 const ChangePasswordConfirm: FC = (): ReactElement => {
 
-    const { isAuthenticated } = useAuth()
+    const { isAuthenticated } = useAppSelector((state: RootState) => state.auth)
     const styles = useStyleSheet(changePasswdConfirmStyle)
     const navigation = useNavigation<any>()
     const actions = CommonActions.reset({

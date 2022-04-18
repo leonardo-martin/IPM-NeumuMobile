@@ -1,19 +1,18 @@
+import HeaderProfile from '@components/header/admin/profile'
+import { BOOTDEY_URI } from '@constants/uri'
+import toast from '@helpers/toast'
+import { useDatepickerService } from '@hooks/useDatepickerService'
+import { useFetch } from '@hooks/useSwr'
+import { DrawerContentComponentProps } from '@react-navigation/drawer'
+import { useFocusEffect } from '@react-navigation/native'
+import { UserPermission } from '@services/permission.service'
+import { Button, Icon, IconProps, useStyleSheet } from '@ui-kitten/components'
+import { formatCpf, formatPhone } from '@utils/mask'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { ImageStyle, ScrollView, StyleProp } from 'react-native'
-import { Button, Icon, IconProps, useStyleSheet } from '@ui-kitten/components'
 import ProfileAvatar from './profile-avatar'
 import ProfileSetting from './profile-setting'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { useFetch } from '@hooks/useSwr'
-import { useAuth } from '@contexts/auth'
 import { editProfileStyle } from './style'
-import { UserPermission } from '@services/permission.service'
-import { useFocusEffect } from '@react-navigation/native'
-import toast from '@helpers/toast'
-import { BOOTDEY_URI } from '@constants/uri'
-import { formatCpf, formatPhone } from '@utils/mask'
-import { useDatepickerService } from '@hooks/useDatepickerService'
-import HeaderProfile from '@components/header/admin/profile'
 
 const EditProfileScreen: FC<DrawerContentComponentProps> = ({
   navigation
@@ -21,7 +20,7 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
 
   const styles = useStyleSheet(editProfileStyle)
   const { localeDateService, format } = useDatepickerService()
-  const { currentUser } = useAuth()
+
   const [isFetching, setIsFetching] = useState<boolean>(false)
   const { data: userDetails, error } = useFetch(isFetching ? 'user' : null)
 
@@ -139,7 +138,7 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
         <ProfileSetting
           style={[styles.profileSetting, styles.section]}
           hint='Nome de Usuário'
-          value={currentUser ? currentUser?.user : ''}
+          value={userDetails?.username}
         />
         <ProfileSetting
           style={styles.profileSetting}
