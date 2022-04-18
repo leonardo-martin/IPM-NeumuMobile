@@ -11,6 +11,7 @@ import React, { ReactElement } from 'react'
 import { ImageBackground, View } from 'react-native'
 import { RootState } from '@store/index'
 import { drawerStyle } from './style'
+import { EUserRole } from '@models/UserRole'
 
 const _VERSION: string = AppInfoService.getVersion() + '.' + AppInfoService.getBuildNumber()
 const iconSizeDefault = 20
@@ -67,24 +68,28 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
           onPress={() => navigate('Dashboard')}
           accessoryLeft={(props: IconProps) => <Icon {...props} name='home-outline' size={iconSizeDefault} pack='ionicons' />}
         />
-        <DrawerGroup title='Agendamento de Consulta'
-          onLongPress={() => navigate('Schedule')}
-          accessoryLeft={CalendarIcon}
-        >
-          <DrawerItem
-            style={drawerStyle.drawerItem}
-            title='Virtual (teleconsulta)'
-            onPress={() => navigate('ChoiceSchedule')}
-            accessoryLeft={(props: IconProps) => <PhoneIcon {...props} width={iconSizeDefault} height={iconSizeDefault} fill={theme['color-basic-600']} />}
-          />
-          <DrawerItem
-            style={drawerStyle.drawerItem}
-            title='Presencial'
-            onPress={() => navigate('ChoiceSchedule')}
-            accessoryLeft={(props: IconProps) => <HouseIcon {...props} width={iconSizeDefault} height={iconSizeDefault} fill={theme['color-basic-600']} />}
+        {sessionUser?.userRole.find(e => e.id === EUserRole.patient) ?
+          <>
+            <DrawerGroup title='Agendamento de Consulta'
+              onLongPress={() => navigate('Schedule')}
+              accessoryLeft={CalendarIcon}
+            >
+              <DrawerItem
+                style={drawerStyle.drawerItem}
+                title='Virtual (teleconsulta)'
+                onPress={() => navigate('ChoiceSchedule')}
+                accessoryLeft={(props: IconProps) => <PhoneIcon {...props} width={iconSizeDefault} height={iconSizeDefault} fill={theme['color-basic-600']} />}
+              />
+              <DrawerItem
+                style={drawerStyle.drawerItem}
+                title='Presencial'
+                onPress={() => navigate('ChoiceSchedule')}
+                accessoryLeft={(props: IconProps) => <HouseIcon {...props} width={iconSizeDefault} height={iconSizeDefault} fill={theme['color-basic-600']} />}
 
-          />
-        </DrawerGroup>
+              />
+            </DrawerGroup>
+          </>
+          : <></>}
         <DrawerItem
           style={drawerStyle.drawerItem}
           title='Minhas Consultas'

@@ -12,6 +12,9 @@ import { dashboardStyle } from './style'
 import FloatingButton from '@components/floatingButton'
 import { useModal } from '@hooks/useModal'
 import { Modalize } from 'react-native-modalize'
+import { useAppSelector } from '@hooks/redux'
+import { RootState } from '@store/index'
+import { EUserRole } from '@models/UserRole'
 
 const DashboardScreen: FC<DrawerContentComponentProps> = ({
   navigation
@@ -25,6 +28,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
 
   const styles = useStyleSheet(dashboardStyle)
   const { ref } = useModal<Modalize>()
+  const { sessionUser } = useAppSelector((state: RootState) => state.auth)
 
   const exitApp = () => {
     ref.current?.close()
@@ -54,18 +58,20 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
               <Text category="h5" status='basic' style={styles.text}>
                 Como podemos te ajudar?
               </Text>
-              <View style={styles.cardGroupPrimary}>
-                <Card onPress={goToSchedule}>
-                  <View style={styles.cardDefault}>
-                    <Icon style={styles.iconOrange} name="calendar-outline" size={50} pack='ionicons' />
-                    <Text category="h6" style={[styles.cardText, {
-                      marginHorizontal: -8, flex: 1
-                    }]}>
-                      Quero agendar uma consulta
-                    </Text>
-                  </View>
-                </Card>
-              </View>
+              {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
+                <View style={styles.cardGroupPrimary}>
+                  <Card onPress={goToSchedule}>
+                    <View style={styles.cardDefault}>
+                      <Icon style={styles.iconOrange} name="calendar-outline" size={50} pack='ionicons' />
+                      <Text category="h6" style={[styles.cardText, {
+                        marginHorizontal: -8, flex: 1
+                      }]}>
+                        Quero agendar uma consulta
+                      </Text>
+                    </View>
+                  </Card>
+                </View>
+              )}
               <View style={styles.cardGroupSecondary}>
                 <Card style={styles.card} onPress={goToProfile}>
                   <View style={styles.cardDefault}>
