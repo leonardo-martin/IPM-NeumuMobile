@@ -9,4 +9,8 @@ export class AppInfoService {
   static getBuildNumber = (): string => {
     return DeviceInfo.getBuildNumber()
   }
+
+  static getModel = (): string => {
+    return DeviceInfo.getModel()
+  }
 }

@@ -13,8 +13,9 @@ import { Button, CheckBox, Icon, IconProps, Input, Modal, Spinner, Text, useStyl
 import { matchMessage } from '@utils/common'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, StatusBar, View } from 'react-native'
+import { Keyboard, Platform, StatusBar, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Keychain from 'react-native-keychain'
 import { loginStyle } from './style'
 
@@ -99,7 +100,7 @@ const SignInScreen: FC = (): ReactElement => {
   }
 
   const renderIconRightPassword = (props: IconProps) => (
-    <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} onPress={toggleSecureEntry} pack='eva' />
+    <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} onPress={!isLoading ? toggleSecureEntry : undefined} pack='eva' />
   )
 
   const LoadingIndicator = () => (
@@ -121,7 +122,9 @@ const SignInScreen: FC = (): ReactElement => {
     <>
       <StatusBar hidden={Platform.OS === 'ios' ? true : false} backgroundColor='transparent' translucent />
       <SafeAreaLayout level='1' style={styles.safeArea}>
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps='handled'>
+        <KeyboardAwareScrollView
+          enableOnAndroid
+          contentContainerStyle={{ flex: 1 }}>
           <View style={styles.content}>
             <View style={styles.boxTitle}>
               <LogoPedroMolina width="140" height="150" />
@@ -129,83 +132,81 @@ const SignInScreen: FC = (): ReactElement => {
               <TitleNeumu category="h3" />
             </View>
             <View style={styles.box}>
-              <KeyboardAvoidingView behavior='position'>
-                <Controller
-                  control={form.control}
-                  rules={{
-                    required: {
-                      value: true,
-                      message: 'Campo obrigatório'
-                    },
-                    minLength: {
-                      value: 5,
-                      message: `Mín. 5 caracteres`
-                    },
-                  }}
-                  render={({ field: { onChange, onBlur, value, ref, name } }) => (
-                    <Input
-                      size='small'
-                      style={styles.input}
-                      label="E-mail / CPF *"
-                      keyboardType="default"
-                      testID={name}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value ? value.toLowerCase() : value}
-                      returnKeyType="next"
-                      ref={ref}
-                      maxLength={40}
-                      onSubmitEditing={() => form.setFocus('password')}
-                      autoCapitalize="none"
-                      textContentType="username"
-                      editable={!isLoading}
-                    />
-                  )}
-                  name="username"
-                  defaultValue=""
-                />
-                {form.formState.errors.username?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.username?.message}</Text>}
-                {form.formState.errors.username?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.username?.message}</Text>}
-                {form.formState.errors.username?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>Necessário ao menos 1 letra</Text>}
-                <Controller
-                  control={form.control}
-                  rules={{
-                    required: {
-                      value: true,
-                      message: 'Campo obrigatório'
-                    },
-                    minLength: {
-                      value: 8,
-                      message: `Mín. 8 caracteres`
-                    },
-                  }}
-                  render={({ field: { onChange, onBlur, value, ref, name } }) => (
-                    <Input
-                      size='small'
-                      style={styles.input}
-                      label="Senha *"
-                      keyboardType='default'
-                      testID={name}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      accessoryRight={renderIconRightPassword}
-                      secureTextEntry={secureTextEntry}
-                      returnKeyType="send"
-                      underlineColorAndroid="transparent"
-                      onSubmitEditing={form.handleSubmit(handleSignIn)}
-                      ref={ref}
-                      maxLength={20}
-                      autoCapitalize="none"
-                      textContentType="password"
-                      editable={!isLoading}
-                    />
-                  )}
-                  name="password"
-                  defaultValue=""
-                />
-                {form.formState.errors.password && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.password?.message}</Text>}
-              </KeyboardAvoidingView>
+              <Controller
+                control={form.control}
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Campo obrigatório'
+                  },
+                  minLength: {
+                    value: 5,
+                    message: `Mín. 5 caracteres`
+                  },
+                }}
+                render={({ field: { onChange, onBlur, value, ref, name } }) => (
+                  <Input
+                    size='small'
+                    style={styles.input}
+                    label="E-mail / CPF *"
+                    keyboardType="default"
+                    testID={name}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value ? value.toLowerCase() : value}
+                    returnKeyType="next"
+                    ref={ref}
+                    maxLength={40}
+                    onSubmitEditing={() => form.setFocus('password')}
+                    autoCapitalize="none"
+                    textContentType="username"
+                    editable={!isLoading}
+                  />
+                )}
+                name="username"
+                defaultValue=""
+              />
+              {form.formState.errors.username?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.username?.message}</Text>}
+              {form.formState.errors.username?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.username?.message}</Text>}
+              {form.formState.errors.username?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>Necessário ao menos 1 letra</Text>}
+              <Controller
+                control={form.control}
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Campo obrigatório'
+                  },
+                  minLength: {
+                    value: 8,
+                    message: `Mín. 8 caracteres`
+                  },
+                }}
+                render={({ field: { onChange, onBlur, value, ref, name } }) => (
+                  <Input
+                    size='small'
+                    style={styles.input}
+                    label="Senha *"
+                    keyboardType='default'
+                    testID={name}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    accessoryRight={renderIconRightPassword}
+                    secureTextEntry={secureTextEntry}
+                    returnKeyType="send"
+                    underlineColorAndroid="transparent"
+                    onSubmitEditing={form.handleSubmit(handleSignIn)}
+                    ref={ref}
+                    maxLength={20}
+                    autoCapitalize="none"
+                    textContentType="password"
+                    editable={!isLoading}
+                  />
+                )}
+                name="password"
+                defaultValue=""
+              />
+              {form.formState.errors.password && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.password?.message}</Text>}
               <View style={styles.containerCheckbox}>
                 <CheckBox
                   disabled={isLoading}
@@ -215,7 +216,7 @@ const SignInScreen: FC = (): ReactElement => {
                 </CheckBox>
 
                 <View style={styles.containerRecoveryPassword}>
-                  <TouchableOpacity onPress={!isLoading ? recoveryPasswd : undefined}>
+                  <TouchableOpacity disabled={isLoading} onPress={recoveryPasswd}>
                     <Text
                       style={styles.textRecoveryPassword}
                       category="label"
@@ -225,25 +226,20 @@ const SignInScreen: FC = (): ReactElement => {
                   </TouchableOpacity>
                 </View>
               </View>
-
               <View style={styles.containerButtons}>
                 <Button
                   accessoryLeft={isLoading ? LoadingIndicator : undefined}
-                  disabled={isLoading}
                   style={styles.button}
-                  onPress={form.handleSubmit(handleSignIn)}
-                  status="primary"
-                >
-                  ACESSAR
+                  onPress={isLoading ? undefined : form.handleSubmit(handleSignIn)}
+                  status="primary">
+                  {isLoading ? '' : 'Acessar'.toUpperCase()}
                 </Button>
                 <Button
-                  disabled={isLoading}
-                  onPress={registerName}
+                  onPress={isLoading ? undefined : registerName}
                   style={styles.button}
                   testID="RegisterButton"
-                  status="warning"
-                >
-                  CADASTRE-SE
+                  status="warning">
+                  {'Cadastre-se'.toUpperCase()}
                 </Button>
               </View>
             </View>
@@ -254,7 +250,7 @@ const SignInScreen: FC = (): ReactElement => {
               visible={visibleModal}
             />
           </View>
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </SafeAreaLayout>
     </>
   )

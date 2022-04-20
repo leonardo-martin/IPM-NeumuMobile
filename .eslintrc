@@ -5,6 +5,7 @@
         "airbnb-typescript",
         "prettier",
         "prettier/@typescript-eslint",
-        "prettier/react"
+        "prettier/react",
+        "@babel/eslint-parser"
     ]
 }

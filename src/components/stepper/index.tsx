@@ -2,6 +2,7 @@ import React, { FC, useState, ReactElement, useEffect } from 'react'
 import { useStyleSheet } from '@ui-kitten/components'
 import { View, Text, ViewStyle, TextStyle, ScrollView } from 'react-native'
 import { stepperStyle } from './style'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 interface StepperProps {
     active: number
@@ -93,9 +94,13 @@ const Stepper: FC<StepperProps> = ({
                     )
                 })}
             </View>
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps='handled'>
-                {content[active]}
-            </ScrollView>
+            <KeyboardAwareScrollView
+                enableOnAndroid
+                contentContainerStyle={{ flex: 1 }}>
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps='always'>
+                    {content[active]}
+                </ScrollView>
+            </KeyboardAwareScrollView>
         </>
     )
 }
