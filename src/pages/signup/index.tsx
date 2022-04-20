@@ -22,6 +22,8 @@ import DoctorSignUpPart2Screen from './doctor/part2'
 import { signupStyle } from './style'
 import RegisterHeader from '@components/header/register'
 import { Host, Portal } from 'react-native-portalize'
+import { PatientProfileCreatorTypeEnum, RelationshipPatient } from '@models/PatientProfileCreator'
+import { creatorRelationship } from './patient/data'
 
 const SignUpScreen: FC = (): ReactElement => {
 
@@ -75,15 +77,42 @@ const SignUpScreen: FC = (): ReactElement => {
             if (params?.type === 0) {
                 const newData = data as UserPatientData
 
+                if (newData.creator?.patientProfileCreatorTypeId === PatientProfileCreatorTypeEnum.Other) {
+                    const id = newData.creator.data['creatorRelationship']
+                    newData.creator.data['creatorRelationship'] = creatorRelationship.find((_, index) => index === id)
+
+                    if (newData.creator.data['creatorRelationship'] as RelationshipPatient === 'Familiar') {
+                        const kinship: {
+                            id: number,
+                            title: string
+                        } = JSON.parse(JSON.stringify(newData.creator.data['kinship']))
+                        newData.creator.data['kinship'] = kinship.title
+                    } else {
+                        delete newData.creator.data['kinship']
+                    }
+
+                    if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Profissional de Saúde') {
+                        delete newData.creator.data['creator.data.specialty']
+                    }
+
+                    if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Tutor Legal') {
+                        delete newData.creator.data['creator.data.guardian.attachment']
+                    }
+                }
+
                 if (newData.creator && newData.creator.data && newData.creator?.data['cpf'])
                     newData.creator.data['cpf'] = cleanNumberMask(newData.creator.data['cpf'])
 
                 if (newData.creator && newData.creator.data && newData.creator?.data['phone'])
                     newData.creator.data['phone'] = cleanNumberMask(newData.creator.data['phone'])
 
+                if (newData.creator && newData.creator.data && newData.creator?.data['phone2'])
+                    newData.creator.data['phone2'] = cleanNumberMask(newData.creator.data['phone2'])
+
                 if (newData.abrafeuRegistrationOptIn === 'false') {
                     delete newData.pastExams
                 }
+
                 const response = await createUser(newData)
 
                 if (response.status !== 201) {
