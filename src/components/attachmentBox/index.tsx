@@ -23,7 +23,7 @@ const AttachmentBoxComponent: FC<AttachmentBoxProps> = ({ ...props }): ReactElem
             props.handleFile(response)
         } catch (err: any) {
             if (!err.toString().includes('cancelled.'))
-                toast.danger({ message: 'Falha ao obter o documento.', duration: 3000 })
+                toast.danger({ message: 'Operação cancelada.', duration: 3000 })
         }
     }
 
