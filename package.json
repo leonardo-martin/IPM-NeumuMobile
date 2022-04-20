@@ -12,6 +12,8 @@
     "pods:update": "cd ios && pod update && cd ..",
     "pods:clean": "cd ios && pod deintegrate && rm -rf Podfile.lock && cd ..",
     "test": "jest",
+    "build:android": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle",
+    "build:ios": "npx react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",
     "prettier:write": "npx prettier --write **/*.{ts,tsx,json,js,jsx} && npx prettier --write *.{ts,tsx,json,js,jsx}",
     "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx ./",
     "postinstall": "patch-package"
