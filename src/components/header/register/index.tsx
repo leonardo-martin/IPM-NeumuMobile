@@ -36,7 +36,7 @@ const RegisterHeader: FC<HeaderProps> = ({ ...props }): ReactElement => {
         ? props.onFinish : props.onNext)}
       style={styles.containerAction}>
       <Text status={(props.numberScreens - 1) === props.active ? 'success' : 'primary'}
-        style={styles.label}>{(props.numberScreens - 1) === props.active ? 'Cadastrar' : 'Próximo'}</Text>
+        style={styles.label}>{(props.numberScreens - 1) === props.active ? 'Cadastrar' : 'Avançar'}</Text>
     </TouchableOpacity>
   )
 

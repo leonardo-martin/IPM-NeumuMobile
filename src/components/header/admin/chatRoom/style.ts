@@ -5,7 +5,7 @@ export const headerStyle = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   layout: {
-    paddingTop: Platform.OS === 'ios' ? 30 : StatusBar.currentHeight,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   viewActions: {
     flexDirection: 'row',
