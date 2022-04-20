@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { API_BASE_URL } from '@env'
+import { API_BASE_URL } from '@constants/uri'
 import { AppStorage } from './app-storage.service'
 
 const getToken = async () => {
@@ -16,10 +16,10 @@ export const getAPIClient = () => {
         return config
     })
 
-    const token = getToken()
-    if (token) {
-        api.defaults.headers.common['Authorization']  = `Bearer ${token}`
-    }
+    // const token = getToken()
+    // if (token) {
+    //     api.defaults.headers.common['Authorization']  = `Bearer ${token}`
+    // }
 
     return api
 }

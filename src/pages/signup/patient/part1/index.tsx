@@ -14,7 +14,7 @@ import { formatCpf, isEmailValid } from '@utils/mask'
 import { useModal } from '@hooks/useModal'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import RNWebView from '@components/webView'
-import { GOV_BR_URI } from '@constants/uri'
+import { CONECTESUS_URI } from '@constants/uri'
 import { PatientSignUpProps } from '@models/SignUpProps'
 import { Portal } from 'react-native-portalize'
 
@@ -23,8 +23,6 @@ const { height: initialHeight } = Dimensions.get('window')
 const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): ReactElement => {
 
   const { localeDateService } = useDatepickerService()
-  const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
-
   const { ref } = useModal<Modalize>()
   const refWebView = useRef<WebView>(null)
   const [height, setHeight] = useState(initialHeight)
@@ -38,7 +36,6 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
     useCallback(() => {
       const genre = form.getValues('genre')
       if (genre) setSelectedIndex(genre === 'male' ? 0 : genre === 'female' ? 1 : 2)
-      form.setValue('dateOfBirth', dateForOver)
     }, [])
   )
 
@@ -204,7 +201,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Datepicker
               size='small'
-              label='Data de Nascimento (18+) *'
+              label='Data de Nascimento *'
               date={value}
               onSelect={onChange}
               accessoryRight={CalendarIcon}
@@ -212,7 +209,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               ref={ref}
               testID={name}
               dateService={localeDateService}
-              max={dateForOver}
+              max={localeDateService.addDay(localeDateService.today(), -1)}
               placement={PopoverPlacements.BOTTOM}
               min={new Date(1900, 0, 0)}
               backdropStyle={styles.backdropDatepicker}
@@ -374,7 +371,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
         >
           <RNWebView
             ref={refWebView}
-            source={{ uri: GOV_BR_URI + '/saude/pt-br/acesso-a-informacao/acoes-e-programas/cns' }}
+            source={{ uri: CONECTESUS_URI }}
             style={{ height }}
           />
         </Modalize>

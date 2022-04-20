@@ -1,15 +1,14 @@
-import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { AutocompleteItem, Button, Avatar, Spinner, Icon, IconProps } from '@ui-kitten/components'
-import { ImageBackground, Keyboard, View } from 'react-native'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { API_IBGE_GOV } from '@env'
-import { filterScheduleStyle } from './filter-schedule.style'
 import AutoCompleteComponent from '@components/autoComplete'
-import { City, UF } from '@models/Places'
-import specialties from '@utils/specialties'
 import ListComponentWithAvatar from '@components/menuList'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import { BOOTDEY_URI } from '@constants/uri'
+import { API_IBGE_GOV, BOOTDEY_URI } from '@constants/uri'
+import { City, UF } from '@models/Places'
+import { DrawerContentComponentProps } from '@react-navigation/drawer'
+import { AutocompleteItem, Avatar, Button, Icon, IconProps, Spinner } from '@ui-kitten/components'
+import specialties from '@utils/specialties'
+import React, { FC, ReactElement, useEffect, useState } from 'react'
+import { ImageBackground, Keyboard, View } from 'react-native'
+import { filterScheduleStyle } from './filter-schedule.style'
 
 const filter = (item: any, query: any) => item.sigla.toLowerCase().includes(query.toLowerCase())
 const filterCity = (item: any, query: any) => item.nome.toLowerCase().includes(query.toLowerCase())
