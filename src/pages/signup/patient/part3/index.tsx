@@ -1,38 +1,22 @@
-import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
-import { View } from 'react-native'
-import { Input, Text, useStyleSheet, RadioGroup, Radio, Modal, Card } from '@ui-kitten/components'
-import { Controller } from 'react-hook-form'
-import { registerStyle } from '@pages/signup/style'
-import { PatientProfileCreatorTypeEnum, RelationshipPatient } from '@models/PatientProfileCreator'
-import { onlyNumbers } from '@utils/mask'
-import { getRelationPatient, getRelationPastExams } from '@utils/common'
-import { useFocusEffect } from '@react-navigation/native'
-import { PatientSignUpProps } from '@models/SignUpProps'
+import CardPatientRelationshipComponent from '@components/cards/cardPatientRelationship'
+import { useDatepickerService } from '@hooks/useDatepickerService'
 import { useModal } from '@hooks/useModal'
+import { PatientProfileCreatorTypeEnum, RelationshipPatient } from '@models/PatientProfileCreator'
+import { PatientSignUpProps } from '@models/SignUpProps'
+import { registerStyle } from '@pages/signup/style'
+import { useFocusEffect } from '@react-navigation/native'
+import { Card, Input, Modal, Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
+import { getRelationPastExams, getRelationPatient } from '@utils/common'
+import { onlyNumbers } from '@utils/mask'
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
+import { Controller } from 'react-hook-form'
+import { View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { getFileFromDevice } from '@services/document.service'
-import { DocumentPickerResponse } from 'react-native-document-picker'
-import CardPatientRelationshipComponent from '@components/cardPatientRelationship'
-
-const options = ['Paciente', 'Outro']
-
-const items = [
-  'Confirmado DFEU 1',
-  'Confirmado DFEU 2',
-  'Não Confirmado DFEU',
-  'Resultado Pendente',
-  'Não Testado'
-]
-const creatorRelationship: RelationshipPatient[] = [
-  "Amigo",
-  "Cuidador",
-  "Familiar",
-  "Tutor Legal",
-  "Profissional de Saúde"
-]
+import { creatorRelationship, examResult, profileCreator } from '../data'
 
 const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): ReactElement => {
 
+  const { localeDateService } = useDatepickerService()
   const styles = useStyleSheet(registerStyle)
   const { ref } = useModal<Modal>()
   const [isVisible, setIsVisible] = useState<boolean>()
@@ -43,21 +27,42 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
   const [selectedIndexExamDNA, setSelectedIndexExamDNA] = useState(-1)
   const [selectedIndexGeneticProgram, setSelectedIndexGeneticProgram] = useState<number>(-1)
   const [showFields, setShowFields] = useState<boolean>(false)
-  const [fileResponse, setFileResponse] = useState<DocumentPickerResponse[] | undefined>()
+
+  const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
+  const [isLegalAge, setIsLegalAge] = useState<boolean>()
 
   useFocusEffect(
     useCallback(() => {
-      const opRelation = form.getValues('creator.patientProfileCreatorTypeId')
-      if (opRelation) {
-        const relation = getRelationPatient(Number(opRelation) - 1)
-        setSelectedIndexRelationPatient(Number(opRelation) - 1)
-        relation ? setPatientProfileCreator(relation as PatientProfileCreatorTypeEnum) : null
-      }
-      const op = form.getValues('abrafeuRegistrationOptIn')
-      if (op) setShowFields(op === 'true'), setSelectedIndexGeneticProgram(op === 'true' ? 0 : 1)
 
-      const exam = form.getValues('pastExams.exam')
-      if (exam) setSelectedIndexExamDNA(items.findIndex(e => e === exam))
+      const patientDate = form.getValues('dateOfBirth')
+      const result = patientDate ? localeDateService.compareDatesSafe(dateForOver, patientDate) : -1
+
+      if (result === 1) {
+        setIsLegalAge(true)
+
+        const opRelation = form.getValues('creator.patientProfileCreatorTypeId')
+        if (opRelation) {
+          setSelectedIndexRelationPatient(opRelation === '0' ? profileCreator.length - 1 : Number(opRelation) - 1)
+          opRelation === '0' ?
+            setPatientProfileCreator('0' as PatientProfileCreatorTypeEnum) : setPatientProfileCreator(opRelation as PatientProfileCreatorTypeEnum)
+        }
+        const op = form.getValues('abrafeuRegistrationOptIn')
+        if (op) setShowFields(op === 'true'), setSelectedIndexGeneticProgram(op === 'true' ? 0 : 1)
+
+        const exam = form.getValues('pastExams.exam')
+        if (exam) setSelectedIndexExamDNA(examResult.findIndex(e => e === exam))
+
+      } else {
+        setIsLegalAge(false)
+        setSelectedIndexRelationPatient(profileCreator.length - 1)
+        setPatientProfileCreator('0' as PatientProfileCreatorTypeEnum)
+        form.setValue('creator.patientProfileCreatorTypeId', '0' as PatientProfileCreatorTypeEnum)
+      }
+
+      const idRelationship = form.getValues('creator.data.creatorRelationship')
+      if (idRelationship)
+        setRelationship(creatorRelationship.find((_, i) => i === idRelationship))
+      else if(!idRelationship && !isLegalAge) setIsVisible(true)
     }, [])
   )
 
@@ -107,15 +112,21 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
     exam ? form.setValue('pastExams.exam', exam) : null
   }
 
-  const handleDocumentSelection = async () => {
-    try {
-      const response = await getFileFromDevice()
-      setFileResponse(response)
-      console.log(response)
-    } catch (err) {
-
+  useEffect(() => {
+    if (relationship) {
+      const relationToString = relationship as RelationshipPatient
+      if (relationToString === 'Tutor Legal') {
+        form.register('creator.data.guardian.attachment', {
+          required: {
+            value: true,
+            message: 'Necessário documentação'
+          }
+        })
+      } else {
+        form.unregister('creator.data.guardian.attachment')
+      }
     }
-  }
+  }, [relationship])
 
   return (
     <>
@@ -137,9 +148,16 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               testID={name}
               selectedIndex={selectedIndexRelationPatient}
               onChange={handleRadioSelected}>
-              {options.map((_, i) => {
+              {profileCreator.map((_item, i) => {
                 return (
-                  <Radio key={_ + i} onBlur={onBlur}>{evaProps => <Text {...evaProps} >{_}</Text>}</Radio>
+                  <Radio
+                    disabled={!isLegalAge && _item.toLowerCase() !== 'outro'.toLowerCase()}
+                    key={_item + i}
+                    onBlur={onBlur}>
+                    {evaProps => <Text {...evaProps} >{_item + " " +
+                      (!isLegalAge && _item.toLowerCase() !== 'outro'.toLowerCase() ?
+                        '(Para maior de idade)' : '')}</Text>}
+                  </Radio>
                 )
               })}
             </RadioGroup>
@@ -202,23 +220,11 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
             </View>
 
             <View style={styles.box}>
-
               <CardPatientRelationshipComponent
                 relationship={relationship}
                 form={form}
                 styles={styles}
                 onSubmit={onSubmit} />
-              {/* 
-              
-              
-              <Text style={styles.labelTitle}>CEP Residencial</Text>
-            
-              <Text style={styles.labelTitle}>Bairro</Text>
-              <Text style={styles.labelTitle}>Estado</Text>
-              <Text style={styles.labelTitle}>Cidade</Text>
-
-              
-              */}
             </View>
           </>
           : null
@@ -278,7 +284,7 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
                   testID={name}
                   selectedIndex={selectedIndexExamDNA}
                   onChange={handleRadioSelectedExamDNA}>
-                  {items.map((_, i) => {
+                  {examResult.map((_, i) => {
                     return (
                       <Radio key={_ + i} onBlur={onBlur}>{evaProps => <Text {...evaProps} >{_}</Text>}</Radio>
                     )

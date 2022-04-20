@@ -26,7 +26,6 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
     useCallback(() => {
       const genre = form.getValues('genre')
       if (genre) setSelectedIndex(genre === 'male' ? 0 : genre === 'female' ? 1 : 2)
-      form.setValue('dateOfBirth', dateForOver)
     }, [])
   )
 
@@ -139,7 +138,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
             <Datepicker
               size='small'
               label='Data de Nascimento (18+) *'
-              date={value}
+              date={value ? value : dateForOver}
               onSelect={onChange}
               accessoryRight={CalendarIcon}
               onBlur={onBlur}
