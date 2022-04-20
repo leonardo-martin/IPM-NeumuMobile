@@ -9,7 +9,7 @@ import { modalStyle } from './style'
 
 const options = [
     'Paciente',
-    'Médico',
+    'Profissional de Saúde',
     // 'Especialista'
 ]
 

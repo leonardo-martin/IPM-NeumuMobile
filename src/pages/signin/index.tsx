@@ -6,12 +6,12 @@ import toast from '@helpers/toast'
 import { useAppDispatch } from '@hooks/redux'
 import { useModal } from '@hooks/useModal'
 import { SignInData } from '@models/User'
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import { AppStorage } from '@services/app-storage.service'
 import { authLogin } from '@services/auth.service'
 import { Button, CheckBox, Icon, IconProps, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { matchMessage } from '@utils/common'
-import React, { FC, ReactElement, useCallback, useState } from 'react'
+import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, StatusBar, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -39,11 +39,16 @@ const SignInScreen: FC = (): ReactElement => {
   const getStoredUsernameAndPassword = async () => {
     const isRemember = await AppStorage.getItem('REMEMBER_ACCESS')
     if (isRemember === 'true') {
-      setChecked(true)
-      const userCredentials = await Keychain.getGenericPassword(_optionsKeychain)
-      if (userCredentials) {
-        form.setValue('username', userCredentials.username)
-        form.setValue('password', userCredentials.password)
+
+      try {
+        const userCredentials = await Keychain.getGenericPassword(_optionsKeychain)
+        if (userCredentials) {
+          form.setValue('username', userCredentials.username)
+          form.setValue('password', userCredentials.password)
+        }
+        setChecked(true)
+      } catch (error) {
+        setChecked(false)
       }
     }
     else {
@@ -52,11 +57,9 @@ const SignInScreen: FC = (): ReactElement => {
     }
   }
 
-  useFocusEffect(
-    useCallback(() => {
-      getStoredUsernameAndPassword()
-    }, [])
-  )
+  useEffect(() => {
+    getStoredUsernameAndPassword()
+  }, [])
 
   const handleSignIn = async (data: SignInData) => {
     Keyboard.dismiss()
@@ -155,6 +158,7 @@ const SignInScreen: FC = (): ReactElement => {
                       onSubmitEditing={() => form.setFocus('password')}
                       autoCapitalize="none"
                       textContentType="username"
+                      editable={!isLoading}
                     />
                   )}
                   name="username"
@@ -194,6 +198,7 @@ const SignInScreen: FC = (): ReactElement => {
                       maxLength={20}
                       autoCapitalize="none"
                       textContentType="password"
+                      editable={!isLoading}
                     />
                   )}
                   name="password"
@@ -203,13 +208,14 @@ const SignInScreen: FC = (): ReactElement => {
               </KeyboardAvoidingView>
               <View style={styles.containerCheckbox}>
                 <CheckBox
+                  disabled={isLoading}
                   status='primary'
                   checked={checked} onChange={onCheckedChange}>
                   {evaProps => <Text style={[evaProps?.style, styles.checkboxText]}>Memorizar acesso</Text>}
                 </CheckBox>
 
                 <View style={styles.containerRecoveryPassword}>
-                  <TouchableOpacity onPress={recoveryPasswd}>
+                  <TouchableOpacity onPress={!isLoading ? recoveryPasswd : undefined}>
                     <Text
                       style={styles.textRecoveryPassword}
                       category="label"
@@ -231,6 +237,7 @@ const SignInScreen: FC = (): ReactElement => {
                   ACESSAR
                 </Button>
                 <Button
+                  disabled={isLoading}
                   onPress={registerName}
                   style={styles.button}
                   testID="RegisterButton"
