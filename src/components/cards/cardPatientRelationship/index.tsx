@@ -4,7 +4,7 @@ import SelectComponent, { SelectItemData } from '@components/select'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { RelationshipPatient } from '@models/PatientProfileCreator'
 import { PatientSignUpProps } from '@models/SignUpProps'
-import { CheckBox, Datepicker, IndexPath, Input, PopoverPlacements, Text } from '@ui-kitten/components'
+import { Datepicker, IndexPath, Input, PopoverPlacements, Text } from '@ui-kitten/components'
 import { sortByStringField } from '@utils/common'
 import { formatCpf, formatPhone, isEmailValid, onlyNumbers } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
@@ -40,36 +40,12 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
     const [sortedKinList, setSortedKinList] = useState<SelectItemData[]>(kinList.sort((a, b) => sortByStringField(a, b, 'title')))
     const [fileResponse, setFileResponse] = useState<DocumentPickerResponse[] | undefined>()
     const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
-    const [isEditable, setIsEditable] = useState<boolean>(false)
-    const [joblessChecked, setJoblessChecked] = useState<boolean>(false)
-    const [isLoadingPostalCode, setIsLoadingPostalCode] = useState<boolean>(false)
 
     useEffect(() => {
         if (selectedIndex)
             form.setValue('creator.data.kinship', sortedKinList.find((_, i) => new IndexPath(i).row === (selectedIndex as IndexPath).row))
         else form.setValue('creator.data.kinship', '')
     }, [selectedIndex])
-
-    const jobless = (checked: boolean, _indeterminate: boolean) => {
-        if (checked) {
-            form.setValue('creator.data.career', 'N/A')
-            form.setValue('creator.data.company', 'N/A')
-            form.clearErrors(['creator.data.career', 'creator.data.company'])
-        } else {
-            form.setValue('creator.data.career', '')
-            form.setValue('creator.data.company', '')
-            form.setError('creator.data.career', {
-                type: 'required',
-                message: 'Campo obrigatório'
-            })
-            form.setError('creator.data.company', {
-                type: 'required',
-                message: 'Campo obrigatório'
-            })
-        }
-        setIsEditable(checked)
-        setJoblessChecked(checked)
-    }
 
     useEffect(() => {
         if (fileResponse) {
@@ -134,40 +110,6 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 defaultValue=''
             />
             {form.formState.errors.creator?.data?.name && <Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.name?.message}</Text>}
-            <Controller
-                control={form.control}
-                rules={{
-                    required: {
-                        value: true,
-                        message: 'Campo obrigatório'
-                    },
-                    minLength: {
-                        value: 5,
-                        message: `Mín. 5 caracteres`
-                    },
-                }}
-                render={({ field: { onChange, onBlur, value, name, ref } }) => (
-                    <Input
-                        size='small'
-                        label="Nome da Mãe *"
-                        style={styles?.input}
-                        keyboardType='default'
-                        testID={name}
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
-                        underlineColorAndroid="transparent"
-                        ref={ref}
-                        maxLength={60}
-                        returnKeyType="next"
-                        onSubmitEditing={() => form.setFocus('creator.data.cpf')}
-                        autoCapitalize="words"
-                    />
-                )}
-                name='creator.data.mothersName'
-                defaultValue=''
-            />
-            {form.formState.errors.creator?.data?.mothersName && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>{form.formState.errors.creator?.data?.mothersName?.message}</Text>}
             <Controller
                 control={form.control}
                 rules={{
@@ -286,14 +228,6 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
             {form.formState.errors.creator?.data?.email?.type === 'valid' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>E-mail inválido</Text>}
             {form.formState.errors.creator?.data?.email?.type === 'equal' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>E-mail não pode ser igual ao do paciente</Text>}
 
-            <CardAddressComponent
-                styles={styles}
-                form={form}
-                isFetching={isLoadingPostalCode}
-                handleFetchingData={setIsLoadingPostalCode}
-                textFieldPrefix='creator.data.'
-            />
-
             <Controller
                 control={form.control}
                 rules={{
@@ -359,87 +293,6 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 defaultValue=''
             />
             {form.formState.errors.creator?.data?.phone2 && <Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.phone2?.message}</Text>}
-            <Controller
-                control={form.control}
-                rules={{
-                    required: {
-                        value: !isEditable,
-                        message: 'Campo obrigatório'
-                    },
-                    minLength: {
-                        value: !isEditable ? 5 : 0,
-                        message: `Mín. 5 caracteres`
-                    },
-                }}
-                render={({ field: { onChange, onBlur, value, name, ref } }) => (
-                    <Input
-                        size='small'
-                        label="Profissão *"
-                        style={styles?.input}
-                        keyboardType='default'
-                        testID={name}
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
-                        ref={ref}
-                        maxLength={100}
-                        returnKeyType="next"
-                        underlineColorAndroid="transparent"
-                        onSubmitEditing={() => form.setFocus('creator.data.company')}
-                        disabled={isEditable}
-                    />
-                )}
-                name='creator.data.career'
-                defaultValue=''
-            />
-            {form.formState.errors.creator?.data?.career && <Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.career?.message}</Text>}
-            <CheckBox
-                style={{
-                    paddingVertical: 10
-                }}
-                checked={joblessChecked}
-                onChange={jobless}>Não estou trabalhando</CheckBox>
-            <Controller
-                control={form.control}
-                rules={{
-                    required: {
-                        value: !isEditable,
-                        message: 'Campo obrigatório'
-                    },
-                    minLength: {
-                        value: !isEditable ? 5 : 0,
-                        message: `Mín. 5 caracteres`
-                    },
-                }}
-                render={({ field: { onChange, onBlur, value, name, ref } }) => (
-                    <Input
-                        size='small'
-                        label="Empresa *"
-                        style={styles?.input}
-                        keyboardType='default'
-                        testID={name}
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
-                        ref={ref}
-                        maxLength={100}
-                        returnKeyType={relationship === 'Amigo' || relationship === 'Cuidador' ? 'send' : 'next'}
-                        underlineColorAndroid="transparent"
-                        onSubmitEditing={() => {
-                            if (relationship === 'Amigo' || relationship === 'Cuidador')
-                                form.handleSubmit(onSubmit)
-                            else if (relationship === "Familiar")
-                                form.setFocus('creator.data.kinship')
-                            else if (relationship === "Profissional de Saúde")
-                                form.setFocus('creator.data.crm')
-                        }}
-                        disabled={isEditable}
-                    />
-                )}
-                name='creator.data.company'
-                defaultValue=''
-            />
-            {form.formState.errors.creator?.data?.company && <Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.company?.message}</Text>}
 
             {relationship === "Tutor Legal" && (
                 <View style={{ paddingVertical: 10 }}>

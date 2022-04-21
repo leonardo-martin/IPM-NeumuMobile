@@ -134,13 +134,17 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
           </TouchableOpacity>
         </ModalizeFixed>
       </Portal>
-      <Portal>
-        <FloatingPlusButton containerStyle={{
-          bottom: 80,
-          right: 60,
-          opacity: visibleFloatingButton ? 1 : 0
-        }} />
-      </Portal>
+      {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
+        <Portal>
+          <FloatingPlusButton containerStyle={{
+            bottom: 80,
+            right: 60,
+            opacity: visibleFloatingButton ? 1 : 0
+          }} />
+        </Portal>
+      )
+
+      }
     </Host>
   )
 }

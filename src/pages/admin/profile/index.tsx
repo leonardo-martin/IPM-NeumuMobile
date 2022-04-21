@@ -6,7 +6,8 @@ import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { logout } from '@store/ducks/auth'
 import { RootState } from '@store/index'
 import { Avatar, Button, Icon, IconProps, Text, useStyleSheet } from '@ui-kitten/components'
-import { useAppDispatch, useAppSelector } from 'hooks/redux'
+import { useAppDispatch, useAppSelector } from '@hooks/redux'
+import { EUserRole } from '@models/UserRole'
 import React, { FC, ReactElement } from 'react'
 import { ImageStyle, StyleProp, TouchableOpacity, View } from 'react-native'
 import { data } from './data'
@@ -64,7 +65,9 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
               </View>
             </>
           )}
-          ListFooterComponent={renderFooterComponent}
+          ListFooterComponent={
+            sessionUser?.userRole.find(e => e.id === EUserRole.patient) && renderFooterComponent
+          }
           renderItem={undefined} />
         <View style={styles.footer}>
           <TouchableOpacity

@@ -7,7 +7,7 @@ import { registerStyle } from '@pages/signup/style'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { Datepicker, Icon, IconProps, Input, PopoverPlacements, Radio, RadioGroup, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
 import { getGender, openMailTo } from '@utils/common'
-import { formatCpf, isEmailValid } from '@utils/mask'
+import { formatCpf, formatPhone, isEmailValid } from '@utils/mask'
 import { validateCNS, validatePasswd } from '@utils/validators'
 import { validate } from 'gerador-validador-cpf'
 import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
@@ -332,7 +332,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               secureTextEntry={secureTextEntry}
               returnKeyType="next"
               ref={ref}
-              onSubmitEditing={() => form.setFocus('cns')}
+              onSubmitEditing={() => form.setFocus('phone')}
               underlineColorAndroid="transparent"
               autoCapitalize="none"
               textContentType="password"
@@ -352,6 +352,71 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
         {form.formState.errors.password?.type === 'minLength' && <Text category='s2' style={styles.text}>{form.formState.errors.password?.message}</Text>}
         {form.formState.errors.password?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.password?.message}</Text>}
         {form.formState.errors.password?.type === 'validate' && <Text category='s2' style={styles.text}>Senha inválida</Text>}
+        <Controller
+          control={form.control}
+          rules={{
+            required: {
+              value: true,
+              message: 'Campo obrigatório'
+            },
+            minLength: {
+              value: 13,
+              message: `Mín. 13 caracteres`
+            },
+          }}
+          render={({ field: { onChange, onBlur, value, name, ref } }) => (
+            <Input
+              size='small'
+              label="Telefone 1 *"
+              style={styles.input}
+              keyboardType='number-pad'
+              testID={name}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={formatPhone(value)}
+              maxLength={15}
+              ref={ref}
+              returnKeyType="next"
+              onSubmitEditing={() => form.setFocus('phone2')}
+              underlineColorAndroid="transparent"
+              textContentType="telephoneNumber"
+            />
+          )}
+          name='phone'
+          defaultValue=''
+        />
+        {form.formState.errors.phone && <Text category='s2' style={styles.text}>{form.formState.errors.phone?.message}</Text>}
+        <Controller
+          control={form.control}
+          rules={{
+            required: false,
+            minLength: {
+              value: 13,
+              message: `Mín. 13 caracteres`
+            },
+          }}
+          render={({ field: { onChange, onBlur, value, name, ref } }) => (
+            <Input
+              size='small'
+              label="Telefone 2"
+              style={[styles.input, { paddingBottom: 10 }]}
+              keyboardType='number-pad'
+              testID={name}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={formatPhone(value)}
+              maxLength={15}
+              ref={ref}
+              returnKeyType="next"
+              onSubmitEditing={() => form.setFocus('cns')}
+              underlineColorAndroid="transparent"
+              textContentType="telephoneNumber"
+            />
+          )}
+          name='phone2'
+          defaultValue=''
+        />
+        {form.formState.errors.phone2 && <Text category='s2' style={styles.text}>{form.formState.errors.phone2?.message}</Text>}
         <Controller
           control={form.control}
           rules={{

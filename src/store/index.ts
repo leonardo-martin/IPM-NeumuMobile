@@ -1,8 +1,10 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import rootAuth from '@store/ducks/auth'
+import rootProfile from '@store/ducks/profile'
 
 const rootReducer = combineReducers({
   auth: rootAuth,
+  profile: rootProfile
 })
 
 const store = configureStore({

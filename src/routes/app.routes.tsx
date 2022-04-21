@@ -30,6 +30,7 @@ import Terms from '@pages/admin/configuration/terms'
 import ChangePasswordConfirm from '@pages/changePassword/confirmation'
 import MyExamsScreen from '@pages/admin/profile/myExams'
 import MyNotesScreen from '@pages/admin/profile/myNotes'
+import GeneticMappingProgramScreen from '@pages/admin/profile/mappingProgram'
 
 const { Navigator, Screen, Group } = createDrawerNavigator()
 
@@ -114,6 +115,7 @@ const AppRoutes: FC = (): ReactElement => {
           name="InformationApp"
           component={InformationAppScreen}
         />
+        <Screen name="GeneticMappingProgram" component={GeneticMappingProgramScreen} />
         <Screen name="ChangePasswordChoice" component={ChangePasswordChoice} />
         <Screen name="ChangePasswordRequest" component={ChangePasswordRequest} />
         <Screen name="TermsAndConditions" component={Terms} />

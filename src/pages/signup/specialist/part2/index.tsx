@@ -25,7 +25,9 @@ const DoctorSignUpPart2Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
           styles={styles}
           form={form}
           isFetching={isLoadingPostalCode}
-          handleFetchingData={setIsLoadingPostalCode}/>
+          handleFetchingData={setIsLoadingPostalCode}
+          commercial
+          />
         <Controller
           control={form.control}
           rules={{

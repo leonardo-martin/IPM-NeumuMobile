@@ -17,10 +17,11 @@ interface CardAddressProps {
     handleFetchingData: Dispatch<React.SetStateAction<boolean>>
     isFetching?: boolean
     textFieldPrefix?: '' | 'creator.data.'
+    commercial?: boolean
 }
 
 const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
-    isFetching, handleFetchingData, textFieldPrefix = '' }): ReactElement => {
+    isFetching, handleFetchingData, textFieldPrefix = '', commercial = false }): ReactElement => {
 
     /**
      * Countries
@@ -316,7 +317,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                 render={({ field: { onChange, onBlur, value, name, ref } }) => (
                     <Input
                         size='small'
-                        label="Endereço Residencial 1 *"
+                        label={commercial ? "Endereço Comercial 1 *" : "Endereço Residencial 1 *"}
                         style={styles?.input}
                         keyboardType='default'
                         testID={name}
@@ -352,7 +353,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                 render={({ field: { onChange, onBlur, value, name, ref } }) => (
                     <Input
                         size='small'
-                        label="Endereço Residencial 2"
+                        label={commercial ? "Endereço Comercial 2 *" : "Endereço Residencial 2 *"}
                         style={styles?.input}
                         keyboardType='default'
                         testID={name}

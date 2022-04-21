@@ -106,9 +106,8 @@ const ChangePasswordRequest: FC = (): ReactElement => {
                     <Button status='primary' accessoryLeft={isLoading ? LoadingIndicator : undefined}
                         disabled={isLoading}
                         style={styles.btn}
-                        onPress={handleSubmit(handleRecoveryPasswd)}
-                    >
-                        REDEFINIR SENHA
+                        onPress={handleSubmit(handleRecoveryPasswd)}>
+                        {"Enviar E-mail".toUpperCase()}
                     </Button>
                 </View>
             </SafeAreaView>

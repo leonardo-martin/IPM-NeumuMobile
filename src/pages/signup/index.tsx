@@ -18,12 +18,11 @@ import { DocumentPickerResponse } from 'react-native-document-picker'
 import { Modalize } from 'react-native-modalize'
 import { Host, Portal } from 'react-native-portalize'
 import { uploadTutorFile } from 'services/document.service'
-import DoctorSignUpPart1Screen from './doctor/part1'
-import DoctorSignUpPart2Screen from './doctor/part2'
 import { creatorRelationship } from './patient/data'
+import PatientSignUpEndScreen from './patient/last'
 import PatientSignUpPart1Screen from './patient/part1'
-import PatientSignUpPart2Screen from './patient/part2'
-import PatientSignUpPart3Screen from './patient/part3'
+import DoctorSignUpPart1Screen from './specialist/part1'
+import DoctorSignUpPart2Screen from './specialist/part2'
 import { signupStyle } from './style'
 
 
@@ -185,8 +184,7 @@ const SignUpScreen: FC = (): ReactElement => {
 
     const patientSteps = [
         <PatientSignUpPart1Screen register={params} form={patientForm} onSubmit={onNext} />,
-        <PatientSignUpPart2Screen register={params} form={patientForm} onSubmit={onNext} />,
-        <PatientSignUpPart3Screen register={params} form={patientForm} onSubmit={onNext} />
+        <PatientSignUpEndScreen register={params} form={patientForm} onSubmit={onNext} />
     ]
 
     const specialistSteps = [
