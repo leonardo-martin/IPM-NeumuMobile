@@ -54,10 +54,10 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
                 <View style={styles.body}>
                   <View style={styles.bodyContent}>
                     <Text style={styles.profileName}>@{sessionUser ? sessionUser.user : ''}</Text>
-                    <View style={styles.viewLocation}>
+                    {/* <View style={styles.viewLocation}>
                       <Icon style={styles.icon} name="location-outline" size={15} pack='ionicons' />
                       <Text status='info'>São Paulo, SP - Brasil</Text>
-                    </View>
+                    </View> */}
                     <Text style={styles.description}></Text>
                   </View>
                 </View>

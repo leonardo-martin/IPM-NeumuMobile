@@ -1,7 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { THEME_KEY } from '@constants/storage'
 import { Theme } from '@models/Theme'
-import { THEME_KEY, TOKEN_KEY, USER_KEY } from '@constants/storage'
-import { TokenModel } from '@models/TokenModel'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export class AppStorage {
 
@@ -29,19 +28,4 @@ export class AppStorage {
         await AsyncStorage.setItem(THEME_KEY, theme)
     }
 
-    static getUserContext = async (): Promise<string | null> => {
-        return await AsyncStorage.getItem(USER_KEY)
-    }
-
-    static setUserContext = async (object: TokenModel): Promise<void> => {
-        await AsyncStorage.setItem(USER_KEY, JSON.stringify(object))
-    }
-
-    static getUserToken = async (): Promise<string | null> => {
-        return await AsyncStorage.getItem(TOKEN_KEY)
-    }
-
-    static setUserToken = async (token: string): Promise<void> => {
-        await AsyncStorage.setItem(TOKEN_KEY, token)
-    }
 }

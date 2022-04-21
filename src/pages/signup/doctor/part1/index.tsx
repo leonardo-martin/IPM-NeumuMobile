@@ -1,15 +1,16 @@
-import React, { FC, ReactElement, useEffect, useState, useCallback } from 'react'
-import { Keyboard, View } from 'react-native'
-import { Input, Text, Icon, useStyleSheet, Datepicker, IconProps, PopoverPlacements, RadioGroup, Radio } from '@ui-kitten/components'
-import { Controller } from 'react-hook-form'
-import { formatCpf, isEmailValid, onlyNumbers } from '@utils/mask'
-import { validate } from 'gerador-validador-cpf'
-import { getGender } from '@utils/common'
-import { useFocusEffect, useIsFocused } from '@react-navigation/native'
-import { registerStyle } from '@pages/signup/style'
-
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { DoctorSignUpProps } from '@models/SignUpProps'
+import { registerStyle } from '@pages/signup/style'
+import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+import { Datepicker, Icon, IconProps, Input, PopoverPlacements, Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
+import { getGender, openMailTo } from '@utils/common'
+import { formatCpf, isEmailValid, onlyNumbers } from '@utils/mask'
+import { validatePasswd } from '@utils/validators'
+import { validate } from 'gerador-validador-cpf'
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
+import { Controller } from 'react-hook-form'
+import { Keyboard, TouchableOpacity, View } from 'react-native'
+
 
 const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): ReactElement => {
 
@@ -137,13 +138,14 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Datepicker
               size='small'
-              label='Data de Nascimento (18+) *'
+              label='Data de Nascimento *'
               date={value ? value : dateForOver}
               onSelect={onChange}
               accessoryRight={CalendarIcon}
               onBlur={onBlur}
               ref={ref}
               testID={name}
+              style={styles.input}
               dateService={localeDateService}
               max={dateForOver}
               placement={PopoverPlacements.BOTTOM}
@@ -151,6 +153,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               backdropStyle={styles.backdropDatepicker}
               boundingMonth={false}
               onPress={() => Keyboard.dismiss()}
+              caption='* Necessário ser maior de 18 anos'
             />
           )}
           name='dateOfBirth'
@@ -162,11 +165,12 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
           rules={{
             required: {
               value: true,
-              message: 'Campo obrigatório'
+              message: 'Selecione uma opção'
             }
           }}
           render={({ field: { name, ref } }) => (
             <RadioGroup
+              style={{ paddingBottom: 10 }}
               testID={name}
               ref={ref}
               selectedIndex={selectedIndex}
@@ -218,6 +222,16 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               returnKeyType="next"
               onSubmitEditing={() => form.setFocus('password')}
               textContentType="emailAddress"
+              caption={(evaProps) => (
+                <>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text {...evaProps}>* Em caso de não recebimento, entre em{" "}</Text>
+                    <TouchableOpacity onPress={openMailTo}>
+                      <Text {...evaProps} style={[evaProps?.style, styles.contactLink]}>contato</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              )}
             />
           )}
           name='email'
@@ -237,11 +251,12 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               value: 8,
               message: `Mín. 8 caracteres`
             },
+            validate: (value) => value ? validatePasswd(value) : undefined
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
               size='small'
-              label="Senha * (8 caracteres)"
+              label="Senha *"
               style={styles.input}
               keyboardType='default'
               testID={name}
@@ -257,12 +272,23 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               underlineColorAndroid="transparent"
               autoCapitalize="none"
               textContentType="password"
+              caption={(evaProps) => (
+                <>
+                  <Text {...evaProps}>* 8 caracteres no mínimo</Text>
+                  <Text {...evaProps}>* 1 Letra Maiúscula no mínimo</Text>
+                  <Text {...evaProps}>* 1 Número no mínimo</Text>
+                  <Text {...evaProps}>* 1 Símbolo no mínimo: {'$*&@#'}</Text>
+                </>
+              )}
             />
           )}
           name='password'
           defaultValue=''
         />
-        {form.formState.errors.password && <Text category='s2' style={styles.text}>{form.formState.errors.password?.message}</Text>}
+        {form.formState.errors.password?.type === 'minLength' && <Text category='s2' style={styles.text}>{form.formState.errors.password?.message}</Text>}
+        {form.formState.errors.password?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.password?.message}</Text>}
+        {form.formState.errors.password?.type === 'validate' && <Text category='s2' style={styles.text}>Senha inválida</Text>}
+
         <Controller
           control={form.control}
           rules={{

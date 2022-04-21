@@ -438,6 +438,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                         returnKeyType="next"
                         onSubmitEditing={() => onSubmitEditingCountry(value)}
                         editable={isFetching}
+                        style={styles?.input}
                     />
                 )}
                 name={`${textFieldPrefix}country` as const}
@@ -478,6 +479,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                                 onSubmitEditing={() => onSubmitEditingState(value)}
                                 editable={isFetching}
                                 onFocus={() => value === '' ? findPlaces() : undefined}
+                                style={styles?.input}
                             />
                         )}
                         name={`${textFieldPrefix}state` as const}
@@ -516,6 +518,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                                 onSubmitEditing={() => onSubmitEditingCity(value)}
                                 editable={isFetching}
                                 onFocus={() => value === '' ? findCities() : undefined}
+                                style={styles?.input}
                             />
                         )}
                         name={`${textFieldPrefix}city` as const}

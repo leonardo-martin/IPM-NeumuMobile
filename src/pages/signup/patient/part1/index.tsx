@@ -1,22 +1,22 @@
-import React, { FC, ReactElement, useRef, useEffect, useState, useCallback } from 'react'
-import { Dimensions, Keyboard, TouchableOpacity, View } from 'react-native'
-import { Input, Text, Icon, useStyleSheet, Datepicker, IconProps, PopoverPlacements, RadioGroup, Radio } from '@ui-kitten/components'
-import { Controller } from 'react-hook-form'
-import WebView from 'react-native-webview'
-import { Modalize } from 'react-native-modalize'
-import { useFocusEffect, useIsFocused } from '@react-navigation/native'
-
-import { validate } from 'gerador-validador-cpf'
-import { getGender } from '@utils/common'
-import { validateCNS } from '@utils/validators'
-import { registerStyle } from '@pages/signup/style'
-import { formatCpf, isEmailValid } from '@utils/mask'
-import { useModal } from '@hooks/useModal'
-import { useDatepickerService } from '@hooks/useDatepickerService'
 import RNWebView from '@components/webView'
 import { CONECTESUS_URI } from '@constants/uri'
+import { useDatepickerService } from '@hooks/useDatepickerService'
+import { useModal } from '@hooks/useModal'
 import { PatientSignUpProps } from '@models/SignUpProps'
+import { registerStyle } from '@pages/signup/style'
+import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+import { Datepicker, Icon, IconProps, Input, PopoverPlacements, Radio, RadioGroup, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
+import { getGender, openMailTo } from '@utils/common'
+import { formatCpf, isEmailValid } from '@utils/mask'
+import { validateCNS, validatePasswd } from '@utils/validators'
+import { validate } from 'gerador-validador-cpf'
+import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
+import { Controller } from 'react-hook-form'
+import { Dimensions, Keyboard, TouchableOpacity, View } from 'react-native'
+import { Modalize } from 'react-native-modalize'
 import { Portal } from 'react-native-portalize'
+import WebView from 'react-native-webview'
+
 
 const { height: initialHeight } = Dimensions.get('window')
 
@@ -28,6 +28,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
   const [height, setHeight] = useState(initialHeight)
   const isFocused = useIsFocused()
 
+  const theme = useTheme()
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const styles = useStyleSheet(registerStyle)
   const [secureTextEntry, setSecureTextEntry] = useState(true)
@@ -208,6 +209,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               onBlur={onBlur}
               ref={ref}
               testID={name}
+              style={styles.input}
               dateService={localeDateService}
               max={localeDateService.addDay(localeDateService.today(), -1)}
               placement={PopoverPlacements.BOTTOM}
@@ -215,6 +217,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               backdropStyle={styles.backdropDatepicker}
               boundingMonth={false}
               onPress={() => Keyboard.dismiss()}
+              caption='* Em caso de menor de idade, necessário um responsável'
             />
           )}
           name='dateOfBirth'
@@ -231,6 +234,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           }}
           render={({ field: { name, ref } }) => (
             <RadioGroup
+              style={{ paddingBottom: 10 }}
               testID={name}
               ref={ref}
               selectedIndex={selectedIndex}
@@ -282,6 +286,16 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               returnKeyType="next"
               onSubmitEditing={() => form.setFocus('password')}
               textContentType="emailAddress"
+              caption={(evaProps) => (
+                <>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text {...evaProps}>* Em caso de não recebimento, entre em{" "}</Text>
+                    <TouchableOpacity onPress={openMailTo}>
+                      <Text {...evaProps} style={[evaProps?.style, styles.contactLink]}>contato</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              )}
             />
           )}
           name='email'
@@ -301,11 +315,12 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               value: 8,
               message: `Mín. 8 caracteres`
             },
+            validate: (value) => value ? validatePasswd(value) : undefined
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
               size='small'
-              label="Senha * (8 caracteres)"
+              label="Senha *"
               style={styles.input}
               keyboardType='default'
               testID={name}
@@ -321,12 +336,22 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               underlineColorAndroid="transparent"
               autoCapitalize="none"
               textContentType="password"
+              caption={(evaProps) => (
+                <>
+                  <Text {...evaProps}>* 8 caracteres no mínimo</Text>
+                  <Text {...evaProps}>* 1 Letra Maiúscula no mínimo</Text>
+                  <Text {...evaProps}>* 1 Número no mínimo</Text>
+                  <Text {...evaProps}>* 1 Símbolo no mínimo: {'$*&@#'}</Text>
+                </>
+              )}
             />
           )}
           name='password'
           defaultValue=''
         />
-        {form.formState.errors.password && <Text category='s2' style={styles.text}>{form.formState.errors.password?.message}</Text>}
+        {form.formState.errors.password?.type === 'minLength' && <Text category='s2' style={styles.text}>{form.formState.errors.password?.message}</Text>}
+        {form.formState.errors.password?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.password?.message}</Text>}
+        {form.formState.errors.password?.type === 'validate' && <Text category='s2' style={styles.text}>Senha inválida</Text>}
         <Controller
           control={form.control}
           rules={{

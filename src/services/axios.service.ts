@@ -1,10 +1,5 @@
-import axios from 'axios'
 import { API_BASE_URL } from '@constants/uri'
-import { AppStorage } from './app-storage.service'
-
-const getToken = async () => {
-    return await AppStorage.getUserToken()
-}
+import axios from 'axios'
 
 export const getAPIClient = () => {
 
@@ -15,11 +10,6 @@ export const getAPIClient = () => {
     api.interceptors.request.use(config => {
         return config
     })
-
-    // const token = getToken()
-    // if (token) {
-    //     api.defaults.headers.common['Authorization']  = `Bearer ${token}`
-    // }
 
     return api
 }

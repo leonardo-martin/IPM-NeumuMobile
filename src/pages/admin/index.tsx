@@ -9,7 +9,7 @@ import { useFocusEffect } from '@react-navigation/native'
 import ModalizeFixed from '@components/modalize'
 import HeaderAdmin from '@components/header/admin'
 import { dashboardStyle } from './style'
-import FloatingButton from '@components/floatingButton'
+import FloatingPlusButton from 'components/floatingButton/plusButton'
 import { useModal } from '@hooks/useModal'
 import { Modalize } from 'react-native-modalize'
 import { useAppSelector } from '@hooks/redux'
@@ -135,7 +135,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
         </ModalizeFixed>
       </Portal>
       <Portal>
-        <FloatingButton containerStyle={{
+        <FloatingPlusButton containerStyle={{
           bottom: 80,
           right: 60,
           opacity: visibleFloatingButton ? 1 : 0

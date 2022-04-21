@@ -27,3 +27,8 @@ export const validateCNS = (text: string | undefined) => {
     }
     return false
 }
+
+export const validatePasswd = (value: string) => {
+    const regExp = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#])[0-9a-zA-Z$*&@#]{8,}$/)
+    return regExp.test(value)
+}

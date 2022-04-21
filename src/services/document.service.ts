@@ -23,8 +23,8 @@ export const uploadTutorFile = async (data: FormData, patientCpf: string, tutorC
         headers: {
             'Content-Type': 'multipart/form-data'
         },
-        transformRequest: (data) => {
-            return data
+        transformRequest: (content) => {
+            return content
         }
     })
 }

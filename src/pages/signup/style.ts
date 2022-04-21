@@ -90,7 +90,7 @@ export const registerStyle = StyleSheet.create({
         padding: 4
     },
     input: {
-        paddingVertical: 5
+        paddingVertical: 10
     },
     toggleButton: {
         width: 20,
@@ -138,7 +138,7 @@ export const registerStyle = StyleSheet.create({
         fontFamily: "System",
         fontSize: 12,
         fontWeight: "800",
-        marginTop: 8,
+        paddingTop: 10,
         textAlign: "left"
     },
     backdropSpinner: {
@@ -162,5 +162,9 @@ export const registerStyle = StyleSheet.create({
         paddingVertical: 15,
         color: 'text-basic-color',
         alignItems: 'flex-start',
+    },
+    contactLink: {
+        color: 'color-primary-default',
+        fontWeight: '600'
     }
 })

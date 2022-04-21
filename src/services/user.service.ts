@@ -2,8 +2,10 @@ import { UserPatientData } from '@models/User'
 import { PatientProfileCreatorDto } from '@models/PatientProfileCreator'
 import { api } from './api.service'
 import { AxiosResponse } from 'axios'
+import { AppDispatch } from '@store/index'
+import { setProfile } from '@store/ducks/profile'
 
-export const createUser = async (data: UserPatientData, _type: string = 'patient' ): Promise<AxiosResponse> => {
+export const createUser = async (data: UserPatientData, _type: string = 'patient'): Promise<AxiosResponse> => {
 
     data = JSON.parse(JSON.stringify(data).replace('cns', 'susnumber').replace('genre', 'sex'))
 
@@ -27,4 +29,20 @@ export const createPatientProfileCreator = async (patientId: number, creator?: P
     creatorReq.patientProfileCreatorTypeId = Number(creator?.patientProfileCreatorTypeId)
 
     return await api.post('patient-profile-creator', creatorReq)
+}
+
+export const getUserDetails = () => (dispatch: AppDispatch): Promise<any> => {
+    return api.post('user')
+        .then(async (res: AxiosResponse<any>) => {
+            if (res.data) {
+                dispatch(setProfile(res.data))
+            }
+        })
+        .catch((error) => {
+            if (error.response) {
+                return error.response
+            }
+            throw error
+        })
+
 }

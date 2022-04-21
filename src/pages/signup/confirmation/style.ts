@@ -52,7 +52,8 @@ export const style = StyleSheet.create({
     },
     itemDescription: {
         color: 'color-basic-100',
-        fontWeight: '300'
+        fontWeight: '300',
+        textAlign: 'center'
     },
     image: {
         width: width / 2,

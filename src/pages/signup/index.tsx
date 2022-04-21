@@ -1,29 +1,31 @@
-import React, { FC, ReactElement, useRef, useState } from 'react'
-import { View } from 'react-native'
-import { Button, CheckBox, Spinner, useStyleSheet } from '@ui-kitten/components'
-import Stepper from '@components/stepper'
-import { SafeAreaLayout } from '@components/safeAreaLayout'
-import { Modalize } from 'react-native-modalize'
-import { useForm } from 'react-hook-form'
-import { UserPatientData, UserDoctorData } from '@models/User'
-import toast from '@helpers/toast'
-import { cleanNumberMask } from '@utils/mask'
-import { createPatientProfileCreator, createUser } from '@services/user.service'
-import { extractFieldString } from '@utils/common'
-import { useNavigation, useRoute } from '@react-navigation/native'
 import TermsConditions from '@components/acceptTerms'
+import RegisterHeader from '@components/header/register'
+import { SafeAreaLayout } from '@components/safeAreaLayout'
+import Stepper from '@components/stepper'
+import toast from '@helpers/toast'
+import { PatientProfileCreatorTypeEnum, RelationshipPatient } from '@models/PatientProfileCreator'
 import { RegisterParams } from '@models/SignUpProps'
-
+import { UserDoctorData, UserPatientData } from '@models/User'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { createPatientProfileCreator, createUser } from '@services/user.service'
+import { Button, CheckBox, Spinner, useStyleSheet } from '@ui-kitten/components'
+import { extractFieldString } from '@utils/common'
+import { cleanNumberMask } from '@utils/mask'
+import React, { FC, ReactElement, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { Platform, View } from 'react-native'
+import { DocumentPickerResponse } from 'react-native-document-picker'
+import { Modalize } from 'react-native-modalize'
+import { Host, Portal } from 'react-native-portalize'
+import { uploadTutorFile } from 'services/document.service'
+import DoctorSignUpPart1Screen from './doctor/part1'
+import DoctorSignUpPart2Screen from './doctor/part2'
+import { creatorRelationship } from './patient/data'
 import PatientSignUpPart1Screen from './patient/part1'
 import PatientSignUpPart2Screen from './patient/part2'
 import PatientSignUpPart3Screen from './patient/part3'
-import DoctorSignUpPart1Screen from './doctor/part1'
-import DoctorSignUpPart2Screen from './doctor/part2'
 import { signupStyle } from './style'
-import RegisterHeader from '@components/header/register'
-import { Host, Portal } from 'react-native-portalize'
-import { PatientProfileCreatorTypeEnum, RelationshipPatient } from '@models/PatientProfileCreator'
-import { creatorRelationship } from './patient/data'
+
 
 const SignUpScreen: FC = (): ReactElement => {
 
@@ -77,28 +79,7 @@ const SignUpScreen: FC = (): ReactElement => {
             if (params?.type === 0) {
                 const newData = data as UserPatientData
 
-                if (newData.creator?.patientProfileCreatorTypeId === PatientProfileCreatorTypeEnum.Other) {
-                    const id = newData.creator.data['creatorRelationship']
-                    newData.creator.data['creatorRelationship'] = creatorRelationship.find((_, index) => index === id)
-
-                    if (newData.creator.data['creatorRelationship'] as RelationshipPatient === 'Familiar') {
-                        const kinship: {
-                            id: number,
-                            title: string
-                        } = JSON.parse(JSON.stringify(newData.creator.data['kinship']))
-                        newData.creator.data['kinship'] = kinship.title
-                    } else {
-                        delete newData.creator.data['kinship']
-                    }
-
-                    if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Profissional de Saúde') {
-                        delete newData.creator.data['creator.data.specialty']
-                    }
-
-                    if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Tutor Legal') {
-                        delete newData.creator.data['creator.data.guardian.attachment']
-                    }
-                }
+                let allowedToCreate: boolean = true
 
                 if (newData.creator && newData.creator.data && newData.creator?.data['cpf'])
                     newData.creator.data['cpf'] = cleanNumberMask(newData.creator.data['cpf'])
@@ -113,21 +94,68 @@ const SignUpScreen: FC = (): ReactElement => {
                     delete newData.pastExams
                 }
 
-                const response = await createUser(newData)
+                if (newData.creator?.patientProfileCreatorTypeId === PatientProfileCreatorTypeEnum.Other) {
 
-                if (response.status !== 201) {
-                    const message = response.data?.message
-                    if (message.toUpperCase().includes('Unique constraint'.toUpperCase())) {
-                        var field = extractFieldString(message)
-                        field = (field === 'SUSNUMBER') ? 'Cartão Nacional de Saúde' : field
-                        messageError = field + ' já cadastrado'
+                    const id = newData.creator.data['creatorRelationship']
+                    newData.creator.data['creatorRelationship'] = creatorRelationship.find((_, index) => index === id)
+
+                    if (newData.creator.data['creatorRelationship'] as RelationshipPatient === 'Familiar') {
+                        const kinship: {
+                            id: number,
+                            title: string
+                        } = JSON.parse(JSON.stringify(newData.creator.data['kinship']))
+                        newData.creator.data['kinship'] = kinship.title
                     } else {
-                        messageError = 'Ocorreu um erro. Tente novamente mais tarde.'
+                        delete newData.creator.data['kinship']
                     }
-                } else await createPatientProfileCreator(Number(response.data.patientId), newData.creator)
+
+                    if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Profissional de Saúde') {
+                        delete newData.creator.data['specialty']
+                    }
+
+                    if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Tutor Legal') {
+                        delete newData.creator.data['guardian']
+                    } else {
+                        allowedToCreate = false
+                        try {
+                            const file = newData.creator.data['guardian'].attachment as DocumentPickerResponse
+                            const formData = new FormData()
+                            formData.append('fileFormat', file.name)
+                            formData.append('file', {
+                                uri: Platform.OS === 'android'
+                                    ? file.uri
+                                    : file.uri.replace('file://', ''),
+                                name: file.name,
+                                type: file.type
+                            })
+
+                            const result = await uploadTutorFile(formData, newData.cpf as string, newData.creator.data['cpf'])
+                            if (result.status === 201) {
+                                allowedToCreate = true
+                                newData.creator.data['guardian'].attachment.uri = '[hidden]'
+                            }
+
+                        } catch (error) {
+                            messageError = 'Erro ao enviar a documentação'
+                        }
+                    }
+                } 
+
+                if (allowedToCreate) {
+                    const response = await createUser(newData)
+                    if (response.status !== 201) {
+                        const message = response.data?.message
+                        if (message.toUpperCase().includes('Unique constraint'.toUpperCase())) {
+                            var field = extractFieldString(message)
+                            field = (field === 'SUSNUMBER') ? 'Cartão Nacional de Saúde' : field
+                            messageError = field + ' já cadastrado'
+                        } else {
+                            messageError = 'Ocorreu um erro. Tente novamente mais tarde.'
+                        }
+                    } else await createPatientProfileCreator(Number(response.data.patientId), newData.creator)
+                }
             } else if (params?.type === 1) {
                 const response = await createUser(data as UserDoctorData, 'doctor')
-
                 if (response.status !== 201) {
                     const message = response.data?.message
                     if (message.toUpperCase().includes('Unique constraint'.toUpperCase())) {
@@ -147,7 +175,7 @@ const SignUpScreen: FC = (): ReactElement => {
             setSending(false)
         }
 
-        if (messageError !== '') toast.danger({ message: messageError, duration: 1000 })
+        if (messageError !== '') toast.danger({ message: messageError, duration: 3000 })
         else navigation.navigate('RegistrationConfirmation')
     }
 
@@ -210,8 +238,7 @@ const SignUpScreen: FC = (): ReactElement => {
                                         accessoryLeft={isLoading ? LoadingIndicator : undefined}
                                         disabled={!checked || isLoading}
                                         onPress={forms[params.type] ? forms[params.type].handleSubmit(submit) : undefined}
-                                        status='warning'
-                                    >
+                                        status='warning'>
                                         CADASTRAR
                                     </Button>
                                 </View>

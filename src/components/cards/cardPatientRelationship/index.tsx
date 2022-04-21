@@ -10,7 +10,7 @@ import { formatCpf, formatPhone, isEmailValid, onlyNumbers } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
-import { Platform, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import { CalendarIcon } from './icons'
 
@@ -54,8 +54,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
         if (checked) {
             form.setValue('creator.data.career', 'N/A')
             form.setValue('creator.data.company', 'N/A')
-            form.clearErrors('creator.data.career')
-            form.clearErrors('creator.data.company')
+            form.clearErrors(['creator.data.career', 'creator.data.company'])
         } else {
             form.setValue('creator.data.career', '')
             form.setValue('creator.data.company', '')
@@ -74,22 +73,29 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
 
     useEffect(() => {
         if (fileResponse) {
-            const formData = new FormData()
-            formData.append('fileFormat', fileResponse[0].name)
-            formData.append('file', {
-                uri: Platform.OS === 'android'
-                    ? fileResponse[0].uri
-                    : fileResponse[0].uri.replace('file://', ''),
-                name: fileResponse[0].name,
-                type: fileResponse[0].type
-            })
-            form.setValue('creator.data.guardian.attachment', formData)
+            form.setValue('creator.data.guardian.attachment', fileResponse[0])
             form.clearErrors('creator.data.guardian.attachment')
 
         } else {
             form.setValue('creator.data.guardian.attachment', undefined)
         }
     }, [fileResponse])
+
+    const verifyCpf = (value: string) => {
+        if (value === form.getValues('cpf')) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    const verifyEmail = (value: string) => {
+        if (value === form.getValues('email')) {
+            return false
+        } else {
+            return true
+        }
+    }
 
     return (
         <>
@@ -173,7 +179,10 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         value: 14,
                         message: `Mín. 14 caracteres`
                     },
-                    validate: (e) => e ? validate(e) : undefined
+                    validate: {
+                        valid: (e) => e ? validate(e) : undefined,
+                        equal: (e) => e ? verifyCpf(e) : undefined
+                    }
                 }}
                 render={({ field: { onChange, onBlur, value, name, ref } }) => (
                     <Input
@@ -183,7 +192,10 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         keyboardType='number-pad'
                         testID={name}
                         onBlur={onBlur}
-                        onChangeText={onChange}
+                        onChangeText={(value) => {
+                            onChange(value)
+                            verifyCpf(value)
+                        }}
                         value={formatCpf(value)}
                         underlineColorAndroid="transparent"
                         autoCapitalize='none'
@@ -198,7 +210,8 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
             />
             {form.formState.errors.creator?.data?.cpf?.type === 'minLength' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>{form.formState.errors.creator?.data?.cpf?.message}</Text>}
             {form.formState.errors.creator?.data?.cpf?.type === 'required' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>{form.formState.errors.creator?.data?.cpf?.message}</Text>}
-            {form.formState.errors.creator?.data?.cpf?.type === 'validate' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>CPF inválido</Text>}
+            {form.formState.errors.creator?.data?.cpf?.type === 'valid' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>CPF inválido</Text>}
+            {form.formState.errors.creator?.data?.cpf?.type === 'equal' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>CPF não pode ser igual ao do paciente</Text>}
             <Controller
                 control={form.control}
                 rules={{
@@ -210,7 +223,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 render={({ field: { onChange, onBlur, value, name, ref } }) => (
                     <Datepicker
                         size='small'
-                        label='Data de Nascimento (18+) *'
+                        label='Data de Nascimento *'
                         date={value ? value : dateForOver}
                         onSelect={onChange}
                         accessoryRight={CalendarIcon}
@@ -223,6 +236,8 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         min={new Date(1900, 0, 0)}
                         backdropStyle={styles?.backdropDatepicker}
                         boundingMonth={false}
+                        style={styles?.input}
+                        caption='* Necessário ser maior de 18 anos'
                     />
                 )}
                 name='creator.data.dateOfBirth'
@@ -239,7 +254,10 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         value: 5,
                         message: `Mín. 5 caracteres`
                     },
-                    validate: (e) => e ? isEmailValid(e) : undefined
+                    validate: {
+                        valid: (e) => e ? isEmailValid(e) : undefined,
+                        equal: (e) => e ? verifyEmail(e) : undefined
+                    }
                 }}
                 render={({ field: { onChange, onBlur, value, name, ref } }) => (
                     <Input
@@ -265,7 +283,8 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
             />
             {form.formState.errors.creator?.data?.email?.type === 'minLength' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>{form.formState.errors.creator?.data?.email?.message}</Text>}
             {form.formState.errors.creator?.data?.email?.type === 'required' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>{form.formState.errors.creator?.data?.email?.message}</Text>}
-            {form.formState.errors.creator?.data?.email?.type === 'validate' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>E-mail inválido</Text>}
+            {form.formState.errors.creator?.data?.email?.type === 'valid' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>E-mail inválido</Text>}
+            {form.formState.errors.creator?.data?.email?.type === 'equal' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>E-mail não pode ser igual ao do paciente</Text>}
 
             <CardAddressComponent
                 styles={styles}
@@ -455,10 +474,10 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                                 onSelect={(index: IndexPath | IndexPath[]) => {
                                     onChange(index)
                                     setSelectedIndex(index)
-                                    form.setFocus('creator.data.specialty.crm')
                                 }}
                                 clearSelected={setSelectedIndex}
                                 items={sortedKinList}
+                                style={styles?.input}
                             />
                         )}
                         name='creator.data.kinship'

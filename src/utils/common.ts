@@ -1,6 +1,8 @@
 import { MutableRefObject } from "react"
 import { PatientProfileCreatorTypeEnum } from "@models/PatientProfileCreator"
 import { AscendingOrder } from "@models/Common"
+import { Linking } from "react-native"
+import toast from '@helpers/toast'
 
 export const matchMessage = (message: any) => {
 
@@ -105,4 +107,11 @@ export const sortByDate = (a: Date, b: Date, order: AscendingOrder | undefined) 
         return b.getTime() - a.getTime()
 
     return a.getTime() - b.getTime()
+}
+
+export const openMailTo = () => {
+    Linking.openURL('mailto:contato@teleneumu.com.br?subject=Contato TeleNeumu')
+        .catch(() => {
+            toast.warning({ message: 'Erro desconhecido. Contate o administrador', duration: 3000 })
+        })
 }

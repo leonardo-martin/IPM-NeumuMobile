@@ -5,7 +5,6 @@ import { useDatepickerService } from '@hooks/useDatepickerService'
 import { useFetch } from '@hooks/useSwr'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect } from '@react-navigation/native'
-import { UserPermission } from '@services/permission.service'
 import { Button, Icon, IconProps, useStyleSheet } from '@ui-kitten/components'
 import { formatCpf, formatPhone } from '@utils/mask'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
@@ -48,10 +47,7 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
   )
 
   const handlePickAvatar = async () => {
-    const isAllowed = await UserPermission.getCameraPermission()
-    if (isAllowed) {
-      console.log('liberado')
-    }
+    console.log('liberado')
   }
 
   const renderPhotoButton = (): ReactElement => (
@@ -137,8 +133,8 @@ const EditProfileScreen: FC<DrawerContentComponentProps> = ({
 
         <ProfileSetting
           style={[styles.profileSetting, styles.section]}
-          hint='Nome de Usuário'
-          value={userDetails?.username}
+          hint='Usuário'
+          value={userDetails?.cpf}
         />
         <ProfileSetting
           style={styles.profileSetting}

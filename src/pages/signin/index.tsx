@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native'
 import { AppStorage } from '@services/app-storage.service'
 import { authLogin } from '@services/auth.service'
 import { Button, CheckBox, Icon, IconProps, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
-import { matchMessage } from '@utils/common'
+import { matchMessage, openMailTo } from '@utils/common'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Keyboard, Platform, StatusBar, View } from 'react-native'
@@ -118,13 +118,18 @@ const SignInScreen: FC = (): ReactElement => {
     setChecked(isChecked)
   }
 
+  
+
+
   return (
     <>
       <StatusBar hidden={Platform.OS === 'ios' ? true : false} backgroundColor='transparent' translucent />
-      <SafeAreaLayout level='1' style={styles.safeArea}>
-        <KeyboardAwareScrollView
-          enableOnAndroid
-          contentContainerStyle={{ flex: 1 }}>
+      <KeyboardAwareScrollView
+        keyboardShouldPersistTaps='handled'
+        showsVerticalScrollIndicator={false}
+        enableOnAndroid
+        contentContainerStyle={{ flexGrow: 1 }}>
+        <SafeAreaLayout level='1' style={styles.safeArea}>
           <View style={styles.content}>
             <View style={styles.boxTitle}>
               <LogoPedroMolina width="140" height="150" />
@@ -250,8 +255,20 @@ const SignInScreen: FC = (): ReactElement => {
               visible={visibleModal}
             />
           </View>
-        </KeyboardAwareScrollView>
-      </SafeAreaLayout>
+        </SafeAreaLayout>
+        <SafeAreaLayout insets='bottom'>
+          <TouchableOpacity
+            onPress={isLoading ? undefined : openMailTo}>
+            <View style={styles.containerContact}>
+              <Text style={styles.contactText}>Fale Conosco</Text>
+              <Icon name='mail'
+                size={20}
+                style={styles.icon} />
+            </View>
+          </TouchableOpacity>
+        </SafeAreaLayout>
+      </KeyboardAwareScrollView>
+
     </>
   )
 }

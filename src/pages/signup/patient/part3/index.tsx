@@ -29,7 +29,7 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
   const [showFields, setShowFields] = useState<boolean>(false)
 
   const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
-  const [isLegalAge, setIsLegalAge] = useState<boolean>()
+  const [isLegalAge, setIsLegalAge] = useState<boolean>(false)
 
   useFocusEffect(
     useCallback(() => {
@@ -62,7 +62,7 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
       const idRelationship = form.getValues('creator.data.creatorRelationship')
       if (idRelationship)
         setRelationship(creatorRelationship.find((_, i) => i === idRelationship))
-      else if(!idRelationship && !isLegalAge) setIsVisible(true)
+      else if(!idRelationship && !isLegalAge && result !== 1) setIsVisible(true)
     }, [])
   )
 
@@ -156,7 +156,7 @@ const PatientSignUpPart3Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
                     onBlur={onBlur}>
                     {evaProps => <Text {...evaProps} >{_item + " " +
                       (!isLegalAge && _item.toLowerCase() !== 'outro'.toLowerCase() ?
-                        '(Para maior de idade)' : '')}</Text>}
+                        '(Somente para maiores de 18 anos)' : '')}</Text>}
                   </Radio>
                 )
               })}

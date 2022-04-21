@@ -67,5 +67,24 @@ export const loginStyle = StyleSheet.create({
   containerCheckbox: {
     flexDirection: 'row',
     justifyContent: 'space-between'
-  }
+  },
+  containerContact: {
+    height: 50,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    paddingHorizontal: 5,
+  },
+  contactText: {
+    color: 'text-hint-color',
+    fontWeight: '400',
+    fontStyle: 'normal',
+    fontSize: 12,
+    paddingHorizontal: 5,
+    textTransform: 'uppercase'
+  },
+  icon: {
+    color: 'text-hint-color',
+  },
 })
