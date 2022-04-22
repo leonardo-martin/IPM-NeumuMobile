@@ -3,7 +3,7 @@ import { ItemInfo } from "@components/list"
 export const data: ItemInfo[] = [
     {
         title: 'Editar Perfil',
-        description: 'Informações sobre minha conta',
+        description: 'Editar as informações da minha conta',
         icon: {
             name: 'person-outline',
             pack: 'eva'
@@ -21,7 +21,7 @@ export const data: ItemInfo[] = [
     },
     {
         title: 'Programa de Mapeamento Genético',
-        description: 'O que é? Como funciona? Participar',
+        description: '',
         icon: {
             name: 'activity-outline',
             pack: 'eva'

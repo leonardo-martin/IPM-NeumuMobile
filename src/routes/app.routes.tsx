@@ -56,6 +56,7 @@ const AppRoutes: FC = (): ReactElement => {
         swipeEnabled: false,
         headerShown: false,
       }}>
+        <Screen name="GeneticMappingProgram" component={GeneticMappingProgramScreen} />
         <Screen
           name="PresentialSchedule"
           component={PresentialScheduleScreen}
@@ -115,7 +116,6 @@ const AppRoutes: FC = (): ReactElement => {
           name="InformationApp"
           component={InformationAppScreen}
         />
-        <Screen name="GeneticMappingProgram" component={GeneticMappingProgramScreen} />
         <Screen name="ChangePasswordChoice" component={ChangePasswordChoice} />
         <Screen name="ChangePasswordRequest" component={ChangePasswordRequest} />
         <Screen name="TermsAndConditions" component={Terms} />

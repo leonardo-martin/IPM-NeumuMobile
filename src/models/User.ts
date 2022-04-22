@@ -1,3 +1,4 @@
+import { ExamDNA } from "./Patient"
 import { PatientProfileCreatorDto } from "./PatientProfileCreator"
 
 export interface AuthenticationPayload {
@@ -150,11 +151,4 @@ export class UserAccRecoveryPasswdRequest {
 export class UserAccRecoveryPasswd {
     token!: string
     newPassword!: string
-}
-
-class ExamDNA {
-    exam?: string = ''
-    doctor?: {
-        crm?: string
-    }
 }

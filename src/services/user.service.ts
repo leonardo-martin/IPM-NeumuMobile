@@ -32,7 +32,7 @@ export const createPatientProfileCreator = async (patientId: number, creator?: P
 }
 
 export const getUserDetails = () => (dispatch: AppDispatch): Promise<any> => {
-    return api.post('user')
+    return api.get('user')
         .then(async (res: AxiosResponse<any>) => {
             if (res.data) {
                 dispatch(setProfile(res.data))
