@@ -23,7 +23,7 @@ const GeneticMappingProgramScreen: FC = (): ReactElement => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const form = useForm<PatientDto>()
     const { ref } = useModal<Modalize>()
-    const [selectedIndex, setSelectedIndex] = useState<number | undefined>()
+    const [selectedIndex, setSelectedIndex] = useState<number | undefined>(0)
     const [selectTmp, setSelectTmp] = useState<number | undefined>(selectedIndex)
     const styles = useStyleSheet(mappingStyle)
     const [selectedIndexExamDNA, setSelectedIndexExamDNA] = useState(-1)
@@ -72,9 +72,7 @@ const GeneticMappingProgramScreen: FC = (): ReactElement => {
         try {
             await updatePatient(data)
             setSelectTmp(data.abrafeuRegistrationOptIn === 'true' ? 0 : 1)
-            setTimeout(() => {
-                setIsLoading(false)
-            }, 3000)
+            setIsLoading(false)
         } catch (error) {
             setIsLoading(false)
             setSelectedIndex(selectTmp)
@@ -180,7 +178,8 @@ const GeneticMappingProgramScreen: FC = (): ReactElement => {
                                         name='pastExams.doctor.crm'
                                         defaultValue=''
                                     />
-                                    {form.formState.errors.pastExams?.doctor?.crm && <Text category='s2' style={styles.text}>{form.formState.errors.pastExams?.doctor?.crm?.message}</Text>}
+                                    {form.formState.errors.pastExams?.doctor?.crm && <Text category='s2' style={[styles.text, { paddingHorizontal: 5 }]}>{form.formState.errors.pastExams?.doctor?.crm?.message}</Text>}
+
                                     <View style={styles.viewLabel}>
                                         <Text category='label' status='primary' style={styles.labelTitle}>Assinale uma das alternativas abaixo em relação ao teste genético: *</Text>
                                     </View>
@@ -196,7 +195,7 @@ const GeneticMappingProgramScreen: FC = (): ReactElement => {
                                             <RadioGroup
                                                 ref={ref}
                                                 testID={name}
-                                                style={{ paddingHorizontal: 15 }}
+                                                style={{ paddingHorizontal: 5 }}
                                                 selectedIndex={selectedIndexExamDNA}
                                                 onChange={handleRadioSelectedExamDNA}>
                                                 {examResult.map((_, i) => {
@@ -208,7 +207,7 @@ const GeneticMappingProgramScreen: FC = (): ReactElement => {
                                         )}
                                         name='pastExams.exam'
                                     />
-                                    {form.formState.errors.pastExams?.exam && <Text category='s2' style={styles.text}>{form.formState.errors.pastExams?.exam?.message}</Text>}
+                                    {form.formState.errors.pastExams?.exam && <Text category='s2' style={[styles.text, { paddingHorizontal: 5 }]}>{form.formState.errors.pastExams?.exam?.message}</Text>}
                                 </View>
                                 <View style={styles.containerBtn}>
                                     <Button

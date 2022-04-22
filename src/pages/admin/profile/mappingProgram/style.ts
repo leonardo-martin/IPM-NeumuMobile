@@ -1,4 +1,4 @@
-import { Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 
 export const mappingStyle = StyleSheet.create({
     safeArea: {
@@ -11,13 +11,13 @@ export const mappingStyle = StyleSheet.create({
     },
     subContainer: {
         paddingTop: 15,
-        alignItems: 'center'
     },
     title: {
         fontSize: 14,
         fontWeight: 'bold',
         paddingVertical: 10,
-        textTransform: 'uppercase'
+        textTransform: 'uppercase',
+        textAlign: 'center'
     },
     radioGroup: {
         flexDirection: 'row',
