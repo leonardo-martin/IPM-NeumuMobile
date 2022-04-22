@@ -1,16 +1,19 @@
-import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useState } from 'react'
-import { View } from 'react-native'
-import { Button, Card, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
-import { Controller, useForm } from 'react-hook-form'
-import { useCombinedRefs } from '@hooks/useCombinedRefs'
-import { Exam, ExamImage } from '@models/Exam'
-import { modalStyle } from './style'
-import { DocumentPickerResponse } from 'react-native-document-picker'
 import AttachmentBoxComponent from '@components/attachmentBox'
+import { useCombinedRefs } from '@hooks/useCombinedRefs'
+import { ExamDto, ExamImage } from '@models/Exam'
+import { useFocusEffect } from '@react-navigation/native'
+import { uploadUserFile } from '@services/document.service'
+import { uploadExam } from '@services/exam.service'
+import { Button, Card, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { Platform, View } from 'react-native'
+import { DocumentPickerResponse } from 'react-native-document-picker'
+import { modalStyle } from './style'
 
 interface AddExamModalProps {
     ref: ForwardedRef<Modal>
-    onRefresh: Dispatch<React.SetStateAction<Exam & ExamImage | undefined>>
+    onRefresh: Dispatch<React.SetStateAction<ExamDto & ExamImage | undefined>>
     onVisible: Dispatch<React.SetStateAction<boolean>>
     visible: boolean
 }
@@ -18,12 +21,19 @@ interface AddExamModalProps {
 const AddExamModal: FC<AddExamModalProps> = forwardRef<Modal, React.PropsWithChildren<AddExamModalProps>>(({ onRefresh, onVisible, visible, ...props }, ref): ReactElement => {
 
     const combinedRef = useCombinedRefs(ref, ref)
-    const form = useForm<Exam & ExamImage>()
+    const form = useForm<ExamDto & ExamImage>()
     const styles = useStyleSheet(modalStyle)
     const [isError, setIsError] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [fileResponse, setFileResponse] = useState<DocumentPickerResponse[] | undefined>()
+
+    useFocusEffect(
+        useCallback(() => {
+            form.reset()
+            setFileResponse(undefined)
+        }, [])
+    )
 
     const handleVisibleModal = () => {
         form.reset({})
@@ -33,23 +43,48 @@ const AddExamModal: FC<AddExamModalProps> = forwardRef<Modal, React.PropsWithChi
         onVisible(!visible)
     }
 
-    const submitForm = (data: Exam & ExamImage) => {
+    const submitForm = async (data: ExamDto & ExamImage) => {
         setIsLoading(!isLoading)
 
         try {
-            const obj: any = {
-                ...data,
-                examDate: new Date()
-            }
-            setTimeout(() => {
-                onRefresh(obj)
+            if (fileResponse) {
+                const formData = new FormData()
+                formData.append('fileFormat', fileResponse[0].name)
+                formData.append('file', {
+                    uri: Platform.OS === 'android'
+                        ? fileResponse[0].uri
+                        : fileResponse[0].uri.replace('file://', ''),
+                    name: fileResponse[0].name,
+                    type: fileResponse[0].type
+                })
+                formData.append('entityId', 1)
+                formData.append('entityType', 'entityType')
+                formData.append('documentType', 'user-exam-file')
+
+                const response = await uploadUserFile(formData)
+
+                await uploadExam({
+                    ...data,
+                    patientId: 87,
+                    documentId: response.data.id,
+                    examDate: new Date(),
+                    examResultDate: new Date(),
+                })
+
+                onRefresh({
+                    ...data,
+                    patientId: 87,
+                    documentId: response.data.id,
+                    examDate: new Date(),
+                    examResultDate: new Date(),
+                })
                 handleVisibleModal()
-            }, 2000)
+            }
         } catch (error) {
             setErrorMessage('Ocorreu um erro inesperado. Tente novamente mais tarde.')
             setIsError(true)
         } finally {
-            if (isLoading) setIsLoading(false)
+            setIsLoading(false)
         }
     }
 
@@ -94,7 +129,7 @@ const AddExamModal: FC<AddExamModalProps> = forwardRef<Modal, React.PropsWithChi
                                 ref={ref}
                                 maxLength={30}
                                 returnKeyType="next"
-                                onSubmitEditing={() => form.setFocus('examDescription')}
+                                onSubmitEditing={() => form.setFocus('data.examDescription')}
                                 underlineColorAndroid="transparent"
                                 onPressIn={clearError}
                             />
@@ -130,16 +165,16 @@ const AddExamModal: FC<AddExamModalProps> = forwardRef<Modal, React.PropsWithChi
                                 scrollEnabled
                             />
                         )}
-                        name='examDescription'
+                        name='data.examDescription'
                         defaultValue=''
                     />
-                    {form.formState.errors.examDescription && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.examDescription?.message}</Text>}
-                </View>
+                    {form.formState.errors.data?.examDescription && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.data?.examDescription?.message}</Text>}
 
-                <AttachmentBoxComponent
-                    handleFile={setFileResponse}
-                    file={fileResponse}
-                    label='Anexar Documentação' />
+                    <AttachmentBoxComponent
+                        handleFile={setFileResponse}
+                        file={fileResponse}
+                        label='Anexar Documentação' />
+                </View>
 
                 {isError && (
                     <View style={{ paddingBottom: 10 }}>

@@ -1,26 +1,28 @@
 import { DateFnsService } from "@ui-kitten/date-fns"
 import { _DEFAULT_FORMAT_DATE } from "@constants/date"
+import { JSONObject } from "./Common"
 
-export class Exam {
-
+export class ExamDto {
     id!: number
-    patientId!: string
+    patientId!: number
     documentId!: number
     examType!: string
-    examDate!: Date
+    examDate!: Date | string
     examResultDate!: Date
-    examDescription!: string
-    data?: JSON
-    
-    get shortenedDescription(): string {
-        const isLong: boolean = this.examDescription.length > 36
-        return isLong ? `${this.examDescription.substring(0, 32)}...` : this.examDescription
-    }
+    data!: JSONObject
+}
 
-    get dateToString(): string {
-        const localeDateService = new DateFnsService('pt-BR')
-        return localeDateService.format(this.examDate, _DEFAULT_FORMAT_DATE)
-    }
+export class Exam extends ExamDto {
+
+    // get shortenedDescription(): string {
+    //     const isLong: boolean = this.data.examDescription.length > 36
+    //     return isLong ? `${this.data.examDescription.substring(0, 32)}...` : this.data.examDescription
+    // }
+
+    // get dateToString(): string {
+    //     const localeDateService = new DateFnsService('pt-BR')
+    //     return localeDateService.format(this.examDate, _DEFAULT_FORMAT_DATE)
+    // }
 }
 
 export class ExamImage {

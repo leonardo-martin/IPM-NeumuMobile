@@ -1,8 +1,10 @@
-import { MutableRefObject } from "react"
-import { PatientProfileCreatorTypeEnum } from "@models/PatientProfileCreator"
-import { AscendingOrder } from "@models/Common"
-import { Linking } from "react-native"
+import { _DATE_FROM_ISO_8601 } from "@constants/date"
 import toast from '@helpers/toast'
+import { useDatepickerService } from "@hooks/useDatepickerService"
+import { AscendingOrder } from "@models/Common"
+import { PatientProfileCreatorTypeEnum } from "@models/PatientProfileCreator"
+import { MutableRefObject } from "react"
+import { Linking } from "react-native"
 
 export const matchMessage = (message: any) => {
 
@@ -99,7 +101,17 @@ export const sortByStringField = (a: any, b: any, _fieldName?: string) => {
 
 }
 
-export const sortByDate = (a: Date, b: Date, order: AscendingOrder | undefined) => {
+export const sortByDate = (a: Date | string, b: Date | string, order: AscendingOrder | undefined) => {
+
+    const { localeDateService } = useDatepickerService()
+
+    if (typeof a === 'string') {
+        a = localeDateService.parse(a, _DATE_FROM_ISO_8601)
+    }
+
+    if (typeof b === 'string') {
+        b = localeDateService.parse(b, _DATE_FROM_ISO_8601)
+    }
 
     if (order === AscendingOrder.ASC)
         return a.getTime() - b.getTime()

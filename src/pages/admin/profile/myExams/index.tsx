@@ -1,23 +1,23 @@
+import HeaderMyExams from '@components/header/admin/myExams'
+import FilterModal from '@components/modal/filterModal'
+import { SafeAreaLayout } from '@components/safeAreaLayout'
+import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATE } from '@constants/date'
+import toast from '@helpers/toast'
+import { useDatepickerService } from '@hooks/useDatepickerService'
+import { useModal } from '@hooks/useModal'
+import { AscendingOrder } from '@models/Common'
+import { Exam, ExamDto, ExamImage } from '@models/Exam'
+import { DrawerContentComponentProps } from '@react-navigation/drawer'
+import { useFocusEffect } from '@react-navigation/native'
+import { deleteExam, getPatientExamList } from '@services/exam.service'
+import { CalendarRange, Icon, IconProps, List, ListItem, Modal, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
+import { sortByDate } from '@utils/common'
 import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { Animated, ListRenderItemInfo, RefreshControl, TouchableOpacity, View } from 'react-native'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
-import { CalendarRange, Icon, IconProps, List, ListItem, Modal, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
-import { AscendingOrder } from '@models/Common'
-import HeaderMyExams from '@components/header/admin/myExams'
-
-import { getPatientExamList } from '@services/exam.service'
-import { SafeAreaLayout } from '@components/safeAreaLayout'
-import { Exam, ExamImage } from '@models/Exam'
-import { useFocusEffect } from '@react-navigation/native'
-import { sortByDate } from '@utils/common'
-import FilterModal from '@components/modal/filterModal'
-import { useModal } from '@hooks/useModal'
 import { myExamsStyle } from './style'
 
-const MyExamsScreen: FC<DrawerContentComponentProps> = ({
-    navigation
-}): ReactElement => {
+const MyExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
 
     const theme = useTheme()
     const styles = useStyleSheet(myExamsStyle)
@@ -28,17 +28,19 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = ({
     const [data, setData] = useState<Array<Exam>>([])
     const [originalData, setOriginalData] = useState<Array<Exam>>([])
 
-    const [addedItem, setAddedItem] = useState<Exam & ExamImage | undefined>(undefined)
+    const [addedItem, setAddedItem] = useState<ExamDto & ExamImage | undefined>(undefined)
     const [range, setRange] = useState<CalendarRange<Date>>({})
     const [isFiltered, setIsFiltered] = useState<boolean>(false)
+    const { localeDateService } = useDatepickerService()
 
     const handleVisibleModal = () => setVisibleModal(true)
 
     const orderList = (list: Exam[]) => {
         if (range.startDate && !range.endDate)
-            list = list.filter((e) => e.examDate >= (range.startDate as Date))
+            list = list.filter((e) => localeDateService.parse(e.examDate as string, _DATE_FROM_ISO_8601) >= (range.startDate as Date))
         else if (range.startDate && range.endDate)
-            list = list.filter((e) => e.examDate >= (range.startDate as Date) && e.examDate <= (range.endDate as Date))
+            list = list.filter((e) => localeDateService.parse(e.examDate as string, _DATE_FROM_ISO_8601) >= (range.startDate as Date)
+                && localeDateService.parse(e.examDate as string, _DATE_FROM_ISO_8601) <= localeDateService.addDay((range.endDate as Date), 1))
 
         list = list.sort((a, b) => sortByDate(a.examDate, b.examDate, AscendingOrder.DESC))
         setData([...list])
@@ -57,7 +59,8 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = ({
         }, [addedItem])
     )
 
-    const leftSwipe = (_progress: Animated.AnimatedInterpolation, dragX: Animated.AnimatedInterpolation, index: number) => {
+    const leftSwipe = (_progress: Animated.AnimatedInterpolation, dragX: Animated.AnimatedInterpolation, info: ListRenderItemInfo<Exam>
+    ) => {
         const scale = dragX.interpolate({
             inputRange: [-80, 0],
             outputRange: [1, 0.9],
@@ -71,7 +74,7 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = ({
         })
 
         return (
-            <TouchableOpacity onPress={() => onDeleteItem(index)} activeOpacity={0.5}>
+            <TouchableOpacity onPress={() => onDeleteItem(info)} activeOpacity={0.5}>
                 <Animated.View style={[styles.deleteBox, { opacity: opacity }]}>
                     <Animated.Text style={[{ transform: [{ scale: scale }] }]}>
                         <Icon name='trash-bin-outline' style={styles.icon} size={20} pack='ionicons' />
@@ -81,15 +84,14 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = ({
         )
     }
 
-    const renderRightIcon = (props: IconProps, exam: Exam) => (
+    const renderRightIcon = (_props: IconProps, exam: Exam) => (
         <View style={styles.viewDate}>
             <Text
                 style={styles.textDate}
                 appearance='hint'
                 category='c1'>
-                {exam.dateToString}
+                {localeDateService.format(localeDateService.parse(exam.examDate as string, _DATE_FROM_ISO_8601), _DEFAULT_FORMAT_DATE)}
             </Text>
-            <Icon {...props} name='chevron-forward-outline' pack='ionicons' />
         </View>
     )
 
@@ -97,32 +99,41 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = ({
         <Icon {...props} color={theme['color-basic-1100']} name='reader-outline' pack='ionicons' />
     )
 
-    const onDeleteItem = (index: number) => {
-        const arr = [...data]
-        arr.splice(index, 1)
-        setData(arr)
+    const onDeleteItem = async (info: ListRenderItemInfo<Exam>) => {
+        try {
+            const resp = await deleteExam(info.item.id)
+            if (resp.status === 201 || resp.status === 200) {
+                const arr = [...data]
+                arr.splice(info.index, 1)
+                setData(arr)
+            }
+
+        } catch (error) {
+            toast.danger({ message: 'Não é possível deletar. Tente novamente mais tarde', duration: 3000 })
+
+        }
     }
 
     const renderItem = (info: ListRenderItemInfo<Exam>) => (
         <Swipeable
-            renderRightActions={(progress, drag) => leftSwipe(progress, drag, info.index)}
+            renderRightActions={(progress, drag) => leftSwipe(progress, drag, info)}
             overshootLeft={false}>
             <ListItem
                 style={styles.containerItem}
                 title={info.item.examType}
-                description={info.item.shortenedDescription}
+                description={(evaProps) => (
+                    info.item.data.examDescription?.length > 36 ?
+                        <Text {...evaProps}>
+                            {info.item.data.examDescription.substring(0, 32)}...
+                        </Text>
+                        :
+                        <Text {...evaProps}>{info.item.data.examDescription}</Text>
+                )}
                 accessoryRight={(e) => renderRightIcon(e, info.item)}
                 accessoryLeft={renderLeftIcon}
             />
         </Swipeable>
     )
-
-    const onRefresh = useCallback(() => {
-        setRefreshing(true)
-        setTimeout(() => {
-            setRefreshing(false)
-        }, 1000)
-    }, [])
 
     const filterData = () => {
         orderList(originalData)
@@ -168,7 +179,7 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = ({
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
-                            onRefresh={onRefresh}
+                            onRefresh={getExamList}
                         />
                     }
                 />

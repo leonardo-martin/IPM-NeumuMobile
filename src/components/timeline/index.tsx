@@ -29,8 +29,9 @@ const Timeline: FC<TimelineProps> = ({
         if (range?.startDate && !range?.endDate && isFiltered)
             list = list.filter((e) => localeDateService.parse(e, _DATE_FROM_ISO_8601) >= (range.startDate as Date))
         else if (range?.startDate && range?.endDate && isFiltered)
-            list = list.filter((e) => localeDateService.parse(e, _DATE_FROM_ISO_8601) >= (range.startDate as Date) && localeDateService.parse(e, _DATE_FROM_ISO_8601) <= (range.endDate as Date))
-        list = list.sort((a, b) => sortByDate(localeDateService.parse(a, _DATE_FROM_ISO_8601), localeDateService.parse(b, _DATE_FROM_ISO_8601), orderBy))
+            list = list.filter((e) => localeDateService.parse(e, _DATE_FROM_ISO_8601) >= (range.startDate as Date)
+                && localeDateService.parse(e, _DATE_FROM_ISO_8601) <= localeDateService.addDay((range.endDate as Date), 1))
+        list = list.sort((a, b) => sortByDate(a, b, orderBy))
         setListData([...list])
 
         if (list) {

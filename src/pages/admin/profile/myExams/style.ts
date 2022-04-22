@@ -45,7 +45,8 @@ export const myExamsStyle = StyleSheet.create({
   },
   viewDate: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingHorizontal: 15
   },
   textDate: {
     textAlign: 'right',

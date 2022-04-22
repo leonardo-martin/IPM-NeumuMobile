@@ -2,13 +2,13 @@ import React, { Dispatch, FC, ReactElement, useState } from 'react'
 import { Layout, Modal, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
 import { BackIcon, PlusIcon } from '@components/header/icons'
-import { Exam, ExamImage } from '@models/Exam'
+import { Exam, ExamDto, ExamImage } from '@models/Exam'
 import { headerStyle } from '../style'
 import { useModal } from '@hooks/useModal'
 import AddExamModal from 'components/modal/addExamModal'
 
 interface HeaderMyExamsProps {
-    onRefresh: Dispatch<React.SetStateAction<Exam & ExamImage | undefined>>
+    onRefresh: Dispatch<React.SetStateAction<ExamDto & ExamImage | undefined>>
 }
 
 const HeaderMyExams: FC<HeaderMyExamsProps> = ({ onRefresh }): ReactElement => {
@@ -44,7 +44,7 @@ const HeaderMyExams: FC<HeaderMyExamsProps> = ({ onRefresh }): ReactElement => {
                 accessoryLeft={renderLeftIcon}
                 accessoryRight={renderRightIcon}
             />
-            <AddExamModal ref={ref} onRefresh={onRefresh} onVisible={setVisibleModal} visible={visibleModal}/>
+            <AddExamModal ref={ref} onRefresh={onRefresh} onVisible={setVisibleModal} visible={visibleModal} />
         </Layout>
     )
 }
