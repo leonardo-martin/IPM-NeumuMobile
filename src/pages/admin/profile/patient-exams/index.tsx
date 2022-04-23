@@ -1,6 +1,6 @@
 import AddExamDialog from '@components/dialog/addExamDialog'
 import FilterByDateDialog from '@components/dialog/filterByDateDialog'
-import HeaderMyExams from '@components/header/admin/myExams'
+import HeaderGenericWithTitleAndAddIcon from '@components/header/admin/generic-with-add-icon'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATE } from '@constants/date'
 import toast from '@helpers/toast'
@@ -75,7 +75,9 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
     )
 
     const renderLeftIcon = (props: IconProps) => (
-        <Icon {...props} color={theme['color-basic-1100']} name='reader-outline' pack='ionicons' />
+        <View style={{paddingHorizontal: 10}}>
+            <Icon {...props} color={theme['color-basic-1100']} name='reader-outline' pack='ionicons' />
+        </View>
     )
 
     const onViewItem = async (info: ListRenderItemInfo<ExamDto>) => {
@@ -93,7 +95,7 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
             }
 
         } catch (error) {
-            toast.danger({ message: 'Não é possível deletar. Tente novamente mais tarde', duration: 3000 })
+            toast.danger({ message: 'Não foi possível deletar. Tente novamente mais tarde', duration: 3000 })
 
         }
     }
@@ -192,7 +194,13 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
 
     return (
         <>
-            <HeaderMyExams onRefresh={setAddedItem} />
+            <HeaderGenericWithTitleAndAddIcon
+                title='Meus Exames'
+                onVisible={() => {
+                    setDataModal(undefined)
+                    setVisibleAddModal(!visibleAddModal)
+                }}
+            />
             <SafeAreaLayout level='1' style={styles.safeArea}>
                 <List
                     style={{ backgroundColor: 'transparent' }}

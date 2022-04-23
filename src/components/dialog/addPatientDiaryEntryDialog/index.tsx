@@ -35,7 +35,7 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
     useFocusEffect(
         useCallback(() => {
             if (visible) {
-                const title = `Diário - ${localeDateService.format(localeDateService.today(), 'DD/MM/YY')}`
+                const title = `Nota - ${localeDateService.format(localeDateService.today(), 'DD/MM/YY')}`
                 form.reset({
                     ...props.patientDiaryEntry,
                     date: props.patientDiaryEntry?.date ? new Date(props.patientDiaryEntry?.date as string) : localeDateService.today(),
@@ -69,7 +69,6 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                 handleVisibleModal()
             }
         } catch (error) {
-            console.log(error)
             setErrorMessage('Erro ao criar uma nota. Tente novamente mais tarde.')
             setIsError(true)
         } finally {

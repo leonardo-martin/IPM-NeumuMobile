@@ -21,7 +21,8 @@ interface AddExamDialogProps {
     exam?: ExamDto
 }
 
-const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithChildren<AddExamDialogProps>>(({ onRefresh, onVisible, visible, ...props }, ref): ReactElement => {
+const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithChildren<AddExamDialogProps>>(({
+    onVisible, visible, ...props }, ref): ReactElement => {
 
     const { localeDateService } = useDatepickerService()
     const combinedRef = useCombinedRefs(ref, ref)
@@ -35,19 +36,21 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [fileResponse, setFileResponse] = useState<DocumentPickerResponse[] | undefined>()
 
-    useEffect(() => {
-        form.reset({
-            ...props.exam,
-            examDate: typeof props.exam?.examDate === 'string' ? localeDateService.parse(props.exam?.examDate, _DATE_FROM_ISO_8601) : localeDateService.today(),
-            examResultDate: typeof props.exam?.examResultDate === 'string' ? localeDateService.parse(props.exam?.examResultDate, _DATE_FROM_ISO_8601) : localeDateService.today()
-        })
-        form.register('examImage', {
-            required: {
-                value: true,
-                message: 'Necessário documentação'
-            }
-        })
-    }, [props.exam])
+    useFocusEffect(
+        useCallback(() => {
+            form.reset({
+                ...props.exam,
+                examDate: typeof props.exam?.examDate === 'string' ? localeDateService.parse(props.exam?.examDate, _DATE_FROM_ISO_8601) : localeDateService.today(),
+                examResultDate: typeof props.exam?.examResultDate === 'string' ? localeDateService.parse(props.exam?.examResultDate, _DATE_FROM_ISO_8601) : localeDateService.today()
+            })
+            form.register('examImage', {
+                required: {
+                    value: true,
+                    message: 'Necessário documentação'
+                }
+            })
+        }, [props.exam])
+    )
 
     useEffect(() => {
         if (fileResponse) {
@@ -65,7 +68,6 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
     )
 
     const handleVisibleModal = () => {
-        form.reset({})
         setIsLoading(false)
         setIsError(false)
         setErrorMessage('')
@@ -99,17 +101,13 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
             }
 
             if (response && response?.status === 201 || response?.status === 200 && response?.data) {
-                await uploadExam({
+                const item: ExamDto & ExamImage = {
                     ...data,
                     patientId: 87,
                     documentId: response.data.id
-                })
-
-                onRefresh({
-                    ...data,
-                    patientId: 87,
-                    documentId: response.data.id
-                })
+                }
+                await uploadExam(item)
+                props.onRefresh(item)
                 handleVisibleModal()
             }
 

@@ -1,6 +1,4 @@
-import { Dimensions, I18nManager, StyleSheet } from 'react-native'
-
-const { width } = Dimensions.get('window')
+import { I18nManager, StyleSheet } from 'react-native'
 
 export const myExamsStyle = StyleSheet.create({
   safeArea: {
@@ -21,7 +19,6 @@ export const myExamsStyle = StyleSheet.create({
     height: 60,
     backgroundColor: 'text-control-color',
     justifyContent: 'center',
-    padding: 16,
     marginTop: 4,
   },
   text: {

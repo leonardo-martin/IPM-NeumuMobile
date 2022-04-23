@@ -124,7 +124,7 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
                     </TouchableOpacity>
                 )}
                 <TouchableOpacity onPress={handleVisibleModal}>
-                    <Icon name='options-outline' style={styles.iconFilter} size={20} pack='ionicons' />
+                    <Icon name='options-outline' style={styles.icon} size={20} pack='ionicons' />
                 </TouchableOpacity>
             </View>
         </View>
