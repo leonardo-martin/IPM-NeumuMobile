@@ -38,7 +38,7 @@ export const data: ItemInfo[] = [
     },
     {
         title: 'Informações do Aplicativo',
-        description: 'Quem somos? Versão e Outros',
+        description: '',
         route: 'InformationApp',
         icon: {
             name: 'info-outline',

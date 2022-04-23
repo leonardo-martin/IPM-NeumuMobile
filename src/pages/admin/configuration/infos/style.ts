@@ -1,23 +1,34 @@
 import { StyleSheet } from 'react-native'
 
 export const infoAppStyle = StyleSheet.create({
-    content: {
+    safeArea: {
         flex: 1,
-    },
-    viewInfoApp: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    viewText: {
-        paddingVertical: 15
     },
     text: {
-        paddingVertical: 10,
+        fontSize: 18,
+        paddingVertical: 5
+    },
+    container: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        paddingVertical: 20,
+        justifyContent: 'center'
+    },
+    about: {
         textAlign: 'center',
-        flexShrink: 1,
-        flexWrap: 'wrap',
-        fontSize: 20,
-        lineHeight: 15
+        paddingVertical: 15,
+        fontSize: 18
+    },
+    motivationalMessage: {
+        textAlign: 'center',
+        paddingTop: 15,
+        paddingVertical: 5,
+        fontStyle: 'italic',
+        fontWeight: '300',
+        fontSize: 12
+    },
+    regards: {
+        fontWeight: 'bold',
+        fontSize: 12
     }
 })
