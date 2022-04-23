@@ -1,13 +1,16 @@
+import { Divider, Input, InputProps, Layout, LayoutProps, Text } from '@ui-kitten/components'
 import React, { FC, ReactElement } from 'react'
+import { Controller, UseFormReturn } from 'react-hook-form'
 import { StyleSheet } from 'react-native'
-import { Divider, Layout, Text, LayoutProps, Input } from '@ui-kitten/components'
 
 export interface ProfileSettingProps extends LayoutProps {
   hint: string
-  value: string
+  form: UseFormReturn<any, any>
+  name: string
+  inputProps?: InputProps
 }
 
-const ProfileSetting: FC<ProfileSettingProps> = ({ style, hint, value,
+const ProfileSetting: FC<ProfileSettingProps> = ({ style, hint, inputProps, form, name,
   ...layoutProps }): ReactElement => {
 
   return (
@@ -18,16 +21,26 @@ const ProfileSetting: FC<ProfileSettingProps> = ({ style, hint, value,
         style={[styles.container, style]}>
         <Text
           appearance='hint'
-          category='s1'>
+          category='label'>
           {hint}
         </Text>
-        <Input
-          value={value}
-          editable={false}
-          size='small'
-          style={{
-            width: '50%'
-          }} />
+        <Controller
+          control={form.control}
+          render={({ field: { onChange, onBlur, value, name, ref } }) => (
+            <Input
+              {...inputProps}
+              ref={ref}
+              size='small'
+              value={value}
+              testID={name}
+              onBlur={onBlur}
+              onChangeText={inputProps?.editable ? onChange : undefined}
+              style={styles.input}
+              textStyle={styles.textStyle}
+            />
+          )}
+          name={name}
+        />
       </Layout>
       <Divider />
     </React.Fragment>
@@ -40,6 +53,16 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'center'
   },
+  input: {
+    width: '60%',
+    borderWidth: 0,
+    backgroundColor: 'transparent'
+  },
+  textStyle: {
+    minHeight: 30,
+    textAlignVertical: 'center',
+    fontSize: 12
+  }
 })

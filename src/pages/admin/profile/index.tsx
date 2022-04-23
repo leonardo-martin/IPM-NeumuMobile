@@ -1,13 +1,12 @@
 import HeaderProfile from '@components/header/admin/profile'
 import ListComponent from '@components/list'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import { BOOTDEY_URI } from '@constants/uri'
+import { useAppDispatch, useAppSelector } from '@hooks/redux'
+import { EUserRole } from '@models/UserRole'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { logout } from '@store/ducks/auth'
 import { RootState } from '@store/index'
 import { Avatar, Button, Icon, IconProps, Text, useStyleSheet } from '@ui-kitten/components'
-import { useAppDispatch, useAppSelector } from '@hooks/redux'
-import { EUserRole } from '@models/UserRole'
 import React, { FC, ReactElement } from 'react'
 import { ImageStyle, StyleProp, TouchableOpacity, View } from 'react-native'
 import { data } from './data'
@@ -26,17 +25,26 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
   )
 
   const goToMyExams = () => {
-    navigation.navigate('MyExams')
+    navigation.navigate('PatientExams')
   }
 
   const renderFooterComponent = () => (
-    <View style={styles.listFooter}>
-      <Button
-        onPress={goToMyExams}
-        appearance='filled'
-        status='success'
-        accessoryLeft={renderIconDocumentAttach}>Meus Exames</Button>
-    </View>
+    <>
+      <View style={styles.listFooter}>
+        <Button
+          onPress={goToMyExams}
+          appearance='filled'
+          status='success'
+          accessoryLeft={renderIconDocumentAttach}>Meus Exames</Button>
+      </View>
+      <View style={styles.listFooter}>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() => dispatch(logout())}>
+          <Text status='danger' category='label' style={styles.textFooter}>Sair</Text>
+        </TouchableOpacity>
+      </View>
+    </>
   )
 
   return (
@@ -51,7 +59,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
               <View style={styles.contentContainer}>
                 <Avatar style={styles.avatar as StyleProp<ImageStyle>}
                   shape='round'
-                  source={{ uri: BOOTDEY_URI + '/img/Content/avatar/avatar6.png' }} />
+                  source={require('../../../assets/profile/profile.png')} />
                 <View style={styles.body}>
                   <View style={styles.bodyContent}>
                     <Text style={styles.profileName}>@{sessionUser ? sessionUser.user : ''}</Text>
@@ -66,23 +74,21 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
             </>
           )}
           ListFooterComponent={
-            sessionUser?.userRole.find(e => e.id === EUserRole.patient) && renderFooterComponent
+            sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? renderFooterComponent
+              :
+              <TouchableOpacity
+                style={styles.buttonContainer}
+                onPress={() => dispatch(logout())}
+                hitSlop={{
+                  left: 10,
+                  right: 10,
+                  top: 10,
+                  bottom: 10
+                }}>
+                <Text status='danger' category='label' style={styles.textFooter}>Sair</Text>
+              </TouchableOpacity>
           }
           renderItem={undefined} />
-        <View style={styles.footer}>
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={() => dispatch(logout())}
-            hitSlop={{
-              left: 10,
-              right: 10,
-              top: 10,
-              bottom: 10
-            }}>
-            <Text status='danger' category='label' style={styles.textFooter}>Sair</Text>
-          </TouchableOpacity>
-        </View>
-
       </SafeAreaLayout>
     </>
   )

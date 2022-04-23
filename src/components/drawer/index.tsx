@@ -36,11 +36,11 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
       <View style={drawerStyle.profileContainer}>
         <Avatar
           size='giant'
-          source={{ uri: BOOTDEY_URI + '/img/Content/avatar/avatar6.png' }}
+          source={require('../../assets/profile/profile.png')}
           ImageComponent={ImageBackground}
         />
         <Text style={drawerStyle.profileName} category='h6'>
-          {sessionUser?.user}
+          {'@'+ sessionUser?.user}
         </Text>
       </View>
     </SafeAreaLayout>

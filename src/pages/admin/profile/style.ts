@@ -38,14 +38,11 @@ export const profileStyle = StyleSheet.create({
     alignItems: 'center'
   },
   buttonContainer: {
-    height: 45,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20
+    alignItems: 'center'
   },
   textFooter: {
-    fontSize: 20
+    fontSize: 16,
+    textTransform: 'uppercase'
   },
   item: {
     marginVertical: 4,
@@ -64,7 +61,6 @@ export const profileStyle = StyleSheet.create({
   listFooter: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 15
+    paddingVertical: 30
   }
 })

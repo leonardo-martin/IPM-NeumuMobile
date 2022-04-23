@@ -24,15 +24,16 @@ export const editProfileStyle = StyleSheet.create({
   },
   profileSetting: {
     padding: 16,
+    paddingEnd: 5
   },
   section: {
     marginTop: 24,
   },
-  editButton: {
-    marginHorizontal: 24,
-    marginTop: 24,
-    borderRadius: 50,
-    marginVertical: 5
+  editViewButton: {
+    alignItems: 'flex-end',
+    paddingTop: 10,
+    paddingEnd: 20,
+    paddingBottom: 0
   },
   avatar: {
     alignSelf: 'center',
