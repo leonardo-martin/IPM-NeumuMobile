@@ -15,7 +15,7 @@ import { CalendarRange, Icon, Modal, Text, useStyleSheet } from '@ui-kitten/comp
 import { groupByDateTime } from '@utils/common'
 import { _DATE_FROM_ISO_8601 } from 'constants/date'
 import React, { FC, ReactElement, useCallback, useState } from 'react'
-import { RefreshControl, TouchableOpacity, View } from 'react-native'
+import { LayoutChangeEvent, RefreshControl, TouchableOpacity, View } from 'react-native'
 import { notesStyle } from './style'
 
 const PatientDiaryEntryScreen: FC = (): ReactElement => {
@@ -123,7 +123,7 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
                         <Text status='danger' category='c1' style={{ paddingHorizontal: 5, fontWeight: 'bold' }}>LIMPAR</Text>
                     </TouchableOpacity>
                 )}
-                <TouchableOpacity onPress={handleVisibleModal}>
+                <TouchableOpacity disabled={originalData.length === 0} onPress={handleVisibleModal}>
                     <Icon name='options-outline' style={styles.icon} size={20} pack='ionicons' />
                 </TouchableOpacity>
             </View>
@@ -139,7 +139,7 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
                     setVisibleAddModal(!visibleAddModal)
                 }} />
             <SafeAreaLayout style={styles.safeArea} level='1' >
-                <Timeline
+                <Timeline                    
                     data={[]}
                     renderItem={undefined}
                     ListHeaderComponent={headerListComponent}
