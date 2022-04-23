@@ -37,14 +37,18 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
           status='success'
           accessoryLeft={renderIconDocumentAttach}>Meus Exames</Button>
       </View>
-      <View style={styles.listFooter}>
-        <TouchableOpacity
-          style={styles.buttonContainer}
-          onPress={() => dispatch(logout())}>
-          <Text status='danger' category='label' style={styles.textFooter}>Sair</Text>
-        </TouchableOpacity>
-      </View>
+      {exitComponent}
     </>
+  )
+
+  const exitComponent = () => (
+    <View style={styles.listFooter}>
+      <TouchableOpacity
+        style={styles.buttonContainer}
+        onPress={() => dispatch(logout())}>
+        <Text status='danger' category='label' style={styles.textFooter}>Sair</Text>
+      </TouchableOpacity>
+    </View>
   )
 
   return (
@@ -76,17 +80,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
           ListFooterComponent={
             sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? renderFooterComponent
               :
-              <TouchableOpacity
-                style={styles.buttonContainer}
-                onPress={() => dispatch(logout())}
-                hitSlop={{
-                  left: 10,
-                  right: 10,
-                  top: 10,
-                  bottom: 10
-                }}>
-                <Text status='danger' category='label' style={styles.textFooter}>Sair</Text>
-              </TouchableOpacity>
+              exitComponent
           }
           renderItem={undefined} />
       </SafeAreaLayout>
