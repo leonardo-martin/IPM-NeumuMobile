@@ -1,16 +1,13 @@
-import React, { FC, ReactElement } from 'react'
+import ListComponent from '@components/list'
+import { useTheme } from '@contexts/theme'
 import { Divider, Text, Toggle } from '@ui-kitten/components'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-
+import React, { FC, ReactElement } from 'react'
+import { TouchableOpacity } from 'react-native'
 import { data } from './data'
 import { configurationStyle } from './style'
-import { useTheme } from '@contexts/theme'
-import ListComponent from '@components/list'
-import { TouchableOpacity } from 'react-native'
 
-const ConfigurationScreen: FC<DrawerContentComponentProps> = ({
-    navigation
-}): ReactElement => {
+
+const ConfigurationScreen: FC = (): ReactElement => {
 
     const { theme, toggleTheme } = useTheme()
 
@@ -38,7 +35,9 @@ const ConfigurationScreen: FC<DrawerContentComponentProps> = ({
     return (
         <ListComponent
             data={data}
-            ListFooterComponent={renderFooter}
+            renderItem={undefined}
+        //TODO! - Desabilitado para lançamento da v1
+        // ListFooterComponent={renderFooter}
         />
     )
 }

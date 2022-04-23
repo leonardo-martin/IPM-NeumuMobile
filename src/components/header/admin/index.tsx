@@ -42,9 +42,8 @@ const HeaderAdmin: FC = (): ReactElement => {
         alignment="center"
         title={() => <TitleNeumu category="h6" />}
         accessoryLeft={accessoryLeft}
-        accessoryRight={
-          !canGoBack() || isDrawerOpen ? renderChatIcon : undefined
-        }
+      //TODO! - Desabilitado para lançamento da v1
+      // accessoryRight={!canGoBack() || isDrawerOpen ? renderChatIcon : undefined}
       />
     </Layout>
   )
