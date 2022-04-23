@@ -2,49 +2,49 @@ import { _DATE_FROM_ISO_8601 } from '@constants/date'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { AscendingOrder } from '@models/Common'
 import { TimelineItem, TimelineTimeItem } from '@models/Timeline'
-import { CalendarRange, Divider, Icon, List, Text, useStyleSheet } from '@ui-kitten/components'
+import { CalendarRange, Divider, Icon, List, ListProps, Text, useStyleSheet } from '@ui-kitten/components'
 import { orderByDateRange, sortByDate } from '@utils/common'
 import React, { Dispatch, FC, ReactElement, useEffect, useState } from 'react'
 import { ListRenderItemInfo, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { timelineStyle } from './style'
 
-interface TimelineProps {
-    data: TimelineItem
+type TimelineProps = {
+    customData: TimelineItem | undefined
     isFiltered?: boolean
     range?: CalendarRange<Date>
     orderBy?: AscendingOrder
     onChangeListSize: Dispatch<React.SetStateAction<number>>
-    onDelete: (item: TimelineTimeItem) => void
-    onChange: (item: TimelineTimeItem) => void
-}
+    onDelete: (date: string, item: TimelineTimeItem) => void
+    onChange: (date: string, item: TimelineTimeItem) => void
+} & ListProps
 
 const Timeline: FC<TimelineProps> = ({
-    data, orderBy = AscendingOrder.ASC, range = {}, isFiltered, onChangeListSize, onDelete, onChange
+    customData, orderBy = AscendingOrder.ASC, range = {}, isFiltered, onChangeListSize, onDelete, onChange, ...props
 }): ReactElement => {
 
     const styles = useStyleSheet(timelineStyle)
     const { localeDateService } = useDatepickerService()
-    const [listData, setListData] = useState<string[]>()
+    const [listData, setListData] = useState<TimelineItem[]>()
 
     const orderList = (list: any[]) => {
         list = orderByDateRange(range, list)
         list = list.sort((a, b) => sortByDate(a, b, orderBy))
         setListData([...list])
 
-        if (list) {
+        if (list && customData) {
             var length = 0
             list.map(item => {
-                length += data[item].length
+                length += customData[item].length
             })
             onChangeListSize(length)
         }
     }
 
     useEffect(() => {
-        if (data || (data && isFiltered))
-            orderList(Object.keys(data))
-    }, [data, isFiltered])
+        if (customData || (customData && isFiltered))
+            orderList(Object.keys(customData))
+    }, [customData, isFiltered])
 
     const renderItem = (info: ListRenderItemInfo<string>) => {
         const date = localeDateService.format(localeDateService.parse(info.item, _DATE_FROM_ISO_8601), 'ddd/DD/MM/YY')
@@ -59,17 +59,17 @@ const Timeline: FC<TimelineProps> = ({
                     </View>
                     <Divider style={styles.verticleLine} />
                     <View style={styles.containerItemColumnInfo}>
-                        {data[info.item] && data[info.item].map((item: any, index: number) => {
+                        {customData && customData[info.item] && customData[info.item].map((item: any, index: number) => {
                             return (
                                 <View key={`${index}-${item.description}`} style={styles.viewTimeline}>
                                     <View style={styles.viewTimelineItem}>
                                         <Text category='label' style={styles.text}>{item.title} </Text>
                                         <Text appearance='hint' style={styles.text}>{item.description}</Text>
                                     </View>
-                                    <TouchableOpacity style={styles.button} onPress={() => onChange(item)}>
+                                    <TouchableOpacity style={styles.button} onPress={() => onChange(info.item, item)}>
                                         <Icon name='create-outline' pack='ionicons' size={20} />
                                     </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => onDelete(item)}>
+                                    <TouchableOpacity onPress={() => onDelete(info.item, item)}>
                                         <Icon name='trash-outline' pack='ionicons' size={20} />
                                     </TouchableOpacity>
                                 </View>
@@ -84,6 +84,7 @@ const Timeline: FC<TimelineProps> = ({
     return (
         <View style={styles.container}>
             <List
+                {...props}
                 showsVerticalScrollIndicator={false}
                 style={styles.list}
                 data={listData}

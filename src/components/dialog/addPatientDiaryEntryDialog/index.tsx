@@ -1,58 +1,90 @@
-import { _DEFAULT_FORMAT_DATE } from '@constants/date'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useDatepickerService } from '@hooks/useDatepickerService'
-import { Notes } from '@models/Notes'
+import { PatientDiaryEntryDto } from '@models/Patient'
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { postDiaryEntry } from '@services/patient.service'
-import { Button, Card, Icon, Input, Modal, Text, useStyleSheet } from '@ui-kitten/components'
-import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback } from 'react'
+import { Button, Card, Icon, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { TouchableOpacity, View } from 'react-native'
 import { modalStyle } from './style'
 
-interface AddPatientDiaryPointDialogProps {
+interface AddPatientDiaryEntryDialogProps {
     ref: ForwardedRef<Modal>
+    onRefresh: Dispatch<React.SetStateAction<PatientDiaryEntryDto | undefined>> | (() => void)
     onVisible: Dispatch<React.SetStateAction<boolean>>
     visible: boolean
+    patientDiaryEntry?: PatientDiaryEntryDto
 }
 
-const AddPatientDiaryPointDialog: FC<AddPatientDiaryPointDialogProps> = forwardRef<Modal, React.PropsWithChildren<AddPatientDiaryPointDialogProps>>(({ onVisible, visible, ...props }, ref): ReactElement => {
+const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardRef<Modal, React.PropsWithChildren<AddPatientDiaryEntryDialogProps>>(({
+    onVisible, visible, ...props }, ref): ReactElement => {
 
     const route = useRoute()
     const navigation = useNavigation<any>()
     const combinedRef = useCombinedRefs(ref, ref)
-    const form = useForm<Notes>()
+    const form = useForm<PatientDiaryEntryDto>({
+        defaultValues: props.patientDiaryEntry
+    })
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const styles = useStyleSheet(modalStyle)
     const { localeDateService } = useDatepickerService()
+    const [isError, setIsError] = useState<boolean>(false)
+    const [errorMessage, setErrorMessage] = useState<string>('')
 
     useFocusEffect(
         useCallback(() => {
             if (visible) {
-                form.reset({})
-                const name = `TeleNeumu - ${localeDateService.format(localeDateService.today(), _DEFAULT_FORMAT_DATE)}`
-                form.setValue('title', name)
+                const title = `Diário - ${localeDateService.format(localeDateService.today(), 'DD/MM/YY')}`
+                form.reset({
+                    ...props.patientDiaryEntry,
+                    date: props.patientDiaryEntry?.date ? new Date(props.patientDiaryEntry?.date as string) : localeDateService.today(),
+                    data: {
+                        title: props.patientDiaryEntry?.data.title ? props.patientDiaryEntry?.data.title : title,
+                        ...props.patientDiaryEntry?.data
+                    }
+                })
             }
         }, [visible])
     )
 
     const handleVisibleModal = () => {
+        setErrorMessage('')
+        setIsLoading(false)
+        setIsError(false)
         onVisible(!visible)
     }
 
-    const submitForm = async (data: Notes) => {
-        await postDiaryEntry({
-            patientId: 87,
-            date: localeDateService.today(),
-            data: {
-                ...data
+    const submitForm = async (data: PatientDiaryEntryDto) => {
+        setIsLoading(!isLoading)
+        try {
+
+            const obj: PatientDiaryEntryDto = {
+                ...data,
+                patientId: 87,
             }
-        })
+            const response = await postDiaryEntry(obj)
+            if (response.status === 201 || response.status === 200) {
+                props.onRefresh(response.data)
+                handleVisibleModal()
+            }
+        } catch (error) {
+            console.log(error)
+            setErrorMessage('Erro ao criar uma nota. Tente novamente mais tarde.')
+            setIsError(true)
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     const goTo = (routeName: string) => {
         navigation.navigate(routeName)
         handleVisibleModal()
     }
+
+    const LoadingIndicator = () => (
+        <Spinner size='small' status='basic' />
+    )
 
     return (
         <Modal
@@ -70,7 +102,7 @@ const AddPatientDiaryPointDialog: FC<AddPatientDiaryPointDialogProps> = forwardR
                         </TouchableOpacity>
                         :
                         <TouchableOpacity onPress={() => goTo('MyNotes')}>
-                            <Text status='primary' category='c1'>Meu Diário</Text>
+                            <Text status='primary' category='c1'>Ver Tudo {'>>'}</Text>
                         </TouchableOpacity>
                     }
                 </View>
@@ -100,12 +132,14 @@ const AddPatientDiaryPointDialog: FC<AddPatientDiaryPointDialogProps> = forwardR
                             ref={ref}
                             returnKeyType="next"
                             underlineColorAndroid="transparent"
-                            onSubmitEditing={() => form.setFocus('description')}
+                            onSubmitEditing={() => form.setFocus('data.description')}
                         />
                     )}
-                    name='title'
+                    name='data.title'
                     defaultValue=''
                 />
+                {form.formState.errors.data?.title && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.data?.title?.message}</Text>}
+
                 <Controller
                     control={form.control}
                     rules={{
@@ -136,19 +170,27 @@ const AddPatientDiaryPointDialog: FC<AddPatientDiaryPointDialogProps> = forwardR
                             underlineColorAndroid="transparent"
                         />
                     )}
-                    name='description'
+                    name='data.description'
                     defaultValue=''
                 />
+                {form.formState.errors.data?.description && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.data?.description?.message}</Text>}
+
+                {isError && (
+                    <View style={{ paddingBottom: 10 }}>
+                        <Text status='danger' category='s1' style={[styles.text, { textAlign: 'center' }]}>{errorMessage}</Text>
+                    </View>
+                )}
                 <View style={styles.viewCardBtn}>
                     <Button status='danger'
-                        onPress={handleVisibleModal}
+                        onPress={isLoading ? undefined : handleVisibleModal}
                         style={styles.button}>
                         Cancelar
                     </Button>
                     <Button status='success'
                         onPress={form.handleSubmit(submitForm)}
-                        style={styles.button}>
-                        Criar
+                        style={styles.button}
+                        accessoryLeft={isLoading ? LoadingIndicator : undefined}>
+                        {isLoading ? '' : 'Salvar'}
                     </Button>
                 </View>
             </Card>
@@ -156,4 +198,4 @@ const AddPatientDiaryPointDialog: FC<AddPatientDiaryPointDialogProps> = forwardR
     )
 })
 
-export default AddPatientDiaryPointDialog
+export default AddPatientDiaryEntryDialog

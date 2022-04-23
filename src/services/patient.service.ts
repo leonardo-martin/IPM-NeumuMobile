@@ -3,7 +3,7 @@ import { CalendarRange } from "@ui-kitten/components"
 import { AxiosResponse } from "axios"
 import { api } from "./api.service"
 
-export const postDiaryEntry = async (data: PatientDiaryEntryDto) => {
+export const postDiaryEntry = async (data: PatientDiaryEntryDto): Promise<AxiosResponse<PatientDiaryEntryDto, any>> => {
     return await api.post('patient-diary-entry', data)
 }
 
@@ -24,6 +24,12 @@ export const getDiaryEntryByRange = async (patientId: string, range: CalendarRan
         params.append('endDate', range.endDate.toISOString())
 
     return await api.get('patient-diary-entry/get-by-range?' + params)
+}
+
+export const deleteDiaryEntry = async (date: Date) => {
+    const params = new URLSearchParams()
+    params.append('date', date.toISOString())
+    return api.delete('patient-diary-entry?' + params)
 }
 
 export const updatePatient = async (data: PatientDto) => {

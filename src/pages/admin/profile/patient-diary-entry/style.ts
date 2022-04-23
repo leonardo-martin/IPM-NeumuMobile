@@ -1,6 +1,4 @@
-import { Dimensions, StyleSheet } from "react-native"
-
-const { width } = Dimensions.get('window')
+import { StyleSheet } from "react-native"
 
 export const notesStyle = StyleSheet.create({
     safeArea: {
@@ -30,10 +28,6 @@ export const notesStyle = StyleSheet.create({
     },
     card: {
         height: '100%'
-    },
-    viewList: {
-        paddingHorizontal: 8,
-        width: width,
     },
     input: {
         paddingHorizontal: 16

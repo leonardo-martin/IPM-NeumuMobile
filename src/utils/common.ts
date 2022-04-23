@@ -136,11 +136,11 @@ export const groupByDateTime = (data: PatientDiaryEntryDto[]): TimelineItem => {
 
     var groups: TimelineItem = {}
     data.forEach(val => {
-        const date = typeof val.date === 'string' ? localeDateService.parse(val.date, _DATE_FROM_ISO_8601) : val.date
-        if (date.toISOString() in groups) {
-            groups[date.toISOString()].push(val.data);
+        val.date = typeof val.date === 'string' ? localeDateService.parse(val.date, _DATE_FROM_ISO_8601) : val.date
+        if (val.date.toISOString() in groups) {
+            groups[val.date.toISOString()].push(val.data);
         } else {
-            groups[date.toISOString()] = new Array(val.data);
+            groups[val.date.toISOString()] = new Array(val.data);
         }
     })
 

@@ -1,11 +1,10 @@
-import React, { FC, ReactElement, useCallback, useState } from 'react'
-import { StyleProp, View, ViewStyle, Animated, TouchableWithoutFeedback } from 'react-native'
-import { Icon, Modal, useStyleSheet } from '@ui-kitten/components'
-
-import { floatingButtonStyle } from './style'
-import AddPatientDiaryPointDialog from '@components/dialog/addPatientDiaryPointDialog'
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import AddPatientDiaryEntryDialog from '@components/dialog/addPatientDiaryEntryDialog'
 import { useModal } from '@hooks/useModal'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { Icon, Modal, useStyleSheet } from '@ui-kitten/components'
+import React, { FC, ReactElement, useCallback, useState } from 'react'
+import { Animated, StyleProp, TouchableWithoutFeedback, View, ViewStyle } from 'react-native'
+import { floatingButtonStyle } from './style'
 
 interface FloatingButtonProps {
     containerStyle?: StyleProp<ViewStyle>
@@ -18,6 +17,7 @@ const FloatingPlusButton: FC<FloatingButtonProps> = ({ containerStyle }): ReactE
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const animation = useState(new Animated.Value(0))[0]
     const [visibleModal, setVisibleModal] = useState<boolean>(false)
+    const navigation = useNavigation()
 
     const toggleMenu = (opened: boolean) => {
         const toValue = opened ? 0 : 1
@@ -44,10 +44,9 @@ const FloatingPlusButton: FC<FloatingButtonProps> = ({ containerStyle }): ReactE
         toggleMenu(isOpen)
     }
 
-    const navi = useNavigation()
     useFocusEffect(
         useCallback(() => {
-            navi.addListener('focus', () => {
+            navigation.addListener('focus', () => {
                 toggleMenu(true)
                 return
             })
@@ -77,9 +76,10 @@ const FloatingPlusButton: FC<FloatingButtonProps> = ({ containerStyle }): ReactE
                     </Animated.View>
                 </TouchableWithoutFeedback>
             </View>
-            <AddPatientDiaryPointDialog
+            <AddPatientDiaryEntryDialog
                 ref={ref}
                 onVisible={setVisibleModal}
+                onRefresh={() => setVisibleModal(false)}
                 visible={visibleModal} />
 
         </>

@@ -27,6 +27,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
     const [selectTmp, setSelectTmp] = useState<number | undefined>(selectedIndex)
     const styles = useStyleSheet(mappingStyle)
     const [selectedIndexExamDNA, setSelectedIndexExamDNA] = useState(-1)
+    const [unidentifiedError, setUnidentifiedError] = useState<boolean>(false)
 
     const getData = async () => {
         try {
@@ -43,6 +44,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
         } catch (error) {
             setSelectedIndex(undefined)
             setSelectTmp(undefined)
+            setUnidentifiedError(true)
             toast.danger({ message: 'Erro ao buscar os dados do usuário', duration: 3000 })
         }
     }
@@ -136,8 +138,8 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                         style={styles.radioGroup}
                                         selectedIndex={selectedIndex}
                                         onChange={handleParticipateProgram}>
-                                        <Radio style={styles.radio}>Sim</Radio>
-                                        <Radio style={styles.radio}>Não</Radio>
+                                        <Radio disabled={unidentifiedError} style={styles.radio}>Sim</Radio>
+                                        <Radio disabled={unidentifiedError} style={styles.radio}>Não</Radio>
                                     </RadioGroup>
                                 )}
                                 name='abrafeuRegistrationOptIn'
