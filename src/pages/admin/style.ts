@@ -4,19 +4,19 @@ export const dashboardStyle = StyleSheet.create({
   safeArea: {
     flex: 1
   },
-  content: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-    alignContent: 'center'
+  title: {
+    flex: .3,
+    justifyContent: 'center'
   },
-  cardContainer: {
-    width: '90%',
-    justifyContent: 'center',
-    alignContent: 'center'
+  content: {
+    flex: .7,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingHorizontal: 20,
   },
   cardGroupPrimary: {
     marginVertical: 10,
+    width: '100%'
   },
   cardDefault: {
     flexDirection: 'row',

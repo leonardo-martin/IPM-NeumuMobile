@@ -53,43 +53,47 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
       <StatusBar barStyle="dark-content" backgroundColor='transparent' translucent />
       <SafeAreaLayout insets='top' level='1' style={styles.safeArea}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
-          <View style={[styles.content]}>
-            <View style={styles.cardContainer}>
-              <Text category="h5" status='basic' style={styles.text}>
-                Como podemos te ajudar?
-              </Text>
-              {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
-                <View style={styles.cardGroupPrimary}>
-                  <Card onPress={goToSchedule}>
-                    <View style={styles.cardDefault}>
-                      <Icon style={styles.iconOrange} name="calendar-outline" size={50} pack='ionicons' />
-                      <Text category="h6" style={[styles.cardText, {
-                        marginHorizontal: -8, flex: 1
-                      }]}>
-                        Quero agendar uma consulta
-                      </Text>
-                    </View>
-                  </Card>
-                </View>
-              )}
-              <View style={styles.cardGroupSecondary}>
-                <Card style={styles.card} onPress={goToProfile}>
+          <View style={styles.title}>
+            <Text category="h5" status='basic' style={styles.text}>
+              {sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? (
+                'Como podemos te ajudar?'
+              ) : 'Seja bem vindo ao TeleNeumu!'}
+            </Text>
+          </View>
+          <View style={styles.content}>
+            {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
+              <View style={styles.cardGroupPrimary}>
+                <Card onPress={goToSchedule}>
                   <View style={styles.cardDefault}>
-                    <Icon style={styles.iconPrimary} name='prescription' size={40} pack='fontisto' />
+                    <Icon style={styles.iconOrange} name="calendar-outline" size={50} pack='ionicons' />
+                    <Text category="h6" style={[styles.cardText, {
+                      marginHorizontal: -8, flex: 1
+                    }]}>
+                      Quero agendar uma consulta
+                    </Text>
                   </View>
-                  <Text category="h6" style={styles.cardText}>
-                    Meu perfil
-                  </Text>
-                </Card>
-                <Card style={styles.card} onPress={goToAppointments}>
-                  <View style={styles.cardDefault}>
-                    <Icon style={styles.iconPrimary} name='stethoscope' size={40} pack='font-awesome' />
-                  </View>
-                  <Text category="h6" style={styles.cardText}>
-                    Minhas consultas
-                  </Text>
                 </Card>
               </View>
+            )}
+            <View style={styles.cardGroupSecondary}>
+              <Card style={styles.card} onPress={goToProfile}>
+                <View style={styles.cardDefault}>
+                  <Icon style={styles.iconPrimary} name='prescription' size={40} pack='fontisto' />
+                </View>
+                <Text category="h6" style={styles.cardText}>
+                  Meu perfil
+                </Text>
+              </Card>
+              <Card style={styles.card} onPress={goToAppointments}>
+                <View style={styles.cardDefault}>
+                  <Icon style={styles.iconPrimary} name='stethoscope' size={40} pack='font-awesome' />
+                </View>
+                <Text category="h6" style={styles.cardText}>
+                  Minhas consultas
+                </Text>
+              </Card>
+            </View>
+            {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
               <View style={styles.cardGroupSecondary}>
                 <Card style={styles.card}>
                   <View style={styles.cardDefault}>
@@ -113,7 +117,8 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                   </Text>
                 </Card>
               </View>
-            </View>
+            )}
+            {/* </View> */}
           </View>
         </ScrollView>
       </SafeAreaLayout>

@@ -9,7 +9,7 @@ import { RootState } from '@store/index'
 import { Avatar, Button, Icon, IconProps, Text, useStyleSheet } from '@ui-kitten/components'
 import React, { FC, ReactElement } from 'react'
 import { ImageStyle, StyleProp, TouchableOpacity, View } from 'react-native'
-import { data } from './data'
+import { patientBaseData, specialistBaseData } from './data'
 import { profileStyle } from './style'
 
 const ProfileScreen: FC<DrawerContentComponentProps> = ({
@@ -37,7 +37,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
           status='success'
           accessoryLeft={renderIconDocumentAttach}>Meus Exames</Button>
       </View>
-      {exitComponent}
+      {exitComponent()}
     </>
   )
 
@@ -56,7 +56,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
       <HeaderProfile />
       <SafeAreaLayout level='2' style={styles.safeArea}>
         <ListComponent
-          data={data}
+          data={sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? patientBaseData : specialistBaseData}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={() => (
             <>
@@ -79,9 +79,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
           )}
           ListFooterComponent={
             sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? renderFooterComponent
-              :
-              exitComponent
-          }
+              : exitComponent}
           renderItem={undefined} />
       </SafeAreaLayout>
     </>

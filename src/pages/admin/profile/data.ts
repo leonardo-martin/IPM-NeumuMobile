@@ -1,6 +1,6 @@
 import { ItemInfo } from "@components/list"
 
-export const data: ItemInfo[] = [
+const commonData: ItemInfo[] = [
     {
         title: 'Editar Perfil',
         description: 'Editar as informações da minha conta',
@@ -18,7 +18,11 @@ export const data: ItemInfo[] = [
             pack: 'eva'
         },
         route: 'ChangePasswordChoice'
-    },
+    }
+]
+
+export const patientBaseData: ItemInfo[] = [
+    ...commonData,
     {
         title: 'Programa de Mapeamento Genético',
         description: '',
@@ -28,4 +32,8 @@ export const data: ItemInfo[] = [
         },
         route: 'GeneticMappingProgram'
     },
+]
+
+export const specialistBaseData: ItemInfo[] = [
+    ...commonData,
 ]
