@@ -15,7 +15,7 @@ import { CalendarRange, Icon, Modal, Text, useStyleSheet } from '@ui-kitten/comp
 import { groupByDateTime } from '@utils/common'
 import { _DATE_FROM_ISO_8601 } from 'constants/date'
 import React, { FC, ReactElement, useCallback, useState } from 'react'
-import { LayoutChangeEvent, RefreshControl, TouchableOpacity, View } from 'react-native'
+import { RefreshControl, TouchableOpacity, View } from 'react-native'
 import { notesStyle } from './style'
 
 const PatientDiaryEntryScreen: FC = (): ReactElement => {

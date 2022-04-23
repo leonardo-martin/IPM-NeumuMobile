@@ -61,8 +61,8 @@ const AppRoutes: FC = (): ReactElement => {
         />
         <Screen name="ChangePasswordConfirmation" component={ChangePasswordConfirm} />
 
-        <Screen name="MyNotes" component={PatientDiaryEntryScreen} />
-        <Screen name="MyExams" component={PatientExamsScreen} />
+        <Screen name="PatientDiaryEntry" component={PatientDiaryEntryScreen} />
+        <Screen name="PatientExams" component={PatientExamsScreen} />
         <Screen
           name="Profile"
           component={ProfileScreen}

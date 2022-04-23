@@ -95,12 +95,12 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
             <Card disabled={true} >
                 <View style={styles.headerModal}>
                     <Text status='basic' category='label'>Criar Nota</Text>
-                    {route.name === 'MyNotes' ?
+                    {route.name === 'PatientDiaryEntry' ?
                         <TouchableOpacity onPress={handleVisibleModal}>
                             <Icon name='close-outline' size={20} style={styles.icon} />
                         </TouchableOpacity>
                         :
-                        <TouchableOpacity onPress={() => goTo('MyNotes')}>
+                        <TouchableOpacity onPress={() => goTo('PatientDiaryEntry')}>
                             <Text status='primary' category='c1'>Ver Tudo {'>>'}</Text>
                         </TouchableOpacity>
                     }

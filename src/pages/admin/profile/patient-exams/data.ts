@@ -1,6 +1,6 @@
-import { Exam } from "@models/Exam"
+import { ExamDto } from "@models/Exam"
 
-export const data: Exam[] = [
+export const data: ExamDto[] = [
     {
         id: 1,
         patientId: 1,

@@ -185,7 +185,7 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
                         <Text status='danger' category='c1' style={{ paddingHorizontal: 5, fontWeight: 'bold' }}>LIMPAR</Text>
                     </TouchableOpacity>
                 )}
-                <TouchableOpacity disabled={originalData.length === 0} onPress={handleVisibleModal}>
+                <TouchableOpacity disabled={data.length === 0} onPress={handleVisibleModal}>
                     <Icon name='options-outline' style={styles.iconFilter} size={20} pack='ionicons' />
                 </TouchableOpacity>
             </View>

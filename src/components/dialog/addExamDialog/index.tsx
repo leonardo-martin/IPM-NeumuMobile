@@ -137,11 +137,12 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
     return (
         <Modal
             {...{ ...props, ref: combinedRef }}
-            style={styles.modal}
+            style={styles.modal}            
             visible={visible}
             backdropStyle={styles.backdrop}
-            onBackdropPress={handleVisibleModal}>
-            <Card disabled={true} >
+            onBackdropPress={handleVisibleModal}
+            >
+            <Card disabled={true}>
                 <View style={styles.viewCard}>
                     <Controller
                         control={form.control}

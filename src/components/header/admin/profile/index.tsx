@@ -24,7 +24,7 @@ const HeaderProfile: FC = (): ReactElement => {
   const renderRigthIcon = () => (
     <TopNavigationAction
       icon={ReceiptIcon}
-      onPress={() => navigate('MyNotes')}
+      onPress={() => navigate('PatientDiaryEntry')}
     />
   )
 
