@@ -18,7 +18,7 @@ import { Host, Portal } from 'react-native-portalize'
 import { examResult } from './data'
 import { mappingStyle } from './style'
 
-const GeneticMappingProgramScreen: FC = (): ReactElement => {
+const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const form = useForm<PatientDto>()
@@ -244,4 +244,4 @@ const GeneticMappingProgramScreen: FC = (): ReactElement => {
     )
 }
 
-export default GeneticMappingProgramScreen
+export default PatientGeneticMappingProgramScreen

@@ -6,7 +6,7 @@ import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { Message } from '@services/message.service'
 import { initialMessages } from './data'
 import { messagesStyle } from './style'
-import { SafeAreaLayout } from 'components/safeAreaLayout'
+import { SafeAreaLayout } from '@components/safeAreaLayout'
 
 const MessagesScreen: FC<DrawerContentComponentProps> = ({
     navigation

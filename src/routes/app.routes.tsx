@@ -1,36 +1,30 @@
-import React, { FC, ReactElement } from 'react'
-
-// DRAWER
-import { createDrawerNavigator } from '@react-navigation/drawer'
 import DrawerContent from '@components/drawer'
-
-// HEADER
 import HeaderAdmin from '@components/header/admin'
 import HeaderChatRoom from '@components/header/admin/chatRoom'
-
-// SCENES
 import DashboardScreen from '@pages/admin'
-import ProfileScreen from '@pages/admin/profile'
-import ScheduleScreen from '@pages/admin/schedule'
-import ChoiceScheduleScreen from '@pages/admin/schedule/extra/filter-schedule'
-import PresentialScheduleScreen from '@pages/admin/schedule/presential'
-import DoctorProfileScreen from '@pages/admin/doctorProfile'
+import AppointmentsScreen from '@pages/admin/appointments'
+import ChatRoomScreen from '@pages/admin/chat'
 import ConfigurationScreen from '@pages/admin/configuration/home'
 import InformationAppScreen from '@pages/admin/configuration/infos'
-import MessagesScreen from '@pages/admin/messages'
-import ChatRoomScreen from '@pages/admin/chat'
-import EditProfileScreen from '@pages/admin/profile/extra'
-import AppointmentsScreen from '@pages/admin/appointments'
 import NotificationScreen from '@pages/admin/configuration/notification'
-import ConfirmationScheduleScreen from '@pages/admin/schedule/confirmation'
+import Terms from '@pages/admin/configuration/terms'
+import DoctorProfileScreen from '@pages/admin/doctorProfile'
 import HelpScreen from '@pages/admin/help'
+import MessagesScreen from '@pages/admin/messages'
+import ProfileScreen from '@pages/admin/profile'
+import EditProfileScreen from '@pages/admin/profile/extra'
+import PatientGeneticMappingProgramScreen from '@pages/admin/profile/patient-genetic-mapping-program'
+import PatientDiaryEntryScreen from '@pages/admin/profile/patient-diary-entry'
+import PatientExamsScreen from '@pages/admin/profile/patient-exams'
+import ScheduleScreen from '@pages/admin/schedule'
+import ConfirmationScheduleScreen from '@pages/admin/schedule/confirmation'
+import ChoiceScheduleScreen from '@pages/admin/schedule/extra/filter-schedule'
+import PresentialScheduleScreen from '@pages/admin/schedule/presential'
 import ChangePasswordChoice from '@pages/changePassword'
 import ChangePasswordRequest from '@pages/changePassword/changePasswordSpecific'
-import Terms from '@pages/admin/configuration/terms'
 import ChangePasswordConfirm from '@pages/changePassword/confirmation'
-import MyExamsScreen from '@pages/admin/profile/myExams'
-import MyNotesScreen from '@pages/admin/profile/myNotes'
-import GeneticMappingProgramScreen from '@pages/admin/profile/mappingProgram'
+import { createDrawerNavigator } from '@react-navigation/drawer'
+import React, { FC, ReactElement } from 'react'
 
 const { Navigator, Screen, Group } = createDrawerNavigator()
 
@@ -56,7 +50,7 @@ const AppRoutes: FC = (): ReactElement => {
         swipeEnabled: false,
         headerShown: false,
       }}>
-        <Screen name="GeneticMappingProgram" component={GeneticMappingProgramScreen} />
+        <Screen name="GeneticMappingProgram" component={PatientGeneticMappingProgramScreen} />
         <Screen
           name="PresentialSchedule"
           component={PresentialScheduleScreen}
@@ -67,8 +61,8 @@ const AppRoutes: FC = (): ReactElement => {
         />
         <Screen name="ChangePasswordConfirmation" component={ChangePasswordConfirm} />
 
-        <Screen name="MyNotes" component={MyNotesScreen} />
-        <Screen name="MyExams" component={MyExamsScreen} />
+        <Screen name="MyNotes" component={PatientDiaryEntryScreen} />
+        <Screen name="MyExams" component={PatientExamsScreen} />
         <Screen
           name="Profile"
           component={ProfileScreen}

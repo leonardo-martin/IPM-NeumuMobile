@@ -13,7 +13,7 @@ import { Keyboard, Platform, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import { modalStyle } from './style'
 
-interface AddExamModalProps {
+interface AddExamDialogProps {
     ref: ForwardedRef<Modal>
     onRefresh: Dispatch<React.SetStateAction<ExamDto & ExamImage | undefined>>
     onVisible: Dispatch<React.SetStateAction<boolean>>
@@ -21,7 +21,7 @@ interface AddExamModalProps {
     exam?: ExamDto
 }
 
-const AddExamModal: FC<AddExamModalProps> = forwardRef<Modal, React.PropsWithChildren<AddExamModalProps>>(({ onRefresh, onVisible, visible, ...props }, ref): ReactElement => {
+const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithChildren<AddExamDialogProps>>(({ onRefresh, onVisible, visible, ...props }, ref): ReactElement => {
 
     const { localeDateService } = useDatepickerService()
     const combinedRef = useCombinedRefs(ref, ref)
@@ -301,4 +301,4 @@ const AddExamModal: FC<AddExamModalProps> = forwardRef<Modal, React.PropsWithChi
     )
 })
 
-export default AddExamModal
+export default AddExamDialog

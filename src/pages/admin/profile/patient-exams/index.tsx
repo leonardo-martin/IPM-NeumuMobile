@@ -1,5 +1,6 @@
+import AddExamDialog from '@components/dialog/addExamDialog'
+import FilterByDateDialog from '@components/dialog/filterByDateDialog'
 import HeaderMyExams from '@components/header/admin/myExams'
-import FilterModal from '@components/modal/filterModal'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATE } from '@constants/date'
 import toast from '@helpers/toast'
@@ -12,14 +13,13 @@ import { useFocusEffect } from '@react-navigation/native'
 import { deleteExam, getPatientExamList } from '@services/exam.service'
 import { CalendarRange, Icon, IconProps, List, ListItem, Modal, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
 import { orderByDateRange, sortByDate } from '@utils/common'
-import AddExamModal from 'components/modal/addExamModal'
 import React, { FC, ReactElement, RefObject, useCallback, useState } from 'react'
 import { Animated, ListRenderItemInfo, RefreshControl, TouchableOpacity, View } from 'react-native'
 import { RectButton } from 'react-native-gesture-handler'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { myExamsStyle } from './style'
 
-const MyExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
+const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
 
     const theme = useTheme()
     const styles = useStyleSheet(myExamsStyle)
@@ -207,7 +207,7 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
                         />
                     }
                 />
-                <FilterModal
+                <FilterByDateDialog
                     ref={refFilter}
                     onVisible={setVisibleModal}
                     isVisible={visibleModal}
@@ -215,7 +215,7 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
                     onFilter={filterData}
                     range={range}
                 />
-                <AddExamModal
+                <AddExamDialog
                     ref={refAdd}
                     exam={dataModal}
                     onRefresh={setAddedItem}
@@ -226,4 +226,4 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
     )
 }
 
-export default MyExamsScreen
+export default PatientExamsScreen

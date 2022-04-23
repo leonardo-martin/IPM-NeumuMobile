@@ -1,21 +1,22 @@
-import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback } from 'react'
-import { TouchableOpacity, View } from 'react-native'
-import { Button, Card, Icon, Input, Modal, Text, useStyleSheet } from '@ui-kitten/components'
-import { Controller, useForm } from 'react-hook-form'
+import { _DEFAULT_FORMAT_DATE } from '@constants/date'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useDatepickerService } from '@hooks/useDatepickerService'
-import { _DEFAULT_FORMAT_DATE } from '@constants/date'
-import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { Notes } from '@models/Notes'
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
+import { postDiaryEntry } from '@services/patient.service'
+import { Button, Card, Icon, Input, Modal, Text, useStyleSheet } from '@ui-kitten/components'
+import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { TouchableOpacity, View } from 'react-native'
 import { modalStyle } from './style'
 
-interface NewNoteModalProps {
+interface AddPatientDiaryPointDialogProps {
     ref: ForwardedRef<Modal>
     onVisible: Dispatch<React.SetStateAction<boolean>>
     visible: boolean
 }
 
-const NewNoteModal: FC<NewNoteModalProps> = forwardRef<Modal, React.PropsWithChildren<NewNoteModalProps>>(({ onVisible, visible, ...props }, ref): ReactElement => {
+const AddPatientDiaryPointDialog: FC<AddPatientDiaryPointDialogProps> = forwardRef<Modal, React.PropsWithChildren<AddPatientDiaryPointDialogProps>>(({ onVisible, visible, ...props }, ref): ReactElement => {
 
     const route = useRoute()
     const navigation = useNavigation<any>()
@@ -38,9 +39,14 @@ const NewNoteModal: FC<NewNoteModalProps> = forwardRef<Modal, React.PropsWithChi
         onVisible(!visible)
     }
 
-    const submitForm = (data: Notes) => {
-        console.log(data)
-        return false
+    const submitForm = async (data: Notes) => {
+        await postDiaryEntry({
+            patientId: 87,
+            date: localeDateService.today(),
+            data: {
+                ...data
+            }
+        })
     }
 
     const goTo = (routeName: string) => {
@@ -150,4 +156,4 @@ const NewNoteModal: FC<NewNoteModalProps> = forwardRef<Modal, React.PropsWithChi
     )
 })
 
-export default NewNoteModal
+export default AddPatientDiaryPointDialog

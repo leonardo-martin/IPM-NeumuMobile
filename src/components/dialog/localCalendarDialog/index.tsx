@@ -1,14 +1,14 @@
-import React, { useState, ReactElement, FC, ForwardedRef, forwardRef, useCallback } from 'react'
-import { listCalendars } from '@services/calendar.service'
-import { Calendar } from 'react-native-calendar-events'
-import { Button, Card, Icon, Modal, Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
-import { localCalendarModalStyle } from './style'
-import { Linking, ScrollView, TouchableOpacity, View } from 'react-native'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
-import { Controller, useForm } from 'react-hook-form'
 import { useFocusEffect } from '@react-navigation/native'
+import { listCalendars } from '@services/calendar.service'
+import { Button, Card, Icon, Modal, Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
+import React, { FC, ForwardedRef, forwardRef, ReactElement, useCallback, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { Linking, ScrollView, TouchableOpacity, View } from 'react-native'
+import { Calendar } from 'react-native-calendar-events'
+import { localCalendarModalStyle } from './style'
 
-interface LocalCalendarModalProps {
+interface LocalCalendarDialogProps {
     ref: ForwardedRef<Modal>
     isVisible: boolean
     closeModal: () => void
@@ -18,7 +18,7 @@ interface LocalCalendarModalProps {
     modalTestID?: string
 }
 
-const LocalCalendarModalComponent: FC<LocalCalendarModalProps> = forwardRef<Modal, React.PropsWithChildren<LocalCalendarModalProps>>(({ ...props }, ref): ReactElement => {
+const LocalCalendarDialog: FC<LocalCalendarDialogProps> = forwardRef<Modal, React.PropsWithChildren<LocalCalendarDialogProps>>(({ ...props }, ref): ReactElement => {
 
     const [error, setError] = useState(false)
 
@@ -115,7 +115,7 @@ const LocalCalendarModalComponent: FC<LocalCalendarModalProps> = forwardRef<Moda
     )
 })
 
-LocalCalendarModalComponent.defaultProps = {
+LocalCalendarDialog.defaultProps = {
     isVisible: false,
     closeModal: () => { },
     handleCalendarSelected: () => { },
@@ -123,4 +123,4 @@ LocalCalendarModalComponent.defaultProps = {
     modalTestID: 'localCalendarModal',
 }
 
-export default LocalCalendarModalComponent
+export default LocalCalendarDialog

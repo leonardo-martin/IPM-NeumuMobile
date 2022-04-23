@@ -1,7 +1,7 @@
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { CommonActions, useFocusEffect, useNavigation } from '@react-navigation/native'
 import { Button, Text, useStyleSheet } from '@ui-kitten/components'
-import { useAppSelector } from 'hooks/redux'
+import { useAppSelector } from '@hooks/redux'
 import React, { FC, ReactElement, useCallback } from 'react'
 import { BackHandler, Image, ImageStyle, StyleProp, View } from 'react-native'
 import { RootState } from 'store'

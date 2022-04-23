@@ -7,7 +7,7 @@ import { Calendar } from "react-native-calendar-events"
 import { useModal } from '@hooks/useModal'
 import { BackIcon } from '@components/header/icons'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import LocalCalendarModalComponent from '@components/modal/localCalendarModal'
+import LocalCalendarDialog from '@components/dialog/localCalendarDialog'
 import { addCalendarEvent } from '@services/calendar.service'
 import { EventCalendar } from '@models/Calendar'
 import { confirmationScheduleStyle } from './styles'
@@ -69,7 +69,7 @@ const ConfirmationScheduleScreen: FC<DrawerContentComponentProps> = ({
                 />
                 <View style={{ justifyContent: 'center', alignItems: 'center', alignContent: 'center', flex: 1, alignSelf: 'center' }}>
                     <Button status='primary' onPress={openLocalCalendarModal}>Adicionar ao calendário</Button>
-                    <LocalCalendarModalComponent
+                    <LocalCalendarDialog
                         ref={ref}
                         openModal={openLocalCalendarModal}
                         isVisible={isVisibleCalendars}

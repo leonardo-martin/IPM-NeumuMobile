@@ -1,11 +1,11 @@
-import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement } from 'react'
-import { View } from 'react-native'
-import { Button, CalendarRange, Card, Modal, RangeCalendar, useStyleSheet } from '@ui-kitten/components'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useDatepickerService } from '@hooks/useDatepickerService'
+import { Button, CalendarRange, Card, Modal, RangeCalendar, useStyleSheet } from '@ui-kitten/components'
+import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement } from 'react'
+import { View } from 'react-native'
 import { modalStyle } from './style'
 
-interface FilterModalProps {
+interface FilterByDateDialogProps {
     ref: ForwardedRef<Modal>
     onVisible: Dispatch<React.SetStateAction<boolean>>
     isVisible: boolean
@@ -14,7 +14,7 @@ interface FilterModalProps {
     onFilter: () => void
 }
 
-const FilterModal: FC<FilterModalProps> = forwardRef<Modal, React.PropsWithChildren<FilterModalProps>>(({ ...props }, ref): ReactElement => {
+const FilterByDateDialog: FC<FilterByDateDialogProps> = forwardRef<Modal, React.PropsWithChildren<FilterByDateDialogProps>>(({ ...props }, ref): ReactElement => {
 
     const { localeDateService } = useDatepickerService()
     const combinedRef = useCombinedRefs(ref, ref)
@@ -52,4 +52,4 @@ const FilterModal: FC<FilterModalProps> = forwardRef<Modal, React.PropsWithChild
     )
 })
 
-export default FilterModal
+export default FilterByDateDialog

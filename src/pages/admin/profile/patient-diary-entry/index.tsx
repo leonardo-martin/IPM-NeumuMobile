@@ -1,6 +1,6 @@
 import HeaderMyNotes from '@components/header/admin/myNotes'
-import FilterModal from '@components/modal/filterModal'
-import NewNoteModal from '@components/modal/notesModal'
+import FilterByDateDialog from '@components/dialog/filterByDateDialog'
+import AddPatientDiaryPointDialog from '@components/dialog/addPatientDiaryPointDialog'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import Timeline from '@components/timeline'
 import { useModal } from '@hooks/useModal'
@@ -14,7 +14,7 @@ import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { notesStyle } from './style'
 
-const MyNotesScreen: FC = (): ReactElement => {
+const PatientDiaryEntryScreen: FC = (): ReactElement => {
 
     const { ref: addRef } = useModal<Modal>()
     const { ref: filterRef } = useModal<Modal>()
@@ -100,7 +100,7 @@ const MyNotesScreen: FC = (): ReactElement => {
                     />
                 </View>
             </SafeAreaLayout>
-            <FilterModal
+            <FilterByDateDialog
                 ref={filterRef}
                 onVisible={setVisibleFilterModal}
                 isVisible={visibleFilterModal}
@@ -109,7 +109,7 @@ const MyNotesScreen: FC = (): ReactElement => {
                 range={range}
 
             />
-            <NewNoteModal
+            <AddPatientDiaryPointDialog
                 ref={addRef}
                 onVisible={setVisibleModal}
                 visible={visibleModal} />
@@ -117,4 +117,4 @@ const MyNotesScreen: FC = (): ReactElement => {
     )
 }
 
-export default MyNotesScreen
+export default PatientDiaryEntryScreen

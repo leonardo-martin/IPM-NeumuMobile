@@ -1,5 +1,5 @@
 import { BackIcon, PlusIcon } from '@components/header/icons'
-import AddExamModal from '@components/modal/addExamModal'
+import AddExamDialog from '@components/dialog/addExamDialog'
 import { useModal } from '@hooks/useModal'
 import { ExamDto, ExamImage } from '@models/Exam'
 import { useNavigation } from '@react-navigation/native'
@@ -44,7 +44,7 @@ const HeaderMyExams: FC<HeaderMyExamsProps> = ({ onRefresh }): ReactElement => {
                 accessoryLeft={renderLeftIcon}
                 accessoryRight={renderRightIcon}
             />
-            <AddExamModal ref={ref} onRefresh={onRefresh} onVisible={setVisibleModal} visible={visibleModal} />
+            <AddExamDialog ref={ref} onRefresh={onRefresh} onVisible={setVisibleModal} visible={visibleModal} />
         </Layout>
     )
 }

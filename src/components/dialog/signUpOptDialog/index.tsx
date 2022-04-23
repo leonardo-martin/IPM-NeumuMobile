@@ -1,10 +1,10 @@
-import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback } from 'react'
-import { View } from 'react-native'
-import { Button, Card, Icon, IconProps, Modal, Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useFocusEffect } from '@react-navigation/native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { Button, Card, Icon, IconProps, Modal, Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
+import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import { modalStyle } from './style'
 
 const options = [
@@ -17,14 +17,14 @@ interface UserType {
     type?: number
 }
 
-interface RegisterModalProps {
+interface SignUpOptDialogProps {
     ref: ForwardedRef<Modal>
     onVisible: Dispatch<React.SetStateAction<boolean>>
     visible: boolean
     onActionButton: (index: number | undefined) => void
 }
 
-const RegisterModal: FC<RegisterModalProps> = forwardRef<Modal, React.PropsWithChildren<RegisterModalProps>>(({ ...props }, ref): ReactElement => {
+const SignUpOptDialog: FC<SignUpOptDialogProps> = forwardRef<Modal, React.PropsWithChildren<SignUpOptDialogProps>>(({ ...props }, ref): ReactElement => {
 
     const form = useForm<UserType>()
     const combinedRef = useCombinedRefs(ref, ref)
@@ -104,4 +104,4 @@ const RegisterModal: FC<RegisterModalProps> = forwardRef<Modal, React.PropsWithC
     )
 })
 
-export default RegisterModal
+export default SignUpOptDialog

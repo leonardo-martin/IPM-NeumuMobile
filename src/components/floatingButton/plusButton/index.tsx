@@ -3,7 +3,7 @@ import { StyleProp, View, ViewStyle, Animated, TouchableWithoutFeedback } from '
 import { Icon, Modal, useStyleSheet } from '@ui-kitten/components'
 
 import { floatingButtonStyle } from './style'
-import NewNoteModal from '@components/modal/notesModal'
+import AddPatientDiaryPointDialog from '@components/dialog/addPatientDiaryPointDialog'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { useModal } from '@hooks/useModal'
 
@@ -77,7 +77,7 @@ const FloatingPlusButton: FC<FloatingButtonProps> = ({ containerStyle }): ReactE
                     </Animated.View>
                 </TouchableWithoutFeedback>
             </View>
-            <NewNoteModal
+            <AddPatientDiaryPointDialog
                 ref={ref}
                 onVisible={setVisibleModal}
                 visible={visibleModal} />

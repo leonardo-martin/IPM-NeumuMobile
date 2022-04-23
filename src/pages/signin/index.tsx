@@ -1,5 +1,5 @@
 import LogoPedroMolina from '@assets/svg/logo.svg'
-import RegisterModal from '@components/modal/registerModal'
+import SignUpOptDialog from '@components/dialog/signUpOptDialog'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import TitleNeumu from '@components/titleNeumu'
 import toast from '@helpers/toast'
@@ -248,7 +248,7 @@ const SignInScreen: FC = (): ReactElement => {
                 </Button>
               </View>
             </View>
-            <RegisterModal
+            <SignUpOptDialog
               ref={ref}
               onActionButton={register}
               onVisible={setVisibleModal}
