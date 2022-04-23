@@ -1,11 +1,8 @@
-import { Dimensions, StyleSheet } from "react-native"
-
-const { width } = Dimensions.get('window')
+import { StyleSheet } from "react-native"
 
 export const timelineStyle = StyleSheet.create({
     container: {
         padding: 8,
-        width: width,
         height: '100%'
     },
     list: {
