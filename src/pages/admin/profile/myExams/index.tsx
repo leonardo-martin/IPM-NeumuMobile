@@ -6,14 +6,16 @@ import toast from '@helpers/toast'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { useModal } from '@hooks/useModal'
 import { AscendingOrder } from '@models/Common'
-import { Exam, ExamDto, ExamImage } from '@models/Exam'
+import { ExamDto, ExamImage } from '@models/Exam'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect } from '@react-navigation/native'
 import { deleteExam, getPatientExamList } from '@services/exam.service'
 import { CalendarRange, Icon, IconProps, List, ListItem, Modal, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
-import { sortByDate } from '@utils/common'
-import React, { FC, ReactElement, useCallback, useState } from 'react'
+import { orderByDateRange, sortByDate } from '@utils/common'
+import AddExamModal from 'components/modal/addExamModal'
+import React, { FC, ReactElement, RefObject, useCallback, useState } from 'react'
 import { Animated, ListRenderItemInfo, RefreshControl, TouchableOpacity, View } from 'react-native'
+import { RectButton } from 'react-native-gesture-handler'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { myExamsStyle } from './style'
 
@@ -21,12 +23,15 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
 
     const theme = useTheme()
     const styles = useStyleSheet(myExamsStyle)
-    const { ref } = useModal<Modal>()
+    const { ref: refFilter } = useModal<Modal>()
+    const { ref: refAdd } = useModal<Modal>()
 
     const [visibleModal, setVisibleModal] = useState<boolean>(false)
+    const [visibleAddModal, setVisibleAddModal] = useState<boolean>(false)
     const [refreshing, setRefreshing] = useState<boolean>(false)
-    const [data, setData] = useState<Array<Exam>>([])
-    const [originalData, setOriginalData] = useState<Array<Exam>>([])
+    const [data, setData] = useState<Array<ExamDto>>([])
+    const [dataModal, setDataModal] = useState<ExamDto>()
+    const [originalData, setOriginalData] = useState<Array<ExamDto>>([])
 
     const [addedItem, setAddedItem] = useState<ExamDto & ExamImage | undefined>(undefined)
     const [range, setRange] = useState<CalendarRange<Date>>({})
@@ -35,13 +40,8 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
 
     const handleVisibleModal = () => setVisibleModal(true)
 
-    const orderList = (list: Exam[]) => {
-        if (range.startDate && !range.endDate)
-            list = list.filter((e) => localeDateService.parse(e.examDate as string, _DATE_FROM_ISO_8601) >= (range.startDate as Date))
-        else if (range.startDate && range.endDate)
-            list = list.filter((e) => localeDateService.parse(e.examDate as string, _DATE_FROM_ISO_8601) >= (range.startDate as Date)
-                && localeDateService.parse(e.examDate as string, _DATE_FROM_ISO_8601) <= localeDateService.addDay((range.endDate as Date), 1))
-
+    const orderList = (list: ExamDto[]) => {
+        list = orderByDateRange(range, list, 'examDate')
         list = list.sort((a, b) => sortByDate(a.examDate, b.examDate, AscendingOrder.DESC))
         setData([...list])
     }
@@ -54,37 +54,16 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
 
     useFocusEffect(
         useCallback(() => {
-            setRefreshing(false)
+            if (!addedItem) {
+                setIsFiltered(false)
+                setRefreshing(false)
+                setRange({})
+            }
             getExamList()
         }, [addedItem])
     )
 
-    const leftSwipe = (_progress: Animated.AnimatedInterpolation, dragX: Animated.AnimatedInterpolation, info: ListRenderItemInfo<Exam>
-    ) => {
-        const scale = dragX.interpolate({
-            inputRange: [-80, 0],
-            outputRange: [1, 0.9],
-            extrapolate: 'clamp'
-        })
-
-        const opacity = dragX.interpolate({
-            inputRange: [-80, -20, 0],
-            outputRange: [1, 0.9, 0],
-            extrapolate: 'clamp'
-        })
-
-        return (
-            <TouchableOpacity onPress={() => onDeleteItem(info)} activeOpacity={0.5}>
-                <Animated.View style={[styles.deleteBox, { opacity: opacity }]}>
-                    <Animated.Text style={[{ transform: [{ scale: scale }] }]}>
-                        <Icon name='trash-bin-outline' style={styles.icon} size={20} pack='ionicons' />
-                    </Animated.Text>
-                </Animated.View>
-            </TouchableOpacity>
-        )
-    }
-
-    const renderRightIcon = (_props: IconProps, exam: Exam) => (
+    const renderRightIcon = (_props: IconProps, exam: ExamDto) => (
         <View style={styles.viewDate}>
             <Text
                 style={styles.textDate}
@@ -99,7 +78,12 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
         <Icon {...props} color={theme['color-basic-1100']} name='reader-outline' pack='ionicons' />
     )
 
-    const onDeleteItem = async (info: ListRenderItemInfo<Exam>) => {
+    const onViewItem = async (info: ListRenderItemInfo<ExamDto>) => {
+        setDataModal(info.item)
+        setVisibleAddModal(true)
+    }
+
+    const onDeleteItem = async (info: ListRenderItemInfo<ExamDto>) => {
         try {
             const resp = await deleteExam(info.item.id)
             if (resp.status === 201 || resp.status === 200) {
@@ -114,27 +98,6 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
         }
     }
 
-    const renderItem = (info: ListRenderItemInfo<Exam>) => (
-        <Swipeable
-            renderRightActions={(progress, drag) => leftSwipe(progress, drag, info)}
-            overshootLeft={false}>
-            <ListItem
-                style={styles.containerItem}
-                title={info.item.examType}
-                description={(evaProps) => (
-                    info.item.data.examDescription?.length > 36 ?
-                        <Text {...evaProps}>
-                            {info.item.data.examDescription.substring(0, 32)}...
-                        </Text>
-                        :
-                        <Text {...evaProps}>{info.item.data.examDescription}</Text>
-                )}
-                accessoryRight={(e) => renderRightIcon(e, info.item)}
-                accessoryLeft={renderLeftIcon}
-            />
-        </Swipeable>
-    )
-
     const filterData = () => {
         orderList(originalData)
         setIsFiltered(true)
@@ -145,6 +108,67 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
         setIsFiltered(!isFiltered)
         setRange({})
         getExamList()
+    }
+
+    const renderRightAction = (info: ListRenderItemInfo<ExamDto>, text: string,
+        color: string, _progress: Animated.AnimatedInterpolation,
+        dragX: Animated.AnimatedInterpolation, ref: RefObject<Swipeable>) => {
+
+        const opacity = dragX.interpolate({
+            inputRange: [-80, -20, 0],
+            outputRange: [1, 0.9, 0],
+            extrapolate: 'clamp'
+        })
+
+        const pressHandler = () => {
+            ref.current?.close()
+
+            if (text.toUpperCase() === 'DELETAR') {
+                onDeleteItem(info)
+            } else if (text.toUpperCase() === 'EDITAR') {
+                onViewItem(info)
+            }
+        }
+        return (
+            <Animated.View style={[{ flex: 1, transform: [{ translateX: 0 }] }, { opacity: opacity }]}>
+                <RectButton
+                    style={[styles.rightAction, { backgroundColor: theme[color] }]}
+                    onPress={pressHandler}>
+                    <Text style={styles.textWhite}>{text}</Text>
+                </RectButton>
+            </Animated.View>
+        )
+    }
+
+    const renderItem = (info: ListRenderItemInfo<ExamDto>) => {
+
+        const ref = React.createRef<Swipeable>()
+        return (
+            <Swipeable
+                ref={ref}
+                renderRightActions={(progress, dragX) => (
+                    <View style={styles.viewActions}>
+                        {renderRightAction(info, 'EDITAR', 'color-success-500', progress, dragX, ref)}
+                        {renderRightAction(info, 'DELETAR', 'color-danger-500', progress, dragX, ref)}
+                    </View>
+                )}
+                overshootLeft={false}>
+                <ListItem
+                    style={styles.containerItem}
+                    title={info.item.examType}
+                    description={(evaProps) => (
+                        info.item.data.examDescription?.length > 36 ?
+                            <Text {...evaProps}>
+                                {info.item.data.examDescription.substring(0, 32)}...
+                            </Text>
+                            :
+                            <Text {...evaProps}>{info.item.data.examDescription}</Text>
+                    )}
+                    accessoryRight={(e) => renderRightIcon(e, info.item)}
+                    accessoryLeft={renderLeftIcon}
+                />
+            </Swipeable>
+        )
     }
 
     const headerListComponent = () => (
@@ -184,14 +208,19 @@ const MyExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
                     }
                 />
                 <FilterModal
-                    ref={ref}
+                    ref={refFilter}
                     onVisible={setVisibleModal}
                     isVisible={visibleModal}
                     handleRange={setRange}
                     onFilter={filterData}
                     range={range}
-
                 />
+                <AddExamModal
+                    ref={refAdd}
+                    exam={dataModal}
+                    onRefresh={setAddedItem}
+                    onVisible={setVisibleAddModal}
+                    visible={visibleAddModal} />
             </SafeAreaLayout>
         </>
     )

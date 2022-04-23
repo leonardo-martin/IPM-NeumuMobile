@@ -11,7 +11,7 @@ import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react
 import { Controller } from 'react-hook-form'
 import { View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { creatorRelationship, profileCreator } from '../data'
+import { creatorRelationship, profileCreator } from '../../data'
 
 const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): ReactElement => {
 

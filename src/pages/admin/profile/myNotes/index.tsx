@@ -1,27 +1,21 @@
 import HeaderMyNotes from '@components/header/admin/myNotes'
+import FilterModal from '@components/modal/filterModal'
+import NewNoteModal from '@components/modal/notesModal'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import Timeline from '@components/timeline'
-import { useAppSelector } from '@hooks/redux'
 import { useModal } from '@hooks/useModal'
 import { AscendingOrder } from '@models/Common'
 import { TimelineTimeItem } from '@models/Timeline'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect } from '@react-navigation/native'
-import { getPatientCalendar } from '@services/calendar.service'
-import { RootState } from '@store/index'
+import { getDiaryEntryByRange } from '@services/patient.service'
 import { CalendarRange, Icon, Modal, Text, useStyleSheet } from '@ui-kitten/components'
-import FilterModal from 'components/modal/filterModal'
-import NewNoteModal from 'components/modal/notesModal'
+import { groupByDateTime } from '@utils/common'
 import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { notesStyle } from './style'
 
+const MyNotesScreen: FC = (): ReactElement => {
 
-const MyNotesScreen: FC<DrawerContentComponentProps> = ({
-    navigation
-}): ReactElement => {
-
-    const { sessionUser } = useAppSelector((state: RootState) => state.auth)
     const { ref: addRef } = useModal<Modal>()
     const { ref: filterRef } = useModal<Modal>()
 
@@ -31,20 +25,23 @@ const MyNotesScreen: FC<DrawerContentComponentProps> = ({
     const [isFiltered, setIsFiltered] = useState<boolean>(false)
 
     const [data, setData] = useState<any>()
+    const [originalData, setOriginalData] = useState<any>()
     const [listLength, setListLength] = useState<number>(0)
     const [range, setRange] = useState<CalendarRange<Date>>({})
 
     const getPatientCalendarList = useCallback(async () => {
-        if (sessionUser) {
-            const result = await getPatientCalendar(range.startDate?.toISOString(), range.startDate?.toISOString(), sessionUser.userId.toString())
-            setData(result.data)
-        }
-    }, [range, isFiltered])
+        const result = await getDiaryEntryByRange('87', range)
+        let array = groupByDateTime(result.data)
+        setData(array)
+        setOriginalData(array)
+    }, [])
 
     useFocusEffect(
         useCallback(() => {
+            setIsFiltered(false)
+            setRange({})
             getPatientCalendarList()
-        }, [range])
+        }, [])
     )
 
     const deleteNote = (item: TimelineTimeItem) => {
@@ -63,7 +60,7 @@ const MyNotesScreen: FC<DrawerContentComponentProps> = ({
     const clearFilter = () => {
         setIsFiltered(!isFiltered)
         setRange({})
-        getPatientCalendarList()
+        setData(originalData)
     }
     const handleVisibleModal = () => setVisibleFilterModal(true)
 

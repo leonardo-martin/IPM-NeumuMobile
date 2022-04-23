@@ -23,7 +23,7 @@ const GeneticMappingProgramScreen: FC = (): ReactElement => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const form = useForm<PatientDto>()
     const { ref } = useModal<Modalize>()
-    const [selectedIndex, setSelectedIndex] = useState<number | undefined>(0)
+    const [selectedIndex, setSelectedIndex] = useState<number | undefined>()
     const [selectTmp, setSelectTmp] = useState<number | undefined>(selectedIndex)
     const styles = useStyleSheet(mappingStyle)
     const [selectedIndexExamDNA, setSelectedIndexExamDNA] = useState(-1)

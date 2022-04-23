@@ -48,7 +48,10 @@ export const modalStyle = StyleSheet.create({
   },
   iconRed: {
     color: 'color-danger-500'
-  }
+  },
+  backdropDatepicker: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
 })
 
 

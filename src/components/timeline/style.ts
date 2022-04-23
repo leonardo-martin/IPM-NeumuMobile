@@ -17,14 +17,12 @@ export const timelineStyle = StyleSheet.create({
         paddingTop: 5
     },
     containerItemColumnDate: {
-        flex: .1,
+        flex: .2,
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
-        paddingHorizontal: 5
     },
     containerItemColumnInfo: {
-        flex: .9,
+        flex: .8,
         flexDirection: 'column'
     },
     titleItem: {

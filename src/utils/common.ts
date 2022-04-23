@@ -2,7 +2,10 @@ import { _DATE_FROM_ISO_8601 } from "@constants/date"
 import toast from '@helpers/toast'
 import { useDatepickerService } from "@hooks/useDatepickerService"
 import { AscendingOrder } from "@models/Common"
+import { PatientDiaryEntryDto } from "@models/Patient"
 import { PatientProfileCreatorTypeEnum } from "@models/PatientProfileCreator"
+import { TimelineItem } from "@models/Timeline"
+import { CalendarRange } from "@ui-kitten/components"
 import { MutableRefObject } from "react"
 import { Linking } from "react-native"
 
@@ -126,4 +129,34 @@ export const openMailTo = () => {
         .catch(() => {
             toast.warning({ message: 'Erro desconhecido. Contate o administrador', duration: 3000 })
         })
+}
+
+export const groupByDateTime = (data: PatientDiaryEntryDto[]): TimelineItem => {
+    const { localeDateService } = useDatepickerService()
+
+    var groups: TimelineItem = {}
+    data.forEach(val => {
+        const date = typeof val.date === 'string' ? localeDateService.parse(val.date, _DATE_FROM_ISO_8601) : val.date
+        if (date.toISOString() in groups) {
+            groups[date.toISOString()].push(val.data);
+        } else {
+            groups[date.toISOString()] = new Array(val.data);
+        }
+    })
+
+    return groups
+}
+
+export const orderByDateRange = (range: CalendarRange<Date>, array: any, _columnName?: string) => {
+
+    const { localeDateService } = useDatepickerService()
+
+    if (range.startDate && !range.endDate)
+        return array.filter((e: any) => localeDateService.parse(_columnName ? e[_columnName] : e, _DATE_FROM_ISO_8601) >= (range.startDate as Date)
+            && localeDateService.parse(_columnName ? e[_columnName] : e, _DATE_FROM_ISO_8601) <= localeDateService.addDay((range.startDate as Date), 1))
+    else if (range.startDate && range.endDate)
+        return array.filter((e: any) => localeDateService.parse(_columnName ? e[_columnName] : e, _DATE_FROM_ISO_8601) >= (range.startDate as Date)
+            && localeDateService.parse(_columnName ? e[_columnName] : e, _DATE_FROM_ISO_8601) <= localeDateService.addDay((range.endDate as Date), 1))
+
+    return array
 }

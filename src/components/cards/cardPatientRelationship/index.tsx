@@ -1,5 +1,4 @@
 import AttachmentBoxComponent from '@components/attachmentBox'
-import CardAddressComponent from '@components/cards/cardAddress'
 import SelectComponent, { SelectItemData } from '@components/select'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { RelationshipPatient } from '@models/PatientProfileCreator'

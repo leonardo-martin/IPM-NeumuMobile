@@ -1,6 +1,4 @@
 import RNCalendarEvents, { AuthorizationStatus, Calendar, CalendarEventWritable, Options } from "react-native-calendar-events"
-import { api } from "./api.service"
-import { timelineTestData } from "@pages/admin/profile/myNotes/data"
 
 export const listCalendars = async (): Promise<Calendar[]> => {
     let permissions
@@ -43,24 +41,4 @@ export const addCalendarEvent = async (event: CalendarEventWritable, _calendar: 
         throw e
     }
     return createdEventId
-}
-
-export const getPatientCalendar = async (startDate: string | undefined, endDate: string | undefined, patientId: string) => {
-
-    return await {
-        data: timelineTestData
-    }
-
-    // let params = {
-    //     startDate,
-    //     endDate,
-    //     patientId
-    // }
-
-    // if(!startDate) delete params['startDate']
-    // if(!endDate) delete params['endDate']
-
-    // return await api.get('/calendar/get-patient-calendar', {
-    //     params
-    // })
 }

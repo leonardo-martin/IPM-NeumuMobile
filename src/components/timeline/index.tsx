@@ -1,12 +1,12 @@
+import { _DATE_FROM_ISO_8601 } from '@constants/date'
+import { useDatepickerService } from '@hooks/useDatepickerService'
+import { AscendingOrder } from '@models/Common'
+import { TimelineItem, TimelineTimeItem } from '@models/Timeline'
+import { CalendarRange, Divider, Icon, List, Text, useStyleSheet } from '@ui-kitten/components'
+import { orderByDateRange, sortByDate } from '@utils/common'
 import React, { Dispatch, FC, ReactElement, useEffect, useState } from 'react'
 import { ListRenderItemInfo, View } from 'react-native'
-import { CalendarRange, Divider, Icon, List, Text, useStyleSheet } from '@ui-kitten/components'
-import { useDatepickerService } from '@hooks/useDatepickerService'
-import { _DATE_FROM_ISO_8601 } from '@constants/date'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { TimelineItem, TimelineTimeItem } from '@models/Timeline'
-import { AscendingOrder } from '@models/Common'
-import { sortByDate } from '@utils/common'
 import { timelineStyle } from './style'
 
 interface TimelineProps {
@@ -20,17 +20,15 @@ interface TimelineProps {
 }
 
 const Timeline: FC<TimelineProps> = ({
-    data, orderBy, range, isFiltered, onChangeListSize, onDelete, onChange
+    data, orderBy = AscendingOrder.ASC, range = {}, isFiltered, onChangeListSize, onDelete, onChange
 }): ReactElement => {
 
+    const styles = useStyleSheet(timelineStyle)
+    const { localeDateService } = useDatepickerService()
     const [listData, setListData] = useState<string[]>()
 
     const orderList = (list: any[]) => {
-        if (range?.startDate && !range?.endDate && isFiltered)
-            list = list.filter((e) => localeDateService.parse(e, _DATE_FROM_ISO_8601) >= (range.startDate as Date))
-        else if (range?.startDate && range?.endDate && isFiltered)
-            list = list.filter((e) => localeDateService.parse(e, _DATE_FROM_ISO_8601) >= (range.startDate as Date)
-                && localeDateService.parse(e, _DATE_FROM_ISO_8601) <= localeDateService.addDay((range.endDate as Date), 1))
+        list = orderByDateRange(range, list)
         list = list.sort((a, b) => sortByDate(a, b, orderBy))
         setListData([...list])
 
@@ -44,47 +42,24 @@ const Timeline: FC<TimelineProps> = ({
     }
 
     useEffect(() => {
-        if (data)
+        if (data || (data && isFiltered))
             orderList(Object.keys(data))
-    }, [data, orderBy, isFiltered])
-
-    const styles = useStyleSheet(timelineStyle)
-    const { localeDateService } = useDatepickerService()
-
-    var currentDate = localeDateService.today()
-    var year = currentDate.getFullYear().toString()
-    var month = localeDateService.getMonthName(currentDate)
-    var count = 0
+    }, [data, isFiltered])
 
     const renderItem = (info: ListRenderItemInfo<string>) => {
-        const date = localeDateService.format(localeDateService.parse(info.item, _DATE_FROM_ISO_8601), 'ddd/DD/MMM/YYYY')
-        const itemMonth = date.split('/')[2]
-        const itemYear = date.split('/')[3]
-
-        if (month === itemMonth && year === itemYear) count++
-        else {
-            month = itemMonth
-            year = itemYear
-            count = 1
-        }
+        const date = localeDateService.format(localeDateService.parse(info.item, _DATE_FROM_ISO_8601), 'ddd/DD/MM/YY')
+        const item = date.split('/')
 
         return (
             <>
-                {count === 1 && (
-                    <View style={styles.titleItem}>
-                        <View style={styles.containerTitleItem}>
-                            <Text status='control' category='s2'>{itemMonth.toUpperCase()}/{itemYear}</Text>
-                        </View>
-                    </View>
-                )}
                 <View key={`${info.index}-${info.item}`} style={styles.containerItem}>
                     <View style={styles.containerItemColumnDate}>
-                        <Text category='label'>{date.split('/')[0].toUpperCase()}</Text>
-                        <Text category='p1'>{date.split('/')[1]}</Text>
+                        <Text category='label'>{item[0].toUpperCase()}</Text>
+                        <Text category='p1' style={{ fontSize: 11 }}>{item[1]}/{item[2]}/{item[3]}</Text>
                     </View>
                     <Divider style={styles.verticleLine} />
                     <View style={styles.containerItemColumnInfo}>
-                        {data[info.item].map((item: any, index: number) => {
+                        {data[info.item] && data[info.item].map((item: any, index: number) => {
                             return (
                                 <View key={`${index}-${item.description}`} style={styles.viewTimeline}>
                                     <View style={styles.viewTimelineItem}>
@@ -112,14 +87,9 @@ const Timeline: FC<TimelineProps> = ({
                 showsVerticalScrollIndicator={false}
                 style={styles.list}
                 data={listData}
-                renderItem={renderItem}
-            />
+                renderItem={renderItem} />
         </View>
     )
-}
-
-Timeline.defaultProps = {
-    orderBy: AscendingOrder.ASC
 }
 
 export default Timeline

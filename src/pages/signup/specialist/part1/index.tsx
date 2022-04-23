@@ -2,20 +2,21 @@ import { useDatepickerService } from '@hooks/useDatepickerService'
 import { DoctorSignUpProps } from '@models/SignUpProps'
 import { registerStyle } from '@pages/signup/style'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
-import { Datepicker, Icon, IconProps, Input, PopoverPlacements, Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
+import { Datepicker, Icon, IconProps, IndexPath, Input, PopoverPlacements, Radio, RadioGroup, Select, SelectItem, Text, useStyleSheet } from '@ui-kitten/components'
 import { getGender, openMailTo } from '@utils/common'
 import { formatCpf, isEmailValid, onlyNumbers } from '@utils/mask'
+import specialties from '@utils/specialties'
 import { validatePasswd } from '@utils/validators'
 import { validate } from 'gerador-validador-cpf'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 import { Keyboard, TouchableOpacity, View } from 'react-native'
 
-
-const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): ReactElement => {
+const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement => {
 
   const { localeDateService } = useDatepickerService()
   const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
+  const [selectedSpecialty, setSelectedSpecialty] = useState<IndexPath | IndexPath[]>()
 
   const isFocused = useIsFocused()
 
@@ -27,8 +28,17 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
     useCallback(() => {
       const genre = form.getValues('genre')
       if (genre) setSelectedIndex(genre === 'male' ? 0 : genre === 'female' ? 1 : 2)
+
+      const specialty = form.getValues('specialty.description')
+      if (specialty) setSelectedSpecialty(new IndexPath(specialties.indexOf(specialty)))
     }, [])
   )
+
+  useEffect(() => {
+    if (selectedSpecialty)
+      form.setValue('specialty.description', specialties[Number(selectedSpecialty) - 1])
+    else form.setValue('specialty.description', '')
+  }, [selectedSpecialty])
 
   useEffect(() => {
     setSecureTextEntry(true)
@@ -328,30 +338,25 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
             required: {
               value: true,
               message: 'Campo obrigatório'
-            },
-            minLength: {
-              value: 5,
-              message: `Mín. 5 caracteres`
-            },
+            }
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
-            <Input
+            <Select
               size='small'
               label="Especialidade *"
               style={styles.input}
-              keyboardType='default'
-              placeholder=''
+              placeholder='Selecione'
               testID={name}
               onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
               ref={ref}
-              maxLength={50}
-              underlineColorAndroid="transparent"
-              onSubmitEditing={form.handleSubmit(onSubmit)}
-              autoCapitalize='words'
-              returnKeyType="send"
-            />
+              selectedIndex={selectedSpecialty}
+              onSelect={setSelectedSpecialty}
+              value={value}
+            >
+              {specialties.map((item, index) => (
+                <SelectItem key={item + index} title={item} />
+              ))}
+            </Select>
           )}
           name='specialty.description'
           defaultValue=''

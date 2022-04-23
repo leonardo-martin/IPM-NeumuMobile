@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet } from 'react-native'
+import { Dimensions, I18nManager, StyleSheet } from 'react-native'
 
 const { width } = Dimensions.get('window')
 
@@ -22,20 +22,16 @@ export const myExamsStyle = StyleSheet.create({
     backgroundColor: 'text-control-color',
     justifyContent: 'center',
     padding: 16,
-    width,
     marginTop: 4,
-  },
-  deleteBox: {
-    backgroundColor: 'color-danger-500',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 80,
-    height: '100%',
-    marginVertical: 4,
   },
   text: {
     color: 'text-hint-color',
     fontWeight: 'bold',
+  },
+  textWhite: {
+    color: 'text-control-color',
+    fontSize: 12,
+    fontWeight: '700'
   },
   icon: {
     color: 'color-basic-300',
@@ -51,5 +47,15 @@ export const myExamsStyle = StyleSheet.create({
   textDate: {
     textAlign: 'right',
     minWidth: 64
+  },
+  rightAction: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    marginVertical: 4,
+  },
+  viewActions: {
+    width: 160,
+    flexDirection: I18nManager.isRTL ? 'row-reverse' : 'row'
   }
 })

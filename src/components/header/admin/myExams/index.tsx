@@ -1,11 +1,11 @@
-import React, { Dispatch, FC, ReactElement, useState } from 'react'
-import { Layout, Modal, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
-import { useNavigation } from '@react-navigation/native'
 import { BackIcon, PlusIcon } from '@components/header/icons'
-import { Exam, ExamDto, ExamImage } from '@models/Exam'
-import { headerStyle } from '../style'
+import AddExamModal from '@components/modal/addExamModal'
 import { useModal } from '@hooks/useModal'
-import AddExamModal from 'components/modal/addExamModal'
+import { ExamDto, ExamImage } from '@models/Exam'
+import { useNavigation } from '@react-navigation/native'
+import { Layout, Modal, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
+import React, { Dispatch, FC, ReactElement, useState } from 'react'
+import { headerStyle } from '../style'
 
 interface HeaderMyExamsProps {
     onRefresh: Dispatch<React.SetStateAction<ExamDto & ExamImage | undefined>>

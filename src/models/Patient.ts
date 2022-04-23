@@ -1,9 +1,10 @@
 import { JSONObject } from "./Common"
+import { TimelineTimeItem } from "./Timeline"
 
 export class PatientDiaryEntryDto {
     patientId!: number | undefined
-    date!: Date
-    data!: JSONObject
+    date!: Date | string
+    data!: TimelineTimeItem
 }
 
 export class PatientDto {
