@@ -20,6 +20,7 @@ import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } fro
 import { ActivityIndicator, ImageStyle, LayoutRectangle, Platform, Pressable, ScrollView, StyleProp, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Modalize } from 'react-native-modalize'
+import Animated, { Easing, SlideInRight, SlideOutRight, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { options } from './data'
 import { doctorScheduleStyle } from './style'
 
@@ -38,6 +39,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
     const { sessionUser } = useAppSelector((state: RootState) => state.auth)
 
     const theme = useTheme()
+    const opacity = useSharedValue(0)
     const styles = useStyleSheet(doctorScheduleStyle)
     const scrollViewDaysInMonthRef = useRef<ScrollView>(null)
     const [currentDate] = useState<Date>(localeDateService.today())
@@ -72,6 +74,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
             const array = Array.from({ length: localeDateService.getNumberOfDaysInMonth(dateSelected) }, (x, i) => localeDateService.format(localeDateService.addDay(localeDateService.getMonthStart(dateSelected), i), 'DD'))
             setDaysInMonth(array)
             setNumColumns(array.length)
+            opacity.value = 0
         }, [dateSelected])
     )
 
@@ -155,10 +158,12 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
         if (date.getTime() !== dateTimeSelected?.getTime()) {
             setDateTimeSelected(date)
             setTimeSelected(undefined)
+            opacity.value = 1
         }
         else {
             setDateTimeSelected(undefined)
             setTimeSelected(undefined)
+            opacity.value = 0
         }
     }
 
@@ -243,6 +248,14 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
         </View>
     )
 
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            opacity: withTiming(opacity.value, {
+                duration: 500,
+                easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+            }),
+        }
+    })
 
     return (
         <>
@@ -328,8 +341,13 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
 
                         <View style={{ paddingVertical: 15 }}>
                             <Text style={styles.text}>Horários disponíveis</Text>
-                            {dateTimeSelected ?
-                                <View style={styles.timesContainer}>
+                            <Animated.View
+                                entering={SlideInRight}
+                                exiting={SlideOutRight}
+                                style={animatedStyle}>
+                                <View style={[styles.timesContainer, {
+                                    display: opacity.value === 0 ? 'none' : 'flex'
+                                }]}>
                                     {options.map(item => (
                                         <Pressable key={`${item.id}-${item.title}`}
                                             onPress={() => !item.disabled ? handleTimeSelected(item.title) : undefined}>
@@ -343,11 +361,14 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                                         </Pressable>
                                     ))}
                                 </View>
-                                :
+                            </Animated.View>
+                            <Animated.View
+                                entering={SlideInRight}
+                                style={{ display: opacity.value === 1 ? 'none' : 'flex' }}>
                                 <View style={styles.timesContainer}>
                                     <Text style={[styles.timesText, styles.textWithoutSelectedDate]}>Selecione o dia desejado</Text>
                                 </View>
-                            }
+                            </Animated.View>
                         </View>
                         <View style={styles.viewBtn}>
                             <Button

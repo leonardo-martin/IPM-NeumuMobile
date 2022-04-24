@@ -8,6 +8,7 @@ import { TimelineItem } from "@models/Timeline"
 import { CalendarRange } from "@ui-kitten/components"
 import { MutableRefObject } from "react"
 import { Linking } from "react-native"
+import { addMinutes } from 'date-fns'
 
 export const matchMessage = (message: any) => {
 
@@ -159,4 +160,27 @@ export const orderByDateRange = (range: CalendarRange<Date>, array: any, _column
             && localeDateService.parse(_columnName ? e[_columnName] : e, _DATE_FROM_ISO_8601) <= localeDateService.addDay((range.endDate as Date), 1))
 
     return array
+}
+
+/**
+ * 
+ * @param interval Intervalo de tempo em minutos (Default = 30)
+ * @param startTime Minuto inicial (Default = 0)
+ * @param endTime Hora final (Default = 24)
+ * @returns string[...Date.toISOString]
+ */
+export const getTimesByInterval = (interval: number = 30, startTime: number = 0, endTime: number = 24) => {
+
+    const { localeDateService } = useDatepickerService()
+
+    let dates: string[] = []
+    let date = localeDateService.today()
+    date.setHours(0, 0, 0, 0)
+
+    for (var i = 0; startTime < endTime * 60; i++) {
+        startTime = startTime + interval;
+        dates.push(addMinutes(date, startTime).toISOString())
+    }
+
+    return dates
 }

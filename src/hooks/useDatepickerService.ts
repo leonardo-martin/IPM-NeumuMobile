@@ -23,10 +23,11 @@ const i18n: I18nConfig = {
             'Dezembro',
         ],
     },
+
 }
 
 export const useDatepickerService = (format = _DEFAULT_FORMAT_DATE) => {
     const localeDateService = new NativeDateService('pt-BR', { i18n, startDayOfWeek: 0, format })
 
-    return { localeDateService, format }
+    return { localeDateService, format, i18nConfig: i18n }
 }

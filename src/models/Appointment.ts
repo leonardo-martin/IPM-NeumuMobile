@@ -47,3 +47,17 @@ export interface PatientSummaryDto {
     name: string
     patientId: number
 }
+
+
+export interface AppointmentAvailabilityDTO {
+    id?: number
+    dayOfWeek?: number
+    timeBlock?: number
+    doctorId?: number
+}
+
+export interface AppointmentAvailabilityParams {
+    dayOfWeek: number | string
+    startTime: Date | string
+    endTime: Date | string
+}

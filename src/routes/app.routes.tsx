@@ -1,6 +1,7 @@
 import DrawerContent from '@components/drawer'
 import HeaderAdmin from '@components/header/admin'
 import HeaderChatRoom from '@components/header/admin/chatRoom'
+import { useDatepickerService } from '@hooks/useDatepickerService'
 import DashboardScreen from '@pages/admin'
 import AppointmentsScreen from '@pages/admin/appointments'
 import ChatRoomScreen from '@pages/admin/chat'
@@ -13,22 +14,35 @@ import HelpScreen from '@pages/admin/help'
 import MessagesScreen from '@pages/admin/messages'
 import ProfileScreen from '@pages/admin/profile'
 import EditProfileScreen from '@pages/admin/profile/extra'
-import PatientGeneticMappingProgramScreen from '@pages/admin/profile/patient-genetic-mapping-program'
 import PatientDiaryEntryScreen from '@pages/admin/profile/patient-diary-entry'
 import PatientExamsScreen from '@pages/admin/profile/patient-exams'
+import PatientGeneticMappingProgramScreen from '@pages/admin/profile/patient-genetic-mapping-program'
 import ScheduleScreen from '@pages/admin/schedule'
 import ConfirmationScheduleScreen from '@pages/admin/schedule/confirmation'
 import ChoiceScheduleScreen from '@pages/admin/schedule/extra/filter-schedule'
 import PresentialScheduleScreen from '@pages/admin/schedule/presential'
+import ProfessionalScheduleScreen from '@pages/admin/schedule/professional-schedule'
 import ChangePasswordChoice from '@pages/changePassword'
 import ChangePasswordRequest from '@pages/changePassword/changePasswordSpecific'
 import ChangePasswordConfirm from '@pages/changePassword/confirmation'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import React, { FC, ReactElement } from 'react'
+import { LocaleConfig } from 'react-native-calendars'
 
 const { Navigator, Screen, Group } = createDrawerNavigator()
 
 const AppRoutes: FC = (): ReactElement => {
+
+  const { i18nConfig } = useDatepickerService()
+
+  LocaleConfig.locales['pt-BR'] = {
+    monthNames: i18nConfig.monthNames.long,
+    monthNamesShort: i18nConfig.monthNames.short,
+    dayNames: i18nConfig.dayNames.long,
+    dayNamesShort: i18nConfig.dayNames.short,
+    today: "Hoje"
+  };
+  LocaleConfig.defaultLocale = 'pt-BR'
 
   return (
     <Navigator
@@ -51,26 +65,15 @@ const AppRoutes: FC = (): ReactElement => {
         headerShown: false,
       }}>
         <Screen name="GeneticMappingProgram" component={PatientGeneticMappingProgramScreen} />
-        <Screen
-          name="PresentialSchedule"
-          component={PresentialScheduleScreen}
-        />
-        <Screen
-          name="ConfirmationSchedule"
-          component={ConfirmationScheduleScreen}
-        />
+        <Screen name="PresentialSchedule" component={PresentialScheduleScreen} />
+        <Screen name="ConfirmationSchedule" component={ConfirmationScheduleScreen} />
         <Screen name="ChangePasswordConfirmation" component={ChangePasswordConfirm} />
 
         <Screen name="PatientDiaryEntry" component={PatientDiaryEntryScreen} />
         <Screen name="PatientExams" component={PatientExamsScreen} />
-        <Screen
-          name="Profile"
-          component={ProfileScreen}
-        />
-        <Screen
-          name="EditProfile"
-          component={EditProfileScreen}
-        />
+        <Screen name="Profile" component={ProfileScreen} />
+        <Screen name="EditProfile" component={EditProfileScreen} />
+        <Screen name="ProfessionalSchedule" component={ProfessionalScheduleScreen} />
       </Group>
 
       <Group screenOptions={{
