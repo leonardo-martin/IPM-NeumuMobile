@@ -14,9 +14,10 @@ import { deleteExam, getPatientExamList } from '@services/exam.service'
 import { CalendarRange, Icon, IconProps, List, ListItem, Modal, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
 import { orderByDateRange, sortByDate } from '@utils/common'
 import React, { FC, ReactElement, RefObject, useCallback, useState } from 'react'
-import { Animated, ListRenderItemInfo, RefreshControl, TouchableOpacity, View } from 'react-native'
+import { Animated as RNAnimated, ListRenderItemInfo, RefreshControl, TouchableOpacity, View } from 'react-native'
 import { RectButton } from 'react-native-gesture-handler'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
+import Animated, { Layout, LightSpeedInLeft, LightSpeedOutRight } from 'react-native-reanimated'
 import { myExamsStyle } from './style'
 
 const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
@@ -75,7 +76,7 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
     )
 
     const renderLeftIcon = (props: IconProps) => (
-        <View style={{paddingHorizontal: 10}}>
+        <View style={{ paddingHorizontal: 10 }}>
             <Icon {...props} color={theme['color-basic-1100']} name='reader-outline' pack='ionicons' />
         </View>
     )
@@ -113,8 +114,8 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
     }
 
     const renderRightAction = (info: ListRenderItemInfo<ExamDto>, text: string,
-        color: string, _progress: Animated.AnimatedInterpolation,
-        dragX: Animated.AnimatedInterpolation, ref: RefObject<Swipeable>) => {
+        color: string, _progress: RNAnimated.AnimatedInterpolation,
+        dragX: RNAnimated.AnimatedInterpolation, ref: RefObject<Swipeable>) => {
 
         const opacity = dragX.interpolate({
             inputRange: [-80, -20, 0],
@@ -132,13 +133,13 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
             }
         }
         return (
-            <Animated.View style={[{ flex: 1, transform: [{ translateX: 0 }] }, { opacity: opacity }]}>
+            <RNAnimated.View style={[{ flex: 1, transform: [{ translateX: 0 }] }, { opacity: opacity }]}>
                 <RectButton
                     style={[styles.rightAction, { backgroundColor: theme[color] }]}
                     onPress={pressHandler}>
                     <Text style={styles.textWhite}>{text}</Text>
                 </RectButton>
-            </Animated.View>
+            </RNAnimated.View>
         )
     }
 
@@ -155,20 +156,25 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
                     </View>
                 )}
                 overshootLeft={false}>
-                <ListItem
-                    style={styles.containerItem}
-                    title={info.item.examType}
-                    description={(evaProps) => (
-                        info.item.data.examDescription?.length > 36 ?
-                            <Text {...evaProps}>
-                                {info.item.data.examDescription.substring(0, 32)}...
-                            </Text>
-                            :
-                            <Text {...evaProps}>{info.item.data.examDescription}</Text>
-                    )}
-                    accessoryRight={(e) => renderRightIcon(e, info.item)}
-                    accessoryLeft={renderLeftIcon}
-                />
+                <Animated.View
+                    layout={Layout.springify()}
+                    entering={LightSpeedInLeft}
+                    exiting={LightSpeedOutRight}>
+                    <ListItem
+                        style={styles.containerItem}
+                        title={info.item.examType}
+                        description={(evaProps) => (
+                            info.item.data.examDescription?.length > 36 ?
+                                <Text {...evaProps}>
+                                    {info.item.data.examDescription.substring(0, 32)}...
+                                </Text>
+                                :
+                                <Text {...evaProps}>{info.item.data.examDescription}</Text>
+                        )}
+                        accessoryRight={(e) => renderRightIcon(e, info.item)}
+                        accessoryLeft={renderLeftIcon}
+                    />
+                </Animated.View>
             </Swipeable>
         )
     }
