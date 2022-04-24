@@ -7,6 +7,7 @@ import { orderByDateRange, sortByDate } from '@utils/common'
 import React, { Dispatch, FC, ReactElement, useEffect, useState } from 'react'
 import { ListRenderItemInfo, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import Animated, { Layout, LightSpeedInLeft, LightSpeedOutRight } from 'react-native-reanimated'
 import { timelineStyle } from './style'
 
 type TimelineProps = {
@@ -52,31 +53,37 @@ const Timeline: FC<TimelineProps> = ({
 
         return (
             <>
-                <View key={`${info.index}-${info.item}`} style={styles.containerItem}>
-                    <View style={styles.containerItemColumnDate}>
-                        <Text category='label'>{item[0].toUpperCase()}</Text>
-                        <Text category='p1' style={{ fontSize: 11 }}>{item[1]}/{item[2]}/{item[3]}</Text>
-                    </View>
-                    <Divider style={styles.verticleLine} />
-                    <View style={styles.containerItemColumnInfo}>
-                        {customData && customData[info.item] && customData[info.item].map((item: any, index: number) => {
-                            return (
-                                <View key={`${index}-${item.description}`} style={styles.viewTimeline}>
-                                    <View style={styles.viewTimelineItem}>
-                                        <Text category='label' style={styles.text}>{item.title} </Text>
-                                        <Text appearance='hint' style={styles.text}>{item.description}</Text>
+                <Animated.View
+                    layout={Layout.springify()}
+                    entering={LightSpeedInLeft}
+                    exiting={LightSpeedOutRight}>
+                    <View style={styles.containerItem}>
+                        <View style={styles.containerItemColumnDate}>
+                            <Text category='label'>{item[0].toUpperCase()}</Text>
+                            <Text category='p1' style={{ fontSize: 11 }}>{item[1]}/{item[2]}/{item[3]}</Text>
+                        </View>
+                        <Divider style={styles.verticleLine} />
+                        <View style={styles.containerItemColumnInfo}>
+                            {customData && customData[info.item] && customData[info.item].map((item: any, index: number) => {
+                                return (
+                                    <View key={`${index}-${item.description}`} style={styles.viewTimeline}>
+                                        <View style={styles.viewTimelineItem}>
+                                            <Text category='label' style={styles.text}>{item.title} </Text>
+                                            <Text appearance='hint' style={styles.text}>{item.description}</Text>
+                                        </View>
+                                        <TouchableOpacity style={styles.button} onPress={() => onChange(info.item, item)}>
+                                            <Icon name='create-outline' pack='ionicons' size={20} />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => onDelete(info.item, item)}>
+                                            <Icon name='trash-outline' pack='ionicons' size={20} />
+                                        </TouchableOpacity>
                                     </View>
-                                    <TouchableOpacity style={styles.button} onPress={() => onChange(info.item, item)}>
-                                        <Icon name='create-outline' pack='ionicons' size={20} />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => onDelete(info.item, item)}>
-                                        <Icon name='trash-outline' pack='ionicons' size={20} />
-                                    </TouchableOpacity>
-                                </View>
-                            )
-                        })}
+                                )
+                            })}
+                        </View>
                     </View>
-                </View>
+
+                </Animated.View>
             </>
         )
     }
@@ -88,6 +95,7 @@ const Timeline: FC<TimelineProps> = ({
                 showsVerticalScrollIndicator={false}
                 style={[props.style, styles.list]}
                 data={listData}
+                keyExtractor={item => item.toString()}
                 renderItem={renderItem} />
         </View>
     )

@@ -38,18 +38,22 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
 
     useFocusEffect(
         useCallback(() => {
-            form.reset({
-                ...props.exam,
-                examDate: typeof props.exam?.examDate === 'string' ? localeDateService.parse(props.exam?.examDate, _DATE_FROM_ISO_8601) : localeDateService.today(),
-                examResultDate: typeof props.exam?.examResultDate === 'string' ? localeDateService.parse(props.exam?.examResultDate, _DATE_FROM_ISO_8601) : localeDateService.today()
-            })
-            form.register('examImage', {
-                required: {
-                    value: true,
-                    message: 'Necessário documentação'
-                }
-            })
-        }, [props.exam])
+            if (visible) {
+                setFileResponse(undefined)
+                form.reset({
+                    ...props.exam,
+                    examDate: typeof props.exam?.examDate === 'string' ? localeDateService.parse(props.exam?.examDate, _DATE_FROM_ISO_8601) : localeDateService.today(),
+                    examResultDate: typeof props.exam?.examResultDate === 'string' ? localeDateService.parse(props.exam?.examResultDate, _DATE_FROM_ISO_8601) : localeDateService.today()
+                })
+                form.register('examImage', {
+                    required: {
+                        value: true,
+                        message: 'Necessário documentação'
+                    },
+                    value: undefined
+                })
+            }
+        }, [visible])
     )
 
     useEffect(() => {
@@ -137,11 +141,11 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
     return (
         <Modal
             {...{ ...props, ref: combinedRef }}
-            style={styles.modal}            
+            style={styles.modal}
             visible={visible}
             backdropStyle={styles.backdrop}
             onBackdropPress={handleVisibleModal}
-            >
+        >
             <Card disabled={true}>
                 <View style={styles.viewCard}>
                     <Controller
