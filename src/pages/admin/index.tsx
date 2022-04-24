@@ -1,29 +1,25 @@
+import FloatingPlusButton from '@components/floatingButton/plusButton'
+import HeaderAdmin from '@components/header/admin'
+import ModalizeFixed from '@components/modalize'
+import { SafeAreaLayout } from '@components/safeAreaLayout'
+import { useAppSelector } from '@hooks/redux'
+import { useModal } from '@hooks/useModal'
+import { EUserRole } from '@models/UserRole'
+import { DrawerContentComponentProps } from '@react-navigation/drawer'
+import { useFocusEffect } from '@react-navigation/native'
+import { RootState } from '@store/index'
+import { Card, Icon, Text, useStyleSheet } from '@ui-kitten/components'
 import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { BackHandler, StatusBar, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { Text, Card, Icon, useStyleSheet } from '@ui-kitten/components'
-import { Host, Portal } from 'react-native-portalize'
-import { SafeAreaLayout } from '@components/safeAreaLayout'
-import { useFocusEffect } from '@react-navigation/native'
-import ModalizeFixed from '@components/modalize'
-import HeaderAdmin from '@components/header/admin'
-import { dashboardStyle } from './style'
-import FloatingPlusButton from '@components/floatingButton/plusButton'
-import { useModal } from '@hooks/useModal'
 import { Modalize } from 'react-native-modalize'
-import { useAppSelector } from '@hooks/redux'
-import { RootState } from '@store/index'
-import { EUserRole } from '@models/UserRole'
+import { Host, Portal } from 'react-native-portalize'
+import { dashboardStyle } from './style'
 
 const DashboardScreen: FC<DrawerContentComponentProps> = ({
   navigation
 }): ReactElement => {
 
-  const goToProfile = () => navigation.jumpTo('Profile')
-  const goToSchedule = () => navigation.jumpTo('Schedule')
-  const goToAppointments = () => navigation.jumpTo('MyAppointments')
-  const goToHelpMe = () => navigation.jumpTo('Help')
   const [visibleFloatingButton, setVisibleFloatingButton] = useState<boolean>(true)
 
   const styles = useStyleSheet(dashboardStyle)
@@ -46,6 +42,14 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
       return () => subscription.remove()
     }, [])
   )
+
+  const goToProfile = () => navigation.jumpTo('Profile')
+  const goToSchedule = () => {
+    sessionUser?.userRole.find(e => e.id === EUserRole.patient) ?
+      navigation.jumpTo('Schedule') : navigation.jumpTo('ProfessionalSchedule')
+  }
+  const goToAppointments = () => navigation.jumpTo('MyAppointments')
+  const goToHelpMe = () => navigation.jumpTo('Help')
 
   return (
     <Host>
@@ -75,6 +79,20 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                 </Card>
               </View>
             )}
+            {sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor) && (
+              <View style={styles.cardGroupPrimary}>
+                <Card onPress={goToSchedule}>
+                  <View style={styles.cardDefault}>
+                    <Icon style={styles.iconOrange} name="clock" size={50} pack='font-awesome' />
+                    <Text category="h6" style={[styles.cardText, {
+                      marginHorizontal: -8, flex: 1
+                    }]}>
+                      Meus Horários
+                    </Text>
+                  </View>
+                </Card>
+              </View>
+            )}
             <View style={styles.cardGroupSecondary}>
               <Card style={styles.card} onPress={goToProfile}>
                 <View style={styles.cardDefault}>
@@ -84,14 +102,22 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                   Meu perfil
                 </Text>
               </Card>
-              <Card style={styles.card} onPress={goToAppointments}>
-                <View style={styles.cardDefault}>
-                  <Icon style={styles.iconPrimary} name='stethoscope' size={40} pack='font-awesome' />
-                </View>
-                <Text category="h6" style={styles.cardText}>
-                  Minhas consultas
-                </Text>
-              </Card>
+              {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
+                <Card style={styles.card} onPress={goToAppointments}>
+                  <View style={styles.cardDefault}>
+                    <Icon style={styles.iconPrimary} name='stethoscope' size={40} pack='font-awesome' />
+                  </View>
+                  <Text category="h6" style={styles.cardText}>Minhas Consultas</Text>
+                </Card>
+              )}
+              {sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor) && (
+                <Card style={styles.card} onPress={goToAppointments}>
+                  <View style={styles.cardDefault}>
+                    <Icon style={styles.iconPrimary} name='calendar-week' size={40} pack='font-awesome' />
+                  </View>
+                  <Text category="h6" style={styles.cardText}>Agenda</Text>
+                </Card>
+              )}
             </View>
             {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
               <View style={styles.cardGroupSecondary}>
@@ -118,7 +144,6 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                 </Card>
               </View>
             )}
-            {/* </View> */}
           </View>
         </ScrollView>
       </SafeAreaLayout>
@@ -139,18 +164,19 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
           </TouchableOpacity>
         </ModalizeFixed>
       </Portal>
-      {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
-        <Portal>
-          <FloatingPlusButton containerStyle={{
-            bottom: 80,
-            right: 60,
-            opacity: visibleFloatingButton ? 1 : 0
-          }} />
-        </Portal>
-      )
+      {
+        sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
+          <Portal>
+            <FloatingPlusButton containerStyle={{
+              bottom: 80,
+              right: 60,
+              opacity: visibleFloatingButton ? 1 : 0
+            }} />
+          </Portal>
+        )
 
       }
-    </Host>
+    </Host >
   )
 }
 
