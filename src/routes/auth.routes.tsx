@@ -1,15 +1,16 @@
-import React, { FC, ReactElement } from 'react'
-import { createStackNavigator, StackCardInterpolationProps, TransitionPresets } from '@react-navigation/stack'
 import HeaderAuth from '@components/header/auth'
-
-import SignIn from '@pages/signin'
-import ChangePasswordChoice from '@pages/changePassword'
-import ChangePasswordRequest from '@pages/changePassword/changePasswordSpecific'
-import RegistrationConfirmation from '@pages/signup/confirmation'
 import RNWebView from '@components/webView'
-import SignUpScreen from '@pages/signup'
+import ChangePasswordChoice from '@pages/changePassword'
 import ChangePasswordConfirm from '@pages/changePassword/confirmation'
+import ChangePasswordWithToken from '@pages/changePassword/password-with-token'
+import ChangePasswordRequest from '@pages/changePassword/selected-password-change-mode'
+import SignIn from '@pages/signin'
+import SignUpScreen from '@pages/signup'
+import RegistrationConfirmation from '@pages/signup/confirmation'
+import { createStackNavigator, StackCardInterpolationProps, TransitionPresets } from '@react-navigation/stack'
 import { TransitionSpec } from '@react-navigation/stack/lib/typescript/src/types'
+import React, { FC, ReactElement } from 'react'
+
 
 const { Navigator, Screen, Group } = createStackNavigator()
 
@@ -46,6 +47,10 @@ const AuthRoutes: FC = (): ReactElement => {
         <Screen name="SignIn" component={SignIn} />
         <Screen name="RegistrationConfirmation" component={RegistrationConfirmation} />
         <Screen name="ChangePasswordConfirmation" component={ChangePasswordConfirm}
+          options={{
+            ...TransitionPresets.ModalSlideFromBottomIOS
+          }} />
+        <Screen name="ChangePasswordWithToken" component={ChangePasswordWithToken}
           options={{
             ...TransitionPresets.ModalSlideFromBottomIOS
           }} />

@@ -1,17 +1,16 @@
 import HouseIcon from '@assets/svg/house.svg'
 import PhoneIcon from '@assets/svg/phone.svg'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import { BOOTDEY_URI } from '@constants/uri'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
+import { EUserRole } from '@models/UserRole'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { AppInfoService } from '@services/app-info.service'
 import { logout } from '@store/ducks/auth'
-import { Avatar, Drawer, DrawerGroup, DrawerItem, Icon, IconProps, IndexPath, Text, useTheme } from '@ui-kitten/components'
+import { RootState } from '@store/index'
+import { Avatar, Divider, Drawer, DrawerGroup, DrawerItem, Icon, IconProps, IndexPath, Text, useTheme } from '@ui-kitten/components'
 import React, { ReactElement } from 'react'
 import { ImageBackground, View } from 'react-native'
-import { RootState } from '@store/index'
 import { drawerStyle } from './style'
-import { EUserRole } from '@models/UserRole'
 
 const _VERSION: string = AppInfoService.getVersion() + '.' + AppInfoService.getBuildNumber()
 const iconSizeDefault = 20
@@ -40,7 +39,7 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
           ImageComponent={ImageBackground}
         />
         <Text style={drawerStyle.profileName} category='h6'>
-          {'@'+ sessionUser?.user}
+          {'@' + sessionUser?.user}
         </Text>
       </View>
     </SafeAreaLayout>
@@ -60,6 +59,7 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
     <View style={drawerStyle.drawerContent}>
       <Drawer
         selectedIndex={selectedIndex}
+        ItemSeparatorComponent={() => <Divider />}
         header={renderHeader}
         footer={renderFooter} >
         <DrawerItem
@@ -88,16 +88,28 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
 
               />
             </DrawerGroup>
+            <Divider />
+            <DrawerItem
+              style={drawerStyle.drawerItem}
+              title='Minhas Consultas'
+              onPress={() => navigate('MyAppointments')}
+              accessoryLeft={(props: IconProps) => (
+                <Icon {...props} name='stethoscope' size={iconSizeDefault} pack='font-awesome' />
+              )}
+            />
           </>
-          : <></>}
-        <DrawerItem
-          style={drawerStyle.drawerItem}
-          title='Minhas Consultas'
-          onPress={() => navigate('MyAppointments')}
-          accessoryLeft={(props: IconProps) => (
-            <Icon {...props} name='stethoscope' size={iconSizeDefault} pack='font-awesome' />
-          )}
-        />
+          :
+          sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor) ?
+            <DrawerItem
+              style={[drawerStyle.drawerItem, { paddingStart: 10 }]}
+              title='Agenda'
+              onPress={() => navigate('MyAppointments')}
+              accessoryLeft={(props: IconProps) => (
+                <Icon {...props} name='calendar-week' size={iconSizeDefault} pack='font-awesome' />
+              )}
+            />
+            :
+            <></>}
         <DrawerItem
           style={drawerStyle.drawerItem}
           title='Meu Perfil'
@@ -133,7 +145,7 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
           )}
         />
       </Drawer>
-    </View>
+    </View >
   )
 }
 

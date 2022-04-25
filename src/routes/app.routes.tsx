@@ -6,7 +6,7 @@ import DashboardScreen from '@pages/admin'
 import AppointmentsScreen from '@pages/admin/appointments'
 import ChatRoomScreen from '@pages/admin/chat'
 import ConfigurationScreen from '@pages/admin/configuration/home'
-import InformationAppScreen from '@pages/admin/configuration/infos'
+import InformationAppScreen from 'pages/admin/configuration/about'
 import NotificationScreen from '@pages/admin/configuration/notification'
 import Terms from '@pages/admin/configuration/terms'
 import DoctorProfileScreen from '@pages/admin/doctorProfile'
@@ -23,8 +23,9 @@ import ChoiceScheduleScreen from '@pages/admin/schedule/extra/filter-schedule'
 import PresentialScheduleScreen from '@pages/admin/schedule/presential'
 import ProfessionalScheduleScreen from '@pages/admin/schedule/professional-schedule'
 import ChangePasswordChoice from '@pages/changePassword'
-import ChangePasswordRequest from '@pages/changePassword/changePasswordSpecific'
 import ChangePasswordConfirm from '@pages/changePassword/confirmation'
+import ChangePasswordWithToken from '@pages/changePassword/password-with-token'
+import ChangePasswordRequest from '@pages/changePassword/selected-password-change-mode'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import React, { FC, ReactElement } from 'react'
 import { LocaleConfig } from 'react-native-calendars'
@@ -68,6 +69,7 @@ const AppRoutes: FC = (): ReactElement => {
         <Screen name="PresentialSchedule" component={PresentialScheduleScreen} />
         <Screen name="ConfirmationSchedule" component={ConfirmationScheduleScreen} />
         <Screen name="ChangePasswordConfirmation" component={ChangePasswordConfirm} />
+        <Screen name="ChangePasswordWithToken" component={ChangePasswordWithToken} />
 
         <Screen name="PatientDiaryEntry" component={PatientDiaryEntryScreen} />
         <Screen name="PatientExams" component={PatientExamsScreen} />

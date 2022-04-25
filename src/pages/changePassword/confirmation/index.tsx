@@ -6,6 +6,7 @@ import React, { FC, ReactElement, useCallback } from 'react'
 import { BackHandler, Image, ImageStyle, StyleProp, View } from 'react-native'
 import { RootState } from 'store'
 import { changePasswdConfirmStyle } from './style'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 
 const ChangePasswordConfirm: FC = (): ReactElement => {
@@ -21,6 +22,7 @@ const ChangePasswordConfirm: FC = (): ReactElement => {
     })
 
     const navigate = () => navigation.dispatch(actions)
+    const changeWithToken = () => navigation.navigate('ChangePasswordWithToken')
 
     useFocusEffect(
         useCallback(() => {
@@ -37,18 +39,26 @@ const ChangePasswordConfirm: FC = (): ReactElement => {
         <>
             <SafeAreaLayout level='1' style={styles.safeArea}>
                 <View style={styles.content}>
-                    <View style={styles.item}>
+                    <View style={[styles.item, { flex: .9 }]}>
                         <Image source={require('../../../assets/confirmation/communcation.png')}
                             style={styles.image as StyleProp<ImageStyle>} />
+                        <View style={styles.title}>
+                            <Text style={[styles.description, { fontSize: 16 }]}>Enviado um link para o e-mail de cadastro com as instruções. Verifique sua caixa de entrada.</Text>
+                        </View>
                     </View>
-                    <View style={styles.viewDetails}>
-                        <Text style={styles.description}>Enviado um link ao seu e-mail para redefinição da senha. Verifique sua caixa de entrada.</Text>
+                    <View style={{ flex: .1 }}>
+                        <Button
+                            status='primary'
+                            appearance='outline'
+                            onPress={navigate}>Início</Button>
+                        <View style={[styles.viewDetails, { flexDirection: 'row' }]}>
+                            <Text category='c1' style={styles.message}>Já recebeu o TOKEN? Clique</Text>
+                            <TouchableOpacity
+                                onPress={changeWithToken}>
+                                <Text category='c1' style={[styles.boldText, { textTransform: 'uppercase' }]}>{" "}aqui</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    <Button
-                        status='primary'
-                        appearance='ghost'
-                        onPress={navigate}
-                    >Início</Button>
                 </View>
             </SafeAreaLayout>
         </>

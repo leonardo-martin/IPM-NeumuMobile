@@ -4,8 +4,8 @@ export const changePasswdReqStyle = StyleSheet.create({
     safeArea: {
         flex: 1,
     },
-    content: {        
-        flex: 1,
+    content: {
+        flex: .9,
     },
     label: {
         textAlign: 'center',
@@ -20,5 +20,19 @@ export const changePasswdReqStyle = StyleSheet.create({
         paddingHorizontal: 10,
         color: 'text-hint-color',
         fontWeight: 'normal'
+    },
+    viewDetails: {
+        paddingVertical: 15,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    message: {
+        color: 'text-hint-color',
+        textAlign: 'center'
+    },
+    boldText: {
+        color: 'color-primary-default',
+        fontWeight: '600',
+        textAlign: 'center'
     }
 })

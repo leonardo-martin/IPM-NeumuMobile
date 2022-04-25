@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
-import { SafeAreaView } from 'react-native'
+import { SafeAreaView, TouchableOpacity, View } from 'react-native'
 import { changePasswdReqStyle } from './style'
 import { Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
@@ -11,6 +11,7 @@ const ChangePasswordChoice: FC = (): ReactElement => {
     const { navigate } = useNavigation<any>()
     const styles = useStyleSheet(changePasswdReqStyle)
 
+    const changeWithToken = () => navigate('ChangePasswordWithToken')
     useFocusEffect(
         useCallback(() => {
             setSelectedIndex(-1)
@@ -33,7 +34,7 @@ const ChangePasswordChoice: FC = (): ReactElement => {
         <>
             <SafeAreaLayout level='1' style={styles.safeArea}>
                 <Text category='label' status='primary' style={styles.label}>Como deseja recuperar sua senha?</Text>
-                <SafeAreaView style={styles.content}>
+                <View style={styles.content}>
                     <RadioGroup
                         selectedIndex={selectedIndex}
                         onChange={index => setSelectedIndex(index)}
@@ -47,7 +48,15 @@ const ChangePasswordChoice: FC = (): ReactElement => {
                             {evaProps => <Text {...evaProps} category='label' style={styles.radioText}>Endereço de E-mail</Text>}
                         </Radio>
                     </RadioGroup>
-                </SafeAreaView>
+                </View>
+                <View style={[styles.viewDetails, { flexDirection: 'row', flex: .1 }]}>
+                    <Text category='c1' style={styles.message}>Já recebeu o TOKEN? Clique</Text>
+                    <TouchableOpacity
+                        onPress={changeWithToken}>
+                        <Text category='c1' style={[styles.boldText, { textTransform: 'uppercase' }]}>{" "}aqui</Text>
+                    </TouchableOpacity>
+                </View>
+
             </SafeAreaLayout>
         </>
     )

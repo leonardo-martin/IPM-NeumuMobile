@@ -14,7 +14,6 @@ export const changePasswdConfirmStyle = StyleSheet.create({
         width
     },
     item: {
-        flex: 0.5,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -23,16 +22,24 @@ export const changePasswdConfirmStyle = StyleSheet.create({
         height: width / 1.4,
         resizeMode: 'contain'
     },
+    title: {
+        paddingVertical: 15,
+    },
     viewDetails: {
         paddingVertical: 15,
-        justifyContent: 'center',
-        alignItems: 'center',
-        flex: 0.1
     },
     description: {
-        fontSize: 18,
-        color: 'color-basic-600',
-        fontWeight: 'bold',
+        color: 'text-hint-color',
+        fontWeight: '600',
         textAlign: 'center'
     },
+    message: {
+        color: 'text-hint-color',
+        textAlign: 'center'
+    },
+    boldText: {
+        color: 'color-primary-default',
+        fontWeight: '600',
+        textAlign: 'center'
+    }
 })

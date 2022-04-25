@@ -20,7 +20,7 @@ const InformationAppScreen: FC = (): ReactElement => {
             </View>
             <View style={[styles.container, { flex: .8, paddingHorizontal: 30 }]}>
                 <Text style={styles.about}>
-                    Olá! Somos um aplicativo desenvolvido pelo Instituto Pedro Molina em parceria com a Atos Tecnologia de Serviços de TI, nosso foco é promover uma inovação importante no contato entre pacientes, médicos e profissionais da saúde aos portadores de doenças neuromusculares.
+                    Olá! Somos um aplicativo desenvolvido pelo Instituto Pedro Molina com foco em promover uma inovação importante no contato entre pacientes, médicos e profissionais da saúde aos portadores de doenças neuromusculares.
                 </Text>
             </View>
             <View style={[styles.container, { flex: .1 }]}>
