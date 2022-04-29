@@ -53,7 +53,6 @@ export const doctorScheduleStyle = StyleSheet.create({
     textDoctorInfo: {
         flexShrink: 1,
         flexWrap: 'wrap',
-        width: '60%'
     },
     viewLocation: {
         flexDirection: 'row',
@@ -92,7 +91,7 @@ export const doctorScheduleStyle = StyleSheet.create({
         fontSize: 16
     },
     daysItem: {
-        padding: 5,
+        paddingHorizontal: 5,
         justifyContent: 'center'
     },
     text: {

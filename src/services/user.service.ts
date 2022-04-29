@@ -1,13 +1,15 @@
-import { UserPatientData } from '@models/User'
 import { PatientProfileCreatorDto } from '@models/PatientProfileCreator'
-import { api } from './api.service'
+import { UserData, UserPatientData, UserRelatedIdsDto } from '@models/User'
 import { AxiosResponse } from 'axios'
-import { AppDispatch } from '@store/index'
-import { setProfile } from '@store/ducks/profile'
+import { api } from './api.service'
+
+interface User extends UserData {
+    phone1: string
+}
 
 export const createUser = async (data: UserPatientData, _type: string = 'patient'): Promise<AxiosResponse> => {
 
-    data = JSON.parse(JSON.stringify(data).replace('cns', 'susnumber').replace('genre', 'sex'))
+    data = JSON.parse(JSON.stringify(data))
 
     return await api.post(`user/create-${_type}`, data)
         .catch(error => {
@@ -31,18 +33,10 @@ export const createPatientProfileCreator = async (patientId: number, creator?: P
     return await api.post('patient-profile-creator', creatorReq)
 }
 
-export const getUserDetails = () => (dispatch: AppDispatch): Promise<any> => {
-    return api.get('user')
-        .then(async (res: AxiosResponse<any>) => {
-            if (res.data) {
-                dispatch(setProfile(res.data))
-            }
-        })
-        .catch((error) => {
-            if (error.response) {
-                return error.response
-            }
-            throw error
-        })
+export const getUserDetails = async (): Promise<AxiosResponse<User, any>> => {
+    return await api.get('user')
+}
 
+export const getUserRelatedIds = async (): Promise<AxiosResponse<UserRelatedIdsDto, any>> => {
+    return await api.get('user/user-related-ids')
 }

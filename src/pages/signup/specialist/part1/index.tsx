@@ -26,8 +26,8 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
 
   useFocusEffect(
     useCallback(() => {
-      const genre = form.getValues('genre')
-      if (genre) setSelectedIndex(genre === 'male' ? 0 : genre === 'female' ? 1 : 2)
+      const sex = form.getValues('sex')
+      if (sex) setSelectedIndex(sex === 'male' ? 0 : sex === 'female' ? 1 : 2)
 
       const specialty = form.getValues('specialty.description')
       if (specialty) setSelectedSpecialty(new IndexPath(specialties.indexOf(specialty)))
@@ -46,8 +46,8 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
 
   const handleGender = (index: number) => {
     setSelectedIndex(index)
-    form.setValue('genre', getGender(index) as string)
-    if (index !== -1) form.clearErrors('genre')
+    form.setValue('sex', getGender(index) as string)
+    if (index !== -1) form.clearErrors('sex')
   }
 
   const CalendarIcon = (props: IconProps) => (
@@ -199,9 +199,9 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
               </Radio>
             </RadioGroup>
           )}
-          name='genre'
+          name='sex'
         />
-        {form.formState.errors.genre?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.genre?.message}</Text>}
+        {form.formState.errors.sex?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.sex?.message}</Text>}
         <Controller
           control={form.control}
           rules={{
@@ -314,7 +314,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
               size='small'
-              label="Conselho Regional de Medicina (CRM) *"
+              label="Número de Registro *"
               style={styles.input}
               keyboardType='number-pad'
               placeholder=''

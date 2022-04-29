@@ -8,6 +8,7 @@ import { AppInfoService } from '@services/app-info.service'
 import { logout } from '@store/ducks/auth'
 import { RootState } from '@store/index'
 import { Avatar, Divider, Drawer, DrawerGroup, DrawerItem, Icon, IconProps, IndexPath, Text, useTheme } from '@ui-kitten/components'
+import { toInitials } from '@utils/common'
 import React, { ReactElement } from 'react'
 import { ImageBackground, View } from 'react-native'
 import { drawerStyle } from './style'
@@ -19,6 +20,8 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
 
   const dispatch = useAppDispatch()
   const { sessionUser } = useAppSelector((state: RootState) => state.auth)
+  const { profile } = useAppSelector((state: RootState) => state.profile)
+
   const theme = useTheme()
   const selectedIndex = new IndexPath(0)
 
@@ -39,7 +42,7 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
           ImageComponent={ImageBackground}
         />
         <Text style={drawerStyle.profileName} category='h6'>
-          {'@' + sessionUser?.user}
+          {toInitials(profile?.name)}
         </Text>
       </View>
     </SafeAreaLayout>
@@ -77,13 +80,13 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
               <DrawerItem
                 style={drawerStyle.drawerItem}
                 title='Virtual (teleconsulta)'
-                onPress={() => navigate('ChoiceSchedule')}
+                onPress={() => navigate('FilterSchedule')}
                 accessoryLeft={(props: IconProps) => <PhoneIcon {...props} width={iconSizeDefault} height={iconSizeDefault} fill={theme['color-basic-600']} />}
               />
               <DrawerItem
                 style={drawerStyle.drawerItem}
                 title='Presencial'
-                onPress={() => navigate('ChoiceSchedule')}
+                onPress={() => navigate('FilterSchedule')}
                 accessoryLeft={(props: IconProps) => <HouseIcon {...props} width={iconSizeDefault} height={iconSizeDefault} fill={theme['color-basic-600']} />}
 
               />

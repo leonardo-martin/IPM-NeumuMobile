@@ -5,7 +5,7 @@ import { useModal } from '@hooks/useModal'
 import { PatientSignUpProps } from '@models/SignUpProps'
 import { registerStyle } from '@pages/signup/style'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
-import { Datepicker, Icon, IconProps, Input, PopoverPlacements, Radio, RadioGroup, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
+import { Datepicker, Icon, IconProps, Input, PopoverPlacements, Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
 import { getGender, openMailTo } from '@utils/common'
 import { formatCpf, formatPhone, isEmailValid } from '@utils/mask'
 import { validateCNS, validatePasswd } from '@utils/validators'
@@ -17,7 +17,6 @@ import { Modalize } from 'react-native-modalize'
 import { Portal } from 'react-native-portalize'
 import WebView from 'react-native-webview'
 
-
 const { height: initialHeight } = Dimensions.get('window')
 
 const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): ReactElement => {
@@ -28,15 +27,14 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
   const [height, setHeight] = useState(initialHeight)
   const isFocused = useIsFocused()
 
-  const theme = useTheme()
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const styles = useStyleSheet(registerStyle)
   const [secureTextEntry, setSecureTextEntry] = useState(true)
 
   useFocusEffect(
     useCallback(() => {
-      const genre = form.getValues('genre')
-      if (genre) setSelectedIndex(genre === 'male' ? 0 : genre === 'female' ? 1 : 2)
+      const sex = form.getValues('sex')
+      if (sex) setSelectedIndex(sex === 'male' ? 0 : sex === 'female' ? 1 : 2)
     }, [])
   )
 
@@ -46,17 +44,15 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
 
   const handleGender = (index: number) => {
     setSelectedIndex(index)
-    form.setValue('genre', getGender(index) as string)
-    if (index !== -1) form.clearErrors('genre')
+    form.setValue('sex', getGender(index) as string)
+    if (index !== -1) form.clearErrors('sex')
   }
 
   const CalendarIcon = (props: IconProps) => (
     <Icon {...props} name='calendar-outline' pack='eva' />
   )
 
-  const toggleSecureEntry = () => {
-    setSecureTextEntry(!secureTextEntry)
-  }
+  const toggleSecureEntry = () => setSecureTextEntry(!secureTextEntry)
 
   const renderIconRightPassword = (props: IconProps) => (
     <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} onPress={toggleSecureEntry} pack='eva' />
@@ -66,7 +62,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
     <React.Fragment>
       <View style={styles.labelCNSView}>
         <Text category="label" style={styles.labelCNSText}>
-          Cartão Nacional de Saúde (CNS) * {" "}
+          Cartão Nacional de Saúde (CNS)
         </Text>
         <TouchableOpacity
           onPress={() => ref.current?.open()}
@@ -253,9 +249,9 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               </Radio>
             </RadioGroup>
           )}
-          name='genre'
+          name='sex'
         />
-        {form.formState.errors.genre?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.genre?.message}</Text>}
+        {form.formState.errors.sex?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.sex?.message}</Text>}
         <Controller
           control={form.control}
           rules={{
@@ -408,7 +404,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               maxLength={15}
               ref={ref}
               returnKeyType="next"
-              onSubmitEditing={() => form.setFocus('cns')}
+              onSubmitEditing={() => form.setFocus('susNumber')}
               underlineColorAndroid="transparent"
               textContentType="telephoneNumber"
             />
@@ -421,7 +417,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           control={form.control}
           rules={{
             required: {
-              value: true,
+              value: false,
               message: 'Campo obrigatório'
             },
             minLength: {
@@ -445,20 +441,20 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               ref={ref}
               returnKeyType="send"
               onSubmitEditing={form.handleSubmit(onSubmit)}
+              caption='Opcional'
             />
           )}
-          name='cns'
+          name='susNumber'
           defaultValue=''
         />
-        {form.formState.errors.cns?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.cns?.message}</Text>}
-        {form.formState.errors.cns?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.cns?.message}</Text>}
-        {form.formState.errors.cns?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>CNS inválido</Text>}
+        {form.formState.errors.susNumber?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.susNumber?.message}</Text>}
+        {form.formState.errors.susNumber?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.susNumber?.message}</Text>}
+        {form.formState.errors.susNumber?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>CNS inválido</Text>}
       </View>
       <Portal>
         <Modalize
           ref={ref}
-          onLayout={onLayout}
-        >
+          onLayout={onLayout}>
           <RNWebView
             ref={refWebView}
             source={{ uri: CONECTESUS_URI }}

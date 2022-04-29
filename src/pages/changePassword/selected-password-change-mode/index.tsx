@@ -40,7 +40,7 @@ const ChangePasswordRequest: FC = (): ReactElement => {
             if (response.status !== 200 && response.status !== 201) {
                 toast.danger({ message: 'Ocorreu um erro. Tente novamente mais tarde.', duration: 1000 })
             } else {
-                navigation.navigate('ChangePasswordConfirmation')
+                navigation.navigate('PasswordRequestSuccessfully')
             }
 
         } catch (error) {

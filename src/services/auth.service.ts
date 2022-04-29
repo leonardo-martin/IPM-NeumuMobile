@@ -2,22 +2,12 @@ import { AuthenticationPayload, SignInData } from '@models/User'
 import { login } from '@store/ducks/auth'
 import { AppDispatch } from '@store/index'
 import { AxiosResponse } from 'axios'
-import { api } from './api.service'
 import Keychain from 'react-native-keychain'
+import { api } from './api.service'
 import { AppStorage } from './app-storage.service'
 
 const _optionsKeychain: Keychain.Options = {
     service: 'sec_login', storage: Keychain.STORAGE_TYPE.RSA
-}
-
-export const signInRequest = async (requestData: SignInData) => {
-    return await api.post('auth', requestData)
-        .catch(error => {
-            if (error.response) {
-                throw error.response
-            }
-            throw error
-        })
 }
 
 export const authLogin = (authentication: SignInData, _rememberAcess?: boolean) => (dispatch: AppDispatch): Promise<any> => {

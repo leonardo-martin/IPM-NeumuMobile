@@ -31,16 +31,13 @@ const Routes: FC = (): ReactElement => {
         useCallback(() => {
             if (!isAuthenticated)
                 checkOnboarding()
+            else {
+                setIsLoading(false)
+            }
         }, [])
     )
 
-    if (loading) {
-        return (
-            <></>
-        )
-    }
-
-    return !onboarded ? <OnboardingRoutes setOnboarded={setOnboarded} /> : isAuthenticated ? <AppRoutes /> : <AuthRoutes />
+    return loading ? <></> : !onboarded ? <OnboardingRoutes setOnboarded={setOnboarded} /> : isAuthenticated ? <AppRoutes /> : <AuthRoutes />
 }
 
 export default Routes

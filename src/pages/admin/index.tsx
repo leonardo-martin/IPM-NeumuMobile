@@ -2,14 +2,17 @@ import FloatingPlusButton from '@components/floatingButton/plusButton'
 import HeaderAdmin from '@components/header/admin'
 import ModalizeFixed from '@components/modalize'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import { useAppSelector } from '@hooks/redux'
+import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useModal } from '@hooks/useModal'
 import { EUserRole } from '@models/UserRole'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect } from '@react-navigation/native'
+import { getUserDetails, getUserRelatedIds } from '@services/user.service'
+import { setProfile } from '@store/ducks/profile'
+import { setUser } from '@store/ducks/user'
 import { RootState } from '@store/index'
 import { Card, Icon, Text, useStyleSheet } from '@ui-kitten/components'
-import React, { FC, ReactElement, useCallback, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { BackHandler, StatusBar, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { Modalize } from 'react-native-modalize'
@@ -19,6 +22,18 @@ import { dashboardStyle } from './style'
 const DashboardScreen: FC<DrawerContentComponentProps> = ({
   navigation
 }): ReactElement => {
+  const dispatch = useAppDispatch()
+
+  const loadUser = async () => {
+    const res = await getUserDetails()
+    dispatch(setProfile(res.data))
+    const response = await getUserRelatedIds()
+    dispatch(setUser(response.data))
+  }
+
+  useEffect(() => {
+    loadUser()
+  }, [])
 
   const [visibleFloatingButton, setVisibleFloatingButton] = useState<boolean>(true)
 
@@ -55,95 +70,111 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
     <Host>
       <HeaderAdmin />
       <StatusBar barStyle="dark-content" backgroundColor='transparent' translucent />
-      <SafeAreaLayout insets='top' level='1' style={styles.safeArea}>
+      <SafeAreaLayout level='1' style={styles.safeArea}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
-          <View style={styles.title}>
-            <Text category="h5" status='basic' style={styles.text}>
-              {sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? (
-                'Como podemos te ajudar?'
-              ) : 'Seja bem vindo ao TeleNeumu!'}
-            </Text>
-          </View>
-          <View style={styles.content}>
-            {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
-              <View style={styles.cardGroupPrimary}>
-                <Card onPress={goToSchedule}>
-                  <View style={styles.cardDefault}>
-                    <Icon style={styles.iconOrange} name="calendar-outline" size={50} pack='ionicons' />
-                    <Text category="h6" style={[styles.cardText, {
-                      marginHorizontal: -8, flex: 1
-                    }]}>
-                      Quero agendar uma consulta
-                    </Text>
-                  </View>
-                </Card>
-              </View>
-            )}
-            {sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor) && (
-              <View style={styles.cardGroupPrimary}>
-                <Card onPress={goToSchedule}>
-                  <View style={styles.cardDefault}>
-                    <Icon style={styles.iconOrange} name="clock" size={50} pack='font-awesome' />
-                    <Text category="h6" style={[styles.cardText, {
-                      marginHorizontal: -8, flex: 1
-                    }]}>
-                      Meus Horários
-                    </Text>
-                  </View>
-                </Card>
-              </View>
-            )}
-            <View style={styles.cardGroupSecondary}>
-              <Card style={styles.card} onPress={goToProfile}>
-                <View style={styles.cardDefault}>
-                  <Icon style={styles.iconPrimary} name='prescription' size={40} pack='fontisto' />
-                </View>
-                <Text category="h6" style={styles.cardText}>
-                  Meu perfil
-                </Text>
-              </Card>
+          <View style={{ justifyContent: 'center', flex: 1 }}>
+            <View style={styles.title}>
+              <Text category="h5" status='basic' style={styles.text}>
+                {sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? (
+                  'Como podemos te ajudar?'
+                ) : 'Seja bem vindo ao TeleNeumu!'}
+              </Text>
+            </View>
+            <View style={styles.content}>
               {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
-                <Card style={styles.card} onPress={goToAppointments}>
-                  <View style={styles.cardDefault}>
-                    <Icon style={styles.iconPrimary} name='stethoscope' size={40} pack='font-awesome' />
-                  </View>
-                  <Text category="h6" style={styles.cardText}>Minhas Consultas</Text>
-                </Card>
+                <View style={[styles.cardGroupPrimary, styles.shadowCard]}>
+                  <Card style={styles.cardInline} onPress={goToSchedule}>
+                    <View style={styles.cardDefault}>
+                      <Icon style={styles.iconOrange} name="calendar-outline" size={50} pack='ionicons' />
+                      <Text category="h6" style={[styles.cardText, {
+                        marginHorizontal: -8, flex: 1
+                      }]}>
+                        Quero agendar uma consulta
+                      </Text>
+                    </View>
+                  </Card>
+                </View>
               )}
               {sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor) && (
-                <Card style={styles.card} onPress={goToAppointments}>
-                  <View style={styles.cardDefault}>
-                    <Icon style={styles.iconPrimary} name='calendar-week' size={40} pack='font-awesome' />
-                  </View>
-                  <Text category="h6" style={styles.cardText}>Agenda</Text>
-                </Card>
+                <View style={[styles.cardGroupPrimary, styles.shadowCard]}>
+                  <Card style={styles.cardInline} onPress={goToSchedule}>
+                    <View style={styles.cardDefault}>
+                      <Icon style={styles.iconOrange} name="clock" size={50} pack='font-awesome' />
+                      <Text category="h6" style={[styles.cardText, {
+                        marginHorizontal: -8, flex: 1
+                      }]}>
+                        Meus Horários
+                      </Text>
+                    </View>
+                  </Card>
+                </View>
               )}
-            </View>
-            {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
               <View style={styles.cardGroupSecondary}>
-                <Card style={styles.card}>
+                <Card style={[styles.card, styles.shadowCard]} onPress={goToProfile}>
+                  <View style={styles.cardDefault}>
+                    <Icon style={styles.iconPrimary} name='prescription' size={40} pack='fontisto' />
+                  </View>
+                  <Text category="h6" style={styles.cardText}>
+                    Meu perfil
+                  </Text>
+                </Card>
+                <Card style={[styles.card, styles.shadowCard]} onPress={goToAppointments}>
                   <View style={styles.cardDefault}>
                     <Icon
                       style={styles.iconPrimary}
-                      name="information-circle-outline"
+                      name={sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor) ? 'calendar-week' : 'stethoscope'}
                       size={40}
-                      pack='ionicons'
-                    />
+                      pack='font-awesome' />
                   </View>
                   <Text category="h6" style={styles.cardText}>
-                    Sobre
-                  </Text>
-                </Card>
-                <Card style={styles.card} onPress={goToHelpMe}>
-                  <View style={styles.cardDefault}>
-                    <Icon style={styles.iconPrimary} name="help-circle-outline" size={40} pack='ionicons' />
-                  </View>
-                  <Text category="h6" style={styles.cardText}>
-                    Ajuda
+                    {sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? 'Minhas Consultas' : 'Agenda'}
                   </Text>
                 </Card>
               </View>
-            )}
+              {sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor) && (
+                <View style={styles.cardGroupSecondary}>
+                  <Card style={[styles.card, styles.shadowCard]}
+                    onPress={() => navigation.jumpTo('NewUser')}>
+                    <View style={styles.cardDefault}>
+                      <Icon
+                        style={styles.iconPrimary}
+                        name="doctor"
+                        size={40}
+                        pack='fontisto'
+                      />
+                    </View>
+                    <Text category="h6" style={styles.cardText}>
+                      Cadastrar
+                    </Text>
+                  </Card>
+                </View>
+              )}
+              {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
+                <View style={styles.cardGroupSecondary}>
+                  <Card style={[styles.card, styles.shadowCard]}>
+                    <View style={styles.cardDefault}>
+                      <Icon
+                        style={styles.iconPrimary}
+                        name="information-circle-outline"
+                        size={40}
+                        pack='ionicons'
+                      />
+                    </View>
+                    <Text category="h6" style={styles.cardText}>
+                      Sobre
+                    </Text>
+                  </Card>
+                  <Card style={[styles.card, styles.shadowCard]} onPress={goToHelpMe}>
+                    <View style={styles.cardDefault}>
+                      <Icon style={styles.iconPrimary} name="help-circle-outline" size={40} pack='ionicons' />
+                    </View>
+                    <Text category="h6" style={styles.cardText}>
+                      Ajuda
+                    </Text>
+                  </Card>
+                </View>
+              )}
+            </View>
           </View>
         </ScrollView>
       </SafeAreaLayout>

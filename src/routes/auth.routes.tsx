@@ -1,7 +1,8 @@
 import HeaderAuth from '@components/header/auth'
 import RNWebView from '@components/webView'
 import ChangePasswordChoice from '@pages/changePassword'
-import ChangePasswordConfirm from '@pages/changePassword/confirmation'
+import PasswordChangeConfirmationScreen from '@pages/changePassword/extra/change-confirmation'
+import PasswordRequestSuccessfullyScreen from '@pages/changePassword/extra/request-successfully'
 import ChangePasswordWithToken from '@pages/changePassword/password-with-token'
 import ChangePasswordRequest from '@pages/changePassword/selected-password-change-mode'
 import SignIn from '@pages/signin'
@@ -46,11 +47,11 @@ const AuthRoutes: FC = (): ReactElement => {
       }}>
         <Screen name="SignIn" component={SignIn} />
         <Screen name="RegistrationConfirmation" component={RegistrationConfirmation} />
-        <Screen name="ChangePasswordConfirmation" component={ChangePasswordConfirm}
+        <Screen name="PasswordRequestSuccessfully" component={PasswordRequestSuccessfullyScreen}
           options={{
             ...TransitionPresets.ModalSlideFromBottomIOS
           }} />
-        <Screen name="ChangePasswordWithToken" component={ChangePasswordWithToken}
+        <Screen name="PasswordChangeConfirmation" component={PasswordChangeConfirmationScreen}
           options={{
             ...TransitionPresets.ModalSlideFromBottomIOS
           }} />
@@ -72,6 +73,10 @@ const AuthRoutes: FC = (): ReactElement => {
             ...TransitionPresets.ModalSlideFromBottomIOS
           }} />
         <Screen name="ChangePasswordRequest" component={ChangePasswordRequest} />
+        <Screen name="ChangePasswordWithToken" component={ChangePasswordWithToken}
+          options={{
+            ...TransitionPresets.ModalSlideFromBottomIOS
+          }} />
       </Group>
 
       <Group screenOptions={{

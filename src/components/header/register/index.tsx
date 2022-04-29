@@ -14,9 +14,9 @@ interface HeaderProps {
   active: number
   numberScreens: number
   form: UseFormReturn<UserDataType, any>
-  onNext: () => void
-  onBack: () => void
-  onFinish: () => void
+  onNext: () => any
+  onBack: () => any
+  onFinish: () => any
 }
 
 const RegisterHeader: FC<HeaderProps> = ({ ...props }): ReactElement => {

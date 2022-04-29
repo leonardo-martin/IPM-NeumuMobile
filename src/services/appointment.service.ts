@@ -1,4 +1,4 @@
-import { AppointmentAvailabilityDTO, AppointmentAvailabilityParams, CreateAppointment } from '@models/Appointment'
+import { AppointmentAvailabilityDTO, AppointmentAvailabilityHelper, AppointmentAvailabilityParams, AppointmentAvailabilityWithBookedParams, CreateAppointment } from '@models/Appointment'
 import { AxiosResponse } from 'axios'
 import { api } from './api.service'
 
@@ -31,6 +31,36 @@ export const doctorCreateAppointmentAvailability = async (data: AppointmentAvail
     params.append('startTime', data.startTime.toString())
     params.append('endTime', data.endTime.toString())
 
-    console.log('api', api.defaults.headers)
     return await api.post('appointment-availability/doctor-create-appointment-availability-block?' + params)
+}
+
+
+export const getAppointmentAvailabilityListSummaryByDoctorId = async (doctorId: number): Promise<AxiosResponse<{
+    [k: string]: number[]
+}, any>> => {
+
+    const params = new URLSearchParams()
+    params.append('doctorId', doctorId.toString())
+
+    return await api.get('appointment-availability/get-doctor-appointment-availability-list-summary?' + params)
+}
+
+export const doctorDeleteAppointmentAvailabilityBlock = async (data: AppointmentAvailabilityParams): Promise<AxiosResponse<AppointmentAvailabilityDTO[], any>> => {
+    const params = new URLSearchParams()
+    params.append('dayOfWeek', data.dayOfWeek.toString())
+    params.append('startTime', data.startTime.toString())
+    params.append('endTime', data.endTime.toString())
+
+    return await api.post('appointment-availability/doctor-delete-appointment-availability-block?' + params)
+}
+
+
+export const getAppointmentAvailabilityWithBookedAppointments = async (data: AppointmentAvailabilityWithBookedParams): Promise<AxiosResponse<AppointmentAvailabilityHelper[], any>> => {
+
+    const params = new URLSearchParams()
+    params.append('doctorId', data.doctorId?.toString() ?? '')
+    params.append('startTime', data.startTime.toString())
+    params.append('endTime', data.endTime.toString())
+
+    return await api.get('appointment-availability/get-appointment-availability-with-booked-appointments?' + params)
 }

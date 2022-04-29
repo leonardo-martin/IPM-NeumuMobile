@@ -1,4 +1,3 @@
-import { JSONObject } from "./Common"
 import { TimelineTimeItem } from "./Timeline"
 
 export class PatientDiaryEntryDto {
@@ -13,11 +12,14 @@ export class PatientDto {
     mothersName!: string | null
     sex!: string | null
     abrafeuRegistrationOptIn!: string
-    pastExams!: ExamDNA
+    pastExams?: ExamDNA
 }
 
 export class ExamDNA {
-    exam?: string = ''
+    exam!: {
+        id: number | string
+        description: string
+    }
     doctor?: {
         crm?: string
     }

@@ -6,9 +6,9 @@ import { PatientDiaryEntryDto } from "@models/Patient"
 import { PatientProfileCreatorTypeEnum } from "@models/PatientProfileCreator"
 import { TimelineItem } from "@models/Timeline"
 import { CalendarRange } from "@ui-kitten/components"
+import { addMinutes } from 'date-fns'
 import { MutableRefObject } from "react"
 import { Linking } from "react-native"
-import { addMinutes } from 'date-fns'
 
 export const matchMessage = (message: any) => {
 
@@ -105,6 +105,16 @@ export const sortByStringField = (a: any, b: any, _fieldName?: string) => {
 
 }
 
+export const sortByNumber = (a: number, b: number) => {
+    if (a < b) {
+        return -1
+    }
+    if (a > b) {
+        return 1
+    }
+    return 0
+}
+
 export const sortByDate = (a: Date | string, b: Date | string, order: AscendingOrder | undefined) => {
 
     const { localeDateService } = useDatepickerService()
@@ -139,9 +149,9 @@ export const groupByDateTime = (data: PatientDiaryEntryDto[]): TimelineItem => {
     data.forEach(val => {
         val.date = typeof val.date === 'string' ? localeDateService.parse(val.date, _DATE_FROM_ISO_8601) : val.date
         if (val.date.toISOString() in groups) {
-            groups[val.date.toISOString()].push(val.data);
+            groups[val.date.toISOString()].push(val.data)
         } else {
-            groups[val.date.toISOString()] = new Array(val.data);
+            groups[val.date.toISOString()] = new Array(val.data)
         }
     })
 
@@ -178,9 +188,37 @@ export const getTimesByInterval = (interval: number = 30, startTime: number = 0,
     date.setHours(0, 0, 0, 0)
 
     for (var i = 0; startTime < endTime * 60; i++) {
-        startTime = startTime + interval;
+        startTime = startTime + interval
         dates.push(addMinutes(date, startTime).toISOString())
     }
 
     return dates
 }
+
+export const filterBy = (item: any, query: string, _fieldName?: string) => {
+
+    if (item)
+        if (_fieldName)
+            return item[_fieldName].toLowerCase().includes(query.toLowerCase())
+        else
+            return item.toLowerCase().includes(query.toLowerCase())
+    else return null
+}
+
+export const getTimeBlocksByTime = (date: Date = new Date()) => {
+    return calculateTimeBlock(date.getHours(), date.getMinutes())
+}
+
+const calculateTimeBlock = (hourTime: number = 0, minuteTime: number = 0) => {
+    const hourTimeBlock = hourTime * 4
+    const minuteTimeBlock = Math.floor(minuteTime / 15)
+    const timeBlock = hourTimeBlock + minuteTimeBlock
+    return timeBlock
+}
+
+export const toInitials = (str: string | undefined) =>
+    str ? str.split(" ")
+        .map(c => c.charAt(0).toUpperCase())
+        .join("")
+        .concat(str.charAt(1).toUpperCase())
+        .substring(0, 2) : ''

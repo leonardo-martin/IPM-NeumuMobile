@@ -2,17 +2,19 @@ import HeaderAdmin from '@components/header/admin'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _DATE_FROM_ISO_8601 } from '@constants/date'
 import toast from '@helpers/toast'
+import { useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { AppointmentAvailabilityParams } from '@models/Appointment'
-import { useFocusEffect } from '@react-navigation/native'
-import { doctorCreateAppointmentAvailability } from '@services/appointment.service'
+import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+import { doctorCreateAppointmentAvailability, doctorDeleteAppointmentAvailabilityBlock, getAppointmentAvailabilityListSummaryByDoctorId } from '@services/appointment.service'
 import { Button, CheckBox, List, ListItem, Spinner, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
-import { getTimesByInterval } from '@utils/common'
-import { addHours } from 'date-fns'
+import { getTimeBlocksByTime, getTimesByInterval, sortByNumber } from '@utils/common'
+import { addMinutes } from 'date-fns'
 import React, { createRef, FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { ListRenderItemInfo, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Animated, { Easing, FadeInRight, FadeOutRight, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import { RootState } from 'store'
 import { professionalStyle } from './style'
 
 interface ScheduleItem {
@@ -23,6 +25,8 @@ interface ScheduleItem {
 
 const ProfessionalScheduleScreen: FC = (): ReactElement => {
 
+    const { ids } = useAppSelector((state: RootState) => state.user)
+    const isFocused = useIsFocused()
     const styles = useStyleSheet(professionalStyle)
     const [selectedIndex, setSelectedIndex] = useState<number>(-1)
     const [scheduleList, setScheduleList] = useState<ScheduleItem[]>([])
@@ -30,13 +34,19 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
     const [allChecked, setAllChecked] = useState<boolean>(false)
     const [enableUndoButton, setEnableUndoButton] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
-
+    const [timeBlockList, setTimeBlockList] = useState<{
+        [k: string]: number[]
+    }>()
     const { localeDateService } = useDatepickerService()
     const dayOfWeekNames = localeDateService.getDayOfWeekNames()
     const theme = useTheme()
     const listRef = createRef<List>()
     const scheduleListRef = createRef<List>()
     const opacity = useSharedValue(0)
+
+    useEffect(() => {
+        if (!isFocused) setSelectedIndex(-1)
+    }, [isFocused])
 
     const animatedStyle = useAnimatedStyle(() => {
         return {
@@ -47,36 +57,58 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
         }
     })
 
-    const loadData = () => {
-        const array = getTimesByInterval(30, 390, 18)
-        const newArray: ScheduleItem[] = array.map((e, i) => {
+    const loadData = async () => {
+        // get all time blocks
+        const resp = await getAppointmentAvailabilityListSummaryByDoctorId(ids?.medicalDoctorId as number)     
+        setTimeBlockList(resp.data)
+    }
+
+    useEffect(() => {
+        if (timeBlockList) {
+            if (Object.keys(timeBlockList).includes(selectedIndex.toString())) {
+                onCheckedChangeFromServer(timeBlockList[selectedIndex].sort(sortByNumber))
+            } else {
+                resetData()
+            }
+        }
+        setEnableUndoButton(false)
+    }, [timeBlockList])
+
+    const resetData = () => {
+        const array = getTimesByInterval(15, 405, 18)
+        const newArray: ScheduleItem[] = array.map(e => {
+            const timeBlock = getTimeBlocksByTime(localeDateService.parse(e as string, _DATE_FROM_ISO_8601))
             return {
-                id: `${i}`,
+                id: `${timeBlock}`,
                 title: e,
                 checked: false
             }
         })
-
         setOriginalScheduleList(newArray)
-        setScheduleList(newArray)
     }
 
     useFocusEffect(
         useCallback(() => {
             loadData()
-            setSelectedIndex(-1)
             opacity.value = 0
             if (listRef)
                 listRef.current?.scrollToIndex({
                     index: 0,
                     animated: true
                 })
+
         }, [])
     )
 
     useEffect(() => {
-        if (selectedIndex !== -1) {
-            loadData()
+        if (selectedIndex !== -1 && timeBlockList) {
+            if (Object.keys(timeBlockList).includes(selectedIndex.toString())) {
+                onCheckedChangeFromServer(timeBlockList[selectedIndex].sort(sortByNumber))
+            } else {
+                resetData()
+            }
+        } else if (selectedIndex === -1) {
+            resetData()
         }
     }, [selectedIndex])
 
@@ -86,6 +118,11 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
             ? setEnableUndoButton(false) : setEnableUndoButton(true)
         updateGroup()
     }, [scheduleList])
+
+    useEffect(() => {
+        setScheduleList(originalScheduleList)
+        updateGroup()
+    }, [originalScheduleList])
 
     const fadeAnimation = (info: ListRenderItemInfo<any>) => {
         if (info.index === selectedIndex) {
@@ -133,6 +170,22 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
         </View>
     )
 
+    const onCheckedChangeFromServer = (list: number[]) => {
+        let arr = scheduleList
+
+        const listT: ScheduleItem[] = arr.map(item => {
+            if (list.includes(Number(item.id)))
+                return {
+                    ...item, checked: true
+                }
+            else
+                return {
+                    ...item, checked: false
+                }
+        })
+        setOriginalScheduleList(listT)
+    }
+
     const onGroupCheckedChange = (checked: boolean, index?: number) => {
         let arr = scheduleList
         if (index !== undefined) {
@@ -159,22 +212,65 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
 
     const submit = async () => {
         setIsLoading(true)
+        let saveItems: ScheduleItem[] = []
+        let removeItems: ScheduleItem[] = []
 
-
-        const dados: AppointmentAvailabilityParams = {
-            startTime: localeDateService.today().toISOString(),
-            endTime: addHours(localeDateService.today(), 5).toISOString(),
-            dayOfWeek: selectedIndex
+        if (timeBlockList) {
+            const arr = timeBlockList[selectedIndex] ?? []
+            scheduleList.map(item => {
+                if (item.checked && !arr.includes(Number(item.id)))
+                    saveItems.push(item)
+                else if (!item.checked && arr.includes(Number(item.id)))
+                    removeItems.push(item)
+            })
+        } else {
+            saveItems = scheduleList.filter(item => item.checked)
         }
-        try {
-            const response = await doctorCreateAppointmentAvailability(dados)
-            console.log('response', response)
-        } catch (e) {
-            toast.danger({ message: 'Erro ao salvar os horários. Tente novamente mais tarde.', duration: 1000 })
-        } finally {
+
+        if (saveItems.length > 0 || removeItems.length > 0) {
+
+            try {
+                let amountSavedItems = 0
+
+                // save items
+                for (let index = 0; index < saveItems.length; index++) {
+                    const element = saveItems[index]
+                    let data: AppointmentAvailabilityParams = {
+                        startTime: localeDateService.format(localeDateService.parse(element.title as string, _DATE_FROM_ISO_8601), _DATE_FROM_ISO_8601),
+                        endTime: localeDateService.format(addMinutes(localeDateService.parse(element.title as string, _DATE_FROM_ISO_8601), 14), _DATE_FROM_ISO_8601),
+                        dayOfWeek: selectedIndex
+                    }
+                    const response = await doctorCreateAppointmentAvailability(data)
+                    if (response.status === 201 || response.status === 200) {
+                        amountSavedItems++
+                    }
+                }
+
+                // remove items
+                for (let index = 0; index < removeItems.length; index++) {
+                    const element = removeItems[index]
+                    let data: AppointmentAvailabilityParams = {
+                        startTime: localeDateService.format(localeDateService.parse(element.title as string, _DATE_FROM_ISO_8601), _DATE_FROM_ISO_8601),
+                        endTime: localeDateService.format(addMinutes(localeDateService.parse(element.title as string, _DATE_FROM_ISO_8601), 14), _DATE_FROM_ISO_8601),
+                        dayOfWeek: selectedIndex
+                    }
+                    const response = await doctorDeleteAppointmentAvailabilityBlock(data)
+                    if (response.status === 201 || response.status === 200) {
+                        amountSavedItems++
+                    }
+                }
+
+                if (amountSavedItems > 0) loadData()
+
+            } catch (e) {
+                toast.danger({ message: 'Erro ao editar os horários. Tente novamente mais tarde.', duration: 2000 })
+            } finally {
+                setIsLoading(false)
+            }
+        } else {
             setIsLoading(false)
+            toast.warning({ message: 'Nenhum horário selecionado.', duration: 2000 })
         }
-
     }
 
     const undoSchedule = () => {
@@ -237,10 +333,9 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
                                 <TouchableOpacity
                                     onPress={!isLoading ? undoSchedule : undefined}
                                     style={styles.undoButton}>
-                                    <Text
-                                        style={[styles.undoText, styles.uppercaseText, {
-                                            color: !enableUndoButton ? theme['text-hint-color'] : theme['text-danger-color']
-                                        }]}>Desfazer</Text>
+                                    <Text style={[styles.undoText, styles.uppercaseText, {
+                                        color: !enableUndoButton ? theme['text-hint-color'] : theme['text-danger-color']
+                                    }]}>Desfazer</Text>
                                 </TouchableOpacity>
                             </Animated.View>
                         )}

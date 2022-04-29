@@ -1,15 +1,15 @@
-import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
-import { BackHandler, View } from 'react-native'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { Button, Modal, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
-import { CommonActions, useFocusEffect, useRoute } from '@react-navigation/native'
-import { Calendar } from "react-native-calendar-events"
-import { useModal } from '@hooks/useModal'
+import LocalCalendarDialog from '@components/dialog/localCalendarDialog'
 import { BackIcon } from '@components/header/icons'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import LocalCalendarDialog from '@components/dialog/localCalendarDialog'
-import { addCalendarEvent } from '@services/calendar.service'
+import { useModal } from '@hooks/useModal'
 import { EventCalendar } from '@models/Calendar'
+import { DrawerContentComponentProps } from '@react-navigation/drawer'
+import { CommonActions, useFocusEffect, useRoute } from '@react-navigation/native'
+import { addCalendarEvent } from '@services/calendar.service'
+import { Button, Modal, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
+import { BackHandler, View } from 'react-native'
+import { Calendar } from "react-native-calendar-events"
 import { confirmationScheduleStyle } from './styles'
 
 const ConfirmationScheduleScreen: FC<DrawerContentComponentProps> = ({
@@ -55,8 +55,7 @@ const ConfirmationScheduleScreen: FC<DrawerContentComponentProps> = ({
 
     const saveEvent = async (calendar: Calendar) => {
         if (event) {
-            const eventId = await addCalendarEvent(event, calendar, event.title)
-            console.log(eventId)
+            await addCalendarEvent(event, calendar, event.title)
             closeLocalCalendarModal()
         }
     }

@@ -1,3 +1,4 @@
+import { useNavigationState } from "@react-navigation/native"
 import { useEffect, useRef } from "react"
 
 export const usePrevious = (value: any) => {
@@ -8,4 +9,12 @@ export const usePrevious = (value: any) => {
     }, [value])
 
     return ref.current
+}
+
+export const usePreviousRouteName = () => {
+    return useNavigationState(state =>
+        state.routes[state.index - 1]?.name
+            ? state.routes[state.index - 1].name
+            : null
+    )
 }

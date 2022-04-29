@@ -1,29 +1,24 @@
 import HeaderAdmin from '@components/header/admin'
 import ModalizeFixed from '@components/modalize'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import { _DEFAULT_FORMAT_DATETIME } from '@constants/date'
-import { BOOTDEY_URI } from '@constants/uri'
+import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATETIME } from '@constants/date'
 import toast from '@helpers/toast'
-import { useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { CreateAppointment } from '@models/Appointment'
+import { MedicalDoctorDisplay } from '@models/Medical'
 import { useRoute } from '@react-navigation/core'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
-import { createAppointment } from '@services/appointment.service'
-import { Profile as DoctorProfile } from '@services/message.service'
-import { RootState } from '@store/index'
+import { createAppointment, getAppointmentAvailabilityWithBookedAppointments } from '@services/appointment.service'
 import { Avatar, Button, Card, Icon, IconProps, List, Text, TranslationWidth, useStyleSheet, useTheme } from '@ui-kitten/components'
-import { scrollToRef } from '@utils/common'
+import { getTimeBlocksByTime, getTimesByInterval, scrollToRef } from '@utils/common'
 import { openMapsWithAddress } from '@utils/maps'
 import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, ImageStyle, LayoutRectangle, Platform, Pressable, ScrollView, StyleProp, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Modalize } from 'react-native-modalize'
 import Animated, { Easing, SlideInRight, SlideOutRight, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { options } from './data'
 import { doctorScheduleStyle } from './style'
-
 
 interface Data {
     id: number
@@ -36,8 +31,8 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
 }): ReactElement => {
 
     const { localeDateService } = useDatepickerService()
-    const { sessionUser } = useAppSelector((state: RootState) => state.auth)
 
+    const times = getTimesByInterval(15, 405, 18)
     const theme = useTheme()
     const opacity = useSharedValue(0)
     const styles = useStyleSheet(doctorScheduleStyle)
@@ -54,9 +49,10 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
     const [confirmDate, setConfirmDate] = useState<Date>(new Date())
     const [scheduleData, setScheduleData] = useState<CreateAppointment | undefined>()
     const [loading, setLoading] = useState<boolean>()
+    const [params, setParams] = useState<MedicalDoctorDisplay>()
+    const [availableTimes, setAvailableTimes] = useState<string[]>([])
 
     const route = useRoute()
-    const { params }: any = route
     const modalizeRef = useRef<Modalize>(null)
 
     useEffect(() => {
@@ -71,7 +67,19 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
 
     useFocusEffect(
         useCallback(() => {
-            const array = Array.from({ length: localeDateService.getNumberOfDaysInMonth(dateSelected) }, (x, i) => localeDateService.format(localeDateService.addDay(localeDateService.getMonthStart(dateSelected), i), 'DD'))
+            setParams(route.params as MedicalDoctorDisplay)
+            setAvailableTimes([])
+            setDateTimeSelected(undefined)
+        }, [route.params])
+    )
+
+    const getArray = (date: Date) => {
+        return Array.from({ length: localeDateService.getNumberOfDaysInMonth(date) }, (x, i) => localeDateService.format(localeDateService.addDay(localeDateService.getMonthStart(date), i), 'DD'))
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            const array = getArray(dateSelected)
             setDaysInMonth(array)
             setNumColumns(array.length)
             opacity.value = 0
@@ -90,19 +98,18 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
         setConfirmDate(startTime)
         const dateString = localeDateService.format(startTime, _DEFAULT_FORMAT_DATETIME)
 
-        setScheduleData(
-            new CreateAppointment(
-                sessionUser?.userId,
-                params?.doctorId,
-                dateString,
-                dateString,
-                params?.visitAddress.id))
-        modalizeRef.current?.open()
+        // setScheduleData(
+        //     new CreateAppointment(
+        //         sessionUser?.userId,
+        //         params?.doctorId,
+        //         dateString,
+        //         dateString,
+        //         params?.visitAddress.id))
+        // modalizeRef.current?.open()
     }
 
-    const handleClose = () => {
-        modalizeRef.current?.close()
-    }
+    const handleClose = () => modalizeRef.current?.close()
+
 
     const toSchedule = async () => {
         setLoading(true)
@@ -116,7 +123,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
             navigation.navigate('ConfirmationSchedule', {
                 title: 'TeleNeumu | Consulta Presencial',
                 description: 'Esta é uma marcação de uma consulta presencial com o seu médico',
-                location: params?.visitAddress.street,
+                location: params?.address1,
                 startDate: confirmDate.getTime().toString(),
                 endDate: endTime.getTime().toString(),
                 allDay: false
@@ -131,10 +138,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
 
     }
 
-    const newDaysInMonthArray = (date: Date) => {
-        const array = Array.from({ length: localeDateService.getNumberOfDaysInMonth(date) }, (x, i) => localeDateService.format(localeDateService.addDay(localeDateService.getMonthStart(date), i), 'DD'))
-        setDaysInMonth(array)
-    }
+    const newDaysInMonthArray = (date: Date) => setDaysInMonth(getArray(date))
 
     const next = () => {
         const date = localeDateService.addMonth(dateSelected, 1)
@@ -152,13 +156,31 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
         }
     }
 
-    const handleDateSelected = (item: number) => {
+    useEffect(() => {
+        if (availableTimes.length === 0) opacity.value = 0
+        else opacity.value = 1
+    }, [availableTimes])
+
+    const handleDateSelected = async (item: number) => {
         const date = localeDateService.clone(dateSelected)
         date.setDate(item)
         if (date.getTime() !== dateTimeSelected?.getTime()) {
             setDateTimeSelected(date)
             setTimeSelected(undefined)
-            opacity.value = 1
+
+            const response = await getAppointmentAvailabilityWithBookedAppointments({
+                doctorId: params?.medicalDoctorId,
+                startTime: date.toISOString(),
+                endTime: date.toISOString()
+            })
+            if (response.data.length > 0) {
+                const arr = times.filter(e =>
+                    response.data[0].availability.includes(getTimeBlocksByTime(localeDateService.parse(e as string, _DATE_FROM_ISO_8601)))
+                )
+                setAvailableTimes(arr)
+            } else {
+                setAvailableTimes([])
+            }
         }
         else {
             setDateTimeSelected(undefined)
@@ -174,18 +196,18 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
     }
 
     const navigateToDoctorProfile = () => {
-        const profile = new DoctorProfile(
-            params?.doctorId,
-            params?.doctorName,
-            '',
-            BOOTDEY_URI + '/img/Content/avatar/avatar6.png',
-        )
-        navigation.navigate("DoctorProfile", {
-            ...profile,
-            location: params?.visitAddress.street,
-            description: `Olá. Eu sou ${profile.fullName}`,
-            phone: params?.tel
-        })
+        // const profile = new DoctorProfile(
+        //     params?.medicalDoctorId,
+        //     params?.doctorName,
+        //     '',
+        //     BOOTDEY_URI + '/img/Content/avatar/avatar6.png',
+        // )
+        // navigation.navigate("DoctorProfile", {
+        //     ...profile,
+        //     location: params?.visitAddress.street,
+        //     description: `Olá. Eu sou ${profile.fullName}`,
+        //     phone: params?.tel
+        // })
     }
     const footerCard = (props: IconProps) => (
         <View style={styles.footerCard}>
@@ -274,42 +296,41 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                             <View style={styles.viewDoctorProfile}>
                                 <Avatar
                                     style={styles.avatarDoctor as StyleProp<ImageStyle>}
-                                    source={{ uri: BOOTDEY_URI + '/img/Content/avatar/avatar1.png' }}
+                                    source={require('../../../../assets/commons/doctor.png')}
                                 />
-                                <View>
+                                <View style={{ flex: 1 }}>
                                     <Text
                                         category="h5"
                                         status="basic"
-                                    >{params?.doctorName}</Text>
-                                    <Text
-                                        category="p1"
-                                        status="basic"
-                                        style={styles.textDoctorInfo}
-                                    >{params?.specialty}</Text>
+                                    >{params?.name}</Text>
                                     <Text
                                         category="c1"
                                         status="basic"
                                         style={styles.textDoctorInfo}
-                                    >CRM: {params?.crm}</Text>
+                                    >Especialidade: {params?.specialty ?? ''}</Text>
                                     <Text
                                         category="c1"
                                         status="basic"
                                         style={styles.textDoctorInfo}
-                                    >Tel: {params?.tel}</Text>
+                                    >CRM: {params?.crm ?? ''}</Text>
                                     <Text
                                         category="c1"
                                         status="basic"
                                         style={styles.textDoctorInfo}
-                                    >{params?.visitAddress.street}
-                                    </Text>
+                                    >Tel: {params?.phone1 ?? ''} {params?.phone2 ? (" | " + params?.phone2) : ''}</Text>
+                                    <Text
+                                        category="c1"
+                                        status="basic"
+                                        style={styles.textDoctorInfo}
+                                    >Local: {`${params?.address1} - ${params?.address2}, ${params?.city}`}</Text>
                                     <View style={styles.viewLocation}>
                                         <Text
-                                            onPress={() => openMapsWithAddress(params?.visitAddress.street)}
+                                            onPress={() => openMapsWithAddress(params?.address1 ?? '')}
                                             category="c1"
                                             style={styles.textLocation}
                                         >Ver no mapa</Text>
                                         <Icon style={styles.icon} name="location-outline" size={15} pack='ionicons'
-                                            onPress={() => openMapsWithAddress(params?.visitAddress.street)} />
+                                            onPress={() => openMapsWithAddress(params?.address1 ?? '')} />
                                     </View>
                                 </View>
                             </View>
@@ -327,6 +348,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                             </View>
                             <ScrollView
                                 showsHorizontalScrollIndicator={false}
+                                showsVerticalScrollIndicator={false}
                                 horizontal={true}
                                 ref={scrollViewDaysInMonthRef}>
                                 <List
@@ -346,27 +368,32 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                                 exiting={SlideOutRight}
                                 style={animatedStyle}>
                                 <View style={[styles.timesContainer, {
-                                    display: opacity.value === 0 ? 'none' : 'flex'
+                                    display: availableTimes.length === 0 ? 'none' : 'flex'
                                 }]}>
-                                    {options.map(item => (
-                                        <Pressable key={`${item.id}-${item.title}`}
-                                            onPress={() => !item.disabled ? handleTimeSelected(item.title) : undefined}>
-                                            <View style={[styles.timesCard, {
-                                                backgroundColor: timeSelected === localeDateService.format(item.title, 'HH:mm') && !item.disabled ? theme['color-primary-500'] : item.disabled ? theme['color-basic-disabled'] : theme['color-basic-400'],
-                                            }]}>
-                                                <Text style={[styles.timesText, {
-                                                    color: timeSelected === localeDateService.format(item.title, 'HH:mm') && !item.disabled ? theme['color-control-default'] : item.disabled ? theme['text-disabled-color'] : theme['text-hint-color']
-                                                }]}>{localeDateService.format(item.title, 'HH:mm')}</Text>
-                                            </View>
-                                        </Pressable>
-                                    ))}
+                                    {availableTimes.map(item => {
+                                        const date = localeDateService.parse(item, _DATE_FROM_ISO_8601)
+                                        return (
+                                            <Pressable key={`${item}`}
+                                                onPress={() => handleTimeSelected(date)}>
+                                                <View style={[styles.timesCard, {
+                                                    backgroundColor: timeSelected === localeDateService.format(date, 'HH:mm') ? theme['color-primary-500'] : theme['color-basic-400'],
+                                                }]}>
+                                                    <Text style={[styles.timesText, {
+                                                        color: timeSelected === localeDateService.format(date, 'HH:mm') ? theme['color-control-default'] : theme['text-hint-color']
+                                                    }]}>{localeDateService.format(date, 'HH:mm')}</Text>
+                                                </View>
+                                            </Pressable>
+                                        )
+                                    })}
                                 </View>
                             </Animated.View>
                             <Animated.View
                                 entering={SlideInRight}
-                                style={{ display: opacity.value === 1 ? 'none' : 'flex' }}>
+                                style={{ display: availableTimes.length > 0 ? 'none' : 'flex' }}>
                                 <View style={styles.timesContainer}>
-                                    <Text style={[styles.timesText, styles.textWithoutSelectedDate]}>Selecione o dia desejado</Text>
+                                    <Text style={[styles.timesText, styles.textWithoutSelectedDate]}>
+                                        {availableTimes.length === 0 && dateTimeSelected ? 'Nenhum horário disponível' : 'Selecione o dia desejado'}
+                                    </Text>
                                 </View>
                             </Animated.View>
                         </View>

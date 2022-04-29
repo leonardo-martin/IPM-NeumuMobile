@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native"
+import { Platform, StyleSheet } from "react-native"
 
 export const floatingButtonStyle = StyleSheet.create({
     container: {
@@ -15,14 +15,20 @@ export const floatingButtonStyle = StyleSheet.create({
         borderRadius: 60 / 2,
         alignItems: 'center',
         justifyContent: 'center',
-        shadowRadius: 10,
-        shadowColor: 'color-primary-default',
-        shadowOpacity: 0.3,
-        shadowOffset: {
-            height: 10,
-            width: 10
-        },
-        elevation: 10
+        ...Platform.select({
+            ios: {
+                shadowRadius: 10,
+                shadowColor: 'color-primary-default',
+                shadowOpacity: 0.3,
+                shadowOffset: {
+                    height: 10,
+                    width: 10
+                },
+            },
+            android: {
+                elevation: 10,
+            },
+        }),
     },
     secondary: {
         width: 55,

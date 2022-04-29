@@ -1,15 +1,13 @@
 import AutoCompleteComponent from "@components/autoComplete"
-import { API_IBGE_GOV, API_POSTAL_CODE_SEARCH } from "@constants/uri"
+import toast from "@helpers/toast"
 import { City, Country, UF } from "@models/Places"
 import { UserDoctorData, UserPatientData } from "@models/User"
+import { getAddressByPostalCode, getCities, getCountries, getStates } from "@services/common.service"
 import { AutocompleteItem, Icon, IconProps, Input, Text } from "@ui-kitten/components"
+import { filterBy } from "@utils/common"
 import React, { Dispatch, FC, ReactElement, useEffect, useState } from "react"
 import { Controller, UseFormReturn } from "react-hook-form"
 import { StyleSheet } from "react-native"
-
-const filter = (item: any, query: any) => item.sigla.toLowerCase().includes(query.toLowerCase())
-const filterCity = (item: any, query: any) => item.nome.toLowerCase().includes(query.toLowerCase())
-const filterCountry = (item: any, query: any) => item.nome.toLowerCase().includes(query.toLowerCase())
 
 interface CardAddressProps {
     form: UseFormReturn<UserPatientData & UserDoctorData, any>
@@ -32,10 +30,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
     const [country, setCountry] = useState<string>('')
 
     const findCountries = async () => {
-        const list: Array<Country> = await fetch(`${API_IBGE_GOV}/localidades/paises?orderBy=nome`, {
-            method: 'GET'
-        }).then(async (response) => await response.json())
-
+        const list = await getCountries()
         const listOrdened = list.sort((a, b) => a.nome.localeCompare(b.nome))
         setCountries(listOrdened)
         setCountriesTemp(listOrdened)
@@ -47,7 +42,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
 
     const onChangeTextCountry = (text: string) => {
         form.setValue(`${textFieldPrefix}country` as const, text)
-        const list = countriesTemp.filter(item => filterCountry(item, text))
+        const list = countriesTemp.filter(item => filterBy(item, text, 'nome'))
         if (list.length > 0)
             setCountriesTemp(list)
         if (text === '')
@@ -55,7 +50,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
     }
 
     const onSelectCountry = (index: number) => {
-        const list = countriesTemp.filter(item => filterCountry(item, countriesTemp[index]?.nome))
+        const list = countriesTemp.filter(item => filterBy(item, countriesTemp[index]?.nome, 'nome'))
         if (list.length > 0) {
             if (countriesTemp[index]?.nome !== country) {
                 form.resetField(`${textFieldPrefix}state` as const)
@@ -91,10 +86,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
     const [isDisabledState, setIsDisabledState] = useState<boolean>(true)
 
     const findPlaces = async () => {
-        const list: Array<UF> = await fetch(`${API_IBGE_GOV}/localidades/estados?orderBy=nome`, {
-            method: 'GET'
-        }).then(async (response) => await response.json())
-
+        const list = await getStates()
         setStates(list)
         setStatesTemp(list)
     }
@@ -107,7 +99,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
 
     const onChangeTextState = (text: string) => {
         form.setValue(`${textFieldPrefix}state` as const, text)
-        const list = statesTemp.filter(item => filter(item, text))
+        const list = statesTemp.filter(item => filterBy(item, text, 'nome'))
         if (list.length > 0)
             setStatesTemp(list)
         if (text === '')
@@ -116,7 +108,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
     }
 
     const onSelectState = (index: number) => {
-        const list = statesTemp.filter(item => filter(item, statesTemp[index]?.sigla))
+        const list = statesTemp.filter(item => filterBy(item, statesTemp[index]?.sigla, 'sigla'))
         if (list.length > 0) {
             form.setValue(`${textFieldPrefix}state` as const, statesTemp[index]?.sigla)
             setIsDisabledCity(false)
@@ -142,12 +134,13 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
     const [isDisabledCity, setIsDisabledCity] = useState<boolean>(true)
 
     const findCities = async () => {
-        const list: Array<City> = await fetch(`${API_IBGE_GOV}/localidades/estados/${form.getValues(`${textFieldPrefix}state` as const)}/municipios?orderBy=nome`, {
-            method: 'GET'
-        }).then(async (response) => await response.json())
-
-        setCities(list)
-        setCitiesTemp(list)
+        try {
+            const list = await getCities(form.getValues('state'))
+            setCities(list)
+            setCitiesTemp(list)
+        } catch (error) {
+            toast.danger({ message: 'Ocorreu um erro. Tente novamente mais tarde', duration: 3000 })
+        }
     }
 
     useEffect(() => {
@@ -157,7 +150,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
 
     const onChangeTextCity = (text: string) => {
         form.setValue(`${textFieldPrefix}city` as const, text)
-        const list = citiesTemp.filter(item => filterCity(item, text))
+        const list = citiesTemp.filter(item => filterBy(item, text, 'nome'))
         if (list.length > 0)
             setCitiesTemp(list)
         if (text === '')
@@ -165,7 +158,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
     }
 
     const onSelectCity = (index: number) => {
-        const list = citiesTemp.filter(item => filterCity(item, citiesTemp[index]?.nome))
+        const list = citiesTemp.filter(item => filterBy(item, citiesTemp[index]?.nome, 'nome'))
         if (list.length > 0) {
             form.setValue(`${textFieldPrefix}city` as const, citiesTemp[index]?.nome)
             form.clearErrors(`${textFieldPrefix}city` as const)
@@ -237,9 +230,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
 
     const loadDataFromPostalCode = async (value: string) => {
         handleFetchingData(true)
-        const obj: any = await fetch(`${API_POSTAL_CODE_SEARCH.replace('$POSTAL_CODE', value)}`, {
-            method: 'GET'
-        }).then(async (response) => response && response.status === 200 ? await response.json() : null)
+        const obj = await getAddressByPostalCode(value)
 
         form.resetField(`${textFieldPrefix}country` as const)
         form.resetField(`${textFieldPrefix}city` as const)

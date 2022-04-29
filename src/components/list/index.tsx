@@ -1,6 +1,6 @@
 import React, { FC, ReactElement } from 'react'
-import { ListRenderItemInfo, Platform } from 'react-native'
-import { List, ListItem, IconProps, Icon, ListProps } from '@ui-kitten/components'
+import { ListRenderItemInfo, Platform, StyleProp, ViewStyle } from 'react-native'
+import { List, ListItem, IconProps, Icon, ListProps, useStyleSheet } from '@ui-kitten/components'
 
 import { useNavigation } from '@react-navigation/native'
 import { listStyle } from './style'
@@ -19,12 +19,14 @@ export interface ItemInfo {
 
 type ListComponentProps = {
     data: ItemInfo[]
+    itemStyle?: StyleProp<ViewStyle>
 } & ListProps
 
 const ListComponent: FC<ListComponentProps> = ({
     data, ...props
 }): ReactElement => {
 
+    const styles = useStyleSheet(listStyle)
     const navigation = useNavigation<any>()
     const renderLeftIcon = (props: IconProps, icon?: Icons): ReactElement => (
         <Icon {...props} name={icon?.name} pack={icon?.pack} />
@@ -36,7 +38,7 @@ const ListComponent: FC<ListComponentProps> = ({
 
     const renderItem = (info: ListRenderItemInfo<ItemInfo>) => (
         <ListItem
-            style={listStyle.item}
+            style={[styles.item, props.itemStyle]}
             title={info.item.title}
             description={info.item.description}
             accessoryRight={renderRightIcon}

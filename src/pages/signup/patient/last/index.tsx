@@ -30,8 +30,6 @@ const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): Rea
   useFocusEffect(
     useCallback(() => {
 
-      form.setValue('creator.data.examType', 'clinical')
-
       const patientDate = form.getValues('dateOfBirth')
       const result = patientDate ? localeDateService.compareDatesSafe(dateForOver, patientDate) : -1
 

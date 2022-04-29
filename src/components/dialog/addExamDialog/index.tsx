@@ -1,4 +1,6 @@
 import AttachmentBoxComponent from '@components/attachmentBox'
+import { _DATE_FROM_ISO_8601 } from '@constants/date'
+import { useAppSelector } from '@hooks/redux'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { ExamDto, ExamImage } from '@models/Exam'
@@ -6,11 +8,11 @@ import { useFocusEffect } from '@react-navigation/native'
 import { uploadUserFile } from '@services/document.service'
 import { uploadExam } from '@services/exam.service'
 import { Button, Card, Datepicker, Icon, IconProps, Input, Modal, PopoverPlacements, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
-import { _DATE_FROM_ISO_8601 } from 'constants/date'
 import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Keyboard, Platform, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
+import { RootState } from 'store'
 import { modalStyle } from './style'
 
 interface AddExamDialogProps {
@@ -24,6 +26,7 @@ interface AddExamDialogProps {
 const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithChildren<AddExamDialogProps>>(({
     onVisible, visible, ...props }, ref): ReactElement => {
 
+    const { ids } = useAppSelector((state: RootState) => state.user)
     const { localeDateService } = useDatepickerService()
     const combinedRef = useCombinedRefs(ref, ref)
     const form = useForm<ExamDto & ExamImage>({
@@ -107,7 +110,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
             if (response && response?.status === 201 || response?.status === 200 && response?.data) {
                 const item: ExamDto & ExamImage = {
                     ...data,
-                    patientId: 87,
+                    patientId: ids?.patientId as number,
                     documentId: response.data.id
                 }
                 await uploadExam(item)
@@ -251,7 +254,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                         render={({ field: { onChange, onBlur, value, name, ref } }) => (
                             <Input
                                 size='large'
-                                label={evaProps => <Text {...evaProps}>DESCRIÇÃO *</Text>}
+                                label="Descrição *"
                                 style={styles.input}
                                 keyboardType='default'
                                 testID={name}
@@ -259,12 +262,13 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                                 onChangeText={onChange}
                                 value={value}
                                 ref={ref}
-                                returnKeyType="send"
+                                returnKeyType="done"
                                 underlineColorAndroid="transparent"
                                 multiline
                                 textStyle={{ minHeight: 90, textAlignVertical: 'top' }}
                                 onPressIn={clearError}
                                 scrollEnabled
+                                blurOnSubmit={true}
                             />
                         )}
                         name='data.examDescription'

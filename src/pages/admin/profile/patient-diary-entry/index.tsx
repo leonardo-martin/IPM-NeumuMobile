@@ -3,7 +3,9 @@ import FilterByDateDialog from '@components/dialog/filterByDateDialog'
 import HeaderGenericWithTitleAndAddIcon from '@components/header/admin/generic-with-add-icon'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import Timeline from '@components/timeline'
+import { _DATE_FROM_ISO_8601 } from '@constants/date'
 import toast from '@helpers/toast'
+import { useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { useModal } from '@hooks/useModal'
 import { AscendingOrder } from '@models/Common'
@@ -13,9 +15,9 @@ import { useFocusEffect } from '@react-navigation/native'
 import { deleteDiaryEntry, getDiaryEntryByRange } from '@services/patient.service'
 import { CalendarRange, Icon, Modal, Text, useStyleSheet } from '@ui-kitten/components'
 import { groupByDateTime } from '@utils/common'
-import { _DATE_FROM_ISO_8601 } from 'constants/date'
 import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { RefreshControl, TouchableOpacity, View } from 'react-native'
+import { RootState } from 'store'
 import { notesStyle } from './style'
 
 const PatientDiaryEntryScreen: FC = (): ReactElement => {
@@ -23,6 +25,7 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
     const { ref: addRef } = useModal<Modal>()
     const { ref: filterRef } = useModal<Modal>()
 
+    const { ids } = useAppSelector((state: RootState) => state.user)
     const styles = useStyleSheet(notesStyle)
     const [addedItem, setAddedItem] = useState<PatientDiaryEntryDto | undefined>(undefined)
     const [visibleAddModal, setVisibleAddModal] = useState<boolean>(false)
@@ -38,7 +41,7 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
     const [range, setRange] = useState<CalendarRange<Date>>({})
 
     const getPatientCalendarList = useCallback(async () => {
-        const result = await getDiaryEntryByRange('87', range)
+        const result = await getDiaryEntryByRange((ids?.patientId as number).toString(), range)
         setOriginalData(result.data)
         convertList(result.data)
     }, [])
@@ -61,7 +64,7 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
 
         try {
             const obj: PatientDiaryEntryDto = {
-                patientId: 87,
+                patientId: ids?.patientId as number,
                 date: date ? localeDateService.parse(date, _DATE_FROM_ISO_8601) : localeDateService.today(),
                 data: {
                     ...item
@@ -89,7 +92,7 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
 
     const onViewItem = (date: string, item: TimelineTimeItem) => {
         const obj: PatientDiaryEntryDto = {
-            patientId: 87,
+            patientId: ids?.patientId as number,
             date: date ? localeDateService.parse(date, _DATE_FROM_ISO_8601) : localeDateService.today(),
             data: {
                 ...item
@@ -140,7 +143,7 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
                 }} />
             <SafeAreaLayout style={styles.safeArea} level='1' >
                 <Timeline                    
-                    data={[]}
+                    data={undefined}
                     renderItem={undefined}
                     ListHeaderComponent={headerListComponent}
                     onDelete={onDeleteItem}

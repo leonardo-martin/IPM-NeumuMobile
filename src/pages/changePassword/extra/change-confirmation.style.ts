@@ -30,7 +30,7 @@ export const changePasswdConfirmStyle = StyleSheet.create({
     },
     description: {
         color: 'text-hint-color',
-        fontWeight: '600',
+        fontWeight: '400',
         textAlign: 'center'
     },
     message: {

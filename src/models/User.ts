@@ -29,7 +29,7 @@ export class UserData {
         address2?: string,
         addressComplement?: string,
         country?: string,
-        genre?: string,
+        sex?: string,
     ) {
         this.name = name
         this.cpf = cpf
@@ -46,7 +46,7 @@ export class UserData {
         this.address2 = address2
         this.addressComplement = addressComplement
         this.country = country
-        this.genre = genre
+        this.sex = sex
     }
 
     name?: string
@@ -64,13 +64,13 @@ export class UserData {
     address2?: string
     addressComplement?: string
     country?: string
-    genre?: string
+    sex?: string
 }
 
 export class UserPatientData extends UserData {
 
     mothersName?: string
-    cns?: string
+    susNumber?: string
     creator?: PatientProfileCreatorDto
     abrafeuRegistrationOptIn?: string
     pastExams?: ExamDNA
@@ -90,16 +90,16 @@ export class UserPatientData extends UserData {
         address2?: string,
         addressComplement?: string,
         country?: string,
-        genre?: string,
-        mothersName?: string, cns?: string,
+        sex?: string,
+        mothersName?: string, susNumber?: string,
         creator?: PatientProfileCreatorDto,
         abrafeuRegistrationOptIn?: string,
         pastExams?: ExamDNA) {
 
         super(name, cpf, email, phone, phone2, username,
-            password, city, state, dateOfBirth, postalCode, address1, address2, addressComplement, country, genre)
+            password, city, state, dateOfBirth, postalCode, address1, address2, addressComplement, country, sex)
         this.mothersName = mothersName
-        this.cns = cns
+        this.susNumber = susNumber
         this.creator = creator
         this.abrafeuRegistrationOptIn = abrafeuRegistrationOptIn
         this.pastExams = pastExams
@@ -110,7 +110,8 @@ export class UserPatientData extends UserData {
 export class UserDoctorData extends UserData {
 
     crm?: string
-    specialty?: Specialty
+    specialty?: MedicalSpecialtyDto
+    professionalTypeId?: string
 
     constructor(name?: string,
         cpf?: string,
@@ -127,20 +128,24 @@ export class UserDoctorData extends UserData {
         address2?: string,
         addressComplement?: string,
         country?: string,
-        genre?: string,
-        crm?: string, specialty?: Specialty) {
+        sex?: string,
+        crm?: string, specialty?: MedicalSpecialtyDto,
+        professionalTypeId?: string) {
 
         super(name, cpf, email, phone, phone2, username,
-            password, city, state, dateOfBirth, postalCode, address1, address2, addressComplement, country, genre)
+            password, city, state, dateOfBirth, postalCode, address1, address2, addressComplement, country, sex)
         this.crm = crm
         this.specialty = specialty
+        this.professionalTypeId = professionalTypeId
         Object.setPrototypeOf(this, UserDoctorData.prototype)
     }
 }
 
 
-class Specialty {
+class MedicalSpecialtyDto {
+    id!: number
     description!: string
+    professionalTypeId!: string
 }
 
 export class UserAccRecoveryPasswdRequest {
@@ -150,5 +155,13 @@ export class UserAccRecoveryPasswdRequest {
 
 export class UserAccRecoveryPasswd {
     token!: string
+    password!: string
     newPassword!: string
+}
+
+export class UserRelatedIdsDto {
+    userId!: number
+    patientId!: number
+    medicalDoctorId!: number
+    operatorId!: number
 }

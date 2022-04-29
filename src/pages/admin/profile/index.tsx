@@ -18,6 +18,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
 
   const dispatch = useAppDispatch()
   const { sessionUser } = useAppSelector((state: RootState) => state.auth)
+  const { profile } = useAppSelector((state: RootState) => state.profile)
   const styles = useStyleSheet(profileStyle)
 
   const renderIconDocumentAttach = (props: IconProps) => (
@@ -30,7 +31,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
 
   const renderFooterComponent = () => (
     <>
-      <View style={styles.listFooter}>
+      <View style={[styles.listFooter, styles.shadow]}>
         <Button
           onPress={goToMyExams}
           appearance='filled'
@@ -42,7 +43,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
   )
 
   const exitComponent = () => (
-    <View style={styles.listFooter}>
+    <View style={[styles.listFooter, styles.shadow]}>
       <TouchableOpacity
         style={styles.buttonContainer}
         onPress={() => dispatch(logout())}>
@@ -56,6 +57,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
       <HeaderProfile />
       <SafeAreaLayout level='2' style={styles.safeArea}>
         <ListComponent
+          itemStyle={styles.shadow}
           data={sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? patientBaseData : specialistBaseData}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={() => (
@@ -67,11 +69,13 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
                 <View style={styles.body}>
                   <View style={styles.bodyContent}>
                     <Text style={styles.profileName}>@{sessionUser ? sessionUser.user : ''}</Text>
-                    {/* <View style={styles.viewLocation}>
-                      <Icon style={styles.icon} name="location-outline" size={15} pack='ionicons' />
-                      <Text status='info'>São Paulo, SP - Brasil</Text>
-                    </View> */}
-                    <Text style={styles.description}></Text>
+                    {profile?.address1 ? (
+                      <View style={styles.viewLocation}>
+                        <Icon style={styles.icon} name="location-outline" size={15} pack='ionicons' />
+                        <Text status='info'>{profile?.city + " - " + profile?.state}</Text>
+                      </View>
+                    ) : null}
+                    < Text style={styles.description}></Text>
                   </View>
                 </View>
               </View>

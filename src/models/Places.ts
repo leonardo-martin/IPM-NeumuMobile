@@ -1,3 +1,5 @@
+import { JSONObject } from "./Common"
+
 export class UF {
     id!: number
     sigla!: string
@@ -68,6 +70,11 @@ export class Country {
     "sub-regiao": SubRegion
 }
 
-interface JSONObject {
-    [key: string]: any
+
+export interface AddressDto {
+    localidade?: string
+    logradouro?: string
+    bairro?: string
+    uf?: string
+    complemento?: string
 }

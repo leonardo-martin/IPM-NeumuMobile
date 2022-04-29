@@ -1,3 +1,4 @@
+import { useAppSelector } from '@hooks/redux'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { PatientDiaryEntryDto } from '@models/Patient'
@@ -7,6 +8,7 @@ import { Button, Card, Icon, Input, Modal, Spinner, Text, useStyleSheet } from '
 import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { TouchableOpacity, View } from 'react-native'
+import { RootState } from 'store'
 import { modalStyle } from './style'
 
 interface AddPatientDiaryEntryDialogProps {
@@ -20,6 +22,7 @@ interface AddPatientDiaryEntryDialogProps {
 const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardRef<Modal, React.PropsWithChildren<AddPatientDiaryEntryDialogProps>>(({
     onVisible, visible, ...props }, ref): ReactElement => {
 
+    const { ids } = useAppSelector((state: RootState) => state.user)
     const route = useRoute()
     const navigation = useNavigation<any>()
     const combinedRef = useCombinedRefs(ref, ref)
@@ -61,7 +64,7 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
 
             const obj: PatientDiaryEntryDto = {
                 ...data,
-                patientId: 87,
+                patientId: ids?.patientId as number,
             }
             const response = await postDiaryEntry(obj)
             if (response.status === 201 || response.status === 200) {
@@ -165,8 +168,9 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                             scrollEnabled
                             textStyle={{ minHeight: 64, textAlignVertical: 'top' }}
                             ref={ref}
-                            returnKeyType="send"
+                            returnKeyType="done"
                             underlineColorAndroid="transparent"
+                            blurOnSubmit={true}
                         />
                     )}
                     name='data.description'

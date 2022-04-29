@@ -24,7 +24,7 @@ export const editProfileStyle = StyleSheet.create({
   },
   profileSetting: {
     padding: 16,
-    paddingEnd: 5
+    paddingEnd: 5,
   },
   section: {
     marginTop: 24,

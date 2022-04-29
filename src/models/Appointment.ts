@@ -61,3 +61,16 @@ export interface AppointmentAvailabilityParams {
     startTime: Date | string
     endTime: Date | string
 }
+
+export interface AppointmentAvailabilityWithBookedParams {
+    doctorId: number | undefined | string
+    startTime: Date | string
+    endTime: Date | string
+}
+
+
+export class AppointmentAvailabilityHelper {
+    date!: Date | string
+    availability!: number[]
+    booked!: number[]
+}

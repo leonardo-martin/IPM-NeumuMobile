@@ -3,10 +3,11 @@ import RegisterHeader from '@components/header/register'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import Stepper from '@components/stepper'
 import toast from '@helpers/toast'
-import { PatientProfileCreatorTypeEnum, RelationshipPatient } from '@models/PatientProfileCreator'
+import { PatientProfileCreatorDto, PatientProfileCreatorTypeEnum, RelationshipPatient } from '@models/PatientProfileCreator'
 import { RegisterParams } from '@models/SignUpProps'
 import { UserDoctorData, UserPatientData } from '@models/User'
 import { useNavigation, useRoute } from '@react-navigation/native'
+import { uploadTutorFile } from '@services/document.service'
 import { createPatientProfileCreator, createUser } from '@services/user.service'
 import { Button, CheckBox, Spinner, useStyleSheet } from '@ui-kitten/components'
 import { extractFieldString } from '@utils/common'
@@ -17,7 +18,6 @@ import { Platform, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import { Modalize } from 'react-native-modalize'
 import { Host, Portal } from 'react-native-portalize'
-import { uploadTutorFile } from '@services/document.service'
 import { creatorRelationship } from './data'
 import PatientSignUpEndScreen from './patient/last'
 import PatientSignUpPart1Screen from './patient/part1'
@@ -65,6 +65,7 @@ const SignUpScreen: FC = (): ReactElement => {
         setSending(!sending)
 
         var messageError = ''
+        let allowedToCreate: boolean = true
 
         try {
 
@@ -76,9 +77,17 @@ const SignUpScreen: FC = (): ReactElement => {
             data.username = data.cpf
 
             if (params?.type === 0) {
-                const newData = data as UserPatientData
-
-                let allowedToCreate: boolean = true
+                let newData = data as UserPatientData
+                newData = {
+                    ...newData,
+                    'creator': {
+                        ...newData.creator as PatientProfileCreatorDto,
+                        data: {
+                            ...newData.creator?.data,
+                            'examType': 'clinical'
+                        }
+                    }
+                }
 
                 if (newData.creator && newData.creator.data && newData.creator?.data['cpf'])
                     newData.creator.data['cpf'] = cleanNumberMask(newData.creator.data['cpf'])
@@ -138,10 +147,11 @@ const SignUpScreen: FC = (): ReactElement => {
                             messageError = 'Erro ao enviar a documentação'
                         }
                     }
-                } 
+                }
 
                 if (allowedToCreate) {
                     const response = await createUser(newData)
+
                     if (response.status !== 201) {
                         const message = response.data?.message
                         if (message.toUpperCase().includes('Unique constraint'.toUpperCase())) {
@@ -154,7 +164,12 @@ const SignUpScreen: FC = (): ReactElement => {
                     } else await createPatientProfileCreator(Number(response.data.patientId), newData.creator)
                 }
             } else if (params?.type === 1) {
-                const response = await createUser(data as UserDoctorData, 'doctor')
+                const newData = data as UserDoctorData
+                
+                newData.professionalTypeId = "1"
+                if (newData.specialty) newData.specialty.professionalTypeId = "1"
+
+                const response = await createUser(newData, 'doctor')
                 if (response.status !== 201) {
                     const message = response.data?.message
                     if (message.toUpperCase().includes('Unique constraint'.toUpperCase())) {

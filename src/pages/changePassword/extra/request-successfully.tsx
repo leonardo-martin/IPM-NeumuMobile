@@ -5,14 +5,13 @@ import { useAppSelector } from '@hooks/redux'
 import React, { FC, ReactElement, useCallback } from 'react'
 import { BackHandler, Image, ImageStyle, StyleProp, View } from 'react-native'
 import { RootState } from 'store'
-import { changePasswdConfirmStyle } from './style'
+import { passwordRequestSuccessStyle } from './request-successfully.style'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
-
-const ChangePasswordConfirm: FC = (): ReactElement => {
+const PasswordRequestSuccessfullyScreen: FC = (): ReactElement => {
 
     const { isAuthenticated } = useAppSelector((state: RootState) => state.auth)
-    const styles = useStyleSheet(changePasswdConfirmStyle)
+    const styles = useStyleSheet(passwordRequestSuccessStyle)
     const navigation = useNavigation<any>()
     const actions = CommonActions.reset({
         index: 0,
@@ -39,25 +38,23 @@ const ChangePasswordConfirm: FC = (): ReactElement => {
         <>
             <SafeAreaLayout level='1' style={styles.safeArea}>
                 <View style={styles.content}>
-                    <View style={[styles.item, { flex: .9 }]}>
+                    <View style={[styles.item, { flex: 1 }]}>
                         <Image source={require('../../../assets/confirmation/communcation.png')}
                             style={styles.image as StyleProp<ImageStyle>} />
                         <View style={styles.title}>
-                            <Text style={[styles.description, { fontSize: 16 }]}>Enviado um link para o e-mail de cadastro com as instruções. Verifique sua caixa de entrada.</Text>
+                            <Text style={[styles.description, { fontSize: 16 }]}>Enviamos um link para o e-mail de cadastro com as instruções. Verifique sua caixa de entrada.</Text>
                         </View>
-                    </View>
-                    <View style={{ flex: .1 }}>
                         <Button
                             status='primary'
                             appearance='outline'
                             onPress={navigate}>Início</Button>
-                        <View style={[styles.viewDetails, { flexDirection: 'row' }]}>
-                            <Text category='c1' style={styles.message}>Já recebeu o TOKEN? Clique</Text>
-                            <TouchableOpacity
-                                onPress={changeWithToken}>
-                                <Text category='c1' style={[styles.boldText, { textTransform: 'uppercase' }]}>{" "}aqui</Text>
-                            </TouchableOpacity>
-                        </View>
+                    </View>
+                    <View style={[styles.viewDetails, { flexDirection: 'row' }]}>
+                        <Text category='c1' style={styles.message}>Já recebeu o TOKEN? Clique</Text>
+                        <TouchableOpacity
+                            onPress={changeWithToken}>
+                            <Text category='c1' style={[styles.boldText, { textTransform: 'uppercase' }]}>{" "}aqui</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </SafeAreaLayout>
@@ -65,4 +62,4 @@ const ChangePasswordConfirm: FC = (): ReactElement => {
     )
 }
 
-export default ChangePasswordConfirm
+export default PasswordRequestSuccessfullyScreen

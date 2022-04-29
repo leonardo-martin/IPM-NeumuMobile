@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 
 export const toastStyle = StyleSheet.create({
     container: {
@@ -7,8 +7,21 @@ export const toastStyle = StyleSheet.create({
         left: '4%',
         right: '4%',
         zIndex: 1,
-        elevation: 1,
         borderRadius: 4,
+        ...Platform.select({
+            ios: {
+                shadowColor: 'background-alternative-color-1',
+                shadowOffset: {
+                    height: 10,
+                    width: 10
+                },
+                shadowOpacity: .2,
+                shadowRadius: 5,
+            },
+            android: {
+                elevation: 3,
+            },
+        }),
     },
     text: {
         padding: 14,

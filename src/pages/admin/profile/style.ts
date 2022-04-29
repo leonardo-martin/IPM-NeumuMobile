@@ -62,5 +62,21 @@ export const profileStyle = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingVertical: 30
+  },
+  shadow: {
+    ...Platform.select({
+      ios: {
+        shadowColor: 'background-alternative-color-1',
+        shadowOffset: {
+          width: 0,
+          height: 5
+        },
+        shadowOpacity: .1,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
   }
 })

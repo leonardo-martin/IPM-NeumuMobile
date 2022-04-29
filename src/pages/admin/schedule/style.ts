@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 
 export const scheduleStyle = StyleSheet.create({
   safeArea: {
@@ -17,7 +17,8 @@ export const scheduleStyle = StyleSheet.create({
   },
   cardGroupPrimary: {
     marginVertical: 10,
-    marginHorizontal: 10
+    marginHorizontal: 10,
+    borderRadius: 15,
   },
   cardDefault: {
     flexDirection: 'row',
@@ -35,11 +36,28 @@ export const scheduleStyle = StyleSheet.create({
     alignItems: 'flex-start',
     borderWidth: 1,
     borderStyle: 'solid',
-    borderRadius: 5,
-    height: 95
+    borderRadius: 15,
+    height: 100,
   },
   text: {
     textAlign: 'center',
-    marginVertical: 10
-  }
+    fontWeight: '600',
+    marginVertical: 10,
+  },
+  shadowCard: {
+    ...Platform.select({
+      ios: {
+        shadowColor: 'background-alternative-color-1',
+        shadowOffset: {
+          width: 0,
+          height: 5
+        },
+        shadowOpacity: .1,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
+  },
 })

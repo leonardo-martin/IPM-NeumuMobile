@@ -5,14 +5,14 @@ import toast from '@helpers/toast'
 import { useModal } from '@hooks/useModal'
 import { PatientDto } from '@models/Patient'
 import { useFocusEffect } from '@react-navigation/native'
+import { optIn, optOut } from '@services/abrafreu.service'
 import { getPatient, updatePatient } from '@services/patient.service'
 import { Button, Input, Radio, RadioGroup, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { getRelationPastExams } from '@utils/common'
 import { onlyNumbers } from '@utils/mask'
 import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Keyboard, TouchableOpacity, View } from 'react-native'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { Keyboard, ScrollView, TouchableOpacity, View } from 'react-native'
 import { Modalize } from 'react-native-modalize'
 import { Host, Portal } from 'react-native-portalize'
 import { examResult } from './data'
@@ -23,7 +23,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const form = useForm<PatientDto>()
     const { ref } = useModal<Modalize>()
-    const [selectedIndex, setSelectedIndex] = useState<number | undefined>()
+    const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined)
     const [selectTmp, setSelectTmp] = useState<number | undefined>(selectedIndex)
     const styles = useStyleSheet(mappingStyle)
     const [selectedIndexExamDNA, setSelectedIndexExamDNA] = useState(-1)
@@ -35,12 +35,15 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             const optIn = response.data.abrafeuRegistrationOptIn === 'true' ? 0 : 1
             form.setValue('abrafeuRegistrationOptIn', response.data.abrafeuRegistrationOptIn)
 
-            if (optIn === 0) {
-                form.setValue('pastExams.exam', response.data.pastExams.exam)
+            if (optIn === 0 && response.data.pastExams) {
+                setSelectedIndexExamDNA(response.data.pastExams.exam.id as number)
+                form.setValue('pastExams.exam.id', response.data.pastExams.exam.id)
+                form.setValue('pastExams.exam.description', response.data.pastExams.exam.description)
                 form.setValue('pastExams.doctor.crm', response.data.pastExams.doctor?.crm)
             }
             setSelectedIndex(optIn)
             setSelectTmp(optIn)
+            setUnidentifiedError(false)
         } catch (error) {
             setSelectedIndex(undefined)
             setSelectTmp(undefined)
@@ -67,14 +70,26 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
 
         if (data.abrafeuRegistrationOptIn === 'false') {
             form.resetField('pastExams')
-            data.pastExams = {}
+            delete data.pastExams
             setSelectedIndexExamDNA(-1)
+        } else {
+            if (selectTmp === 1) {
+                delete data.pastExams
+            }
         }
 
         try {
             await updatePatient(data)
+
+            // send email
+            if (selectedIndex === 0 && !data.pastExams) {
+                await optIn()
+            } else if (selectedIndex === 1) {
+                await optOut()
+            }
             setSelectTmp(data.abrafeuRegistrationOptIn === 'true' ? 0 : 1)
             setIsLoading(false)
+            
         } catch (error) {
             setIsLoading(false)
             setSelectedIndex(selectTmp)
@@ -91,9 +106,12 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
 
     const handleRadioSelectedExamDNA = (index: number) => {
         setSelectedIndexExamDNA(index)
-        form.clearErrors('pastExams.exam')
+        form.clearErrors('pastExams.exam.id')
         const exam = getRelationPastExams(index)
-        exam ? form.setValue('pastExams.exam', exam) : null
+        if (exam) {
+            form.setValue('pastExams.exam.id', index)
+            form.setValue('pastExams.exam.description', exam)
+        }
     }
 
     const LoadingIndicator = () => (
@@ -104,8 +122,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
         <Host>
             <HeaderAdmin />
             <SafeAreaLayout level='1' style={styles.safeArea}>
-                <KeyboardAwareScrollView
-                    enableOnAndroid
+                <ScrollView
                     keyboardShouldPersistTaps='handled'
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ flexGrow: 1 }}>
@@ -202,14 +219,17 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                                 onChange={handleRadioSelectedExamDNA}>
                                                 {examResult.map((_, i) => {
                                                     return (
-                                                        <Radio key={_ + i} disabled={isLoading} onBlur={onBlur}>{evaProps => <Text {...evaProps} >{_}</Text>}</Radio>
+                                                        <Radio
+                                                            key={_ + i}
+                                                            disabled={isLoading}
+                                                            onBlur={onBlur}>{evaProps => <Text {...evaProps} >{_}</Text>}</Radio>
                                                     )
                                                 })}
                                             </RadioGroup>
                                         )}
-                                        name='pastExams.exam'
+                                        name='pastExams.exam.id'
                                     />
-                                    {form.formState.errors.pastExams?.exam && <Text category='s2' style={[styles.text, { paddingHorizontal: 5 }]}>{form.formState.errors.pastExams?.exam?.message}</Text>}
+                                    {form.formState.errors.pastExams?.exam?.id && <Text category='s2' style={[styles.text, { paddingHorizontal: 5 }]}>{form.formState.errors.pastExams?.exam?.id?.message}</Text>}
                                 </View>
                                 <View style={styles.containerBtn}>
                                     <Button
@@ -221,7 +241,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                             </>
                         )}
                     </View>
-                </KeyboardAwareScrollView>
+                </ScrollView>
             </SafeAreaLayout>
             <Portal>
                 <ModalizeFixed
