@@ -81,14 +81,18 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
         }
     }
 
+    useEffect(() => {
+        if (params?.medicalDoctorId) {
+            getVisitAddressFromId(params.medicalDoctorId)
+        }
+    }, [params])
+
     useFocusEffect(
         useCallback(() => {
             setParams(route.params as MedicalDoctorDisplay)
             setAvailableTimes([])
             setDateTimeSelected(undefined)
-            if (params?.medicalDoctorId) {
-                getVisitAddressFromId(params.medicalDoctorId)
-            }
+
         }, [route.params])
     )
 
@@ -133,7 +137,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
         setLoading(!loading)
         try {
             const response = await createAppointment(scheduleData)
-            if (response.data && response.status === 200 || response.status === 201) {
+            if (response.status === 201) {
                 navigation.navigate('ConfirmationSchedule', {
                     title: 'TeleNeumu | Consulta Presencial',
                     description: 'Esta é uma marcação de uma consulta presencial com o seu médico',
