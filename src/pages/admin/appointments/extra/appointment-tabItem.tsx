@@ -3,7 +3,7 @@ import { RefreshControl, ScrollView, View } from 'react-native'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { appointmentItemStyle } from './style'
 import { Card, Layout, Text } from '@ui-kitten/components'
-import { Appointment } from '@models/Appointment'
+import { AppointmentDto } from '@models/Appointment'
 import { useFetch } from '@hooks/useSwr'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useDatepickerService } from '@hooks/useDatepickerService'
@@ -14,10 +14,10 @@ import { AscendingOrder } from '@models/Common'
 const AppointmentTabItemScreen: FC<DrawerContentComponentProps> = ({ navigation }): ReactElement => {
 
     const [refreshing, setRefreshing] = useState<boolean>(true)
-    const [appointmentsData, setAppointmentsData] = useState<Appointment[]>([])
+    const [appointmentsData, setAppointmentsData] = useState<AppointmentDto[]>([])
     const { localeDateService } = useDatepickerService()
 
-    const { data, error } = useFetch<Appointment[]>(refreshing ? 'appointment/get-appointment-list-patient' : null)
+    const { data, error } = useFetch<AppointmentDto[]>(refreshing ? 'appointment/get-appointment-list-patient' : null)
 
     const onRefresh = useCallback(() => {
         setRefreshing(true)

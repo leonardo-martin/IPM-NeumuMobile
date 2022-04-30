@@ -1,5 +1,6 @@
 import HeaderAuth from '@components/header/auth'
 import RNWebView from '@components/webView'
+import WaitingApprovalsScreen from '@pages/approvals-waiting'
 import ChangePasswordChoice from '@pages/changePassword'
 import PasswordChangeConfirmationScreen from '@pages/changePassword/extra/change-confirmation'
 import PasswordRequestSuccessfullyScreen from '@pages/changePassword/extra/request-successfully'
@@ -59,6 +60,12 @@ const AuthRoutes: FC = (): ReactElement => {
           gestureDirection: "horizontal",
           gestureEnabled: true,
         }} />
+
+        <Screen name="WaitingApprovals" component={WaitingApprovalsScreen}
+          options={{
+            ...TransitionPresets.ScaleFromCenterAndroid
+          }} />
+
       </Group>
 
       <Group screenOptions={{

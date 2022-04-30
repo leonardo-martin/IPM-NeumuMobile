@@ -3,6 +3,7 @@ import ModalizeFixed from '@components/modalize'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATETIME } from '@constants/date'
 import toast from '@helpers/toast'
+import { useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { CreateAppointment } from '@models/Appointment'
 import { MedicalDoctorDisplay } from '@models/Medical'
@@ -13,11 +14,16 @@ import { createAppointment, getAppointmentAvailabilityWithBookedAppointments } f
 import { Avatar, Button, Card, Icon, IconProps, List, Text, TranslationWidth, useStyleSheet, useTheme } from '@ui-kitten/components'
 import { getTimeBlocksByTime, getTimesByInterval, scrollToRef } from '@utils/common'
 import { openMapsWithAddress } from '@utils/maps'
+import addMinutes from 'date-fns/add_minutes/index.js'
+import { useModal } from 'hooks/useModal'
+import { VisitAddressDTO } from 'models/VisitAddress'
 import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
-import { ActivityIndicator, ImageStyle, LayoutRectangle, Platform, Pressable, ScrollView, StyleProp, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { ActivityIndicator, ImageStyle, LayoutRectangle, Platform, Pressable, ScrollView, StyleProp, TouchableOpacity, View } from 'react-native'
 import { Modalize } from 'react-native-modalize'
+import { Host, Portal } from 'react-native-portalize'
 import Animated, { Easing, SlideInRight, SlideOutRight, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import { getVisitAddressListByDoctorId } from 'services/visit-address.service'
+import { RootState } from 'store'
 import { doctorScheduleStyle } from './style'
 
 interface Data {
@@ -31,7 +37,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
 }): ReactElement => {
 
     const { localeDateService } = useDatepickerService()
-
+    const { ids } = useAppSelector((state: RootState) => state.user)
     const times = getTimesByInterval(15, 405, 18)
     const theme = useTheme()
     const opacity = useSharedValue(0)
@@ -48,12 +54,14 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
     const isFocused = useIsFocused()
     const [confirmDate, setConfirmDate] = useState<Date>(new Date())
     const [scheduleData, setScheduleData] = useState<CreateAppointment | undefined>()
-    const [loading, setLoading] = useState<boolean>()
+    const [loading, setLoading] = useState<boolean>(false)
     const [params, setParams] = useState<MedicalDoctorDisplay>()
     const [availableTimes, setAvailableTimes] = useState<string[]>([])
+    const [visitAddress, setVisitAddress] = useState<VisitAddressDTO>()
+    const [fullAddress, setFullAddress] = useState<string>('')
 
     const route = useRoute()
-    const modalizeRef = useRef<Modalize>(null)
+    const { ref } = useModal<Modalize>()
 
     useEffect(() => {
         setDateSelected(currentDate)
@@ -65,11 +73,22 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
         handleClose()
     }, [isFocused])
 
+    const getVisitAddressFromId = async (id: number) => {
+        const response = await getVisitAddressListByDoctorId(id.toString())
+        if (response.data && response.data.length > 0) {
+            setVisitAddress(response.data[0])
+            setFullAddress(`${response.data[0]?.street}, ${response.data[0]?.number} - ${response.data[0]?.city}`)
+        }
+    }
+
     useFocusEffect(
         useCallback(() => {
             setParams(route.params as MedicalDoctorDisplay)
             setAvailableTimes([])
             setDateTimeSelected(undefined)
+            if (params?.medicalDoctorId) {
+                getVisitAddressFromId(params.medicalDoctorId)
+            }
         }, [route.params])
     )
 
@@ -86,8 +105,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
         }, [dateSelected])
     )
 
-    const confirmSchedule = async () => {
-        setLoading(false)
+    const onSubmit = async () => {
         const startTime = localeDateService.clone(dateTimeSelected as Date)
 
         const time = (timeSelected as string).split(':')
@@ -96,39 +114,43 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
         startTime.setSeconds(0)
 
         setConfirmDate(startTime)
-        const dateString = localeDateService.format(startTime, _DEFAULT_FORMAT_DATETIME)
+        const startTimeString = localeDateService.format(startTime, _DATE_FROM_ISO_8601)
+        const endTimeString = localeDateService.format(addMinutes(startTime, 14), _DATE_FROM_ISO_8601)
 
-        // setScheduleData(
-        //     new CreateAppointment(
-        //         sessionUser?.userId,
-        //         params?.doctorId,
-        //         dateString,
-        //         dateString,
-        //         params?.visitAddress.id))
-        // modalizeRef.current?.open()
+        setScheduleData(
+            new CreateAppointment(
+                ids?.patientId,
+                params?.medicalDoctorId ?? 0,
+                startTimeString,
+                endTimeString,
+                visitAddress?.id ?? 0))
+        ref.current?.open()
     }
 
-    const handleClose = () => modalizeRef.current?.close()
-
+    const handleClose = () => ref.current?.close()
 
     const toSchedule = async () => {
-        setLoading(true)
+        setLoading(!loading)
         try {
-            // TODO
-            await createAppointment(scheduleData)
-
-            const endTime = localeDateService.clone(confirmDate)
-            endTime.setMinutes(endTime.getMinutes() + 30)
-
-            navigation.navigate('ConfirmationSchedule', {
-                title: 'TeleNeumu | Consulta Presencial',
-                description: 'Esta é uma marcação de uma consulta presencial com o seu médico',
-                location: params?.address1,
-                startDate: confirmDate.getTime().toString(),
-                endDate: endTime.getTime().toString(),
-                allDay: false
-            })
-
+            const response = await createAppointment(scheduleData)
+            if (response.data && response.status === 200 || response.status === 201) {
+                navigation.navigate('ConfirmationSchedule', {
+                    title: 'TeleNeumu | Consulta Presencial',
+                    description: 'Esta é uma marcação de uma consulta presencial com o seu médico',
+                    location: fullAddress,
+                    startDate: localeDateService.parse(scheduleData?.startTime as string, _DATE_FROM_ISO_8601).getTime().toString(),
+                    endDate: addMinutes(localeDateService.parse(scheduleData?.endTime as string, _DATE_FROM_ISO_8601), 1).getTime().toString(),
+                    allDay: false
+                })
+            } else {
+                const message = response.data?.message?.message
+                if (message !== "" && message !== undefined) {
+                    if (message === "ScheduleConflictException")
+                        toast.danger({ message: 'Já existe uma solicitação para este horário. Aguarde a confirmação do Profissional de Saúde', duration: 5000 })
+                    else
+                        toast.danger({ message: 'Erro ao agendar consulta. Tente novamente mais tarde', duration: 5000 })
+                } else toast.danger({ message: 'Erro ao agendar consulta. Tente novamente mais tarde', duration: 5000 })
+            }
         } catch (error) {
             toast.danger({ message: 'Ocorreu um erro. Tente novamente mais tarde.', duration: 1000 })
         } finally {
@@ -281,147 +303,154 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
 
     return (
         <>
-            <HeaderAdmin />
-            <SafeAreaLayout level='1' style={styles.safeArea}>
-                <ScrollView
-                    contentContainerStyle={styles.contentContainerScrollView}
-                    showsVerticalScrollIndicator={false}>
-                    <View style={styles.viewContent}>
-                        <Card
-                            style={{
-                                backgroundColor: theme['background-basic-color-2']
-                            }}
-                            footer={footerCard}
-                            status='info'>
-                            <View style={styles.viewDoctorProfile}>
-                                <Avatar
-                                    style={styles.avatarDoctor as StyleProp<ImageStyle>}
-                                    source={require('../../../../assets/commons/doctor.png')}
-                                />
-                                <View style={{ flex: 1 }}>
-                                    <Text
-                                        category="h5"
-                                        status="basic"
-                                    >{params?.name}</Text>
-                                    <Text
-                                        category="c1"
-                                        status="basic"
-                                        style={styles.textDoctorInfo}
-                                    >Especialidade: {params?.specialty ?? ''}</Text>
-                                    <Text
-                                        category="c1"
-                                        status="basic"
-                                        style={styles.textDoctorInfo}
-                                    >CRM: {params?.crm ?? ''}</Text>
-                                    <Text
-                                        category="c1"
-                                        status="basic"
-                                        style={styles.textDoctorInfo}
-                                    >Tel: {params?.phone1 ?? ''} {params?.phone2 ? (" | " + params?.phone2) : ''}</Text>
-                                    <Text
-                                        category="c1"
-                                        status="basic"
-                                        style={styles.textDoctorInfo}
-                                    >Local: {`${params?.address1} - ${params?.address2}, ${params?.city}`}</Text>
-                                    <View style={styles.viewLocation}>
+            <Host>
+                <HeaderAdmin />
+                <SafeAreaLayout level='1' style={styles.safeArea}>
+                    <ScrollView
+                        contentContainerStyle={styles.contentContainerScrollView}
+                        showsVerticalScrollIndicator={false}>
+                        <View style={styles.viewContent}>
+                            <Card
+                                style={{
+                                    backgroundColor: theme['background-basic-color-2']
+                                }}
+                                footer={footerCard}
+                                status='info'>
+                                <View style={styles.viewDoctorProfile}>
+                                    <Avatar
+                                        style={styles.avatarDoctor as StyleProp<ImageStyle>}
+                                        source={require('../../../../assets/commons/doctor.png')}
+                                    />
+                                    <View style={{ flex: 1 }}>
                                         <Text
-                                            onPress={() => openMapsWithAddress(params?.address1 ?? '')}
+                                            category="h5"
+                                            status="basic"
+                                        >{params?.name}</Text>
+                                        <Text
                                             category="c1"
-                                            style={styles.textLocation}
-                                        >Ver no mapa</Text>
-                                        <Icon style={styles.icon} name="location-outline" size={15} pack='ionicons'
-                                            onPress={() => openMapsWithAddress(params?.address1 ?? '')} />
+                                            status="basic"
+                                            style={styles.textDoctorInfo}
+                                        >Especialidade: {params?.specialty ?? ''}</Text>
+                                        <Text
+                                            category="c1"
+                                            status="basic"
+                                            style={styles.textDoctorInfo}
+                                        >CRM: {params?.crm ?? ''}</Text>
+                                        <Text
+                                            category="c1"
+                                            status="basic"
+                                            style={styles.textDoctorInfo}
+                                        >Tel: {params?.phone1 ?? ''} {params?.phone2 ? (" | " + params?.phone2) : ''}</Text>
+                                        <Text
+                                            category="c1"
+                                            status="basic"
+                                            style={styles.textDoctorInfo}
+                                        >Local: {fullAddress}</Text>
+                                        <View style={styles.viewLocation}>
+                                            <Text
+                                                onPress={() => openMapsWithAddress(fullAddress ?? '')}
+                                                category="c1"
+                                                style={styles.textLocation}
+                                            >Ver no mapa</Text>
+                                            <Icon style={styles.icon} name="location-outline" size={15} pack='ionicons'
+                                                onPress={() => openMapsWithAddress(fullAddress ?? '')} />
+                                        </View>
                                     </View>
                                 </View>
+                            </Card>
+                            <View style={styles.daysInMonth}>
+                                <Text style={styles.text}>Para quando é a consulta?</Text>
+                                <View style={styles.monthContainer}>
+                                    <Icon name='caret-back-outline' size={25} pack='ionicons' style={[styles.arrowIcon, {
+                                        color: count === 0 ? theme['text-primary-disabled-color'] : theme['text-primary-color']
+                                    }]} onPress={count === 0 ? undefined : previous} />
+                                    <Text style={styles.textMonth}>{localeDateService.getMonthName(dateSelected, TranslationWidth.LONG)}</Text>
+                                    <Icon name='caret-forward-outline' size={25} pack='ionicons' style={[styles.arrowIcon, {
+                                        color: count === 1 ? theme['text-primary-disabled-color'] : theme['text-primary-color']
+                                    }]} onPress={count === 1 ? undefined : next} />
+                                </View>
+                                <ScrollView
+                                    showsHorizontalScrollIndicator={false}
+                                    showsVerticalScrollIndicator={false}
+                                    horizontal={true}
+                                    ref={scrollViewDaysInMonthRef}>
+                                    <List
+                                        style={{ backgroundColor: 'transparent' }}
+                                        key={numColumns}
+                                        data={daysInMonth}
+                                        renderItem={renderItem}
+                                        numColumns={numColumns}
+                                    />
+                                </ScrollView>
                             </View>
-                        </Card>
-                        <View style={styles.daysInMonth}>
-                            <Text style={styles.text}>Para quando é a consulta?</Text>
-                            <View style={styles.monthContainer}>
-                                <Icon name='caret-back-outline' size={25} pack='ionicons' style={[styles.arrowIcon, {
-                                    color: count === 0 ? theme['text-primary-disabled-color'] : theme['text-primary-color']
-                                }]} onPress={count === 0 ? undefined : previous} />
-                                <Text style={styles.textMonth}>{localeDateService.getMonthName(dateSelected, TranslationWidth.LONG)}</Text>
-                                <Icon name='caret-forward-outline' size={25} pack='ionicons' style={[styles.arrowIcon, {
-                                    color: count === 1 ? theme['text-primary-disabled-color'] : theme['text-primary-color']
-                                }]} onPress={count === 1 ? undefined : next} />
-                            </View>
-                            <ScrollView
-                                showsHorizontalScrollIndicator={false}
-                                showsVerticalScrollIndicator={false}
-                                horizontal={true}
-                                ref={scrollViewDaysInMonthRef}>
-                                <List
-                                    style={{ backgroundColor: 'transparent' }}
-                                    key={numColumns}
-                                    data={daysInMonth}
-                                    renderItem={renderItem}
-                                    numColumns={numColumns}
-                                />
-                            </ScrollView>
-                        </View>
 
-                        <View style={{ paddingVertical: 15 }}>
-                            <Text style={styles.text}>Horários disponíveis</Text>
-                            <Animated.View
-                                entering={SlideInRight}
-                                exiting={SlideOutRight}
-                                style={animatedStyle}>
-                                <View style={[styles.timesContainer, {
-                                    display: availableTimes.length === 0 ? 'none' : 'flex'
-                                }]}>
-                                    {availableTimes.map(item => {
-                                        const date = localeDateService.parse(item, _DATE_FROM_ISO_8601)
-                                        return (
-                                            <Pressable key={`${item}`}
-                                                onPress={() => handleTimeSelected(date)}>
-                                                <View style={[styles.timesCard, {
-                                                    backgroundColor: timeSelected === localeDateService.format(date, 'HH:mm') ? theme['color-primary-500'] : theme['color-basic-400'],
-                                                }]}>
-                                                    <Text style={[styles.timesText, {
-                                                        color: timeSelected === localeDateService.format(date, 'HH:mm') ? theme['color-control-default'] : theme['text-hint-color']
-                                                    }]}>{localeDateService.format(date, 'HH:mm')}</Text>
-                                                </View>
-                                            </Pressable>
-                                        )
-                                    })}
-                                </View>
-                            </Animated.View>
-                            <Animated.View
-                                entering={SlideInRight}
-                                style={{ display: availableTimes.length > 0 ? 'none' : 'flex' }}>
-                                <View style={styles.timesContainer}>
-                                    <Text style={[styles.timesText, styles.textWithoutSelectedDate]}>
-                                        {availableTimes.length === 0 && dateTimeSelected ? 'Nenhum horário disponível' : 'Selecione o dia desejado'}
-                                    </Text>
-                                </View>
-                            </Animated.View>
+                            <View style={{ paddingVertical: 15 }}>
+                                <Text style={styles.text}>Horários disponíveis</Text>
+                                <Animated.View
+                                    entering={SlideInRight}
+                                    exiting={SlideOutRight}
+                                    style={animatedStyle}>
+                                    <View style={[styles.timesContainer, {
+                                        display: availableTimes.length === 0 ? 'none' : 'flex'
+                                    }]}>
+                                        {availableTimes.map(item => {
+                                            const date = localeDateService.parse(item, _DATE_FROM_ISO_8601)
+                                            return (
+                                                <Pressable key={`${item}`}
+                                                    onPress={() => handleTimeSelected(date)}>
+                                                    <View style={[styles.timesCard, {
+                                                        backgroundColor: timeSelected === localeDateService.format(date, 'HH:mm') ? theme['color-primary-500'] : theme['color-basic-400'],
+                                                    }]}>
+                                                        <Text style={[styles.timesText, {
+                                                            color: timeSelected === localeDateService.format(date, 'HH:mm') ? theme['color-control-default'] : theme['text-hint-color']
+                                                        }]}>{localeDateService.format(date, 'HH:mm')}</Text>
+                                                    </View>
+                                                </Pressable>
+                                            )
+                                        })}
+                                    </View>
+                                </Animated.View>
+                                <Animated.View
+                                    entering={SlideInRight}
+                                    style={{ display: availableTimes.length > 0 ? 'none' : 'flex' }}>
+                                    <View style={styles.timesContainer}>
+                                        <Text style={[styles.timesText, styles.textWithoutSelectedDate]}>
+                                            {availableTimes.length === 0 && dateTimeSelected ? 'Nenhum horário disponível' : 'Selecione o dia desejado'}
+                                        </Text>
+                                    </View>
+                                </Animated.View>
+                            </View>
+                            <View style={styles.viewBtn}>
+                                <Button
+                                    style={styles.btnToSchedule}
+                                    onPress={onSubmit}
+                                    status="success"
+                                    disabled={!timeSelected || !dateTimeSelected}
+                                >CONFIRMAR</Button>
+                            </View>
                         </View>
-                        <View style={styles.viewBtn}>
-                            <Button
-                                style={styles.btnToSchedule}
-                                onPress={confirmSchedule}
-                                status="success"
-                                disabled={!timeSelected || !dateTimeSelected}
-                            >CONFIRMAR</Button>
+                    </ScrollView>
+                </SafeAreaLayout >
+                <Portal>
+                    <ModalizeFixed ref={ref} snapPoint={300} adjustToContentHeight={true} >
+                        <View>
+                            <Text style={styles.textConfirmExit}>Confirmar o agendamento para</Text>
+                            <Text style={styles.textConfirmExit}>{localeDateService.format(confirmDate, _DEFAULT_FORMAT_DATETIME)}?</Text>
                         </View>
-                    </View>
-                </ScrollView>
-            </SafeAreaLayout >
-            <ModalizeFixed ref={modalizeRef} snapPoint={300} adjustToContentHeight={true} closeOnOverlayTap={false} >
-                <View>
-                    <Text style={styles.textConfirmExit}>Confirmar o agendamento para</Text>
-                    <Text style={styles.textConfirmExit}>{localeDateService.format(confirmDate, _DEFAULT_FORMAT_DATETIME)}?</Text>
-                </View>
-                <TouchableOpacity style={[styles.contentButton, {
-                    backgroundColor: loading ? theme['color-primary-disabled'] : styles.contentButton.backgroundColor
-                }]} activeOpacity={0.75} onPress={!loading ? toSchedule : undefined}>
-                    {loading ? <ActivityIndicator size="small" color={theme['color-basic-500']} /> : <Text style={styles.contentButtonText}>{'Sim'.toUpperCase()}</Text>}
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.contentButton, styles.buttonOutline]} activeOpacity={0.75} onPress={!loading ? handleClose : undefined}>
-                    <Text style={[styles.contentButtonText, styles.buttonTextOutline]}>{'Não'.toUpperCase()}</Text>
-                </TouchableOpacity>
-            </ModalizeFixed>
+                        <TouchableOpacity style={[styles.contentButton, {
+                            backgroundColor: loading ? theme['color-primary-disabled'] : styles.contentButton.backgroundColor
+                        }]} activeOpacity={0.75} onPress={!loading ? toSchedule : undefined}>
+                            {loading ? <ActivityIndicator size="small" color={theme['color-basic-500']} /> : <Text style={styles.contentButtonText}>{'Sim'.toUpperCase()}</Text>}
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.contentButton, styles.buttonOutline]}
+                            activeOpacity={0.75}
+                            onPress={!loading ? handleClose : undefined}>
+                            <Text style={[styles.contentButtonText, styles.buttonTextOutline]}>{'Não'.toUpperCase()}</Text>
+                        </TouchableOpacity>
+                    </ModalizeFixed>
+                </Portal>
+            </Host>
         </>
     )
 }

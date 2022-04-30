@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from 'react'
-import { ListRenderItemInfo, Platform, StyleProp, ViewStyle } from 'react-native'
+import { ListRenderItemInfo, Platform, StyleProp, View, ViewStyle } from 'react-native'
 import { List, ListItem, IconProps, Icon, ListProps, useStyleSheet } from '@ui-kitten/components'
 
 import { useNavigation } from '@react-navigation/native'
@@ -29,7 +29,9 @@ const ListComponent: FC<ListComponentProps> = ({
     const styles = useStyleSheet(listStyle)
     const navigation = useNavigation<any>()
     const renderLeftIcon = (props: IconProps, icon?: Icons): ReactElement => (
-        <Icon {...props} name={icon?.name} pack={icon?.pack} />
+        <View style={icon?.pack === 'ionicons' ? { paddingRight: 5, paddingStart: 10 } : null}>
+            <Icon {...props} name={icon?.name} pack={icon?.pack} />
+        </View>
     )
 
     const renderRightIcon = (props: IconProps) => (

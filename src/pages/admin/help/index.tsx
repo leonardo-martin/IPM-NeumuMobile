@@ -16,7 +16,7 @@ const HelpScreen: FC<DrawerContentComponentProps> = ({
         <View style={{
           flex:1, justifyContent: 'center'
         }}>
-          <Text style={{ textAlign: 'center' }}>Help me!</Text>
+          <Text style={{ textAlign: 'center' }}>A definir...</Text>
         </View>
       </ScrollView>
     </SafeAreaLayout>

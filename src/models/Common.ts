@@ -6,3 +6,8 @@ export enum AscendingOrder {
 export interface JSONObject {
     [key: string]: any
 }
+
+export enum ApprovalsMessageError {
+    REJECTED = "REJECTED",
+    NOTVERIFIED = "NOTVERIFIED"
+}

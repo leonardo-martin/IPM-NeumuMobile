@@ -11,6 +11,7 @@ import { AppStorage } from '@services/app-storage.service'
 import { authLogin } from '@services/auth.service'
 import { Button, CheckBox, Icon, IconProps, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { matchMessage, openMailTo } from '@utils/common'
+import { ApprovalsMessageError } from 'models/Common'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Keyboard, Platform, StatusBar, View } from 'react-native'
@@ -71,6 +72,12 @@ const SignInScreen: FC = (): ReactElement => {
         const message = response.data?.message?.message
         let messageToast = ''
         if (message !== "" && message !== undefined) {
+
+          if (message === ApprovalsMessageError.NOTVERIFIED || message === ApprovalsMessageError.REJECTED) {
+            navigation.navigate('WaitingApprovals', {
+              message: message
+            })
+          }
           const matchId = matchMessage(message)
           if (matchId === 2)
             messageToast = 'E-mail não verificado'
@@ -118,7 +125,7 @@ const SignInScreen: FC = (): ReactElement => {
     setChecked(isChecked)
   }
 
-  
+
 
 
   return (

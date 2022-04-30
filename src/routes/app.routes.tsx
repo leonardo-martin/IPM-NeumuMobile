@@ -18,6 +18,7 @@ import EditProfileScreen from '@pages/admin/profile/extra'
 import PatientDiaryEntryScreen from '@pages/admin/profile/patient-diary-entry'
 import PatientExamsScreen from '@pages/admin/profile/patient-exams'
 import PatientGeneticMappingProgramScreen from '@pages/admin/profile/patient-genetic-mapping-program'
+import VisitAddressScreen from '@pages/admin/profile/visitAddress'
 import ScheduleScreen from '@pages/admin/schedule'
 import ConfirmationScheduleScreen from '@pages/admin/schedule/confirmation'
 import FilterScheduleScreen from '@pages/admin/schedule/extra/filter-schedule'
@@ -71,17 +72,18 @@ const AppRoutes: FC = (): ReactElement => {
         <Screen name="PasswordRequestSuccessfully" component={PasswordRequestSuccessfullyScreen} />
         <Screen name="PasswordChangeConfirmation" component={PasswordChangeConfirmationScreen} />
 
-        <Screen name="GeneticMappingProgram" component={PatientGeneticMappingProgramScreen} />
         <Screen name="PresentialSchedule" component={PresentialScheduleScreen} />
         <Screen name="ConfirmationSchedule" component={ConfirmationScheduleScreen} />
+        <Screen name="ProfessionalSchedule" component={ProfessionalScheduleScreen} />
 
+        <Screen name="GeneticMappingProgram" component={PatientGeneticMappingProgramScreen} />
         <Screen name="PatientDiaryEntry" component={PatientDiaryEntryScreen} />
         <Screen name="PatientExams" component={PatientExamsScreen} />
         <Screen name="Profile" component={ProfileScreen} />
         <Screen name="EditProfile" component={EditProfileScreen} />
+        <Screen name="VisitAddress" component={VisitAddressScreen} />
 
         <Screen name="NewUser" component={NewUserScreen} />
-        <Screen name="ProfessionalSchedule" component={ProfessionalScheduleScreen} />
       </Group>
 
       <Group screenOptions={{

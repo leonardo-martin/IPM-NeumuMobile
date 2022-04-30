@@ -36,4 +36,13 @@ export const patientBaseData: ItemInfo[] = [
 
 export const specialistBaseData: ItemInfo[] = [
     ...commonData,
+    {
+        title: 'Endereço Comercial',
+        description: 'Editar seu endereço comercial',
+        icon: {
+            name: 'business-outline',
+            pack: 'ionicons'
+        },
+        route: 'VisitAddress'
+    },
 ]

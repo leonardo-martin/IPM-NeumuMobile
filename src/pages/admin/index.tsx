@@ -118,7 +118,9 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                     Meu perfil
                   </Text>
                 </Card>
-                <Card style={[styles.card, styles.shadowCard]} onPress={goToAppointments}>
+                <Card style={[styles.card, styles.shadowCard]}
+                // onPress={goToAppointments}
+                >
                   <View style={styles.cardDefault}>
                     <Icon
                       style={styles.iconPrimary}
@@ -164,7 +166,9 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                       Sobre
                     </Text>
                   </Card>
-                  <Card style={[styles.card, styles.shadowCard]} onPress={goToHelpMe}>
+                  <Card style={[styles.card, styles.shadowCard]}
+                    onPress={goToHelpMe}
+                  >
                     <View style={styles.cardDefault}>
                       <Icon style={styles.iconPrimary} name="help-circle-outline" size={40} pack='ionicons' />
                     </View>

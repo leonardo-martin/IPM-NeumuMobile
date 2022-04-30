@@ -149,8 +149,7 @@ export const doctorScheduleStyle = StyleSheet.create({
     textConfirmExit: {
         textAlign: 'center',
         color: 'text-hint-color',
-        fontSize: 20,
-        marginVertical: 10
+        fontSize: 16
     },
     contentButton: {
         marginVertical: 15,

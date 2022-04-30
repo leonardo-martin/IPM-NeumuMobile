@@ -1,5 +1,4 @@
 import { FlatData } from "@models/FlatData"
-import { FLATICON_URI } from "@constants/uri"
 
 export const flatList: FlatData[] = [
     {

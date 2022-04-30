@@ -39,6 +39,7 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
     }>()
     const { localeDateService } = useDatepickerService()
     const dayOfWeekNames = localeDateService.getDayOfWeekNames()
+
     const theme = useTheme()
     const listRef = createRef<List>()
     const scheduleListRef = createRef<List>()
@@ -59,14 +60,15 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
 
     const loadData = async () => {
         // get all time blocks
-        const resp = await getAppointmentAvailabilityListSummaryByDoctorId(ids?.medicalDoctorId as number)     
+        const resp = await getAppointmentAvailabilityListSummaryByDoctorId(ids?.medicalDoctorId as number)
         setTimeBlockList(resp.data)
     }
 
     useEffect(() => {
         if (timeBlockList) {
-            if (Object.keys(timeBlockList).includes(selectedIndex.toString())) {
-                onCheckedChangeFromServer(timeBlockList[selectedIndex].sort(sortByNumber))
+            const index = selectedIndex === 0 ? 7 : selectedIndex
+            if (Object.keys(timeBlockList).includes(index.toString())) {
+                onCheckedChangeFromServer(timeBlockList[index].sort(sortByNumber))
             } else {
                 resetData()
             }
@@ -102,8 +104,9 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
 
     useEffect(() => {
         if (selectedIndex !== -1 && timeBlockList) {
-            if (Object.keys(timeBlockList).includes(selectedIndex.toString())) {
-                onCheckedChangeFromServer(timeBlockList[selectedIndex].sort(sortByNumber))
+            const index = selectedIndex === 0 ? 7 : selectedIndex
+            if (Object.keys(timeBlockList).includes(index.toString())) {
+                onCheckedChangeFromServer(timeBlockList[index].sort(sortByNumber))
             } else {
                 resetData()
             }
@@ -215,8 +218,9 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
         let saveItems: ScheduleItem[] = []
         let removeItems: ScheduleItem[] = []
 
+        const dayOfWeek = selectedIndex === 0 ? 7 : selectedIndex
         if (timeBlockList) {
-            const arr = timeBlockList[selectedIndex] ?? []
+            const arr = timeBlockList[dayOfWeek] ?? []
             scheduleList.map(item => {
                 if (item.checked && !arr.includes(Number(item.id)))
                     saveItems.push(item)
@@ -238,7 +242,7 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
                     let data: AppointmentAvailabilityParams = {
                         startTime: localeDateService.format(localeDateService.parse(element.title as string, _DATE_FROM_ISO_8601), _DATE_FROM_ISO_8601),
                         endTime: localeDateService.format(addMinutes(localeDateService.parse(element.title as string, _DATE_FROM_ISO_8601), 14), _DATE_FROM_ISO_8601),
-                        dayOfWeek: selectedIndex
+                        dayOfWeek: dayOfWeek
                     }
                     const response = await doctorCreateAppointmentAvailability(data)
                     if (response.status === 201 || response.status === 200) {
@@ -252,7 +256,7 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
                     let data: AppointmentAvailabilityParams = {
                         startTime: localeDateService.format(localeDateService.parse(element.title as string, _DATE_FROM_ISO_8601), _DATE_FROM_ISO_8601),
                         endTime: localeDateService.format(addMinutes(localeDateService.parse(element.title as string, _DATE_FROM_ISO_8601), 14), _DATE_FROM_ISO_8601),
-                        dayOfWeek: selectedIndex
+                        dayOfWeek: dayOfWeek
                     }
                     const response = await doctorDeleteAppointmentAvailabilityBlock(data)
                     if (response.status === 201 || response.status === 200) {

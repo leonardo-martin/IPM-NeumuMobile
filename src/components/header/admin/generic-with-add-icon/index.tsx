@@ -5,11 +5,12 @@ import React, { FC, ReactElement } from 'react'
 import { headerStyle } from '../style'
 
 interface HeaderGenericWithTitleAndAddIconProps {
-    onVisible: () => void
+    onVisible?: () => void
     title: string
+    hideIcon?: boolean
 }
 
-const HeaderGenericWithTitleAndAddIcon: FC<HeaderGenericWithTitleAndAddIconProps> = ({ title = 'Title', ...props }): ReactElement => {
+const HeaderGenericWithTitleAndAddIcon: FC<HeaderGenericWithTitleAndAddIconProps> = ({ title = 'Title', hideIcon = false, ...props }): ReactElement => {
     const { goBack } = useNavigation<any>()
     const styles = useStyleSheet(headerStyle)
 
@@ -33,7 +34,7 @@ const HeaderGenericWithTitleAndAddIcon: FC<HeaderGenericWithTitleAndAddIconProps
                 alignment="center"
                 title={evaProps => <Text {...evaProps}>{title}</Text>}
                 accessoryLeft={renderLeftIcon}
-                accessoryRight={renderRigthIcon}
+                accessoryRight={!hideIcon ? renderRigthIcon : undefined}
             />
         </Layout>
     )

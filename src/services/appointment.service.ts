@@ -1,4 +1,4 @@
-import { AppointmentAvailabilityDTO, AppointmentAvailabilityHelper, AppointmentAvailabilityParams, AppointmentAvailabilityWithBookedParams, CreateAppointment } from '@models/Appointment'
+import { AppointmentDto, AppointmentAvailabilityDTO, AppointmentAvailabilityHelper, AppointmentAvailabilityParams, AppointmentAvailabilityWithBookedParams, CreateAppointment } from '@models/Appointment'
 import { AxiosResponse } from 'axios'
 import { api } from './api.service'
 
@@ -8,9 +8,14 @@ interface QueryParameters {
     filterEndDate?: string | undefined
 }
 
-export const createAppointment = async (data: CreateAppointment | undefined) => {
+export const createAppointment = async (data: CreateAppointment | undefined): Promise<AxiosResponse<any, any>> => {
 
-    return await api.post('appointment/create-appointment', data)
+    return await api.post('appointment/create-appointment', data).catch((error) => {
+        if (error.response) {
+            return error.response
+        }
+        throw error
+    })
 }
 
 export const getAppointments = async (queryParameters?: QueryParameters) => {

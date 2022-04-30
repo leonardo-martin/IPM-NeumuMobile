@@ -1,3 +1,5 @@
+import { VisitAddressDTO } from "./VisitAddress"
+
 export class CreateAppointment {
 
     constructor(patientId: number | undefined, doctorId: number, startTime: string, endTime: string, visitAddressId: number) {
@@ -15,26 +17,14 @@ export class CreateAppointment {
     visitAddressId: number
 }
 
-export interface Appointment {
+export interface AppointmentDto {
     id: number
     startTime: Date
     endTime: Date
-    visitAddressDto: VisitAddressDto
+    visitAddressDto: VisitAddressDTO
     medicalDoctorSummaryDto: MedicalDoctorySummaryDto
     patientDto: PatientSummaryDto
     confirmedByMedicalDoctor: boolean
-}
-
-export interface VisitAddressDto {
-    id: number
-    state: string
-    city: string
-    district: string
-    street: string
-    number: string
-    complement: string
-    medicalDoctorId: number
-    cep: string
 }
 
 export interface MedicalDoctorySummaryDto {
