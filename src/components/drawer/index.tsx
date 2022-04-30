@@ -95,7 +95,7 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
             <DrawerItem
               style={drawerStyle.drawerItem}
               title='Minhas Consultas'
-              onPress={() => navigate('MyAppointments')}
+              // onPress={() => navigate('MyAppointments')}
               accessoryLeft={(props: IconProps) => (
                 <Icon {...props} name='stethoscope' size={iconSizeDefault} pack='font-awesome' />
               )}
@@ -106,7 +106,7 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
             <DrawerItem
               style={[drawerStyle.drawerItem, { paddingStart: 10 }]}
               title='Agenda'
-              onPress={() => navigate('MyAppointments')}
+              // onPress={() => navigate('MyAppointments')}
               accessoryLeft={(props: IconProps) => (
                 <Icon {...props} name='calendar-week' size={iconSizeDefault} pack='font-awesome' />
               )}
