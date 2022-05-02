@@ -26,19 +26,25 @@ const EditProfileScreen: FC = (): ReactElement => {
   const { profile: userDetails } = useAppSelector((state: RootState) => state.profile)
 
   const loadFields = async () => {
-    const response = await getPatient()
-    form.reset({
+    const isPatient = sessionUser && sessionUser.userRole.find(e => e.id === EUserRole.patient)
+    let obj: any = {
       ...userDetails,
       dateOfBirth: userDetails?.dateOfBirth ? localeDateService.format(localeDateService.parse(userDetails?.dateOfBirth.toString(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"), format) : '',
       cpf: userDetails?.cpf ? formatCpf(userDetails?.cpf) : userDetails?.cpf,
       phone1: userDetails?.phone1 ? formatPhone(userDetails?.phone1) : userDetails?.phone1,
       phone2: userDetails?.phone2 ? formatPhone(userDetails?.phone2) : userDetails?.phone2,
       username: userDetails?.cpf,
-
-      mothersName: response.data?.mothersName,
-      susNumber: response.data?.susNumber,
-      sex: response.data?.sex
-    })
+    }
+    if (isPatient) {
+      const response = await getPatient()
+      obj = {
+        ...obj,
+        mothersName: response?.data?.mothersName,
+        susNumber: response?.data?.susNumber,
+        sex: response?.data?.sex ?? undefined
+      }
+    }
+    form.reset(obj)
   }
   useFocusEffect(
     useCallback(() => {
@@ -64,9 +70,12 @@ const EditProfileScreen: FC = (): ReactElement => {
         addressComplement: obj.addressComplement,
         country: obj.country
       })
-      await updatePatient({
-        susNumber: obj.susNumber
-      })
+
+      const isPatient = sessionUser && sessionUser.userRole.find(e => e.id === EUserRole.patient)
+      if (isPatient)
+        await updatePatient({
+          susNumber: obj.susNumber
+        })
 
       const res = await getUserDetails()
       dispatch(setProfile(res.data))
@@ -160,7 +169,7 @@ const EditProfileScreen: FC = (): ReactElement => {
             textContentType: "name"
           }}
         />
-        {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
+        {sessionUser && sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
           <ProfileSetting
             name='mothersName'
             form={form}
@@ -223,7 +232,7 @@ const EditProfileScreen: FC = (): ReactElement => {
           }}
         />
 
-        {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
+        {sessionUser && sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
           <ProfileSetting
             name='susNumber'
             form={form}
