@@ -35,8 +35,7 @@ const ProfileSetting: FC<ProfileSettingProps> = ({ style, hint, inputProps, form
                 value={value}
                 testID={name}
                 onBlur={onBlur}
-                // onChangeText={inputProps?.editable ? onChange : undefined}
-                onChangeText={onChange}
+                onChangeText={inputProps?.editable ? onChange : undefined}
                 style={styles.input}
                 textStyle={styles.textStyle}
               />

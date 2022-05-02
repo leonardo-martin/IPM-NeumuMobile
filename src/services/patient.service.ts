@@ -32,7 +32,7 @@ export const deleteDiaryEntry = async (date: Date) => {
     return api.delete('patient-diary-entry?' + params)
 }
 
-export const updatePatient = async (data: PatientDto) => {
+export const updatePatient = async (data: PatientDto | any) => {
     var body = {
         ...data,
         pastExams: JSON.stringify(data.pastExams) ?? null

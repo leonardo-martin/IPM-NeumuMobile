@@ -1,5 +1,6 @@
 import { ExamDNA } from "./Patient"
 import { PatientProfileCreatorDto } from "./PatientProfileCreator"
+import { UserRole } from "./UserRole"
 
 export interface AuthenticationPayload {
     accessToken: string
@@ -7,9 +8,29 @@ export interface AuthenticationPayload {
     tokenExpireTime: number
 }
 
-export class SignInData {
+export class LoginDto {
     username!: string
     password!: string
+}
+
+export class UserDto {
+    id!: number
+    name!: string
+    email!: string
+    cpf!: string
+    city!: string | null
+    state!: string | null;
+    phone1!: string;
+    phone2!: string | null
+    login!: LoginDto | null
+    role!: UserRole[]
+    dateOfBirth!: Date;
+    postalCode!: string | null
+    address1!: string | null
+    address2!: string | null
+    addressComplement!: string | null
+    country!: string | null
+
 }
 
 export class UserData {

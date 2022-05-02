@@ -1,4 +1,4 @@
-import { AuthenticationPayload, SignInData } from '@models/User'
+import { AuthenticationPayload, LoginDto } from '@models/User'
 import { login } from '@store/ducks/auth'
 import { AppDispatch } from '@store/index'
 import { AxiosResponse } from 'axios'
@@ -10,7 +10,7 @@ const _optionsKeychain: Keychain.Options = {
     service: 'sec_login', storage: Keychain.STORAGE_TYPE.RSA
 }
 
-export const authLogin = (authentication: SignInData, _rememberAcess?: boolean) => (dispatch: AppDispatch): Promise<any> => {
+export const authLogin = (authentication: LoginDto, _rememberAcess?: boolean) => (dispatch: AppDispatch): Promise<any> => {
     return api.post('auth', authentication)
         .then(async (res: AxiosResponse<AuthenticationPayload>) => {
             if (res.data.accessToken) {

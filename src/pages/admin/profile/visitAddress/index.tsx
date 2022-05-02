@@ -58,7 +58,6 @@ const VisitAddressScreen: FC = (): ReactElement => {
             }
             toast.success({ message: 'Dados atualizados com sucesso!', duration: 3000 })
         } catch (error) {
-            console.error(error)
             toast.danger({ message: 'Erro ao atualizar os dados. Tente novamente mais tarde', duration: 3000 })
         }
     }

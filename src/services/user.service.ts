@@ -1,5 +1,5 @@
 import { PatientProfileCreatorDto } from '@models/PatientProfileCreator'
-import { UserData, UserPatientData, UserRelatedIdsDto } from '@models/User'
+import { UserData, UserDto, UserPatientData, UserRelatedIdsDto } from '@models/User'
 import { AxiosResponse } from 'axios'
 import { api } from './api.service'
 
@@ -39,4 +39,8 @@ export const getUserDetails = async (): Promise<AxiosResponse<User, any>> => {
 
 export const getUserRelatedIds = async (): Promise<AxiosResponse<UserRelatedIdsDto, any>> => {
     return await api.get('user/user-related-ids')
+}
+
+export const updateUser = async (data: UserDto | any): Promise<AxiosResponse<UserDto, any>> => {
+    return await api.post('user/update-user', data)
 }

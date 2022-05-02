@@ -5,7 +5,7 @@ import TitleNeumu from '@components/titleNeumu'
 import toast from '@helpers/toast'
 import { useAppDispatch } from '@hooks/redux'
 import { useModal } from '@hooks/useModal'
-import { SignInData } from '@models/User'
+import { LoginDto } from '@models/User'
 import { useNavigation } from '@react-navigation/native'
 import { AppStorage } from '@services/app-storage.service'
 import { authLogin } from '@services/auth.service'
@@ -36,7 +36,7 @@ const SignInScreen: FC = (): ReactElement => {
 
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true)
   const navigation = useNavigation<any>()
-  const form = useForm<SignInData>()
+  const form = useForm<LoginDto>()
 
   const getStoredUsernameAndPassword = async () => {
     const isRemember = await AppStorage.getItem('REMEMBER_ACCESS')
@@ -63,7 +63,7 @@ const SignInScreen: FC = (): ReactElement => {
     getStoredUsernameAndPassword()
   }, [])
 
-  const handleSignIn = async (data: SignInData) => {
+  const handleSignIn = async (data: LoginDto) => {
     Keyboard.dismiss()
     setIsLoading(!isLoading)
     try {

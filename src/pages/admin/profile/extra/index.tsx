@@ -1,15 +1,17 @@
 import HeaderProfile from '@components/header/admin/profile'
-import { useAppSelector } from '@hooks/redux'
+import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
-import { useFetch } from '@hooks/useSwr'
 import { EUserRole } from '@models/UserRole'
 import { useFocusEffect } from '@react-navigation/native'
 import { Button, Icon, IconProps, useStyleSheet } from '@ui-kitten/components'
 import { formatCpf, formatPhone } from '@utils/mask'
-import React, { FC, ReactElement, useCallback, useState } from 'react'
+import React, { FC, ReactElement, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { ImageStyle, ScrollView, StyleProp, View } from 'react-native'
+import { getPatient, updatePatient } from 'services/patient.service'
+import { getUserDetails, updateUser } from 'services/user.service'
 import { RootState } from 'store'
+import { setProfile } from 'store/ducks/profile'
 import ProfileAvatar from './profile-avatar'
 import ProfileSetting from './profile-setting'
 import { editProfileStyle } from './style'
@@ -20,32 +22,57 @@ const EditProfileScreen: FC = (): ReactElement => {
   const styles = useStyleSheet(editProfileStyle)
   const { localeDateService, format } = useDatepickerService()
   const form = useForm()
-
-  const [isEditable, setIsEditable] = useState<boolean>(false)
+  const dispatch = useAppDispatch()
   const { profile: userDetails } = useAppSelector((state: RootState) => state.profile)
-  const { data: patient } = useFetch('patient')
 
+  const loadFields = async () => {
+    const response = await getPatient()
+    form.reset({
+      ...userDetails,
+      dateOfBirth: userDetails?.dateOfBirth ? localeDateService.format(localeDateService.parse(userDetails?.dateOfBirth.toString(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"), format) : '',
+      cpf: userDetails?.cpf ? formatCpf(userDetails?.cpf) : userDetails?.cpf,
+      phone1: userDetails?.phone1 ? formatPhone(userDetails?.phone1) : userDetails?.phone1,
+      phone2: userDetails?.phone2 ? formatPhone(userDetails?.phone2) : userDetails?.phone2,
+      username: userDetails?.cpf,
+
+      mothersName: response.data?.mothersName,
+      susNumber: response.data?.susNumber,
+      sex: response.data?.sex
+    })
+  }
   useFocusEffect(
     useCallback(() => {
-      setIsEditable(false)
-
-      form.reset({
-        ...userDetails,
-        dateOfBirth: userDetails?.dateOfBirth ? localeDateService.format(localeDateService.parse(userDetails?.dateOfBirth.toString(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"), format) : '',
-        cpf: userDetails?.cpf ? formatCpf(userDetails?.cpf) : userDetails?.cpf,
-        phone1: userDetails?.phone1 ? formatPhone(userDetails?.phone1) : userDetails?.phone1,
-        phone2: userDetails?.phone2 ? formatPhone(userDetails?.phone2) : userDetails?.phone2,
-        username: userDetails?.cpf,
-
-        mothersName: patient?.mothersName,
-        susNumber: patient?.susNumber,
-        sex: patient?.sex
-      })
-    }, [])
+      loadFields()
+    }, [userDetails])
   )
 
-  const editProfile = (): void => {
-    // setIsEditable(true)
+  const editProfile = async () => {
+    const obj = form.getValues()
+
+    try {
+      await updateUser({
+        name: obj.name,
+        phone1: obj.phone1,
+        phone2: obj.phone2,
+        mothersName: obj.mothersName,
+
+        address1: obj.address1,
+        address2: obj.address2,
+        state: obj.state,
+        city: obj.city,
+        postalCode: obj.postalCode,
+        addressComplement: obj.addressComplement,
+        country: obj.country
+      })
+      await updatePatient({
+        susNumber: obj.susNumber
+      })
+
+      const res = await getUserDetails()
+      dispatch(setProfile(res.data))
+    } catch (error) {
+
+    }
   }
 
   const CameraIcon = (props: IconProps) => (
@@ -121,10 +148,16 @@ const EditProfileScreen: FC = (): ReactElement => {
           style={[styles.profileSetting, styles.section]}
           hint='Meu Nome'
           inputProps={{
-            editable: isEditable,
+            editable: true,
             textAlign: 'right',
+            keyboardType: 'default',
             multiline: true,
-            scrollEnabled: true
+            scrollEnabled: true,
+            maxLength: 60,
+            returnKeyType: "next",
+            onSubmitEditing: () => form.setFocus('mothersName'),
+            autoCapitalize: "words",
+            textContentType: "name"
           }}
         />
         {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
@@ -134,10 +167,15 @@ const EditProfileScreen: FC = (): ReactElement => {
             style={styles.profileSetting}
             hint='Nome da Mãe'
             inputProps={{
-              editable: isEditable,
+              editable: true,
               textAlign: 'right',
+              keyboardType: 'default',
               multiline: true,
-              scrollEnabled: true
+              scrollEnabled: true,
+              maxLength: 60,
+              returnKeyType: "next",
+              autoCapitalize: "words"
+              // onSubmitEditing: () => form.setFocus('dateOfBirth')
             }}
           />
         )}
@@ -147,7 +185,7 @@ const EditProfileScreen: FC = (): ReactElement => {
           style={styles.profileSetting}
           hint='Data de Nascimento'
           inputProps={{
-            editable: isEditable,
+            editable: false,
             textAlign: 'right',
             multiline: true,
             scrollEnabled: true
@@ -160,10 +198,13 @@ const EditProfileScreen: FC = (): ReactElement => {
           style={styles.profileSetting}
           hint='Telefone 1'
           inputProps={{
-            editable: isEditable,
+            keyboardType: 'number-pad',
+            editable: true,
             textAlign: 'right',
             multiline: true,
-            scrollEnabled: true
+            scrollEnabled: true,
+            maxLength: 15,
+            textContentType: "telephoneNumber"
           }}
         />
         <ProfileSetting
@@ -172,10 +213,13 @@ const EditProfileScreen: FC = (): ReactElement => {
           style={styles.profileSetting}
           hint='Telefone 2'
           inputProps={{
-            editable: isEditable,
+            keyboardType: 'number-pad',
+            editable: true,
             textAlign: 'right',
             multiline: true,
-            scrollEnabled: true
+            scrollEnabled: true,
+            maxLength: 15,
+            textContentType: "telephoneNumber"
           }}
         />
 
@@ -184,18 +228,19 @@ const EditProfileScreen: FC = (): ReactElement => {
             name='susNumber'
             form={form}
             style={styles.profileSetting}
-            hint='Cartão Nacional de Saúde (SUS)'
+            hint='Cartão Nacional de Saúde'
             inputProps={{
-              editable: isEditable,
+              keyboardType: 'number-pad',
+              editable: true,
               textAlign: 'right',
               multiline: true,
-              scrollEnabled: true
+              scrollEnabled: true,
+              maxLength: 16
             }}
           />
         )}
         <View style={styles.editViewButton}>
           <Button
-            disabled
             size='small'
             status='primary'
             appearance='ghost'
@@ -210,7 +255,8 @@ const EditProfileScreen: FC = (): ReactElement => {
           style={[styles.profileSetting, styles.section]}
           hint='CEP'
           inputProps={{
-            editable: isEditable,
+            keyboardType: 'number-pad',
+            editable: true,
             textAlign: 'right',
             multiline: true,
             scrollEnabled: true
@@ -220,9 +266,9 @@ const EditProfileScreen: FC = (): ReactElement => {
           name='address1'
           form={form}
           style={[styles.profileSetting]}
-          hint='Endereço 1'
+          hint='Endereço'
           inputProps={{
-            editable: isEditable,
+            editable: true,
             textAlign: 'right',
             multiline: true,
             scrollEnabled: true
@@ -232,9 +278,10 @@ const EditProfileScreen: FC = (): ReactElement => {
           name='address2'
           form={form}
           style={styles.profileSetting}
-          hint='Endereço 2'
+          hint='Número'
           inputProps={{
-            editable: isEditable,
+            keyboardType: 'number-pad',
+            editable: true,
             textAlign: 'right',
             multiline: true,
             scrollEnabled: true
@@ -246,7 +293,7 @@ const EditProfileScreen: FC = (): ReactElement => {
           style={styles.profileSetting}
           hint='Complemento'
           inputProps={{
-            editable: isEditable,
+            editable: true,
             textAlign: 'right',
             multiline: true,
             scrollEnabled: true
@@ -258,7 +305,7 @@ const EditProfileScreen: FC = (): ReactElement => {
           style={styles.profileSetting}
           hint='Cidade'
           inputProps={{
-            editable: isEditable,
+            editable: true,
             textAlign: 'right',
             multiline: true,
             scrollEnabled: true
@@ -270,11 +317,11 @@ const EditProfileScreen: FC = (): ReactElement => {
           style={styles.profileSetting}
           hint='Estado'
           inputProps={{
-            editable: isEditable,
+            editable: true,
             textAlign: 'right',
             multiline: true,
             scrollEnabled: true,
-            maxLength: 2
+            maxLength: 2,
           }}
         />
         <ProfileSetting
@@ -283,7 +330,7 @@ const EditProfileScreen: FC = (): ReactElement => {
           style={styles.profileSetting}
           hint='País'
           inputProps={{
-            editable: isEditable,
+            editable: true,
             textAlign: 'right',
             multiline: true,
             scrollEnabled: true
@@ -292,7 +339,6 @@ const EditProfileScreen: FC = (): ReactElement => {
 
         <View style={styles.editViewButton}>
           <Button
-            disabled
             size='small'
             status='primary'
             appearance='ghost'
