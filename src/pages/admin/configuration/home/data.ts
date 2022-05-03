@@ -1,6 +1,6 @@
 import { ItemInfo } from "@components/list"
 
-export const data: ItemInfo[] = [
+export const baseData: ItemInfo[] = [
     //TODO! - Desabilitado para lançamento da v1
     // {
     //     title: 'Conta',
@@ -45,4 +45,21 @@ export const data: ItemInfo[] = [
             pack: 'eva'
         },
     },
+]
+
+export const patientData: ItemInfo[] = [
+    ...baseData,
+    {
+        title: 'Compartilhar Informações',
+        description: '',
+        route: 'ShareInformationWithMedicalDoctor',
+        icon: {
+            name: 'share-outline',
+            pack: 'eva'
+        },
+    },
+]
+
+export const doctorData: ItemInfo[] = [
+    ...baseData
 ]

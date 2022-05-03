@@ -1,6 +1,7 @@
 import { PatientDiaryEntryDto, PatientDto } from "@models/Patient"
 import { CalendarRange } from "@ui-kitten/components"
 import { AxiosResponse } from "axios"
+import { MedicalDataAuthorizationDTO } from "models/Medical"
 import { api } from "./api.service"
 
 export const postDiaryEntry = async (data: PatientDiaryEntryDto): Promise<AxiosResponse<PatientDiaryEntryDto, any>> => {
@@ -42,4 +43,12 @@ export const updatePatient = async (data: PatientDto | any) => {
 
 export const getPatient = async (): Promise<AxiosResponse<PatientDto, any>> => {
     return await api.get('patient')
+}
+
+export const patientGetAuthorizationRequests = async (data: { authorized: boolean }): Promise<AxiosResponse<MedicalDataAuthorizationDTO[], any>> => {
+    return await api.post('medical-data-authorization/patient-get-authorization-requests', data)
+}
+
+export const patientGrantAuthorization = async (data: { medicalDoctorId: string }): Promise<AxiosResponse<MedicalDataAuthorizationDTO[], any>> => {
+    return await api.post('medical-data-authorization/patient-grant-authorization', data)
 }

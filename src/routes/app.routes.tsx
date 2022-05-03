@@ -8,6 +8,7 @@ import ChatRoomScreen from '@pages/admin/chat'
 import InformationAppScreen from '@pages/admin/configuration/about'
 import ConfigurationScreen from '@pages/admin/configuration/home'
 import NotificationScreen from '@pages/admin/configuration/notification'
+import ShareInformationWithMedicalDoctorScreen from '@pages/admin/configuration/share-information'
 import Terms from '@pages/admin/configuration/terms'
 import DoctorProfileScreen from '@pages/admin/doctorProfile'
 import HelpScreen from '@pages/admin/help'
@@ -91,6 +92,8 @@ const AppRoutes: FC = (): ReactElement => {
         headerShown: true,
         header: () => <HeaderAdmin />
       }}>
+        <Screen name="ShareInformationWithMedicalDoctor" component={ShareInformationWithMedicalDoctorScreen} />
+
         <Screen
           name="Schedule"
           component={ScheduleScreen}

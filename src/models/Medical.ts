@@ -21,3 +21,11 @@ export class MedicalDoctorDisplay {
     specialtyId!: string | null
     specialty!: string | null
 }
+
+export class MedicalDataAuthorizationDTO {
+    doctorId!: number
+    doctorName!: string
+    doctorCRM!: string
+    grantDate!: Date | null | string
+    authorizationGranted!: boolean
+}

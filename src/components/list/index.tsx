@@ -1,14 +1,9 @@
+import { Icons } from '@models/Common'
+import { useNavigation } from '@react-navigation/native'
+import { Icon, IconProps, List, ListItem, ListProps, useStyleSheet } from '@ui-kitten/components'
 import React, { FC, ReactElement } from 'react'
 import { ListRenderItemInfo, Platform, StyleProp, View, ViewStyle } from 'react-native'
-import { List, ListItem, IconProps, Icon, ListProps, useStyleSheet } from '@ui-kitten/components'
-
-import { useNavigation } from '@react-navigation/native'
 import { listStyle } from './style'
-
-type Icons = {
-    name: string
-    pack: 'ionicons' | 'eva' | 'feather' | 'font-awesome' | 'fontisto'
-}
 
 export interface ItemInfo {
     title: string
