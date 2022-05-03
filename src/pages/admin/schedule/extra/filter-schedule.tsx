@@ -5,17 +5,15 @@ import { City, UF } from '@models/Places'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
 import { getCities, getStates } from '@services/common.service'
+import { getAll } from '@services/medical-specialty.service'
 import { AutocompleteItem, Button, Icon, IconProps, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { filterBy } from '@utils/common'
-import specialties from '@utils/specialties'
 import { MedicalDoctorDisplay, MedicalSpecialtyDto } from 'models/Medical'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Keyboard, View } from 'react-native'
-import { getAll } from '@services/medical-specialty.service'
-import { data as testData } from './data'
-import { filterScheduleStyle } from './filter-schedule.style'
 import { getDisplayMedicalDoctorBySpecialtyArray } from 'services/medical-doctor.service'
+import { filterScheduleStyle } from './filter-schedule.style'
 
 interface FilterScheduleParams {
   city?: string
@@ -64,7 +62,7 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
   useEffect(() => {
     const paramsTmp = route.params as FilterProps
     setParams(paramsTmp)
-    if (paramsTmp.type === 1 && states.length === 0) findPlaces()
+    if (paramsTmp && paramsTmp.type === 1 && states.length === 0) findPlaces()
   }, [route.params])
 
   /**

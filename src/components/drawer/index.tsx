@@ -80,13 +80,13 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
               <DrawerItem
                 style={drawerStyle.drawerItem}
                 title='Virtual (teleconsulta)'
-                onPress={() => navigate('FilterSchedule')}
+                onPress={() => props.navigation.jumpTo('FilterSchedule', { type: 0 })}
                 accessoryLeft={(props: IconProps) => <PhoneIcon {...props} width={iconSizeDefault} height={iconSizeDefault} fill={theme['color-basic-600']} />}
               />
               <DrawerItem
                 style={drawerStyle.drawerItem}
                 title='Presencial'
-                onPress={() => navigate('FilterSchedule')}
+                onPress={() => props.navigation.jumpTo('FilterSchedule', { type: 1 })}
                 accessoryLeft={(props: IconProps) => <HouseIcon {...props} width={iconSizeDefault} height={iconSizeDefault} fill={theme['color-basic-600']} />}
 
               />
