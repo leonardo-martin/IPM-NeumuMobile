@@ -27,7 +27,7 @@ const ShareInfoTabItemScreen: FC = (): ReactElement => {
 
     const loadBadgeCount = async () => {
         const res = await patientGetAuthorizationRequests({ authorized: params?.authorized ?? false })
-        if (res && res.data) {
+        if (res) {
             setData(res.data)
         }
     }

@@ -1,48 +1,70 @@
-import React, { FC, ReactElement, useCallback, useState } from 'react'
-import { Image, ImageStyle, Linking, Platform, ScrollView, Share, StyleProp, View } from 'react-native'
-import { Button, Divider, Text, useStyleSheet } from '@ui-kitten/components'
+import toast from '@helpers/toast'
+import { MedicalDoctorDisplay } from '@models/Medical'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
-import { Profile as DoctorProfile } from '@services/message.service'
+import { Button, CheckBox, Divider, Text, useStyleSheet } from '@ui-kitten/components'
+import { SafeAreaLayout } from 'components/safeAreaLayout'
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
+import { Image, ImageStyle, Linking, Platform, Share, StyleProp, View } from 'react-native'
+import { patientGetAuthorizationRequests, patientGrantAuthorization } from 'services/patient.service'
+import { PhoneCallIcon, ShareIcon } from './extra/icons'
 import { doctorProfileStyle } from './style'
-import { MessageCircleIcon, PhoneCallIcon, ShareIcon } from './extra/icons'
-import toast from '@helpers/toast'
-import { FLATICON_URI } from '@constants/uri'
 
 const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
 
   const styles = useStyleSheet(doctorProfileStyle)
   const route = useRoute()
-  const { params } = route
-  const [profile, setProfile] = useState<DoctorProfile | undefined>(undefined)
+  const [profile, setProfile] = useState<MedicalDoctorDisplay>()
+  const [checked, setChecked] = useState(false)
+
+  const loadChecked = async () => {
+    const res = await patientGetAuthorizationRequests({ authorized: true })
+    if (res && res.data) {
+      res.data.forEach(e => {
+        if (e.doctorId === profile?.medicalDoctorId) {
+          console.log('ja possui')
+          setChecked(e.doctorId === profile?.medicalDoctorId)
+        }
+      })
+    }
+  }
 
   useFocusEffect(
     useCallback(() => {
-      const profile = route?.params as DoctorProfile
-      setProfile(new DoctorProfile(
-        profile.id,
-        profile.firstName,
-        profile.lastName,
-        profile.photo,
-        profile.phone,
-        profile.location,
-        profile.description
-      ))
-    }, [params])
+      if(profile) loadChecked()
+    }, [profile])
   )
+
+  useFocusEffect(
+    useCallback(() => {
+      const doctor = route.params as MedicalDoctorDisplay
+      setProfile(doctor)
+    }, [route?.params])
+  )
+
+  const handleAuthorized = async (checked: boolean, _indeterminate: boolean) => {
+    setChecked(checked)
+
+    try {
+      if (profile?.medicalDoctorId)
+        await patientGrantAuthorization({ medicalDoctorId: profile.medicalDoctorId.toString(), authorization: checked })
+    } catch (error) {
+      toast.danger({ message: 'Erro ao permitir o compartilhamento', duration: 3000 })
+    }
+  }
 
   const onCallButtonPress = useCallback(async () => {
 
-    if (profile?.phone !== undefined) {
-      let url = `tel:${profile?.phone}`
-      if (Platform.OS === 'ios') url = `tel:${profile?.phone}`
-      else if (Platform.OS === 'android') url = `tel:${profile?.phone}`
+    if (profile?.phone1 !== undefined) {
+      let url = `tel:${profile?.phone1}`
+      if (Platform.OS === 'ios') url = `tel:${profile?.phone1}`
+      else if (Platform.OS === 'android') url = `tel:${profile?.phone1}`
 
       const supported = await Linking.canOpenURL(url)
 
       if (supported) {
         await Linking.openURL(url)
-      } else {        
+      } else {
         toast.danger({ message: 'Ocorreu um erro ao abrir o Phone app.', duration: 1000 })
       }
     } else
@@ -56,57 +78,79 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement =>
   const onShare = async () => {
     try {
       await Share.share({
-        title: `Dr(a) ${profile?.fullName} - TeleNeuMu`,
-        message: `Olá, eu sou ${profile?.fullName}. Aguardo seu contato pelo telefone ${profile?.phone}`
+        title: `Dr(a) ${profile?.name} - TeleNeuMu`,
+        message: `Olá, eu sou ${profile?.name}. Aguardo seu contato pelo telefone ${profile?.name}`
       })
     } catch (error: any) {
-      console.error(error.message)
+      toast.danger({ message: 'Ocorreu um erro ao compartilhar.', duration: 1000 })
     }
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header} >
-        <Image
-          style={styles.image as StyleProp<ImageStyle>}
-          source={{ uri: FLATICON_URI + '/512/2894/premium/2894760.png' }}
-        />
-        <Text
-          style={styles.profileName}
-          category='h5'
-          status='basic'>
-          {profile?.fullName}
-        </Text>
-        <View style={styles.locationContainer}>
+    <>
+      <SafeAreaLayout level='1' style={styles.safeArea}>
+        <View style={styles.content} >
+          <Image
+            style={styles.image as StyleProp<ImageStyle>}
+            source={require('../../../assets/profile/doctor-card.png')}
+          />
           <Text
-            style={styles.location}
+            style={styles.profileName}
             status='basic'>
-            {profile?.location}
+            {profile?.name}
           </Text>
-        </View>
-        <View style={styles.profileButtonsContainer}>
-          <Button style={styles.profileButton}
-            status='control'
-            accessoryLeft={PhoneCallIcon}
-            onPress={onCallButtonPress} />
-          <Button style={styles.profileButton}
+          <View style={styles.locationContainer}>
+            <Text
+              style={styles.location}
+              status='basic'>
+              {profile?.address1 + ' - ' + profile?.city + ', ' + profile?.state}
+            </Text>
+          </View>
+          <View style={styles.profileButtonsContainer}>
+            <Button style={styles.profileButton}
+              status='control'
+              accessoryLeft={PhoneCallIcon}
+              onPress={onCallButtonPress} />
+            {/* <Button style={styles.profileButton}
             status='control'
             accessoryLeft={MessageCircleIcon}
             onPress={onMessageButtonPress}
-          />
-          <Button style={styles.profileButton}
-            status='control'
-            accessoryLeft={ShareIcon}
-            onPress={onShare} />
+          /> */}
+            <Button style={styles.profileButton}
+              status='control'
+              accessoryLeft={ShareIcon}
+              onPress={onShare} />
+          </View>
         </View>
-      </View>
-      <View style={styles.viewAbout}>
         <Divider style={styles.divider} />
-        <Text style={styles.textAbout}>
-          {profile?.description}
-        </Text>
-      </View>
-    </ScrollView>
+        <View style={styles.viewAbout}>
+          <Text style={styles.textAbout}>
+            {profile?.specialty ?? ''}
+          </Text>
+          <Text
+            style={styles.text}
+            status='basic'>
+            {'N° ' + profile?.crm}
+          </Text>
+        </View>
+        <View style={{
+          alignItems: 'center',
+          padding: 20
+        }}>
+          <View style={styles.controlContainer}>
+            <CheckBox
+              checked={checked}
+              onChange={handleAuthorized}
+              style={styles.checkbox}
+              status='control'>
+              {evaProps => <Text style={[evaProps?.style, {
+                textAlign: 'center', alignItems: 'center', alignSelf: 'center'
+              }]}>Permitir o compartilhamento de informações com este Profissional de Saúde</Text>}
+            </CheckBox>
+          </View>
+        </View>
+      </SafeAreaLayout>
+    </>
   )
 }
 

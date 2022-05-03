@@ -89,7 +89,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             }
             setSelectTmp(data.abrafeuRegistrationOptIn === 'true' ? 0 : 1)
             setIsLoading(false)
-            
+            toast.success({ message: 'Perfil atualizado com sucesso!', duration: 3000 })
         } catch (error) {
             setIsLoading(false)
             setSelectedIndex(selectTmp)

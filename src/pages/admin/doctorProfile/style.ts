@@ -1,11 +1,10 @@
 import { StyleSheet } from "react-native"
 
 export const doctorProfileStyle = StyleSheet.create({
-    container: {
+    safeArea: {
         flex: 1,
-        backgroundColor: 'background-basic-color-1',
     },
-    header: {
+    content: {
         paddingVertical: 10,
         alignItems: 'center'
     },
@@ -15,7 +14,8 @@ export const doctorProfileStyle = StyleSheet.create({
         marginVertical: 25,
     },
     profileName: {
-        zIndex: 1,
+        fontSize: 24,
+        fontWeight: '600',
         color: 'text-primary-color',
     },
     locationContainer: {
@@ -48,19 +48,34 @@ export const doctorProfileStyle = StyleSheet.create({
     },
     viewAbout: {
         paddingBottom: 20,
-        paddingHorizontal: 15
+        paddingHorizontal: 15,
+        alignItems: 'center'
     },
     textAbout: {
         fontSize: 22,
         fontFamily: 'System',
         fontStyle: 'italic',
-        fontWeight: '100',
+        fontWeight: '300',
         textAlign: 'center',
         color: 'text-basic-color'
     },
     divider: {
-        marginBottom: 20, 
-        marginHorizontal: 20, 
+        marginBottom: 20,
+        marginHorizontal: 20,
         backgroundColor: 'background-alternative-color-1'
-    }
+    },
+    text: {
+        color: 'text-hint-color',
+        fontSize: 14,
+        paddingVertical: 5
+    },
+    checkbox: {
+        margin: 2,
+      },
+      controlContainer: {
+        borderRadius: 4,
+        margin: 2,
+        padding: 6,
+        backgroundColor: 'color-primary-500',
+      },
 })

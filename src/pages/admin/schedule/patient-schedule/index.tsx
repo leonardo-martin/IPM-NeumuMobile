@@ -222,18 +222,8 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
     }
 
     const navigateToDoctorProfile = () => {
-        // const profile = new DoctorProfile(
-        //     params?.medicalDoctorId,
-        //     params?.doctorName,
-        //     '',
-        //     BOOTDEY_URI + '/img/Content/avatar/avatar6.png',
-        // )
-        // navigation.navigate("DoctorProfile", {
-        //     ...profile,
-        //     location: params?.visitAddress.street,
-        //     description: `Olá. Eu sou ${profile.fullName}`,
-        //     phone: params?.tel
-        // })
+        const doctor = params
+        navigation.navigate("DoctorProfile", { ...doctor })
     }
     const footerCard = (props: IconProps) => (
         <View style={styles.footerCard}>
@@ -350,15 +340,13 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                                             status="basic"
                                             style={styles.textDoctorInfo}
                                         >Local: {fullAddress}</Text>
-                                        <View style={styles.viewLocation}>
+                                        <TouchableOpacity style={styles.viewLocation} onPress={() => openMapsWithAddress(fullAddress ?? '')}>
                                             <Text
-                                                onPress={() => openMapsWithAddress(fullAddress ?? '')}
                                                 category="c1"
                                                 style={styles.textLocation}
                                             >Ver no mapa</Text>
-                                            <Icon style={styles.icon} name="location-outline" size={15} pack='ionicons'
-                                                onPress={() => openMapsWithAddress(fullAddress ?? '')} />
-                                        </View>
+                                            <Icon style={styles.icon} name="location-outline" size={15} pack='ionicons' />
+                                        </TouchableOpacity>
                                     </View>
                                 </View>
                             </Card>

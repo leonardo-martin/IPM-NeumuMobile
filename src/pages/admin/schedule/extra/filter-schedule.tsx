@@ -46,7 +46,7 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
 
   useFocusEffect(
     useCallback(() => {
-      form.reset()
+      form.reset({})
       setReleasedToSearch(false)
       clearInputs()
       fetchData()
