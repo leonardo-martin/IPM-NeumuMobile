@@ -77,7 +77,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
               <Text category="h5" status='basic' style={styles.text}>
                 {sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? (
                   'Como podemos te ajudar?'
-                ) : 'Seja bem vindo ao TeleNeumu!'}
+                ) : 'Seja bem vindo ao TeleNeuMu!'}
               </Text>
             </View>
             <View style={styles.content}>

@@ -56,7 +56,7 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement =>
   const onShare = async () => {
     try {
       await Share.share({
-        title: `Dr(a) ${profile?.fullName} - TeleNeumu`,
+        title: `Dr(a) ${profile?.fullName} - TeleNeuMu`,
         message: `Olá, eu sou ${profile?.fullName}. Aguardo seu contato pelo telefone ${profile?.phone}`
       })
     } catch (error: any) {

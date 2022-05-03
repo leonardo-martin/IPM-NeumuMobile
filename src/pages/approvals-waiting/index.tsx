@@ -30,7 +30,7 @@ const WaitingApprovalsScreen: FC = (): ReactElement => {
                             <Text style={styles.text}>Entre em contato via e-mail para mais detalhes.</Text></>
                         :
                         <>
-                            <Text style={[styles.text, styles.title]}>Obrigado por fazer parte do TeleNeumu!</Text>
+                            <Text style={[styles.text, styles.title]}>Obrigado por fazer parte do TeleNeuMu!</Text>
                             <Text style={styles.text}>Estamos validando algumas informações e em breve o seu acesso será liberado.</Text>
                         </>
                     }

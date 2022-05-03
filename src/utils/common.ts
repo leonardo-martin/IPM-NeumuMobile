@@ -136,7 +136,7 @@ export const sortByDate = (a: Date | string, b: Date | string, order: AscendingO
 }
 
 export const openMailTo = () => {
-    Linking.openURL('mailto:contato@teleneumu.com.br?subject=Contato TeleNeumu')
+    Linking.openURL('mailto:contato@teleneumu.com.br?subject=Contato TeleNeuMu')
         .catch(() => {
             toast.warning({ message: 'Erro desconhecido. Contate o administrador', duration: 3000 })
         })

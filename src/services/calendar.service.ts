@@ -20,7 +20,7 @@ export const listCalendars = async (): Promise<Calendar[]> => {
     return calendars
 }
 
-export const addCalendarEvent = async (event: CalendarEventWritable, _calendar: Calendar, _title: string = 'TeleNeumu', _options: Options = {}): Promise<string> => {
+export const addCalendarEvent = async (event: CalendarEventWritable, _calendar: Calendar, _title: string = 'TeleNeuMu', _options: Options = {}): Promise<string> => {
     let permissions: AuthorizationStatus
     let createdEventId: string = ''
     try {

@@ -13,7 +13,7 @@ const TermsConditions: FC = (): ReactElement => {
         <>
             <View style={{ paddingBottom: 20 }}>
                 <Text category={'h5'} style={[styles.header, styles.textPrimary]}>Termos e Condições de Uso</Text>
-                <Text style={[styles.header, { marginVertical: 0 }]}>Seja bem-vindo ao TeleNeumu.</Text>
+                <Text style={[styles.header, { marginVertical: 0 }]}>Seja bem-vindo ao TeleNeuMu.</Text>
                 <Text style={[styles.header, { marginVertical: 0 }]}>Leia com atenção todos os termos abaixo.</Text>
             </View>
             <Text style={styles.textJustify}>Este documento, e todo o conteúdo do aplicativo é oferecido por{" "}

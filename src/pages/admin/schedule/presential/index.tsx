@@ -139,7 +139,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
             const response = await createAppointment(scheduleData)
             if (response.status === 201) {
                 navigation.navigate('ConfirmationSchedule', {
-                    title: 'TeleNeumu | Consulta Presencial',
+                    title: 'TeleNeuMu | Consulta Presencial',
                     description: 'Esta é uma marcação de uma consulta presencial com o seu médico',
                     location: fullAddress,
                     startDate: localeDateService.parse(scheduleData?.startTime as string, _DATE_FROM_ISO_8601).getTime().toString(),

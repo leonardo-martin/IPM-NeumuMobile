@@ -15,7 +15,7 @@ const TitleNeumu: FC<TitleProps> = ({ category }): ReactElement => {
     return (
         <View style={titleStyle.box}>
             <Text category={category} style={styles.titleSecondary}>Tele</Text>
-            <Text category={category} style={styles.titlePrimary}>Neumu</Text>
+            <Text category={category} style={styles.titlePrimary}>NeuMu</Text>
         </View>
     )
 }
