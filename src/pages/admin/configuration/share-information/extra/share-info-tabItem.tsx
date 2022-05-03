@@ -42,11 +42,12 @@ const ShareInfoTabItemScreen: FC = (): ReactElement => {
         setParams(route.params as { authorized: boolean })
     }, [route.params])
 
-    const toApprove = async (medicalDoctorId: string) => {
+    const changeAuthorization = async (medicalDoctorId: string, authorization: boolean = false) => {
         try {
-            const res = await patientGrantAuthorization({ medicalDoctorId })
+            const res = await patientGrantAuthorization({ medicalDoctorId, authorization })
             if (res.status === 201)
                 loadBadgeCount()
+
         } catch (error) {
             toast.danger({ message: 'Erro ao permitir o compartilhamento', duration: 3000 })
         }
@@ -61,12 +62,18 @@ const ShareInfoTabItemScreen: FC = (): ReactElement => {
                     <View>
                         <Text style={styles.itemTitle}>{info.item.doctorName}</Text>
                         <Text style={styles.description}>{'N° ' + info.item.doctorCRM}</Text>
-                        <Text style={styles.description}>{'Solicitado em: ' + localeDateService.format(localeDateService.parse(info.item.grantDate as string, _DATE_FROM_ISO_8601), _DEFAULT_FORMAT_DATE)}</Text>
+                        <Text style={styles.description}>{(!params?.authorized ? 'Solicitado em: ' : 'Autorizado em: ') + localeDateService.format(localeDateService.parse(info.item.grantDate as string, _DATE_FROM_ISO_8601), _DEFAULT_FORMAT_DATE)}</Text>
                     </View>
-                    {!params?.authorized && (
+                    {!params?.authorized ? (
                         <View>
-                            <TouchableOpacity onPress={() => toApprove(info.item.doctorId.toString())} style={styles.buttonApproval}>
-                                <Text style={styles.textApproval}>Aceitar</Text>
+                            <TouchableOpacity onPress={() => changeAuthorization(info.item.doctorId.toString(), true)} style={[styles.button, styles.approval]}>
+                                <Text style={styles.textButton}>Aceitar</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <View>
+                            <TouchableOpacity onPress={() => changeAuthorization(info.item.doctorId.toString())} style={[styles.button, styles.cancel]}>
+                                <Text style={styles.textButton}>Cancelar</Text>
                             </TouchableOpacity>
                         </View>
                     )}
@@ -79,7 +86,8 @@ const ShareInfoTabItemScreen: FC = (): ReactElement => {
     return (
         <SafeAreaLayout level='2' style={styles.safeArea}>
             <List
-                style={styles.contentStyle}
+                contentContainerStyle={data.length > 5 ? styles.contentStyle : undefined}
+                style={styles.containerStyle}
                 showsVerticalScrollIndicator={false}
                 refreshControl={
                     <RefreshControl

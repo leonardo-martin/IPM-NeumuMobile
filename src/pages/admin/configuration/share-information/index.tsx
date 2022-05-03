@@ -14,7 +14,8 @@ const ShareInformationWithMedicalDoctorScreen: FC = (): ReactElement => {
             <View style={styles.container}>
                 <Text style={styles.title}>Aviso!</Text>
                 <Text style={styles.message}>Ao aceitar o compartilhamento das informações com um
-                    Profissional de Saúde, o Sr(a) está ciente que o mesmo terá acesso as suas informações somente para promover o melhor atendimento.</Text>
+                    Profissional de Saúde, o Sr(a) está ciente que o mesmo terá acesso as informações relacionadas somente ao tratamento, para que possamos promover o melhor atendimento.</Text>
+                <Text style={[styles.message, { paddingTop: 5, fontWeight: '500' }]}>Esse compartilhamento poderá ser cancelado a qualquer momento.</Text>
             </View>
             <ShareInfoRoutes />
         </SafeAreaLayout>

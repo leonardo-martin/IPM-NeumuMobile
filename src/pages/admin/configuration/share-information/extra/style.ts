@@ -6,8 +6,11 @@ export const shareInfoTabItemStyle = StyleSheet.create({
   safeArea: {
     flex: 1
   },
-  contentStyle: {
+  containerStyle: {
     padding: SPACING
+  },
+  contentStyle: {
+    paddingBottom: SPACING
   },
   viewItem: {
     flex: 1,
@@ -47,15 +50,20 @@ export const shareInfoTabItemStyle = StyleSheet.create({
       }
     })
   },
-  textApproval: {
+  textButton: {
     color: 'text-control-color',
     fontSize: 14,
     textTransform: 'uppercase',
     fontWeight: '600'
   },
-  buttonApproval: {
-    backgroundColor: 'color-success-400',
+  button: {
     borderRadius: 50,
     padding: 8
+  },
+  approval: {
+    backgroundColor: 'color-success-400',
+  },
+  cancel: {
+    backgroundColor: 'color-danger-500',
   }
 })

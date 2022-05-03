@@ -49,6 +49,6 @@ export const patientGetAuthorizationRequests = async (data: { authorized: boolea
     return await api.post('medical-data-authorization/patient-get-authorization-requests', data)
 }
 
-export const patientGrantAuthorization = async (data: { medicalDoctorId: string }): Promise<AxiosResponse<MedicalDataAuthorizationDTO[], any>> => {
-    return await api.post('medical-data-authorization/patient-grant-authorization', data)
+export const patientGrantAuthorization = async (data: { medicalDoctorId: string, authorization: boolean }): Promise<AxiosResponse<MedicalDataAuthorizationDTO[], any>> => {
+    return await api.post('medical-data-authorization/patient-grant-or-refuse-authorization', data)
 }
