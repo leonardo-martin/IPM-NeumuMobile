@@ -1,12 +1,12 @@
+import { SafeAreaLayout } from '@components/safeAreaLayout'
 import toast from '@helpers/toast'
 import { MedicalDoctorDisplay } from '@models/Medical'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
+import { patientGetAuthorizationRequests, patientGrantAuthorization } from '@services/patient.service'
 import { Button, CheckBox, Divider, Text, useStyleSheet } from '@ui-kitten/components'
-import { SafeAreaLayout } from 'components/safeAreaLayout'
-import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { Image, ImageStyle, Linking, Platform, Share, StyleProp, View } from 'react-native'
-import { patientGetAuthorizationRequests, patientGrantAuthorization } from 'services/patient.service'
 import { PhoneCallIcon, ShareIcon } from './extra/icons'
 import { doctorProfileStyle } from './style'
 
@@ -22,7 +22,6 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement =>
     if (res && res.data) {
       res.data.forEach(e => {
         if (e.doctorId === profile?.medicalDoctorId) {
-          console.log('ja possui')
           setChecked(e.doctorId === profile?.medicalDoctorId)
         }
       })

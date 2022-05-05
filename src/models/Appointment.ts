@@ -19,8 +19,8 @@ export class CreateAppointment {
 
 export interface AppointmentDto {
     id: number
-    startTime: Date
-    endTime: Date
+    startTime: Date | string
+    endTime: Date | string
     visitAddressDto: VisitAddressDTO
     medicalDoctorSummaryDto: MedicalDoctorySummaryDto
     patientDto: PatientSummaryDto

@@ -4,6 +4,7 @@ import HeaderChatRoom from '@components/header/admin/chatRoom'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import DashboardScreen from '@pages/admin'
 import AppointmentsScreen from '@pages/admin/appointments'
+import DetailsAppointmentsScreen from '@pages/admin/appointments/extra/details-appointment'
 import ChatRoomScreen from '@pages/admin/chat'
 import InformationAppScreen from '@pages/admin/configuration/about'
 import ConfigurationScreen from '@pages/admin/configuration/home'
@@ -105,6 +106,10 @@ const AppRoutes: FC = (): ReactElement => {
         <Screen
           name="ScheduleSearchResult"
           component={ScheduleSearchResultScreen}
+        />
+        <Screen
+          name='DetailsAppointments'
+          component={DetailsAppointmentsScreen}
         />
         <Screen
           name="MyAppointments"

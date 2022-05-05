@@ -240,10 +240,11 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
                 for (let index = 0; index < saveItems.length; index++) {
                     const element = saveItems[index]
                     let data: AppointmentAvailabilityParams = {
-                        startTime: localeDateService.format(localeDateService.parse(element.title as string, _DATE_FROM_ISO_8601), _DATE_FROM_ISO_8601),
-                        endTime: localeDateService.format(addMinutes(localeDateService.parse(element.title as string, _DATE_FROM_ISO_8601), 14), _DATE_FROM_ISO_8601),
+                        startTime: new Date(element.title as string).toISOString(),
+                        endTime: addMinutes(new Date(element.title as string), 14).toISOString(),
                         dayOfWeek: dayOfWeek
                     }
+                    
                     const response = await doctorCreateAppointmentAvailability(data)
                     if (response.status === 201 || response.status === 200) {
                         amountSavedItems++
@@ -254,8 +255,8 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
                 for (let index = 0; index < removeItems.length; index++) {
                     const element = removeItems[index]
                     let data: AppointmentAvailabilityParams = {
-                        startTime: localeDateService.format(localeDateService.parse(element.title as string, _DATE_FROM_ISO_8601), _DATE_FROM_ISO_8601),
-                        endTime: localeDateService.format(addMinutes(localeDateService.parse(element.title as string, _DATE_FROM_ISO_8601), 14), _DATE_FROM_ISO_8601),
+                        startTime: new Date(element.title as string).toISOString(),
+                        endTime: addMinutes(new Date(element.title as string), 14).toISOString(),
                         dayOfWeek: dayOfWeek
                     }
                     const response = await doctorDeleteAppointmentAvailabilityBlock(data)
@@ -264,7 +265,7 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
                     }
                 }
 
-                if (amountSavedItems > 0) loadData()
+                // if (amountSavedItems > 0) loadData()
 
             } catch (e) {
                 toast.danger({ message: 'Erro ao editar os horários. Tente novamente mais tarde.', duration: 2000 })

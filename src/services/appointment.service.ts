@@ -1,4 +1,4 @@
-import { AppointmentDto, AppointmentAvailabilityDTO, AppointmentAvailabilityHelper, AppointmentAvailabilityParams, AppointmentAvailabilityWithBookedParams, CreateAppointment } from '@models/Appointment'
+import { AppointmentAvailabilityDTO, AppointmentAvailabilityHelper, AppointmentAvailabilityParams, AppointmentAvailabilityWithBookedParams, AppointmentDto, CreateAppointment } from '@models/Appointment'
 import { AxiosResponse } from 'axios'
 import { api } from './api.service'
 
@@ -18,15 +18,47 @@ export const createAppointment = async (data: CreateAppointment | undefined): Pr
     })
 }
 
-export const getAppointments = async (queryParameters?: QueryParameters) => {
+export const getAppointmentListPatient = async (queryParameters?: QueryParameters): Promise<AxiosResponse<AppointmentDto[], any>> => {
 
     return await api.get('appointment/get-appointment-list-patient', {
         params: {
-            confirmedByDoctor: queryParameters?.confirmedByDoctor ? "true" : "false",
+            confirmedByDoctor: queryParameters?.confirmedByDoctor ?? null,
             filterStartDate: queryParameters?.filterStartDate,
             filterEndDate: queryParameters?.filterEndDate
         }
     })
+}
+
+export const getAppointmentListDoctor = async (queryParameters?: QueryParameters): Promise<AxiosResponse<AppointmentDto[], any>> => {
+
+    return await api.get('appointment/get-appointment-list-doctor', {
+        params: {
+            confirmedByDoctor: queryParameters?.confirmedByDoctor ?? null,
+            filterStartDate: queryParameters?.filterStartDate,
+            filterEndDate: queryParameters?.filterEndDate
+        }
+    })
+}
+
+export const doctorConfirmAppointment = async (appointmentId: string | number): Promise<AxiosResponse<AppointmentDto[], any>> => {
+
+    const params = new URLSearchParams()
+    params.append('appointmentId', appointmentId.toString())
+    return await api.get('appointment/doctor-confirm-appointment?' + params)
+}
+
+export const doctorDeleteAppointment = async (appointmentId: string | number): Promise<AxiosResponse<AppointmentDto[], any>> => {
+
+    const params = new URLSearchParams()
+    params.append('appointmentId', appointmentId.toString())
+    return await api.delete('appointment/doctor-delete-appointment?' + params)
+}
+
+export const patientDeleteAppointment = async (appointmentId: string | number): Promise<AxiosResponse<AppointmentDto[], any>> => {
+
+    const params = new URLSearchParams()
+    params.append('appointmentId', appointmentId.toString())
+    return await api.delete('appointment/patient-delete-appointment?' + params)
 }
 
 export const doctorCreateAppointmentAvailability = async (data: AppointmentAvailabilityParams): Promise<AxiosResponse<AppointmentAvailabilityDTO[], any>> => {
@@ -38,7 +70,6 @@ export const doctorCreateAppointmentAvailability = async (data: AppointmentAvail
 
     return await api.post('appointment-availability/doctor-create-appointment-availability-block?' + params)
 }
-
 
 export const getAppointmentAvailabilityListSummaryByDoctorId = async (doctorId: number): Promise<AxiosResponse<{
     [k: string]: number[]
@@ -58,7 +89,6 @@ export const doctorDeleteAppointmentAvailabilityBlock = async (data: Appointment
 
     return await api.post('appointment-availability/doctor-delete-appointment-availability-block?' + params)
 }
-
 
 export const getAppointmentAvailabilityWithBookedAppointments = async (data: AppointmentAvailabilityWithBookedParams): Promise<AxiosResponse<AppointmentAvailabilityHelper[], any>> => {
 

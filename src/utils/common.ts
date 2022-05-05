@@ -189,7 +189,8 @@ export const getTimesByInterval = (interval: number = 30, startTime: number = 0,
 
     for (var i = 0; startTime < endTime * 60; i++) {
         startTime = startTime + interval
-        dates.push(addMinutes(date, startTime).toISOString())
+        let add = localeDateService.parse(addMinutes(date, startTime).toISOString(), _DATE_FROM_ISO_8601)
+        dates.push(add.toISOString())
     }
 
     return dates
@@ -209,8 +210,14 @@ export const getTimeBlocksByTime = (date: Date = new Date()) => {
     return calculateTimeBlock(date.getHours(), date.getMinutes())
 }
 
+/**
+ * Retorna o valor do timeblock para determinada Hora e Minuto em GMT
+ * @param hourTime Hora
+ * @param minuteTime Minuto
+ * @returns number
+ */
 const calculateTimeBlock = (hourTime: number = 0, minuteTime: number = 0) => {
-    const hourTimeBlock = hourTime * 4
+    const hourTimeBlock = (hourTime + 3) * 4 // GMT
     const minuteTimeBlock = Math.floor(minuteTime / 15)
     const timeBlock = hourTimeBlock + minuteTimeBlock
     return timeBlock

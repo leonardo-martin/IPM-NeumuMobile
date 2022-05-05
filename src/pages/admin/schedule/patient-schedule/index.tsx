@@ -5,24 +5,24 @@ import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATETIME } from '@constants/date'
 import toast from '@helpers/toast'
 import { useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
+import { useModal } from '@hooks/useModal'
 import { CreateAppointment } from '@models/Appointment'
 import { MedicalDoctorDisplay } from '@models/Medical'
+import { VisitAddressDTO } from '@models/VisitAddress'
 import { useRoute } from '@react-navigation/core'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { createAppointment, getAppointmentAvailabilityWithBookedAppointments } from '@services/appointment.service'
+import { getVisitAddressListByDoctorId } from '@services/visit-address.service'
 import { Avatar, Button, Card, Icon, IconProps, List, Text, TranslationWidth, useStyleSheet, useTheme } from '@ui-kitten/components'
 import { getTimeBlocksByTime, getTimesByInterval, scrollToRef } from '@utils/common'
 import { openMapsWithAddress } from '@utils/maps'
-import addMinutes from 'date-fns/add_minutes/index.js'
-import { useModal } from 'hooks/useModal'
-import { VisitAddressDTO } from 'models/VisitAddress'
+import { addMinutes } from 'date-fns'
 import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, ImageStyle, LayoutRectangle, Platform, Pressable, ScrollView, StyleProp, TouchableOpacity, View } from 'react-native'
 import { Modalize } from 'react-native-modalize'
 import { Host, Portal } from 'react-native-portalize'
 import Animated, { Easing, SlideInRight, SlideOutRight, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { getVisitAddressListByDoctorId } from 'services/visit-address.service'
 import { RootState } from 'store'
 import { doctorScheduleStyle } from './style'
 
@@ -113,13 +113,11 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
         const startTime = localeDateService.clone(dateTimeSelected as Date)
 
         const time = (timeSelected as string).split(':')
-        startTime.setHours(Number(time[0]))
-        startTime.setMinutes(Number(time[1]))
-        startTime.setSeconds(0)
+        startTime.setHours(Number(time[0]), Number(time[1]), 0, 0)
 
         setConfirmDate(startTime)
-        const startTimeString = localeDateService.format(startTime, _DATE_FROM_ISO_8601)
-        const endTimeString = localeDateService.format(addMinutes(startTime, 14), _DATE_FROM_ISO_8601)
+        const startTimeString = startTime.toISOString()
+        const endTimeString = addMinutes(startTime, 14).toISOString()
 
         setScheduleData(
             new CreateAppointment(
@@ -308,6 +306,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                                 style={{
                                     backgroundColor: theme['background-basic-color-2']
                                 }}
+                                disabled
                                 footer={footerCard}
                                 status='info'>
                                 <View style={styles.viewDoctorProfile}>

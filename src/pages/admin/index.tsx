@@ -119,7 +119,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                   </Text>
                 </Card>
                 <Card style={[styles.card, styles.shadowCard]}
-                // onPress={goToAppointments}
+                  onPress={goToAppointments}
                 >
                   <View style={styles.cardDefault}>
                     <Icon
