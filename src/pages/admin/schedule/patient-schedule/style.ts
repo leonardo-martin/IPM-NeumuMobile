@@ -80,8 +80,9 @@ export const doctorScheduleStyle = StyleSheet.create({
     },
     daysInMonthView: {
         marginTop: 5,
-        padding: 10,
-        borderRadius: 20,
+        paddingVertical: 10,
+        width: 40,
+        borderRadius: 50,
         backgroundColor: 'color-basic-400'
     },
     daysInMonthText: {

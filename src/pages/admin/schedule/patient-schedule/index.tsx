@@ -18,6 +18,7 @@ import { Avatar, Button, Card, Icon, IconProps, List, Text, TranslationWidth, us
 import { getTimeBlocksByTime, getTimesByInterval, scrollToRef } from '@utils/common'
 import { openMapsWithAddress } from '@utils/maps'
 import { addMinutes } from 'date-fns'
+import addHours from 'date-fns/add_hours/index.js'
 import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, ImageStyle, LayoutRectangle, Platform, Pressable, ScrollView, StyleProp, TouchableOpacity, View } from 'react-native'
 import { Modalize } from 'react-native-modalize'
@@ -192,14 +193,20 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
             setDateTimeSelected(date)
             setTimeSelected(undefined)
 
+            const startTime = date
+            startTime.setHours(0, 0, 0, 0)
             const response = await getAppointmentAvailabilityWithBookedAppointments({
                 doctorId: params?.medicalDoctorId,
-                startTime: date.toISOString(),
-                endTime: date.toISOString()
+                startTime: startTime.toISOString(),
+                endTime: addHours(startTime, 23).toISOString()
             })
             if (response.data.length > 0) {
                 const arr = times.filter(e =>
-                    response.data[0].availability.includes(getTimeBlocksByTime(localeDateService.parse(e as string, _DATE_FROM_ISO_8601)))
+                    (response.data[0].availability.includes(getTimeBlocksByTime(localeDateService.parse(e.toString(), _DATE_FROM_ISO_8601)))
+                        && (response.data[0].booked && !response.data[0].booked.includes(getTimeBlocksByTime(localeDateService.parse(e.toString(), _DATE_FROM_ISO_8601)))))
+                    || (response.data[0].availability.includes(getTimeBlocksByTime(localeDateService.parse(e.toString(), _DATE_FROM_ISO_8601)))
+                        && !response.data[0].booked)
+
                 )
                 setAvailableTimes(arr)
             } else {
