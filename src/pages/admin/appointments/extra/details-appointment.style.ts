@@ -81,4 +81,14 @@ export const detailsStyle = StyleSheet.create({
             }
         })
     },
+    viewInfosContainer: {
+        flex: 1,
+        alignItems: 'center',
+        paddingVertical: SPACING
+    },
+    viewInfosBtn: {
+        backgroundColor: 'color-primary-500',
+        borderRadius: 15,
+        padding: SPACING
+    }
 })

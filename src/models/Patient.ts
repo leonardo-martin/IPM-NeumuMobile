@@ -1,4 +1,6 @@
+import { ExamDto } from "./Exam"
 import { TimelineTimeItem } from "./Timeline"
+import { UserDto } from "./User"
 
 export class PatientDiaryEntryDto {
     patientId!: number | undefined
@@ -23,4 +25,12 @@ export class ExamDNA {
     doctor?: {
         crm?: string
     }
+}
+
+
+export class PatientDisplay {
+    userDto!: UserDto;
+    patientDto!: PatientDto;
+    exams!: ExamDto[];
+    // consultAppointments!: AppointmentDto[];
 }
