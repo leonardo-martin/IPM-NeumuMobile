@@ -3,6 +3,8 @@ import HeaderAdmin from '@components/header/admin'
 import HeaderChatRoom from '@components/header/admin/chatRoom'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import DashboardScreen from '@pages/admin'
+import AboutScreen from '@pages/admin/about'
+import DetailsAboutScreen from '@pages/admin/about/details'
 import AppointmentsScreen from '@pages/admin/appointments'
 import DetailsAppointmentsScreen from '@pages/admin/appointments/extra/details-appointment'
 import PatientDisplayAsDoctorScreen from '@pages/admin/appointments/extra/patient-display'
@@ -96,6 +98,8 @@ const AppRoutes: FC = (): ReactElement => {
       }}>
         <Screen name="ShareInformationWithMedicalDoctor" component={ShareInformationWithMedicalDoctorScreen} />
         <Screen name="PatientDisplayAsDoctor" component={PatientDisplayAsDoctorScreen} />
+        <Screen name='AboutDNM' component={AboutScreen} />
+        <Screen name='DetailsAbout' component={DetailsAboutScreen} />
 
         <Screen
           name="Schedule"

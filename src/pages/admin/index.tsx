@@ -153,7 +153,8 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
               )}
               {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
                 <View style={styles.cardGroupSecondary}>
-                  <Card style={[styles.card, styles.shadowCard]}>
+                  <Card style={[styles.card, styles.shadowCard]}
+                    onPress={() => navigation.jumpTo('AboutDNM')}>
                     <View style={styles.cardDefault}>
                       <Icon
                         style={styles.iconPrimary}
