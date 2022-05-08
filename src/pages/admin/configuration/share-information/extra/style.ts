@@ -6,11 +6,8 @@ export const shareInfoTabItemStyle = StyleSheet.create({
   safeArea: {
     flex: 1
   },
-  containerStyle: {
-    padding: SPACING
-  },
   contentStyle: {
-    paddingBottom: SPACING
+    padding: SPACING
   },
   viewItem: {
     flex: 1,
@@ -23,7 +20,7 @@ export const shareInfoTabItemStyle = StyleSheet.create({
     padding: SPACING,
     marginBottom: SPACING,
     backgroundColor: 'background-basic-color-1',
-    borderRadius: 15
+    borderRadius: 10
   },
   itemTitle: {
     fontSize: 16,
@@ -43,7 +40,7 @@ export const shareInfoTabItemStyle = StyleSheet.create({
           height: 10
         },
         shadowOpacity: .3,
-        shadowRadius: 20,
+        shadowRadius: 10,
       },
       android: {
         elevation: 10,

@@ -86,8 +86,7 @@ const ShareInfoTabItemScreen: FC = (): ReactElement => {
     return (
         <SafeAreaLayout level='2' style={styles.safeArea}>
             <List
-                contentContainerStyle={data.length > 5 ? styles.contentStyle : undefined}
-                style={styles.containerStyle}
+                contentContainerStyle={styles.contentStyle}
                 showsVerticalScrollIndicator={false}
                 refreshControl={
                     <RefreshControl
