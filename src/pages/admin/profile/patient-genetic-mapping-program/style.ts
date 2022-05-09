@@ -5,9 +5,7 @@ export const mappingStyle = StyleSheet.create({
         flex: 1
     },
     container: {
-        flex: 1,
-        paddingHorizontal: 25,
-        alignItems: 'center'
+        paddingHorizontal: 25
     },
     subContainer: {
         paddingTop: 15,
@@ -80,6 +78,6 @@ export const mappingStyle = StyleSheet.create({
     },
     containerBtn: {
         paddingVertical: 15,
-        width: '50%'
+        alignItems: 'center'
     }
 })

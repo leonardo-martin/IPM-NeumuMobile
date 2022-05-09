@@ -12,7 +12,8 @@ import { getRelationPastExams } from '@utils/common'
 import { onlyNumbers } from '@utils/mask'
 import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Keyboard, ScrollView, TouchableOpacity, View } from 'react-native'
+import { Keyboard, TouchableOpacity, View } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Modalize } from 'react-native-modalize'
 import { Host, Portal } from 'react-native-portalize'
 import { examResult } from './data'
@@ -122,21 +123,20 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
         <Host>
             <HeaderAdmin />
             <SafeAreaLayout level='1' style={styles.safeArea}>
-                <ScrollView
+                <KeyboardAwareScrollView
                     keyboardShouldPersistTaps='handled'
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ flexGrow: 1 }}>
-                    <View style={styles.container}>
-
-                        <View style={styles.subContainer}>
-                            <Text style={styles.title}>Como funciona ?</Text>
-                            <Text style={styles.text}>
-                                Aceitando participar, e após este cadastro feito, será enviado um e-mail direto do aplicativo para que você forneça informações sobre você e/ou seu filho.
-                            </Text>
-                            <Text style={styles.text}>
-                                Você será solicitado a ceder informações importantes com relação a exames realizados para o diagnóstico clínico da distrofia muscular, confirmado pelo seu médico neurologista. Após o envio, os pais, responsáveis e/ou médicos dos pacientes deverão preencher o questionário que será disponibilizado pelo aplicativo.
-                            </Text>
-                        </View>
+                    enableOnAndroid
+                >
+                    <View
+                        style={styles.container}>
+                        <Text style={styles.title}>Como funciona ?</Text>
+                        <Text style={styles.text}>
+                            Aceitando participar, e após este cadastro feito, será enviado um e-mail direto do aplicativo para que você forneça informações sobre você e/ou seu filho.
+                        </Text>
+                        <Text style={styles.text}>
+                            Você será solicitado a ceder informações importantes com relação a exames realizados para o diagnóstico clínico da distrofia muscular, confirmado pelo seu médico neurologista. Após o envio, os pais, responsáveis e/ou médicos dos pacientes deverão preencher o questionário que será disponibilizado pelo aplicativo.
+                        </Text>
                         <View style={styles.subContainer}>
                             <Text style={styles.title}>Importante</Text>
                             <Text style={styles.text}>
@@ -241,7 +241,8 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                             </>
                         )}
                     </View>
-                </ScrollView>
+
+                </KeyboardAwareScrollView>
             </SafeAreaLayout>
             <Portal>
                 <ModalizeFixed
@@ -254,10 +255,10 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                     <Text style={styles.textConfirmModalize}>
                         {selectedIndex === 0 ? 'Deseja participar do programa?' : 'Deseja não participar do programa?'}
                     </Text>
-                    <TouchableOpacity style={styles.contentButton} activeOpacity={0.75} onPress={form.handleSubmit(confirm)}>
+                    <TouchableOpacity style={styles.contentButton} activeOpacity={0.75} disabled={isLoading} onPress={form.handleSubmit(confirm)}>
                         <Text style={styles.contentButtonText}>{'Confirmar'.toUpperCase()}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.contentButton, styles.buttonOutline]} activeOpacity={0.75} onPress={close}>
+                    <TouchableOpacity style={[styles.contentButton, styles.buttonOutline]} disabled={isLoading} activeOpacity={0.75} onPress={close}>
                         <Text style={[styles.contentButtonText, styles.buttonTextOutline]}>{'Cancelar'.toUpperCase()}</Text>
                     </TouchableOpacity>
                 </ModalizeFixed>
