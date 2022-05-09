@@ -69,12 +69,14 @@ export const loginStyle = StyleSheet.create({
     justifyContent: 'space-between'
   },
   containerContact: {
-    height: 50,
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
     paddingHorizontal: 5,
+  },
+  containerVersion: {
+    alignItems: 'center'
   },
   contactText: {
     color: 'text-hint-color',

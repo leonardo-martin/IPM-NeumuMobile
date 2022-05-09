@@ -5,7 +5,7 @@ import React, { FC, ReactElement } from 'react'
 import { View } from 'react-native'
 import { infoAppStyle } from './style'
 
-const _VERSION: string = AppInfoService.getVersion() + '.' + AppInfoService.getBuildNumber()
+const _VERSION: string = AppInfoService.getVersion()
 
 const InformationAppScreen: FC = (): ReactElement => {
 

@@ -5,13 +5,14 @@ import TitleNeumu from '@components/titleNeumu'
 import toast from '@helpers/toast'
 import { useAppDispatch } from '@hooks/redux'
 import { useModal } from '@hooks/useModal'
+import { ApprovalsMessageError } from '@models/Common'
 import { LoginDto } from '@models/User'
 import { useNavigation } from '@react-navigation/native'
+import { AppInfoService } from '@services/app-info.service'
 import { AppStorage } from '@services/app-storage.service'
 import { authLogin } from '@services/auth.service'
 import { Button, CheckBox, Icon, IconProps, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { matchMessage, openMailTo } from '@utils/common'
-import { ApprovalsMessageError } from 'models/Common'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Keyboard, Platform, StatusBar, View } from 'react-native'
@@ -19,6 +20,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Keychain from 'react-native-keychain'
 import { loginStyle } from './style'
+
+const _VERSION: string = AppInfoService.getVersion()
 
 const _optionsKeychain: Keychain.Options = {
   service: 'sec_login', storage: Keychain.STORAGE_TYPE.RSA
@@ -271,6 +274,9 @@ const SignInScreen: FC = (): ReactElement => {
               <Icon name='mail'
                 size={20}
                 style={styles.icon} />
+            </View>
+            <View style={styles.containerVersion}>
+              <Text style={[styles.contactText, { fontWeight: 'bold', textTransform: 'none' }]}>{"v" + _VERSION}</Text>
             </View>
           </TouchableOpacity>
         </SafeAreaLayout>

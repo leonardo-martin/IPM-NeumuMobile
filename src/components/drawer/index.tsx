@@ -13,7 +13,7 @@ import React, { ReactElement } from 'react'
 import { ImageBackground, View } from 'react-native'
 import { drawerStyle } from './style'
 
-const _VERSION: string = AppInfoService.getVersion() + '.' + AppInfoService.getBuildNumber()
+const _VERSION: string = AppInfoService.getVersion()
 const iconSizeDefault = 20
 
 const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
