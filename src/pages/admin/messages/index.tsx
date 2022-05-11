@@ -1,12 +1,13 @@
-import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { ListRenderItemInfo, View } from 'react-native'
-import { Icon, IconProps, Input, List, useStyleSheet } from '@ui-kitten/components'
-import MessageItem from './extra/message-item'
+import ListEmptyComponent from '@components/list/empty'
+import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { Message } from '@services/message.service'
+import { Icon, IconProps, Input, List, useStyleSheet } from '@ui-kitten/components'
+import React, { FC, ReactElement, useEffect, useState } from 'react'
+import { ListRenderItemInfo } from 'react-native'
 import { initialMessages } from './data'
+import MessageItem from './extra/message-item'
 import { messagesStyle } from './style'
-import { SafeAreaLayout } from '@components/safeAreaLayout'
 
 const MessagesScreen: FC<DrawerContentComponentProps> = ({
     navigation
@@ -51,20 +52,23 @@ const MessagesScreen: FC<DrawerContentComponentProps> = ({
     return (
         <>
             <SafeAreaLayout style={styles.safeArea} level='1' >
-                <Input
-                    style={styles.input}
-                    placeholder='Pesquisar'
-                    onChangeText={setSearchQuery}
-                    value={searchQuery}
-                    autoCorrect={false}
-                    autoCapitalize='none'
-                    keyboardType='default'
-                    accessoryLeft={SearchIcon}
-                    accessoryRight={searchQuery !== '' ? CloseIcon : undefined}
-                />
                 <List
+                    style={styles.list}
+                    ListHeaderComponent={<Input
+                        style={styles.input}
+                        placeholder='Pesquisar'
+                        onChangeText={setSearchQuery}
+                        value={searchQuery}
+                        autoCorrect={false}
+                        autoCapitalize='none'
+                        keyboardType='default'
+                        accessoryLeft={SearchIcon}
+                        accessoryRight={searchQuery !== '' ? CloseIcon : undefined}
+                    />}
                     data={messages}
                     renderItem={renderItem}
+                    ListEmptyComponent={<ListEmptyComponent />}
+                    contentContainerStyle={{ flex: 1 }}
                 />
             </SafeAreaLayout>
 

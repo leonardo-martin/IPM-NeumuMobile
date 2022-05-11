@@ -1,4 +1,4 @@
-import { List, ListProps } from '@ui-kitten/components'
+import { List, ListProps, useStyleSheet } from '@ui-kitten/components'
 import React, { ReactElement, useRef } from 'react'
 import { ListRenderItemInfo, StyleSheet } from 'react-native'
 import { ChatMessageContent } from './chat-message-content.component'
@@ -16,6 +16,7 @@ const chatService: ChatService = new ChatService()
 
 export const Chat = (props: ChatProps): ReactElement => {
 
+  const styles = useStyleSheet(chatStyles)
   const listRef: React.RefObject<any> = useRef()
   let contentHeight: number = 0
 
@@ -50,9 +51,11 @@ export const Chat = (props: ChatProps): ReactElement => {
       message={message}
       shouldShowIndicator={shouldShowMessageIndicator(message)}
     >
-      <ChatMessageContent style={
-        [message.reply ? styles.contentOut : styles.contentIn]
-      } message={message} />
+      <ChatMessageContent
+        style={
+          [message.reply ? styles.contentOut : styles.contentIn]
+        }
+        message={message} />
     </ChatMessage>
   )
 
@@ -76,7 +79,7 @@ export const Chat = (props: ChatProps): ReactElement => {
   )
 }
 
-const styles = StyleSheet.create({
+const chatStyles = StyleSheet.create({
   contentContainer: {
     justifyContent: 'flex-end',
   },

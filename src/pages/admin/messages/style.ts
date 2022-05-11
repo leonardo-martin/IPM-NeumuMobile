@@ -12,6 +12,9 @@ export const messagesStyle = StyleSheet.create({
     },
     input: {
         paddingHorizontal: 16
-    }
+    },
+    list: {
+        backgroundColor: 'background-basic-color-1'
+    },
 })
 

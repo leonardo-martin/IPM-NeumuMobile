@@ -82,7 +82,8 @@ const HeaderChatRoom: FC = (): ReactElement => {
                 alignment="center"
                 title={() => <Text style={[styles.text, styles.titleSecondary]}>{profile?.fullName}</Text>}
                 accessoryLeft={renderLeftIcon}
-                accessoryRight={renderRightActions}
+                //! Desabilitado temporariamente
+                // accessoryRight={renderRightActions}
             />
         </Layout>
     )

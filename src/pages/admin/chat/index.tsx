@@ -71,18 +71,18 @@ const ChatRoomScreen: FC = (): ReactElement => {
       <KeyboardAvoidingView
         style={styles.messageInputContainer}
         offset={keyboardOffset}>
-        <Button
+        {/* <Button
           style={[styles.iconButton, styles.attachButton]}
           status='primary'
           accessoryLeft={PlusIcon}
           onPress={toggleAttachmentsMenu}
-        />
+        /> */}
         <Input
           style={styles.messageInput}
           placeholder='Mensagem'
           value={message}
           onChangeText={setMessage}
-          onFocus={toggleAttachmentsMenu}
+          // onFocus={toggleAttachmentsMenu}
           returnKeyType='send'
           onSubmitEditing={onSendButtonPress}
         />
