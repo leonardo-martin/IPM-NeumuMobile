@@ -1,10 +1,9 @@
-import React, { FC, ReactElement } from 'react'
-import { Layout, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
-import { useNavigation } from '@react-navigation/native'
-import { UseFormReturn } from 'react-hook-form'
-import { TouchableOpacity } from 'react-native'
-
 import { UserDoctorData, UserPatientData } from '@models/User'
+import { useNavigation } from '@react-navigation/native'
+import { Layout, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
+import React, { FC, ReactElement } from 'react'
+import { UseFormReturn } from 'react-hook-form'
+import { Alert, TouchableOpacity } from 'react-native'
 import { BackIcon } from '../icons'
 import { headerStyle } from './style'
 
@@ -26,7 +25,7 @@ const RegisterHeader: FC<HeaderProps> = ({ ...props }): ReactElement => {
 
   const renderBackAction = () => (
     <TopNavigationAction
-      onPress={props.active === 0 ? goBack : props.onBack}
+      onPress={back}
       icon={BackIcon} />
   )
 
@@ -39,6 +38,21 @@ const RegisterHeader: FC<HeaderProps> = ({ ...props }): ReactElement => {
         style={styles.label}>{(props.numberScreens - 1) === props.active ? 'Cadastrar' : 'Avançar'}</Text>
     </TouchableOpacity>
   )
+
+  const back = () => {
+    if (props.active > 0) {
+      props.onBack()
+    } else {
+      Alert.alert("Deseja sair do cadastro?", "Todos os dados serão perdidos", [
+        {
+          text: "Não",
+          onPress: () => null,
+          style: "cancel"
+        },
+        { text: "Sim", onPress: () => goBack() }
+      ])
+    }
+  }
 
   return (
     <>

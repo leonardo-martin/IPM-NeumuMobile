@@ -6,15 +6,15 @@ import toast from '@helpers/toast'
 import { PatientProfileCreatorDto, PatientProfileCreatorTypeEnum, RelationshipPatient } from '@models/PatientProfileCreator'
 import { RegisterParams } from '@models/SignUpProps'
 import { UserDoctorData, UserPatientData } from '@models/User'
-import { useNavigation, useRoute } from '@react-navigation/native'
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { uploadTutorFile } from '@services/document.service'
 import { createPatientProfileCreator, createUser } from '@services/user.service'
 import { Button, CheckBox, Spinner, useStyleSheet } from '@ui-kitten/components'
 import { extractFieldString } from '@utils/common'
 import { cleanNumberMask } from '@utils/mask'
-import React, { FC, ReactElement, useRef, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Platform, View } from 'react-native'
+import { Alert, BackHandler, Platform, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import { Modalize } from 'react-native-modalize'
 import { Host, Portal } from 'react-native-portalize'
@@ -59,6 +59,29 @@ const SignUpScreen: FC = (): ReactElement => {
     const onBack = () => setActive((p) => p - 1)
     const onNext = () => setActive((p) => p + 1)
     const onDone = () => modalizeRef.current?.open()
+
+    useFocusEffect(
+        useCallback(() => {
+            const onBackPress = () => {
+                if (active > 0) {
+                    onBack()
+                    return true
+                } else {
+                    Alert.alert("Deseja sair do cadastro?", "Todos os dados serão perdidos", [
+                        {
+                          text: "Não",
+                          onPress: () => null,
+                          style: "cancel"
+                        },
+                        { text: "Sim", onPress: () => navigation.goBack() }
+                      ])
+                    return true
+                }
+            }
+            const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress)
+            return () => subscription.remove()
+        }, [active])
+    )
 
     const submit = async (data: UserPatientData | UserDoctorData) => {
         setIsLoading(!isLoading)
@@ -165,7 +188,7 @@ const SignUpScreen: FC = (): ReactElement => {
                 }
             } else if (params?.type === 1) {
                 const newData = data as UserDoctorData
-                
+
                 newData.professionalTypeId = "1"
                 if (newData.specialty) newData.specialty.professionalTypeId = "1"
 
