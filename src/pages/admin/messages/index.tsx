@@ -1,13 +1,16 @@
 import ListEmptyComponent from '@components/list/empty'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import toast from "@helpers/toast"
+import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { ChatListEntryDto } from '@models/ChatMessage'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect } from '@react-navigation/native'
 import { getChatList } from '@services/chat-message.service'
+import { setChatList } from '@store/ducks/chat'
 import { Icon, IconProps, Input, List, Spinner, useStyleSheet } from '@ui-kitten/components'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { ListRenderItemInfo, RefreshControl, View } from 'react-native'
+import { RootState } from 'store'
 import MessageItem from './extra/message-item'
 import { messagesStyle } from './style'
 
@@ -16,10 +19,12 @@ const MessagesScreen: FC<DrawerContentComponentProps> = ({
 }): ReactElement => {
     const styles = useStyleSheet(messagesStyle)
     const [searchQuery, setSearchQuery] = useState<string>('')
-    const [messages, setMessages] = useState<ChatListEntryDto[]>([])
-    const [messagesTmp, setMessagesTmp] = useState<ChatListEntryDto[]>([])
+    const [messagesList, setMessagesList] = useState<ChatListEntryDto[]>([])
     const [refreshing, setRefreshing] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
+
+    const dispatch = useAppDispatch()
+    const { messages } = useAppSelector((state: RootState) => state.chat)
 
     const onItemPress = (item: ChatListEntryDto): void => {
         navigation.navigate('ChatRoom', {
@@ -46,8 +51,8 @@ const MessagesScreen: FC<DrawerContentComponentProps> = ({
     )
 
     const onChangeInputSearch = (value: string) => {
-        if (value === '') setMessages(messagesTmp)
-        else setMessages(messagesTmp.filter(e => (e.payload.split(' ').slice(2, e.payload.length).join(' ') ?? '').toLowerCase().includes(value.toLowerCase()) || e.receiverName.toLowerCase().includes(value.toLowerCase())))
+        if (value === '') setMessagesList(messages)
+        else setMessagesList(messages.filter(e => e.senderName.toLowerCase().includes(value.toLowerCase())))
     }
 
     useEffect(() => {
@@ -58,8 +63,8 @@ const MessagesScreen: FC<DrawerContentComponentProps> = ({
         try {
             const response = await getChatList()
             if (response.status === 200) {
-                setMessages(response.data)
-                setMessagesTmp(response.data)
+                setMessagesList(response.data)
+                dispatch(setChatList(response.data))
                 if (refreshing) {
                     toast.success({ message: 'Atualizado com sucesso!', duration: 3000 })
                 }
@@ -78,11 +83,15 @@ const MessagesScreen: FC<DrawerContentComponentProps> = ({
         if (refreshing) loadChat()
     }, [refreshing])
 
+    useEffect(() => {
+        setIsLoading(true)
+        loadChat()
+    }, [])
+
     useFocusEffect(
         useCallback(() => {
-            setIsLoading(true)
-            loadChat()
-        }, [])
+            setMessagesList(messages)
+        }, [messages])
     )
 
 
@@ -106,7 +115,7 @@ const MessagesScreen: FC<DrawerContentComponentProps> = ({
                                 accessoryLeft={SearchIcon}
                                 accessoryRight={searchQuery !== '' ? CloseIcon : undefined}
                             />}
-                        data={messages}
+                        data={messagesList}
                         renderItem={renderItem}
                         ListEmptyComponent={<ListEmptyComponent message='Nenhuma mensagem encontrada' />}
                         contentContainerStyle={{ flex: 1 }}

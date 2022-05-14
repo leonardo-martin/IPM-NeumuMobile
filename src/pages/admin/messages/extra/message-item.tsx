@@ -46,8 +46,8 @@ const MessageItem: FC<MessageItemProps> = ({ message, onPress }): ReactElement =
     <ListItem
       style={styles.listItem}
       onPress={onPress}
-      title={(evaProps) => <Text {...evaProps} style={[evaProps?.style, { fontStyle: 'italic' }]}>{message.senderID === ids?.userId ? message.receiverName : message.senderName}</Text>}
-      description={(evaProps) => <Text {...evaProps} style={[evaProps?.style, { fontStyle: 'italic' }]}>{generateDescription(message.payload) ?? ''}</Text>}
+      title={(evaProps) => <Text {...evaProps} style={[evaProps?.style]}>{message.senderID === ids?.userId ? message.receiverName : message.senderName}</Text>}
+      description={(evaProps) => <Text {...evaProps} style={[evaProps?.style]}>{generateDescription(message.payload) ?? ''}</Text>}
       // accessoryLeft={renderProfileAvatar}
       accessoryLeft={(props: IconProps) => <Icon {...props} name='person-circle-outline' size={30} pack='ionicons' />}
       accessoryRight={renderMessageDate}

@@ -1,12 +1,13 @@
 import { _DATE_FROM_ISO_8601 } from '@constants/date'
 import { API_BASE_URL } from '@constants/uri'
 import toast from '@helpers/toast'
-import { useAppSelector } from '@hooks/redux'
+import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { ChatListEntryDto, Message } from '@models/ChatMessage'
 import { AscendingOrder } from '@models/Common'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
 import { getMessageHistory } from '@services/chat-message.service'
+import { updateMessageList } from '@store/ducks/chat'
 import { Button, Input, useStyleSheet } from '@ui-kitten/components'
 import { sortByDate } from '@utils/common'
 import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
@@ -43,6 +44,7 @@ const ChatRoomScreen: FC = (): ReactElement => {
 
   const [params, setParams] = useState<ChatListEntryDto>()
   const route = useRoute()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setParams(route.params as ChatListEntryDto)
@@ -87,13 +89,10 @@ const ChatRoomScreen: FC = (): ReactElement => {
     }
   }
 
-  useFocusEffect(
-    useCallback(() => {
-      setMessages([])
-      if (params)
-        loadInitialChatMessage()
-    }, [params])
-  )
+  useEffect(() => {
+    if (params)
+      loadInitialChatMessage()
+  }, [params])
 
   const sendButtonEnabled = (): boolean => {
     if (message && message.length > 0 && !(new RegExp(/^\s+$/).test(message)))
@@ -113,8 +112,16 @@ const ChatRoomScreen: FC = (): ReactElement => {
         let receiverId = params?.senderID === ids?.userId ? params?.receiverId : params?.senderID
         const payload = receiverId + ' ' + ids?.userId + ' ' + message
         socketRef.current.emit('msgToServer', payload)
-        setMessages([...messages, new Message(message, localeDateService.format(localeDateService.today(), 'HH:mm A'), true, null)])
+        const timestamp = localeDateService.today()
+        setMessages([...messages, new Message(message, localeDateService.format(timestamp, 'HH:mm A'), true, null)])
+        dispatch(updateMessageList({
+          message: message ?? '',
+          senderID: params?.senderID ?? 0,
+          receiverId: params?.receiverId ?? 0,
+          timestamp: timestamp.toISOString()
+        }))
         setMessage(undefined)
+
       }
     }
 

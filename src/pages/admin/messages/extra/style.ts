@@ -12,8 +12,7 @@ export const messageItemStyle = StyleSheet.create({
     },
     dateText: {
         textAlign: 'right',
-        minWidth: 64,
-        fontStyle: 'italic'
+        minWidth: 64
     },
     icon: {
         color: 'text-info-color'
