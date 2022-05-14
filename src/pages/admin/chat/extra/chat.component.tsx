@@ -87,12 +87,12 @@ const chatStyles = StyleSheet.create({
     marginVertical: 8,
   },
   message: {
-    marginVertical: 4,
+    marginVertical: 2,
   },
   contentIn: {
     backgroundColor: 'color-basic-600',
   },
   contentOut: {
-    backgroundColor: 'color-primary-default',
+    backgroundColor: 'color-primary-500',
   },
 })

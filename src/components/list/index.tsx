@@ -12,13 +12,13 @@ export interface ItemInfo {
     route?: string
 }
 
-type ListComponentProps = {
+interface ListComponentProps extends Omit<ListProps, 'renderItem'> {
     data: ItemInfo[]
     itemStyle?: StyleProp<ViewStyle>
-} & ListProps
+}
 
 const ListComponent: FC<ListComponentProps> = ({
-    data, ...props
+    data, itemStyle, ...props
 }): ReactElement => {
 
     const styles = useStyleSheet(listStyle)
@@ -35,7 +35,7 @@ const ListComponent: FC<ListComponentProps> = ({
 
     const renderItem = (info: ListRenderItemInfo<ItemInfo>) => (
         <ListItem
-            style={[styles.item, props.itemStyle]}
+            style={[styles.item, itemStyle]}
             title={info.item.title}
             description={info.item.description}
             accessoryRight={renderRightIcon}

@@ -1,5 +1,5 @@
 import { AppointmentAvailabilityDTO, AppointmentAvailabilityHelper, AppointmentAvailabilityParams, AppointmentAvailabilityWithBookedParams, AppointmentDto, CreateAppointment } from '@models/Appointment'
-import { AxiosResponse } from 'axios'
+import { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { api } from './api.service'
 
 interface QueryParameters {
@@ -18,25 +18,27 @@ export const createAppointment = async (data: CreateAppointment | undefined): Pr
     })
 }
 
-export const getAppointmentListPatient = async (queryParameters?: QueryParameters): Promise<AxiosResponse<AppointmentDto[], any>> => {
+export const getAppointmentListPatient = async (queryParameters?: QueryParameters, config?: AxiosRequestConfig): Promise<AxiosResponse<AppointmentDto[], any>> => {
 
     return await api.get('appointment/get-appointment-list-patient', {
         params: {
             confirmedByDoctor: queryParameters?.confirmedByDoctor ?? null,
             filterStartDate: queryParameters?.filterStartDate,
             filterEndDate: queryParameters?.filterEndDate
-        }
+        },
+        ...config
     })
 }
 
-export const getAppointmentListDoctor = async (queryParameters?: QueryParameters): Promise<AxiosResponse<AppointmentDto[], any>> => {
+export const getAppointmentListDoctor = async (queryParameters?: QueryParameters, config?: AxiosRequestConfig): Promise<AxiosResponse<AppointmentDto[], any>> => {
 
     return await api.get('appointment/get-appointment-list-doctor', {
         params: {
             confirmedByDoctor: queryParameters?.confirmedByDoctor ?? null,
             filterStartDate: queryParameters?.filterStartDate,
             filterEndDate: queryParameters?.filterEndDate
-        }
+        },
+        ...config
     })
 }
 

@@ -10,18 +10,18 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import Animated, { Layout, LightSpeedInLeft, LightSpeedOutRight } from 'react-native-reanimated'
 import { timelineStyle } from './style'
 
-type TimelineProps = {
-    customData: TimelineItem | undefined
+interface TimelineProps extends Omit<ListProps, 'renderItem'> {
+    data: TimelineItem | undefined | any
     isFiltered?: boolean
     range?: CalendarRange<Date>
     orderBy?: AscendingOrder
     onChangeListSize: Dispatch<React.SetStateAction<number>>
     onDelete: (date: string, item: TimelineTimeItem) => void
     onChange: (date: string, item: TimelineTimeItem) => void
-} & ListProps
+}
 
 const Timeline: FC<TimelineProps> = ({
-    customData, orderBy = AscendingOrder.ASC, range = {}, isFiltered, onChangeListSize, onDelete, onChange, ...props
+    data, orderBy = AscendingOrder.ASC, range = {}, isFiltered, onChangeListSize, onDelete, onChange, ...props
 }): ReactElement => {
 
     const styles = useStyleSheet(timelineStyle)
@@ -33,19 +33,19 @@ const Timeline: FC<TimelineProps> = ({
         list = list.sort((a, b) => sortByDate(a, b, orderBy))
         setListData([...list])
 
-        if (list && customData) {
+        if (list && data) {
             var length = 0
             list.map(item => {
-                length += customData[item].length
+                length += data[item].length
             })
             onChangeListSize(length)
         }
     }
 
     useEffect(() => {
-        if (customData || (customData && isFiltered))
-            orderList(Object.keys(customData))
-    }, [customData, isFiltered])
+        if (data || (data && isFiltered))
+            orderList(Object.keys(data))
+    }, [data, isFiltered])
 
     const renderItem = (info: ListRenderItemInfo<string>) => {
         const date = localeDateService.format(localeDateService.parse(info.item, _DATE_FROM_ISO_8601), 'ddd/DD/MM/YY')
@@ -64,7 +64,7 @@ const Timeline: FC<TimelineProps> = ({
                         </View>
                         <Divider style={styles.verticleLine} />
                         <View style={styles.containerItemColumnInfo}>
-                            {customData && customData[info.item] && customData[info.item].map((item: any, index: number) => {
+                            {data && data[info.item] && data[info.item].map((item: any, index: number) => {
                                 return (
                                     <View key={`${index}-${item.description}`} style={styles.viewTimeline}>
                                         <View style={styles.viewTimelineItem}>

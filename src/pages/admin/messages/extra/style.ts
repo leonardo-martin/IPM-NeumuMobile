@@ -1,8 +1,10 @@
 import { StyleSheet } from 'react-native'
 
+const SPACING = 15
+
 export const messageItemStyle = StyleSheet.create({
     avatar: {
-        marginRight: 10,
+        marginRight: SPACING,
     },
     dateContainer: {
         flexDirection: 'row',
@@ -11,9 +13,14 @@ export const messageItemStyle = StyleSheet.create({
     dateText: {
         textAlign: 'right',
         minWidth: 64,
+        fontStyle: 'italic'
     },
     icon: {
         color: 'text-info-color'
+    },
+    listItem: {
+        paddingVertical: SPACING,
+        paddingHorizontal: SPACING
     }
 })
 

@@ -70,10 +70,6 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement =>
       toast.info({ message: 'Nenhum telefone encontrado.', duration: 1000 })
   }, [profile])
 
-  const onMessageButtonPress = (): void => {
-    // TODO
-  }
-
   const onShare = async () => {
     try {
       await Share.share({
@@ -109,12 +105,7 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement =>
             <Button style={styles.profileButton}
               status='control'
               accessoryLeft={PhoneCallIcon}
-              onPress={onCallButtonPress} />
-            {/* <Button style={styles.profileButton}
-            status='control'
-            accessoryLeft={MessageCircleIcon}
-            onPress={onMessageButtonPress}
-          /> */}
+              onPress={onCallButtonPress} />           
             <Button style={styles.profileButton}
               status='control'
               accessoryLeft={ShareIcon}

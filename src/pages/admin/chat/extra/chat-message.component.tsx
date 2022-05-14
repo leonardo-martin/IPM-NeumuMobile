@@ -22,7 +22,7 @@ export const ChatMessage = (props: ChatMessageProps): ReactElement => {
     <Text
       style={styles.date}
       appearance='hint'
-      category='c2'>
+      category='c1'>
       {message.date?.toString()}      
     </Text>
   )
@@ -55,9 +55,8 @@ const themedStyles = StyleService.create({
   containerOut: {
     flexDirection: 'row-reverse',
   },
-  
   date: {
-    marginHorizontal: 18,
+    marginHorizontal: 10,
   },
   indicator: {
     width: 6,
@@ -72,7 +71,7 @@ const themedStyles = StyleService.create({
     ],
   },
   indicatorOut: {
-    backgroundColor: 'color-primary-default',
+    backgroundColor: 'color-primary-500',
     transform: [
       { rotate: '90deg' },
       { translateY: 3 },

@@ -9,7 +9,7 @@ export const chatRoomStyle = StyleSheet.create({
     },
     listContent: {
         paddingVertical: 12,
-        paddingHorizontal: 8,
+        paddingHorizontal: 5,
     },
     footer: {
         position: 'absolute',

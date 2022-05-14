@@ -164,7 +164,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                       />
                     </View>
                     <Text category="h6" style={styles.cardText}>
-                      Sobre
+                      Informações
                     </Text>
                   </Card>
                   <Card style={[styles.card, styles.shadowCard]}

@@ -1,3 +1,4 @@
+import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _FORMAT_DATE_EN_US } from '@constants/date'
 import toast from '@helpers/toast'
 import { useAppSelector } from '@hooks/redux'
@@ -7,7 +8,7 @@ import { EUserRole } from '@models/UserRole'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { doctorConfirmAppointment, doctorDeleteAppointment, getAppointmentListDoctor, getAppointmentListPatient, patientDeleteAppointment } from '@services/appointment.service'
 import { Divider, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
-import { SafeAreaLayout } from 'components/safeAreaLayout'
+import axios, { AxiosRequestConfig } from 'axios'
 import { addMinutes } from 'date-fns'
 import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { View } from 'react-native'
@@ -44,16 +45,15 @@ const AppointmentsScreen: FC = (): ReactElement => {
         )
     }
 
-    const loadData = async () => {
-
+    const loadData = async (config?: AxiosRequestConfig) => {
         let res
         const bPatient = sessionUser?.userRole.find(e => e.id === EUserRole.patient)
         const bDoctor = sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor)
         if (bPatient) {
-            res = await getAppointmentListPatient()
+            res = await getAppointmentListPatient(undefined, config)
             setType(TypeUser.PATIENT)
         } else if (bDoctor) {
-            res = await getAppointmentListDoctor()
+            res = await getAppointmentListDoctor(undefined, config)
             setType(TypeUser.MEDICAL_DOCTOR)
             setFutureMonthsLimit(12)
         }
@@ -82,8 +82,13 @@ const AppointmentsScreen: FC = (): ReactElement => {
 
     useFocusEffect(
         useCallback(() => {
+            const CancelToken = axios.CancelToken
+            const source = CancelToken.source()
             if (sessionUser) {
-                loadData()
+                loadData({ cancelToken: source.token })
+            }
+            return () => {
+                source.cancel()
             }
         }, [])
     )

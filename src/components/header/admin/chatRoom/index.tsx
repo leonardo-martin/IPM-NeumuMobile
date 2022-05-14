@@ -1,10 +1,12 @@
+import { BackIcon, OptionsIcon } from '@components/header/icons'
+import { useAppSelector } from '@hooks/redux'
+import { ChatListEntryDto } from '@models/ChatMessage'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { Icon, IconProps, Layout, MenuItem, OverflowMenu, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { BackHandler, View } from 'react-native'
-import { Icon, IconProps, Layout, MenuItem, OverflowMenu, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
-import { useNavigation, useRoute } from '@react-navigation/native'
+import { RootState } from 'store'
 import { headerStyle } from './style'
-import { Message, Profile } from '@services/message.service'
-import { BackIcon, OptionsIcon } from '@components/header/icons'
 
 const HeaderChatRoom: FC = (): ReactElement => {
     const [visible, setVisible] = useState(false)
@@ -13,10 +15,11 @@ const HeaderChatRoom: FC = (): ReactElement => {
     const { goBack, navigate } = useNavigation<any>()
     const route = useRoute()
     const { params } = route
-    const [profile, setProfile] = useState<Profile | undefined>((params as Message).profile)
+    const [profile, setProfile] = useState<ChatListEntryDto | undefined>((params as ChatListEntryDto))
+    const { ids } = useAppSelector((state: RootState) => state.user)
 
     useEffect(() => {
-        setProfile((params as Message).profile)
+        setProfile((params as ChatListEntryDto))
     }, [params])    
 
     const renderLeftIcon = () => (
@@ -47,9 +50,9 @@ const HeaderChatRoom: FC = (): ReactElement => {
     const goAbout = () => {
         navigate("DoctorProfile", {
             ...profile,
-            location: 'São Paulo, 123 - CEP 12345-456 - SP',
-            description: `Olá. Eu sou ${profile?.fullName}`,
-            phone: '11 1111-1111'
+            // location: 'São Paulo, 123 - CEP 12345-456 - SP',
+            // description: `Olá. Eu sou ${profile?.fullName}`,
+            // phone: '11 1111-1111'
         })
         setVisible(false)
     }
@@ -80,7 +83,7 @@ const HeaderChatRoom: FC = (): ReactElement => {
         <Layout level="1" style={styles.layout}>
             <TopNavigation
                 alignment="center"
-                title={() => <Text style={[styles.text, styles.titleSecondary]}>{profile?.fullName}</Text>}
+                title={profile?.senderID === ids?.userId ? profile?.receiverName : profile?.senderName}
                 accessoryLeft={renderLeftIcon}
                 //! Desabilitado temporariamente
                 // accessoryRight={renderRightActions}

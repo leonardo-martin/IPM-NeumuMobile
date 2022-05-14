@@ -82,13 +82,24 @@ export const detailsStyle = StyleSheet.create({
         })
     },
     viewInfosContainer: {
-        flex: 1,
         alignItems: 'center',
         paddingVertical: SPACING
     },
     viewInfosBtn: {
+        flexDirection: 'row',
+        alignItems: 'center',
         backgroundColor: 'color-primary-500',
         borderRadius: 15,
         padding: SPACING
-    }
+    },
+    icon: {
+        color: 'text-control-color'
+    },
+    messageButton: {
+        margin: 5,
+        borderRadius: 100,
+        width: 45,
+        borderWidth: .5,
+        borderColor: 'border-alternative-color-1'
+    },
 })

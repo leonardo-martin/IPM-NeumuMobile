@@ -143,13 +143,11 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
                 }} />
             <SafeAreaLayout style={styles.safeArea} level='1' >
                 <Timeline                    
-                    data={undefined}
-                    renderItem={undefined}
+                    data={data}
                     ListHeaderComponent={headerListComponent}
                     onDelete={onDeleteItem}
                     onChange={onViewItem}
                     isFiltered={isFiltered}
-                    customData={data}
                     orderBy={AscendingOrder.DESC}
                     range={range}
                     onChangeListSize={setListLength}

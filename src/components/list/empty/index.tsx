@@ -2,13 +2,13 @@ import { Text, useStyleSheet } from '@ui-kitten/components'
 import React, { FC, ReactElement } from 'react'
 import { StyleSheet, View } from 'react-native'
 
-const ListEmptyComponent: FC = (): ReactElement => {
+const ListEmptyComponent: FC<{ message?: string }> = ({ message = 'Nenhum resultado encontrado' }): ReactElement => {
 
     const styles = useStyleSheet(emptyStyle)
 
     return (
         <View style={styles.containerEmpty}>
-            <Text style={styles.textEmpty}>Nenhum resultado encontrado</Text>
+            <Text style={styles.textEmpty}>{message}</Text>
         </View>
     )
 }

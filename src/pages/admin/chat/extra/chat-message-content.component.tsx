@@ -21,6 +21,7 @@ export const ChatMessageContent: FC<ChatMessageContentProps> = (props): ReactEle
   const renderText = (): ReactElement => (
     <Text
       style={styles.text}
+      category='label'
       status='control'>
       {message.text}
     </Text>

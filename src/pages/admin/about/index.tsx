@@ -82,13 +82,13 @@ const AboutScreen: FC = (): ReactElement => {
                 style={styles.list}
                 ListHeaderComponent={
                     <View style={styles.headerList}>
-                        <Text
+                        {/* <Text
                             status='primary'
                             category='label'
                             style={{
                                 textAlign: 'center',
                                 paddingBottom: 15
-                            }}>Doenças Neuromusuculares</Text>
+                            }}>Doenças Neuromusuculares</Text> */}
                         <Input
                             disabled={diseaseList.length === 0}
                             placeholder='Pesquisar'

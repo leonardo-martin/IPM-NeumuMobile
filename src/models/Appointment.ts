@@ -28,12 +28,14 @@ export interface AppointmentDto {
 }
 
 export interface MedicalDoctorySummaryDto {
+    id: number
     name: string
     specialty: string
     crm: string
 }
 
 export interface PatientSummaryDto {
+    id: number
     name: string
     patientId: number
 }

@@ -29,8 +29,8 @@ export class ExamDNA {
 
 
 export class PatientDisplay {
-    userDto!: UserDto;
-    patientDto!: PatientDto;
-    exams!: ExamDto[];
+    userDto!: UserDto
+    patientDto!: PatientDto
+    exams!: ExamDto[]
     // consultAppointments!: AppointmentDto[];
 }

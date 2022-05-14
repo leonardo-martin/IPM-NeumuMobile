@@ -83,8 +83,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
           )}
           ListFooterComponent={
             sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? renderFooterComponent
-              : exitComponent}
-          renderItem={undefined} />
+              : exitComponent}/>
       </SafeAreaLayout>
     </>
   )

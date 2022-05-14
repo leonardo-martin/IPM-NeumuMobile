@@ -11,5 +11,13 @@ export const data: ItemData[] = [
     {
         title: 'Novas mensagens',
         checked: true,
+    },
+    {
+        title: 'DNM',
+        checked: false,
+    },
+    {
+        title: 'Novos parceiros',
+        checked: true,
     }
 ]
