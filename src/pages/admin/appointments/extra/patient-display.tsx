@@ -88,7 +88,7 @@ const PatientDisplayAsDoctorScreen: FC = (): ReactElement => {
                             />
                             <MenuGroup title='Exames do Paciente'
                                 accessoryLeft={(props: IconProps) => <Icon {...props} name='thermometer' pack='eva' />}>
-                                {params.exams ? (params.exams.map(item =>
+                                {params.exams.length > 0 ? (params.exams.map(item =>
                                     <MenuItem key={item.id}
                                         accessoryLeft={(props: IconProps) => <Icon {...props} name='file-text' pack='eva' />}
                                         title={(evaProps) => <>
