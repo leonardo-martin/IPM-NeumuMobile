@@ -57,10 +57,12 @@ const ConfigurationScreen: FC = (): ReactElement => {
     )
 
     const loadBadgeCount = async () => {
-        const res = await patientGetAuthorizationRequests({ authorized: false })
-        if (res && res.data) {
-            setData(res.data)
-            setPendingCounter(res.data.length)
+        if (sessionUser?.userRole.find(e => e.id === EUserRole.patient)) {
+            const res = await patientGetAuthorizationRequests({ authorized: false })
+            if (res && res.data) {
+                setData(res.data)
+                setPendingCounter(res.data.length)
+            }
         }
     }
 
