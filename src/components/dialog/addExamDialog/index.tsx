@@ -10,27 +10,28 @@ import { uploadExam } from '@services/exam.service'
 import { Button, Card, Datepicker, Icon, IconProps, Input, Modal, PopoverPlacements, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Keyboard, Platform, View } from 'react-native'
+import { Keyboard, Platform, TouchableOpacity, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import { RootState } from 'store'
 import { modalStyle } from './style'
 
 interface AddExamDialogProps {
     ref: ForwardedRef<Modal>
-    onRefresh: Dispatch<React.SetStateAction<ExamDto & ExamImage | undefined>>
+    onRefresh?: Dispatch<React.SetStateAction<ExamDto & ExamImage | undefined>>
     onVisible: Dispatch<React.SetStateAction<boolean>>
     visible: boolean
     exam?: ExamDto
+    readOnly?: boolean
 }
 
 const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithChildren<AddExamDialogProps>>(({
-    onVisible, visible, ...props }, ref): ReactElement => {
+    onVisible, visible, readOnly = false, ...props }, ref): ReactElement => {
 
     const { ids } = useAppSelector((state: RootState) => state.user)
     const { localeDateService } = useDatepickerService()
     const combinedRef = useCombinedRefs(ref, ref)
     const form = useForm<ExamDto & ExamImage>({
-        defaultValues: props.exam
+        defaultValues: props.exam,
     })
 
     const styles = useStyleSheet(modalStyle)
@@ -114,7 +115,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                     documentId: response.data.id
                 }
                 await uploadExam(item)
-                props.onRefresh(item)
+                props.onRefresh ? props.onRefresh(item) : undefined
                 handleVisibleModal()
             }
 
@@ -161,8 +162,9 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                         }}
                         render={({ field: { onChange, onBlur, value, name, ref } }) => (
                             <Datepicker
+                                disabled={readOnly}
                                 size='small'
-                                label='Data do Exame *'
+                                label={'Data do Exame' + (readOnly ? '' : ' *')}
                                 date={value}
                                 onSelect={onChange}
                                 accessoryRight={CalendarIcon}
@@ -192,8 +194,9 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                         }}
                         render={({ field: { onChange, onBlur, value, name, ref } }) => (
                             <Datepicker
+                                disabled={readOnly}
                                 size='small'
-                                label='Resultado do Exame *'
+                                label={'Resultado do Exame' + (readOnly ? '' : ' *')}
                                 date={value}
                                 onSelect={onChange}
                                 accessoryRight={CalendarIcon}
@@ -213,75 +216,94 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                         name='examResultDate'
                     />
                     {form.formState.errors.examResultDate?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.examResultDate?.message}</Text>}
-                    <Controller
-                        control={form.control}
-                        rules={{
-                            required: {
-                                value: true,
-                                message: 'Campo obrigatório'
-                            }
-                        }}
-                        render={({ field: { onChange, onBlur, value, name, ref } }) => (
-                            <Input
-                                size='small'
-                                label={evaProps => <Text {...evaProps}>TIPO DE EXAME *</Text>}
-                                style={styles.input}
-                                keyboardType='default'
-                                testID={name}
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                                ref={ref}
-                                maxLength={30}
-                                returnKeyType="next"
-                                onSubmitEditing={() => form.setFocus('data.examDescription')}
-                                underlineColorAndroid="transparent"
-                                onPressIn={clearError}
-                            />
-                        )}
-                        name='examType'
-                        defaultValue=''
-                    />
-                    {form.formState.errors.examType && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.examType?.message}</Text>}
-                    <Controller
-                        control={form.control}
-                        rules={{
-                            required: {
-                                value: true,
-                                message: 'Campo obrigatório'
-                            }
-                        }}
-                        render={({ field: { onChange, onBlur, value, name, ref } }) => (
-                            <Input
-                                size='large'
-                                label="Descrição *"
-                                style={styles.input}
-                                keyboardType='default'
-                                testID={name}
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                                ref={ref}
-                                returnKeyType="done"
-                                underlineColorAndroid="transparent"
-                                multiline
-                                textStyle={{ minHeight: 90, textAlignVertical: 'top' }}
-                                onPressIn={clearError}
-                                scrollEnabled
-                                blurOnSubmit={true}
-                            />
-                        )}
-                        name='data.examDescription'
-                        defaultValue=''
-                    />
-                    {form.formState.errors.data?.examDescription && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.data?.examDescription?.message}</Text>}
 
-                    <AttachmentBoxComponent
-                        handleFile={setFileResponse}
-                        file={fileResponse}
-                        label='Anexar Documentação' />
-                    {form.formState.errors.examImage && <Text category='s2' style={styles?.text}>{form.formState.errors.examImage?.message}</Text>}
+                    {readOnly ? (
+                        <>
+                            <View>
+                                <Text style={styles.label}>Tipo de Exame</Text>
+                                <Text style={styles.textValue}>{form.getValues('examType')}</Text>
+                                <Text style={styles.label}>Descrição</Text>
+                                <Text style={styles.textValue}>{form.getValues('data.examDescription')}</Text>
+                            </View>
+                            <View style={{ paddingVertical: 10 }}>
+                                <TouchableOpacity disabled style={styles.downloadBtn}>
+                                    <Text style={styles.download}>Baixar</Text>
+                                    <Icon name='cloud-download-outline' size={20} style={styles.downloadIcon} />
+                                </TouchableOpacity>
+                            </View>
+                        </>
+                    ) : (
+                        <>
+                            <Controller
+                                control={form.control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'Campo obrigatório'
+                                    }
+                                }}
+                                render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                                    <Input
+                                        size='small'
+                                        label={evaProps => <Text {...evaProps}>Tipo de Exame *</Text>}
+                                        style={styles.input}
+                                        keyboardType='default'
+                                        testID={name}
+                                        onBlur={onBlur}
+                                        onChangeText={!readOnly ? onChange : undefined}
+                                        value={value}
+                                        ref={ref}
+                                        maxLength={30}
+                                        returnKeyType="next"
+                                        onSubmitEditing={() => form.setFocus('data.examDescription')}
+                                        underlineColorAndroid="transparent"
+                                        onPressIn={clearError}
+                                    />
+                                )}
+                                name='examType'
+                                defaultValue=''
+                            />
+                            {form.formState.errors.examType && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.examType?.message}</Text>}
+                            <Controller
+                                control={form.control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'Campo obrigatório'
+                                    }
+                                }}
+                                render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                                    <Input
+                                        size='large'
+                                        label="Descrição *"
+                                        style={styles.input}
+                                        keyboardType='default'
+                                        testID={name}
+                                        onBlur={onBlur}
+                                        onChangeText={!readOnly ? onChange : undefined}
+                                        value={value}
+                                        ref={ref}
+                                        returnKeyType="done"
+                                        underlineColorAndroid="transparent"
+                                        multiline
+                                        textStyle={{ minHeight: 90, textAlignVertical: 'top' }}
+                                        onPressIn={clearError}
+                                        scrollEnabled
+                                        blurOnSubmit={true}
+                                    />
+                                )}
+                                name='data.examDescription'
+                                defaultValue=''
+                            />
+                            {form.formState.errors.data?.examDescription && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.data?.examDescription?.message}</Text>}
 
+                            <AttachmentBoxComponent
+                                handleFile={setFileResponse}
+                                file={fileResponse}
+                                label='Anexar Documentação' />
+                            {form.formState.errors.examImage && <Text category='s2' style={styles?.text}>{form.formState.errors.examImage?.message}</Text>}
+                        </>
+                    )}
                 </View>
 
                 {isError && (
@@ -289,20 +311,28 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                         <Text status='danger' category='s1' style={[styles.text, { textAlign: 'center' }]}>{errorMessage}</Text>
                     </View>
                 )}
-                <View style={styles.viewCardBtn}>
-                    <Button status='danger'
+                {!readOnly ? (
+                    <View style={styles.viewCardBtn}>
+                        <Button status='danger'
+                            style={styles.button}
+                            onPress={isLoading ? undefined : handleVisibleModal}>
+                            Cancelar
+                        </Button>
+                        <Button status='success'
+                            style={styles.button}
+                            onPress={form.handleSubmit(submitForm)}
+                            disabled={isLoading}
+                            accessoryLeft={isLoading ? LoadingIndicator : undefined}>
+                            {isLoading ? '' : 'Salvar'}
+                        </Button>
+                    </View>
+                ) : (
+                    <Button status='info'
                         style={styles.button}
-                        onPress={isLoading ? undefined : handleVisibleModal}>
-                        Cancelar
+                        onPress={handleVisibleModal}>
+                        Voltar
                     </Button>
-                    <Button status='success'
-                        style={styles.button}
-                        onPress={form.handleSubmit(submitForm)}
-                        disabled={isLoading}
-                        accessoryLeft={isLoading ? LoadingIndicator : undefined}>
-                        {isLoading ? '' : 'Salvar'}
-                    </Button>
-                </View>
+                )}
             </Card>
         </Modal>
     )

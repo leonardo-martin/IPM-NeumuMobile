@@ -118,7 +118,6 @@ const DetailsAppointmentsScreen: FC = (): ReactElement => {
                 isSenderPatient: false,
                 isReceiverPatient: false
             }
-            console.log(item)
             navigation.navigate('ChatRoom', {
                 ...item
             })

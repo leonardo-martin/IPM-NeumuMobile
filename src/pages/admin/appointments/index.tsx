@@ -10,11 +10,12 @@ import { doctorConfirmAppointment, doctorDeleteAppointment, getAppointmentListDo
 import { Divider, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
 import axios, { AxiosRequestConfig } from 'axios'
 import { addMinutes } from 'date-fns'
-import React, { FC, ReactElement, useCallback, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { View } from 'react-native'
 import { Agenda, AgendaEntry, AgendaSchedule } from 'react-native-calendars'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { RootState } from 'store'
+import AppointmentsEmptyData from './extra/empty-data'
 import { appointmentStyle } from './style'
 
 enum TypeUser {
@@ -36,6 +37,8 @@ const AppointmentsScreen: FC = (): ReactElement => {
     const [type, setType] = useState<TypeUser>()
     const navigation = useNavigation<any>()
 
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+
     const styles = useStyleSheet(appointmentStyle)
     const theme = useTheme()
 
@@ -46,6 +49,7 @@ const AppointmentsScreen: FC = (): ReactElement => {
     }
 
     const loadData = async (config?: AxiosRequestConfig) => {
+        setIsLoading(true)
         let res
         const bPatient = sessionUser?.userRole.find(e => e.id === EUserRole.patient)
         const bDoctor = sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor)
@@ -77,7 +81,7 @@ const AppointmentsScreen: FC = (): ReactElement => {
             })
             setItems(newItems)
         }
-
+        setIsLoading(false)
     }
 
     useFocusEffect(
@@ -88,7 +92,7 @@ const AppointmentsScreen: FC = (): ReactElement => {
                 loadData({ cancelToken: source.token })
             }
             return () => {
-                source.cancel()
+                source.cancel('')
             }
         }, [])
     )
@@ -223,7 +227,9 @@ const AppointmentsScreen: FC = (): ReactElement => {
     return (
         <>
             <SafeAreaLayout style={{ flex: 1 }}>
-                <Text style={styles.title}>Agenda</Text>
+                <Text style={styles.title}>{
+                    sessionUser && sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? 'Minhas Consultas' : 'Agenda'
+                }</Text>
                 <Agenda
                     firstDay={0}
                     keyExtractor={item => item}
@@ -241,12 +247,11 @@ const AppointmentsScreen: FC = (): ReactElement => {
                         selectedDayTextColor: theme['color-control-default'],
                         calendarBackground: theme['background-basic-color-1']
                     }}
+                    showsVerticalScrollIndicator={false}
                     refreshing={false}
                     onRefresh={loadData}
                     scrollEventThrottle={16}
-                    renderEmptyData={() => {
-                        return <View />
-                    }}
+                    renderEmptyData={() => <AppointmentsEmptyData loading={isLoading} items={items} />}
                     pastScrollRange={MAX_PAST_MONTHS}
                     futureScrollRange={futureMonthsLimit}
                     showClosingKnob

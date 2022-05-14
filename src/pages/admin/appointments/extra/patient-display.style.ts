@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native"
+import { Platform, StyleSheet } from "react-native"
 
 const SPACING = 20
 
@@ -14,15 +14,19 @@ export const patientDisplayStyle = StyleSheet.create({
     },
     label: {
         paddingEnd: 5,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: 18
     },
     description: {
+        
     },
     textArea: {
         flexDirection: 'row',
-        paddingVertical: 2
+        alignItems: 'center'
     },
-    containerExams: {
+    containerDetails: {
+        flexDirection: 'column',
+        alignItems: 'center',
         padding: SPACING
     },
     title: {
@@ -37,5 +41,27 @@ export const patientDisplayStyle = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'
-    }
+    },
+    menuItemLabel: {
+        fontSize: 12,
+        textTransform: 'uppercase',
+        fontWeight: 'bold',
+        color: 'color-primary-default'
+    },
+    shadow: {
+        ...Platform.select({
+          ios: {
+            shadowColor: 'background-alternative-color-1',
+            shadowOffset: {
+              width: 0,
+              height: 3
+            },
+            shadowOpacity: .3,
+            shadowRadius: 3,
+          },
+          android: {
+            elevation: 3,
+          },
+        }),
+      },
 })

@@ -229,3 +229,62 @@ export const toInitials = (str: string | undefined) =>
         .join("")
         .concat(str.charAt(1).toUpperCase())
         .substring(0, 2) : ''
+
+/**
+ * Função para calcular a idade de uma pessoa, tendo como base o dia de hoje ou outra data se desejar
+ * @param stringDate String referente à data de nascimento da pessoa, no formato dd/mm/yyyy
+ * @param _dateCompare Data a comparar (opcional) | Padrão: Hoje
+ * @returns {}
+ */
+export const calcAge = (stringDate: string, _dateCompare: Date = new Date()): {
+    years: number, months: number, days: number, formatted: string
+} => {
+
+    let yearNow = _dateCompare.getFullYear()
+    let monthNow = _dateCompare.getMonth()
+    let dateNow = _dateCompare.getDate()
+    let dob = new Date(Number(stringDate.substring(6, 10)),
+        Number(stringDate.substring(3, 5)) - 1,
+        Number(stringDate.substring(0, 2))
+    )
+
+    let yearDob = dob.getFullYear()
+    let monthDob = dob.getMonth()
+    let dateDob = dob.getDate()
+    let yearAge = yearNow - yearDob
+
+    if (monthNow >= monthDob)
+        var monthAge = monthNow - monthDob
+    else {
+        yearAge--
+        var monthAge = 12 + monthNow - monthDob
+    }
+
+    if (dateNow >= dateDob)
+        var dateAge = dateNow - dateDob
+    else {
+        monthAge--;
+        var dateAge = 31 + dateNow - dateDob
+
+        if (monthAge < 0) {
+            monthAge = 11
+            yearAge--
+        }
+    }
+
+    let conjunction = ' e '
+    if (yearAge > 0 && monthAge > 0 && dateAge > 0) conjunction = ', '
+    else if (yearAge === 0 && monthAge === 0 && dateAge > 0) conjunction = ''
+    else if (yearAge === 0 && monthAge > 0 && dateAge === 0) conjunction = ''
+
+    let formatted = ((yearAge > 0) ? (yearAge === 1 ? (yearAge + ' ano') : (yearAge + ' anos')) : '') +
+        ((monthAge > 0) ? (monthAge === 1 ? (conjunction + monthAge + ' mês') : (conjunction + monthAge + ' meses')) : '') +
+        ((dateAge > 0) ? (dateAge === 1 ? (((yearAge > 0 || monthAge > 0) ? ' e ' : '') + dateAge + ' dia') : (((yearAge > 0 || monthAge > 0) ? ' e ' : '') + dateAge + ' dias')) : '')
+    return {
+        years: yearAge,
+        months: monthAge,
+        days: dateAge,
+        formatted: formatted === '' ? '0' : formatted
+    }
+
+}

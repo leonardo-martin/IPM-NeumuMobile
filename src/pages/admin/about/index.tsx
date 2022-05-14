@@ -1,4 +1,4 @@
-import ListEmptyComponent from '@components/list/empty'
+import EmptyComponent from '@components/empty'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { DiseaseDto } from '@models/Disease'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
@@ -102,7 +102,7 @@ const AboutScreen: FC = (): ReactElement => {
                         />
                     </View>
                 }
-                ListEmptyComponent={<ListEmptyComponent />}
+                ListEmptyComponent={<EmptyComponent />}
                 data={diseaseList}
                 renderItem={renderItem}
                 keyExtractor={item => item.id.toString()}

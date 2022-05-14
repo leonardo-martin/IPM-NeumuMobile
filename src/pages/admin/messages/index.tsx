@@ -1,4 +1,4 @@
-import ListEmptyComponent from '@components/list/empty'
+import EmptyComponent from '@components/empty'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import toast from "@helpers/toast"
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
@@ -117,7 +117,7 @@ const MessagesScreen: FC<DrawerContentComponentProps> = ({
                             />}
                         data={messagesList}
                         renderItem={renderItem}
-                        ListEmptyComponent={<ListEmptyComponent message='Nenhuma mensagem encontrada' />}
+                        ListEmptyComponent={<EmptyComponent message='Nenhuma mensagem encontrada' />}
                         contentContainerStyle={{ flex: 1 }}
                         refreshControl={
                             <RefreshControl

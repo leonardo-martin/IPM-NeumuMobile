@@ -1,12 +1,16 @@
 
+import AddExamDialog from '@components/dialog/addExamDialog'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import { _DEFAULT_FORMAT_DATE } from '@constants/date'
+import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATE } from '@constants/date'
 import { useDatepickerService } from '@hooks/useDatepickerService'
+import { useModal } from '@hooks/useModal'
+import { ExamDto } from '@models/Exam'
 import { PatientDisplay } from '@models/Patient'
 import { useRoute } from '@react-navigation/native'
-import { Button, Card, Text, useStyleSheet } from '@ui-kitten/components'
+import { Icon, IconProps, Menu, MenuGroup, MenuItem, Modal, Text, useStyleSheet } from '@ui-kitten/components'
+import { calcAge } from '@utils/common'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { ScrollView, View } from 'react-native'
+import { Platform } from 'react-native'
 import { patientDisplayStyle } from './patient-display.style'
 
 const PatientDisplayAsDoctorScreen: FC = (): ReactElement => {
@@ -16,59 +20,96 @@ const PatientDisplayAsDoctorScreen: FC = (): ReactElement => {
     const route = useRoute()
     const [params, setParams] = useState<PatientDisplay>()
 
+    const { ref } = useModal<Modal>()
+    const [visibleAddModal, setVisibleAddModal] = useState<boolean>(false)
+    const [exam, setExam] = useState<ExamDto>()
+
     useEffect(() => {
         setParams(route.params as PatientDisplay)
     }, [route.params])
 
+    const renderRightIcon = (props: IconProps) => (
+        <Icon {...props} name={Platform.OS === 'ios' ? 'chevron-right-outline' : Platform.OS === 'android' ? 'arrow-forward-outline' : 'arrow-forward-outline'} pack='eva' />
+    )
+
+    const showExamModal = (exam: ExamDto) => {
+        setExam(exam)
+    }
+
+    useEffect(() => {
+        if (exam)
+            setVisibleAddModal(true)
+    }, [exam])
+
+    useEffect(() => {
+        if (!visibleAddModal)
+            setExam(undefined)
+    }, [visibleAddModal])
+
+
+    const calcAgeToString = (date: Date) => {
+        const { formatted } = calcAge(localeDateService.format(date, _DEFAULT_FORMAT_DATE))
+        return formatted
+    }
+
     return (
         <>
             <SafeAreaLayout style={styles.safeArea}>
-                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.contentContainer}>
-                    <View style={styles.container}>
-                        <View style={styles.title}>
-                            <Text category='label'>Dados do Paciente</Text>
-                        </View>
-                        <View style={styles.textArea}>
-                            <Text style={styles.label}>Paciente:</Text>
-                            <Text style={styles.description}>{params?.userDto.name}</Text>
-                        </View>
-                        <View style={styles.textArea}>
-                            <Text style={styles.label}>Telefone:</Text>
-                            <Text style={styles.description}>{params?.userDto.phone2 ? (params?.userDto.phone1 + ' | ' + params?.userDto.phone2) : params?.userDto.phone1}</Text>
-                        </View>
-                        <View style={styles.textArea}>
-                            <Text style={styles.label}>Gênero:</Text>
-                            <Text style={styles.description}>{params?.patientDto.sex === 'female' ? 'Feminino' : params?.patientDto.sex === 'male' ? 'Masculino' : 'Prefiro não responder'}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.containerExams}>
-                        <View style={styles.title}>
-                            <Text category='label'>Exames</Text>
-                        </View>
-                        {params?.exams.map(item => (
-                            <Card disabled style={styles.card} key={item.id}>
-                                <View style={styles.cardContainer}>
-                                    <View>
-                                        <View style={styles.textArea}>
-                                            <Text style={styles.label}>Tipo do Exame:</Text>
-                                            <Text style={styles.description}>{item.examType}</Text>
-                                        </View>
-                                        <View style={styles.textArea}>
-                                            <Text style={styles.label}>Data do Exame:</Text>
-                                            <Text style={styles.description}>{localeDateService.format(new Date(item.examDate), _DEFAULT_FORMAT_DATE)}</Text>
-                                        </View>
-                                        <View style={styles.textArea}>
-                                            <Text style={styles.label}>Descrição:</Text>
-                                            <Text style={styles.description}>{item.data.examDescription ?? ''}</Text>
-                                        </View>
-                                    </View>
-                                    <Button disabled size='tiny'>Baixar Exame</Button>
-                                </View>
-                            </Card>
-                        ))}
+                {params && (
+                    <>
+                        <Menu
+                            showsVerticalScrollIndicator={false}
+                        >
+                            <MenuItem
+                                accessoryLeft={(props: IconProps) => <Icon {...props} name='star-outline' pack='eva' />}
+                                title={'Paciente: ' + params.userDto.name}
+                            />
+                            <MenuItem
+                                accessoryLeft={(props: IconProps) => <Icon {...props} name='phone-call-outline' pack='eva' />}
+                                title={'Contato: ' + ((params.userDto.phone2 ? (params.userDto.phone1 + ' | ' + params.userDto.phone2) : params.userDto.phone1))}
+                            />
+                            <MenuItem
+                                accessoryLeft={(props: IconProps) => <Icon {...props} name='person-outline' pack='eva' />}
+                                title={'Gênero: ' + ((params.patientDto.sex === 'female' ? 'Feminino' : params.patientDto.sex === 'male' ? 'Masculino' : 'Não informado'))}
+                            />
+                            <MenuItem
+                                accessoryLeft={(props: IconProps) => <Icon {...props} name='gift-outline' pack='eva' />}
+                                title={'Idade: ' + (calcAgeToString(localeDateService.parse(params.userDto.dateOfBirth.toString(), _DATE_FROM_ISO_8601)))}
+                            />
+                            <MenuItem title='Diário do Paciente'
+                                accessoryLeft={(props: IconProps) => <Icon {...props} name='calendar' pack='eva' />}
+                                accessoryRight={renderRightIcon}
+                            />
+                            <MenuGroup title='Exames do Paciente'
+                                accessoryLeft={(props: IconProps) => <Icon {...props} name='thermometer' pack='eva' />}>
+                                {params.exams ? (params.exams.map(item =>
+                                    <MenuItem key={item.id}
+                                        accessoryLeft={(props: IconProps) => <Icon {...props} name='file-text' pack='eva' />}
+                                        title={(evaProps) => <>
+                                            <Text {...evaProps}>{(item.examType.length > 24 ? `${item.examType.substring(0, 20)}...` : item.examType) + ' | ' + (localeDateService.format(new Date(item.examDate), _DEFAULT_FORMAT_DATE))}</Text>
+                                        </>}
+                                        accessoryRight={renderRightIcon}
+                                        onPress={() => showExamModal(item)}
+                                    />
+                                )) : (
+                                    <MenuItem
+                                        title={(evaProps) => <Text {...evaProps} style={[evaProps?.style, {
+                                            textAlign: 'center', flex: 1
+                                        }]}>Nenhum exame encontrado</Text>}
+                                    />
+                                )}
+                            </MenuGroup>
+                        </Menu>
 
-                    </View>
-                </ScrollView>
+                        <AddExamDialog
+                            ref={ref}
+                            exam={exam}
+                            onVisible={setVisibleAddModal}
+                            visible={visibleAddModal}
+                            readOnly
+                        />
+                    </>
+                )}
             </SafeAreaLayout>
         </>
     )
