@@ -34,7 +34,21 @@ export const modalStyle = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 10
-  }
+  },
+  label: {
+    color: 'text-hint-color',
+    fontFamily: "System",
+    fontSize: 12,
+    fontWeight: "800",
+    marginVertical: 4,
+    textAlign: 'left'
+  },
+  textValue: {
+    fontSize: 12,
+    fontWeight: '600',
+    paddingTop: 5,
+    paddingBottom: 15
+  },
 })
 
 

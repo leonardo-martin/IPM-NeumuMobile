@@ -6,7 +6,7 @@ import { useDatepickerService } from '@hooks/useDatepickerService'
 import { useModal } from '@hooks/useModal'
 import { ExamDto } from '@models/Exam'
 import { PatientDisplay } from '@models/Patient'
-import { useRoute } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { Icon, IconProps, Menu, MenuGroup, MenuItem, Modal, Text, useStyleSheet } from '@ui-kitten/components'
 import { calcAge } from '@utils/common'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
@@ -15,6 +15,7 @@ import { patientDisplayStyle } from './patient-display.style'
 
 const PatientDisplayAsDoctorScreen: FC = (): ReactElement => {
 
+    const { navigate } = useNavigation<any>()
     const styles = useStyleSheet(patientDisplayStyle)
     const { localeDateService } = useDatepickerService()
     const route = useRoute()
@@ -78,6 +79,11 @@ const PatientDisplayAsDoctorScreen: FC = (): ReactElement => {
                             />
                             <MenuItem title='Diário do Paciente'
                                 accessoryLeft={(props: IconProps) => <Icon {...props} name='calendar' pack='eva' />}
+                                onPress={() => navigate('PatientDiaryEntry', {
+                                    title: 'Diário do Paciente',
+                                    readonly: true,
+                                    patientId: params.patientDto.id
+                                })}
                                 accessoryRight={renderRightIcon}
                             />
                             <MenuGroup title='Exames do Paciente'
@@ -106,7 +112,7 @@ const PatientDisplayAsDoctorScreen: FC = (): ReactElement => {
                             exam={exam}
                             onVisible={setVisibleAddModal}
                             visible={visibleAddModal}
-                            readOnly
+                            readonly
                         />
                     </>
                 )}

@@ -59,15 +59,9 @@ export const modalStyle = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     borderWidth: .5,
-    borderRadius: 20,
+    borderRadius: 5,
     backgroundColor: 'background-basic-color-4',
     borderColor: 'border-primary-color-1'
-  },
-  download: {
-    color: 'color-primary-default',
-    textTransform: 'uppercase',
-    fontWeight: '600',
-    paddingEnd: 5
   },
   downloadIcon: {
     color: 'text-primary-color'
@@ -83,7 +77,8 @@ export const modalStyle = StyleSheet.create({
   textValue: {
     fontSize: 12,
     fontWeight: '600',
-    paddingVertical: 5
+    paddingTop: 5,
+    paddingBottom: 15
   },
 })
 

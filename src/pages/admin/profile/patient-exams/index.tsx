@@ -1,5 +1,6 @@
 import AddExamDialog from '@components/dialog/addExamDialog'
 import FilterByDateDialog from '@components/dialog/filterByDateDialog'
+import EmptyComponent from '@components/empty'
 import HeaderGenericWithTitleAndAddIcon from '@components/header/admin/generic-with-add-icon'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATE } from '@constants/date'
@@ -92,7 +93,10 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
             if (resp.status === 201 || resp.status === 200) {
                 const arr = [...data]
                 arr.splice(info.index, 1)
-                setData(arr)
+                if (arr.length === 0)
+                    getExamList()
+                else
+                    setData(arr)
             }
 
         } catch (error) {
@@ -181,10 +185,14 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
 
     const headerListComponent = () => (
         <View style={styles.container}>
-            <View style={styles.viewTop}>
-                <Text style={[styles.text, { paddingHorizontal: 5 }]}>TOTAL:</Text>
-                <Text status='primary' style={styles.text}>{data.length}</Text>
-            </View>
+            {originalData.length > 0 ? (
+                <View style={styles.viewTop}>
+                    <Text style={[styles.text, { paddingHorizontal: 5 }]}>TOTAL:</Text>
+                    <Text status='primary' style={styles.text}>{data.length}</Text>
+                </View>
+            ) : (
+                <View />
+            )}
             <View style={styles.viewTop}>
                 {isFiltered && (
                     <TouchableOpacity onPress={clearFilter}>
@@ -209,6 +217,9 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
             />
             <SafeAreaLayout level='1' style={styles.safeArea}>
                 <List
+                    contentContainerStyle={{
+                        flex: 1
+                    }}
                     style={{ backgroundColor: 'transparent' }}
                     ListHeaderComponent={headerListComponent}
                     data={data}
@@ -220,6 +231,7 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
                             onRefresh={getExamList}
                         />
                     }
+                    ListEmptyComponent={<EmptyComponent message='Nenhum exame encontrado' />}
                 />
                 <FilterByDateDialog
                     ref={refFilter}

@@ -21,11 +21,11 @@ interface AddExamDialogProps {
     onVisible: Dispatch<React.SetStateAction<boolean>>
     visible: boolean
     exam?: ExamDto
-    readOnly?: boolean
+    readonly?: boolean
 }
 
 const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithChildren<AddExamDialogProps>>(({
-    onVisible, visible, readOnly = false, ...props }, ref): ReactElement => {
+    onVisible, visible, readonly = false, ...props }, ref): ReactElement => {
 
     const { ids } = useAppSelector((state: RootState) => state.user)
     const { localeDateService } = useDatepickerService()
@@ -162,9 +162,9 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                         }}
                         render={({ field: { onChange, onBlur, value, name, ref } }) => (
                             <Datepicker
-                                disabled={readOnly}
+                                disabled={readonly}
                                 size='small'
-                                label={'Data do Exame' + (readOnly ? '' : ' *')}
+                                label={'Data do Exame' + (readonly ? '' : ' *')}
                                 date={value}
                                 onSelect={onChange}
                                 accessoryRight={CalendarIcon}
@@ -194,9 +194,9 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                         }}
                         render={({ field: { onChange, onBlur, value, name, ref } }) => (
                             <Datepicker
-                                disabled={readOnly}
+                                disabled={readonly}
                                 size='small'
-                                label={'Resultado do Exame' + (readOnly ? '' : ' *')}
+                                label={'Resultado do Exame' + (readonly ? '' : ' *')}
                                 date={value}
                                 onSelect={onChange}
                                 accessoryRight={CalendarIcon}
@@ -217,7 +217,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                     />
                     {form.formState.errors.examResultDate?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.examResultDate?.message}</Text>}
 
-                    {readOnly ? (
+                    {readonly ? (
                         <>
                             <View>
                                 <Text style={styles.label}>Tipo de Exame</Text>
@@ -227,7 +227,6 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                             </View>
                             <View style={{ paddingVertical: 10 }}>
                                 <TouchableOpacity disabled style={styles.downloadBtn}>
-                                    <Text style={styles.download}>Baixar</Text>
                                     <Icon name='cloud-download-outline' size={20} style={styles.downloadIcon} />
                                 </TouchableOpacity>
                             </View>
@@ -250,7 +249,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                                         keyboardType='default'
                                         testID={name}
                                         onBlur={onBlur}
-                                        onChangeText={!readOnly ? onChange : undefined}
+                                        onChangeText={!readonly ? onChange : undefined}
                                         value={value}
                                         ref={ref}
                                         maxLength={30}
@@ -280,7 +279,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                                         keyboardType='default'
                                         testID={name}
                                         onBlur={onBlur}
-                                        onChangeText={!readOnly ? onChange : undefined}
+                                        onChangeText={!readonly ? onChange : undefined}
                                         value={value}
                                         ref={ref}
                                         returnKeyType="done"
@@ -311,7 +310,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                         <Text status='danger' category='s1' style={[styles.text, { textAlign: 'center' }]}>{errorMessage}</Text>
                     </View>
                 )}
-                {!readOnly ? (
+                {!readonly ? (
                     <View style={styles.viewCardBtn}>
                         <Button status='danger'
                             style={styles.button}

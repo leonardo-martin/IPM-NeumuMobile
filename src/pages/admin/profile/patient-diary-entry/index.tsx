@@ -1,5 +1,6 @@
 import AddPatientDiaryEntryDialog from '@components/dialog/addPatientDiaryEntryDialog'
 import FilterByDateDialog from '@components/dialog/filterByDateDialog'
+import EmptyComponent from '@components/empty'
 import HeaderGenericWithTitleAndAddIcon from '@components/header/admin/generic-with-add-icon'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import Timeline from '@components/timeline'
@@ -11,19 +12,33 @@ import { useModal } from '@hooks/useModal'
 import { AscendingOrder } from '@models/Common'
 import { PatientDiaryEntryDto } from '@models/Patient'
 import { TimelineItem, TimelineTimeItem } from '@models/Timeline'
-import { useFocusEffect } from '@react-navigation/native'
+import { EUserRole } from '@models/UserRole'
+import { useFocusEffect, useRoute } from '@react-navigation/native'
 import { deleteDiaryEntry, getDiaryEntryByRange } from '@services/patient.service'
 import { CalendarRange, Icon, Modal, Text, useStyleSheet } from '@ui-kitten/components'
 import { groupByDateTime } from '@utils/common'
-import React, { FC, ReactElement, useCallback, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { RefreshControl, TouchableOpacity, View } from 'react-native'
 import { RootState } from 'store'
 import { notesStyle } from './style'
+
+interface PatientDiaryEntryParams {
+    title?: string
+    readonly?: boolean
+    patientId?: number
+}
 
 const PatientDiaryEntryScreen: FC = (): ReactElement => {
 
     const { ref: addRef } = useModal<Modal>()
     const { ref: filterRef } = useModal<Modal>()
+
+    const route = useRoute()
+    const [params, setParams] = useState<PatientDiaryEntryParams>()
+
+    useEffect(() => {
+        setParams(route.params as PatientDiaryEntryParams)
+    }, [route.params])
 
     const { ids } = useAppSelector((state: RootState) => state.user)
     const styles = useStyleSheet(notesStyle)
@@ -34,6 +49,7 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
     const [refreshing, setRefreshing] = useState<boolean>(false)
     const { localeDateService } = useDatepickerService()
 
+    const { sessionUser } = useAppSelector((state: RootState) => state.auth)
     const [data, setData] = useState<TimelineItem | undefined>(undefined)
     const [dataModal, setDataModal] = useState<PatientDiaryEntryDto>()
     const [originalData, setOriginalData] = useState<PatientDiaryEntryDto[]>([])
@@ -41,10 +57,19 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
     const [range, setRange] = useState<CalendarRange<Date>>({})
 
     const getPatientCalendarList = useCallback(async () => {
-        const result = await getDiaryEntryByRange((ids?.patientId as number).toString(), range)
-        setOriginalData(result.data)
-        convertList(result.data)
-    }, [])
+        var arr: PatientDiaryEntryDto[] = []
+        if (sessionUser?.userRole.find(e => e.id === EUserRole.patient)) {
+            const result = await getDiaryEntryByRange((ids?.patientId as number), range)
+            arr = result.data
+        } else {
+            if (params?.patientId) {
+                const result = await getDiaryEntryByRange((params.patientId), range, true)
+                arr = result.data
+            }
+        }
+        setOriginalData(arr)
+        convertList(arr)
+    }, [params])
 
     const convertList = (list: PatientDiaryEntryDto[]) => {
         let array = groupByDateTime(list)
@@ -57,7 +82,7 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
             setRefreshing(false)
             setRange({})
             getPatientCalendarList()
-        }, [addedItem])
+        }, [addedItem, params])
     )
 
     const onDeleteItem = async (date: string, item: TimelineTimeItem) => {
@@ -116,10 +141,14 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
 
     const headerListComponent = () => (
         <View style={styles.container}>
-            <View style={styles.viewTop}>
-                <Text style={[styles.text, { paddingHorizontal: 5 }]}>TOTAL:</Text>
-                <Text status='primary' style={styles.text}>{data ? listLength : 0}</Text>
-            </View>
+            {originalData.length > 0 ? (
+                <View style={styles.viewTop}>
+                    <Text style={[styles.text, { paddingHorizontal: 5 }]}>TOTAL:</Text>
+                    <Text status='primary' style={styles.text}>{data ? listLength : 0}</Text>
+                </View>
+            ) : (
+                <View />
+            )}
             <View style={styles.viewTop}>
                 {isFiltered && (
                     <TouchableOpacity onPress={clearFilter}>
@@ -136,13 +165,14 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
     return (
         <>
             <HeaderGenericWithTitleAndAddIcon
-                title='Meu Diário'
+                title={params?.title ?? 'Meu Diário'}
+                hideIcon={params?.readonly}
                 onVisible={() => {
                     setDataModal(undefined)
                     setVisibleAddModal(!visibleAddModal)
                 }} />
             <SafeAreaLayout style={styles.safeArea} level='1' >
-                <Timeline                    
+                <Timeline
                     data={data}
                     ListHeaderComponent={headerListComponent}
                     onDelete={onDeleteItem}
@@ -157,6 +187,8 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
                             onRefresh={getPatientCalendarList}
                         />
                     }
+                    readonly={params?.readonly}
+                    ListEmptyComponent={<EmptyComponent message='Nenhuma nota encontrada' />}
                 />
             </SafeAreaLayout>
             <FilterByDateDialog
@@ -173,7 +205,8 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
                 patientDiaryEntry={dataModal}
                 onRefresh={setAddedItem}
                 onVisible={setVisibleAddModal}
-                visible={visibleAddModal} />
+                visible={visibleAddModal}
+                readonly={params?.readonly} />
         </>
     )
 }

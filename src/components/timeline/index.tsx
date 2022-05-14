@@ -18,10 +18,12 @@ interface TimelineProps extends Omit<ListProps, 'renderItem'> {
     onChangeListSize: Dispatch<React.SetStateAction<number>>
     onDelete: (date: string, item: TimelineTimeItem) => void
     onChange: (date: string, item: TimelineTimeItem) => void
+    readonly?: boolean
 }
 
 const Timeline: FC<TimelineProps> = ({
-    data, orderBy = AscendingOrder.ASC, range = {}, isFiltered, onChangeListSize, onDelete, onChange, ...props
+    data, orderBy = AscendingOrder.ASC, range = {}, isFiltered, onChangeListSize, onDelete, onChange,
+    readonly = false, ...props
 }): ReactElement => {
 
     const styles = useStyleSheet(timelineStyle)
@@ -64,19 +66,29 @@ const Timeline: FC<TimelineProps> = ({
                         </View>
                         <Divider style={styles.verticleLine} />
                         <View style={styles.containerItemColumnInfo}>
-                            {data && data[info.item] && data[info.item].map((item: any, index: number) => {
+                            {data && data[info.item] && data[info.item].map((item: { title: string, description: string }, index: number) => {
                                 return (
-                                    <View key={`${index}-${item.description}`} style={styles.viewTimeline}>
+                                    <View key={`${index}-${item.title}`} style={styles.viewTimeline}>
                                         <View style={styles.viewTimelineItem}>
                                             <Text category='label' style={styles.text}>{item.title} </Text>
-                                            <Text appearance='hint' style={styles.text}>{item.description}</Text>
+                                            <Text appearance='hint' style={styles.text}>{(item.description.length > 48) ? `${item.description.substring(0, 44)}...` : item.description}</Text>
                                         </View>
-                                        <TouchableOpacity style={styles.button} onPress={() => onChange(info.item, item)}>
-                                            <Icon name='create-outline' pack='ionicons' size={20} />
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => onDelete(info.item, item)}>
-                                            <Icon name='trash-outline' pack='ionicons' size={20} />
-                                        </TouchableOpacity>
+                                        {readonly ? (
+                                            <>
+                                                <TouchableOpacity style={styles.button} onPress={() => onChange(info.item, item)}>
+                                                    <Icon name='information-circle-outline' pack='ionicons' size={20} />
+                                                </TouchableOpacity>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <TouchableOpacity style={styles.button} onPress={() => onChange(info.item, item)}>
+                                                    <Icon name='create-outline' pack='ionicons' size={20} />
+                                                </TouchableOpacity>
+                                                <TouchableOpacity onPress={() => onDelete(info.item, item)}>
+                                                    <Icon name='trash-outline' pack='ionicons' size={20} />
+                                                </TouchableOpacity>
+                                            </>
+                                        )}
                                     </View>
                                 )
                             })}
@@ -92,11 +104,15 @@ const Timeline: FC<TimelineProps> = ({
         <View style={styles.container}>
             <List
                 {...props}
+                contentContainerStyle={{
+                    flex: 1
+                }}
                 showsVerticalScrollIndicator={false}
                 style={[props.style, styles.list]}
                 data={listData}
                 keyExtractor={item => item.toString()}
-                renderItem={renderItem} />
+                renderItem={renderItem}
+            />
         </View>
     )
 }

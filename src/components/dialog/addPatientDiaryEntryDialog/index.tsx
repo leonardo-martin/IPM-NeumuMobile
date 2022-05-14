@@ -17,10 +17,11 @@ interface AddPatientDiaryEntryDialogProps {
     onVisible: Dispatch<React.SetStateAction<boolean>>
     visible: boolean
     patientDiaryEntry?: PatientDiaryEntryDto
+    readonly?: boolean
 }
 
 const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardRef<Modal, React.PropsWithChildren<AddPatientDiaryEntryDialogProps>>(({
-    onVisible, visible, ...props }, ref): ReactElement => {
+    onVisible, visible, readonly = false, ...props }, ref): ReactElement => {
 
     const { ids } = useAppSelector((state: RootState) => state.user)
     const route = useRoute()
@@ -97,7 +98,7 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
             onBackdropPress={handleVisibleModal}>
             <Card disabled={true} >
                 <View style={styles.headerModal}>
-                    <Text status='basic' category='label'>Criar Nota</Text>
+                    <Text status='basic' category='label'>{readonly ? 'Detalhes' : 'Criar Nota'}</Text>
                     {route.name === 'PatientDiaryEntry' ?
                         <TouchableOpacity onPress={handleVisibleModal}>
                             <Icon name='close-outline' size={20} style={styles.icon} />
@@ -108,94 +109,106 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                         </TouchableOpacity>
                     }
                 </View>
-                <Controller
-                    control={form.control}
-                    rules={{
-                        required: {
-                            value: true,
-                            message: 'Campo obrigatório'
-                        },
-                        minLength: {
-                            value: 5,
-                            message: `Mín. 5 caracteres`
-                        },
-                    }}
-                    render={({ field: { onChange, onBlur, value, name, ref } }) => (
-                        <Input
-                            size='large'
-                            label="Título *"
-                            style={styles.input}
-                            keyboardType='default'
-                            testID={name}
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                            maxLength={40}
-                            ref={ref}
-                            returnKeyType="next"
-                            underlineColorAndroid="transparent"
-                            onSubmitEditing={() => form.setFocus('data.description')}
-                        />
-                    )}
-                    name='data.title'
-                    defaultValue=''
-                />
-                {form.formState.errors.data?.title && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.data?.title?.message}</Text>}
 
-                <Controller
-                    control={form.control}
-                    rules={{
-                        required: {
-                            value: true,
-                            message: 'Campo obrigatório'
-                        },
-                        minLength: {
-                            value: 5,
-                            message: `Mín. 5 caracteres`
-                        },
-                    }}
-                    render={({ field: { onChange, onBlur, value, name, ref } }) => (
-                        <Input
-                            size='large'
-                            label="Descrição *"
-                            style={styles.input}
-                            keyboardType='default'
-                            testID={name}
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                            multiline
-                            scrollEnabled
-                            textStyle={{ minHeight: 64, textAlignVertical: 'top' }}
-                            ref={ref}
-                            returnKeyType="done"
-                            underlineColorAndroid="transparent"
-                            blurOnSubmit={true}
+                {!readonly ? (
+                    <>
+                        <Controller
+                            control={form.control}
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: 'Campo obrigatório'
+                                },
+                                minLength: {
+                                    value: 5,
+                                    message: `Mín. 5 caracteres`
+                                },
+                            }}
+                            render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                                <Input
+                                    size='large'
+                                    label="Título *"
+                                    style={styles.input}
+                                    keyboardType='default'
+                                    testID={name}
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                    maxLength={40}
+                                    ref={ref}
+                                    returnKeyType="next"
+                                    underlineColorAndroid="transparent"
+                                    onSubmitEditing={() => form.setFocus('data.description')}
+                                />
+                            )}
+                            name='data.title'
+                            defaultValue=''
                         />
-                    )}
-                    name='data.description'
-                    defaultValue=''
-                />
-                {form.formState.errors.data?.description && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.data?.description?.message}</Text>}
+                        {form.formState.errors.data?.title && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.data?.title?.message}</Text>}
 
-                {isError && (
-                    <View style={{ paddingBottom: 10 }}>
-                        <Text status='danger' category='s1' style={[styles.text, { textAlign: 'center' }]}>{errorMessage}</Text>
+                        <Controller
+                            control={form.control}
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: 'Campo obrigatório'
+                                },
+                                minLength: {
+                                    value: 5,
+                                    message: `Mín. 5 caracteres`
+                                },
+                            }}
+                            render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                                <Input
+                                    size='large'
+                                    label="Descrição *"
+                                    style={styles.input}
+                                    keyboardType='default'
+                                    testID={name}
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                    multiline
+                                    scrollEnabled
+                                    textStyle={{ minHeight: 64, textAlignVertical: 'top' }}
+                                    ref={ref}
+                                    returnKeyType="done"
+                                    underlineColorAndroid="transparent"
+                                    blurOnSubmit={true}
+                                />
+                            )}
+                            name='data.description'
+                            defaultValue=''
+                        />
+                        {form.formState.errors.data?.description && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.data?.description?.message}</Text>}
+
+                        {isError && (
+                            <View style={{ paddingBottom: 10 }}>
+                                <Text status='danger' category='s1' style={[styles.text, { textAlign: 'center' }]}>{errorMessage}</Text>
+                            </View>
+                        )}
+                        <View style={styles.viewCardBtn}>
+                            <Button status='danger'
+                                onPress={isLoading ? undefined : handleVisibleModal}
+                                style={styles.button}>
+                                Cancelar
+                            </Button>
+                            <Button status='success'
+                                onPress={form.handleSubmit(submitForm)}
+                                style={styles.button}
+                                accessoryLeft={isLoading ? LoadingIndicator : undefined}>
+                                {isLoading ? '' : 'Salvar'}
+                            </Button>
+                        </View>
+                    </>
+                ) : <>
+                    <View>
+                        <Text style={styles.label}>Título</Text>
+                        <Text style={styles.textValue}>{form.getValues('data.title')}</Text>
+                        <Text style={styles.label}>Descrição</Text>
+                        <Text style={styles.textValue}>{form.getValues('data.description')}</Text>
                     </View>
-                )}
-                <View style={styles.viewCardBtn}>
-                    <Button status='danger'
-                        onPress={isLoading ? undefined : handleVisibleModal}
-                        style={styles.button}>
-                        Cancelar
-                    </Button>
-                    <Button status='success'
-                        onPress={form.handleSubmit(submitForm)}
-                        style={styles.button}
-                        accessoryLeft={isLoading ? LoadingIndicator : undefined}>
-                        {isLoading ? '' : 'Salvar'}
-                    </Button>
-                </View>
+                </>}
             </Card>
         </Modal>
     )

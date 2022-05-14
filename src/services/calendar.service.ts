@@ -1,4 +1,8 @@
+import { CalendarEntryDto } from "@models/Calendar"
+import { CalendarRange } from "@ui-kitten/components"
+import { AxiosResponse } from "axios"
 import RNCalendarEvents, { AuthorizationStatus, Calendar, CalendarEventWritable, Options } from "react-native-calendar-events"
+import { api } from "./api.service"
 
 export const listCalendars = async (): Promise<Calendar[]> => {
     let permissions
@@ -41,4 +45,14 @@ export const addCalendarEvent = async (event: CalendarEventWritable, _calendar: 
         throw e
     }
     return createdEventId
+}
+
+export const getPatientCalendarAsDoctor = async (patientId: string, range: CalendarRange<Date>): Promise<AxiosResponse<CalendarEntryDto[], any>> => {
+    const params = new URLSearchParams()
+    params.append('patientId', patientId)
+    if (range.startDate)
+        params.append('startDate', range.startDate.toISOString())
+    if (range.endDate)
+        params.append('endDate', range.endDate.toISOString())
+    return await api.get('calendar/get-patient-calendar-as-doctor?' + params)
 }

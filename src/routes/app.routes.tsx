@@ -89,6 +89,7 @@ const AppRoutes: FC = (): ReactElement => {
         <Screen name="VisitAddress" component={VisitAddressScreen} />
 
         <Screen name="NewUser" component={NewUserScreen} />
+        <Screen name="MessagesList" component={MessagesScreen} />
       </Group>
 
       <Group screenOptions={{
@@ -120,10 +121,6 @@ const AppRoutes: FC = (): ReactElement => {
         <Screen
           name="MyAppointments"
           component={AppointmentsScreen}
-        />
-        <Screen
-          name="MessagesList"
-          component={MessagesScreen}
         />
         <Screen
           name="DoctorProfile"

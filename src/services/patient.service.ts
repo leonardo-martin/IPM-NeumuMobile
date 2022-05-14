@@ -16,15 +16,15 @@ export const getDiaryEntry = async (patientId: string, date: Date): Promise<Axio
     return await api.get('patient-diary-entry?' + params)
 }
 
-export const getDiaryEntryByRange = async (patientId: string, range: CalendarRange<Date>): Promise<AxiosResponse<PatientDiaryEntryDto[], any>> => {
+export const getDiaryEntryByRange = async (patientId: number, range: CalendarRange<Date>, _medicalDoctor: boolean = false): Promise<AxiosResponse<PatientDiaryEntryDto[], any>> => {
     const params = new URLSearchParams()
-    params.append('patientId', patientId)
+    params.append('patientId', patientId.toString())
     if (range.startDate)
         params.append('startDate', range.startDate.toISOString())
     if (range.endDate)
         params.append('endDate', range.endDate.toISOString())
 
-    return await api.get('patient-diary-entry/get-by-range?' + params)
+    return await api.get(`patient-diary-entry/get-by-range${_medicalDoctor ? '-doctor' : ''}?` + params)
 }
 
 export const deleteDiaryEntry = async (date: Date) => {

@@ -8,6 +8,7 @@ import { useFocusEffect } from '@react-navigation/native'
 import { getChatList } from '@services/chat-message.service'
 import { setChatList } from '@store/ducks/chat'
 import { Icon, IconProps, Input, List, Spinner, useStyleSheet } from '@ui-kitten/components'
+import HeaderGenericWithTitleAndAddIcon from 'components/header/admin/generic-with-add-icon'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { ListRenderItemInfo, RefreshControl, View } from 'react-native'
 import { RootState } from 'store'
@@ -97,6 +98,9 @@ const MessagesScreen: FC<DrawerContentComponentProps> = ({
 
     return (
         <>
+            <HeaderGenericWithTitleAndAddIcon
+                title='Mensagens'
+                hideIcon />
             <SafeAreaLayout style={styles.safeArea} level='1'>
                 {!isLoading ?
                     <List
