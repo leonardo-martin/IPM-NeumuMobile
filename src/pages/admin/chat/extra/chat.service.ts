@@ -1,4 +1,4 @@
-import { Message } from './data'
+import { Message } from "@models/ChatMessage"
 
 type MessageGroup = Message[]
 

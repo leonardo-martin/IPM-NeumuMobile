@@ -1,8 +1,8 @@
+import { Message } from '@models/ChatMessage'
 import { StyleService, Text, TextElement, useStyleSheet } from '@ui-kitten/components'
 import React, { ReactElement } from 'react'
 import { View, ViewProps } from 'react-native'
 import { ChatMessageIndicator } from './chat-message-indicator.component'
-import { Message } from './data'
 
 export interface ChatMessageProps extends ViewProps {
   message: Message

@@ -12,14 +12,7 @@ export class Message {
 export class MessageAttachment {
 
     constructor(readonly source: ImageRequireSource) {
-    }
-
-    static petPhoto1(): MessageAttachment {
-        return new MessageAttachment(0) // require('../assets/image-attachment-1.png')
-    }
-
-    static petPhoto2(): MessageAttachment {
-        return new MessageAttachment(0) // require('../assets/image-attachment-1.png')
+        
     }
 }
 

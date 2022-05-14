@@ -1,8 +1,8 @@
+import { Message } from '@models/ChatMessage'
+import { StyleType } from '@ui-kitten/components'
 import React, { ReactElement } from 'react'
 import { View, ViewProps } from 'react-native'
-import { StyleType } from '@ui-kitten/components'
 import { ChatMessageElement } from './chat-message.component'
-import { Message } from './data'
 
 export interface ChatMessageGroupProps extends ViewProps {
   data: Message[]

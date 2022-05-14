@@ -1,7 +1,7 @@
+import { Message } from '@models/ChatMessage'
+import { Text } from '@ui-kitten/components'
 import React, { FC, ReactElement } from 'react'
 import { Image, StyleSheet, View, ViewProps } from 'react-native'
-import { Text } from '@ui-kitten/components'
-import { Message } from './data'
 
 export interface ChatMessageContentProps extends ViewProps {
   message: Message
@@ -12,10 +12,11 @@ export const ChatMessageContent: FC<ChatMessageContentProps> = (props): ReactEle
   const { style, message, ...viewProps } = props
 
   const renderAttachment = (): ReactElement => (
-    <Image
-      style={styles.attachmentImage}
-      source={require('../assets/image-attachment-1.png')}
-    />
+    // <Image
+    //   style={styles.attachmentImage}
+    //   source={require('../assets/image-attachment-1.png')}
+    // />
+    <></>
   )
 
   const renderText = (): ReactElement => (
@@ -32,7 +33,7 @@ export const ChatMessageContent: FC<ChatMessageContentProps> = (props): ReactEle
       {...viewProps}
       style={[styles.container, style]}>
       {message.text && renderText()}
-      {message.attachment && renderAttachment()}
+      {/* {message.attachment && renderAttachment()} */}
     </View>
   )
 }

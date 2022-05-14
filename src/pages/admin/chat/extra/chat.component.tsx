@@ -1,3 +1,4 @@
+import { Message } from '@models/ChatMessage'
 import { List, ListProps, useStyleSheet } from '@ui-kitten/components'
 import React, { ReactElement, useRef } from 'react'
 import { ListRenderItemInfo, StyleSheet } from 'react-native'
@@ -5,7 +6,6 @@ import { ChatMessageContent } from './chat-message-content.component'
 import { ChatMessageGroup } from './chat-message-group.component'
 import { ChatMessage } from './chat-message.component'
 import { ChatService } from './chat.service'
-import { Message } from './data'
 
 export interface ChatProps extends Omit<ListProps, 'renderItem'> {
   data: Message[]
