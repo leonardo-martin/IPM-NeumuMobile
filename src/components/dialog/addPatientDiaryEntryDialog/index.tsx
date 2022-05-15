@@ -9,6 +9,7 @@ import { Button, Card, Icon, Input, Modal, Spinner, Text, useStyleSheet } from '
 import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { TouchableOpacity, View } from 'react-native'
+import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
 import { modalStyle } from './style'
 
@@ -72,6 +73,16 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
             if (response.status === 201 || response.status === 200) {
                 props.onRefresh(response.data)
                 handleVisibleModal()
+                if (props.patientDiaryEntry)
+                    Toast.show({
+                        type: 'success',
+                        text2: 'Nota atualizada',
+                    })
+                else
+                    Toast.show({
+                        type: 'success',
+                        text2: 'Nota adicionada',
+                    })
             }
         } catch (error) {
             setErrorMessage('Erro ao criar uma nota. Tente novamente mais tarde.')

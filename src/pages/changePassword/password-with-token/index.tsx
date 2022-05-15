@@ -1,6 +1,5 @@
 import CustomErrorMessage from '@components/error'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import toast from '@helpers/toast'
 import { UserAccRecoveryPasswd } from '@models/User'
 import { useNavigation } from '@react-navigation/native'
 import { changePass } from '@services/login.service'
@@ -9,6 +8,7 @@ import { validatePasswd } from '@utils/validators'
 import React, { FC, ReactElement, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { View } from 'react-native'
+import Toast from 'react-native-toast-message'
 import { resetPasswordByTokenStyle } from './style'
 
 const MAX_TOKEN_LENGTH = 32
@@ -33,14 +33,20 @@ const ChangePasswordWithToken: FC = (): ReactElement => {
             if (response && response.status !== 200 && response.status !== 201) {
                 let messageToast = 'Token expirado ou inválido'
                 setIsLoading(false)
-                toast.warning({ message: messageToast, duration: 3000 })
+                Toast.show({
+                    type: 'warning',
+                    text2: messageToast,
+                })
             } else {
                 setIsLoading(false)
                 navigation.navigate('PasswordChangeConfirmation')
             }
 
         } catch (error) {
-            toast.warning({ message: 'Erro desconhecido. Contate o administrador', duration: 3000 })
+            Toast.show({
+                type: 'warning',
+                text2: 'Erro desconhecido. Contate o administrador',
+            })
         } finally {
             setIsLoading(false)
         }

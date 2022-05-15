@@ -14,6 +14,7 @@ import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallbac
 import { Controller, useForm } from 'react-hook-form'
 import { Keyboard, Platform, TouchableOpacity, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
+import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
 import { modalStyle } from './style'
 
@@ -47,7 +48,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
         if (props.exam) {
             // TODO - buscar o documento e fazer o download
             if (sessionUser?.userRole.find(e => e.id === EUserRole.patient)) {
-                
+
             } else if (sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor)) {
                 
             }
@@ -124,7 +125,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                 setIsError(true)
             }
 
-            if (response && response?.status === 201 || response?.status === 200 && response?.data) {
+            if (response && response.status === 201 || response?.status === 200 && response?.data) {
                 const item: ExamDto & ExamImage = {
                     ...data,
                     patientId: ids?.patientId as number,
@@ -133,6 +134,16 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                 await uploadExam(item)
                 props.onRefresh ? props.onRefresh(item) : undefined
                 handleVisibleModal()
+                if (props.exam)
+                    Toast.show({
+                        type: 'success',
+                        text2: 'Exame atualizado',
+                    })
+                else
+                    Toast.show({
+                        type: 'success',
+                        text2: 'Exame adicionado',
+                    })
             }
 
         } catch (error) {
@@ -334,9 +345,9 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                         <Button status='success'
                             style={styles.button}
                             onPress={form.handleSubmit(submitForm)}
-                            disabled={isLoading}
+                            disabled={isLoading || props.exam !== null}
                             accessoryLeft={isLoading ? LoadingIndicator : undefined}>
-                            {isLoading ? '' : 'Salvar'}
+                            {isLoading ? '' : props.exam ? 'Editar' : 'Salvar'}
                         </Button>
                     </View>
                 ) : (

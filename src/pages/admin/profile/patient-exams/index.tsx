@@ -4,7 +4,6 @@ import EmptyComponent from '@components/empty'
 import HeaderGenericWithTitleAndAddIcon from '@components/header/admin/generic-with-add-icon'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATE } from '@constants/date'
-import toast from '@helpers/toast'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { useModal } from '@hooks/useModal'
 import { AscendingOrder } from '@models/Common'
@@ -14,11 +13,12 @@ import { useFocusEffect } from '@react-navigation/native'
 import { deleteExam, getPatientExamList } from '@services/exam.service'
 import { CalendarRange, Icon, IconProps, List, ListItem, Modal, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
 import { orderByDateRange, sortByDate } from '@utils/common'
-import React, { FC, ReactElement, RefObject, useCallback, useState } from 'react'
+import React, { FC, ReactElement, RefObject, useCallback, useEffect, useState } from 'react'
 import { Animated as RNAnimated, ListRenderItemInfo, RefreshControl, TouchableOpacity, View } from 'react-native'
 import { RectButton } from 'react-native-gesture-handler'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import Animated, { Layout, LightSpeedInLeft, LightSpeedOutRight } from 'react-native-reanimated'
+import Toast from 'react-native-toast-message'
 import { myExamsStyle } from './style'
 
 const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
@@ -53,6 +53,19 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
         setOriginalData(result.data)
         orderList(result.data)
     }, [])
+
+    const onRefresh = async () => {
+        await getExamList()
+        Toast.show({
+            type: 'success',
+            text2: 'Atualizado',
+        })
+        setRefreshing(false)
+    }
+
+    useEffect(() => {
+        if (refreshing) onRefresh()
+    }, [refreshing])
 
     useFocusEffect(
         useCallback(() => {
@@ -97,11 +110,17 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
                     getExamList()
                 else
                     setData(arr)
+
+                Toast.show({
+                    type: 'success',
+                    text2: 'Exame deletado',
+                })
             }
-
         } catch (error) {
-            toast.danger({ message: 'Não foi possível deletar. Tente novamente mais tarde', duration: 3000 })
-
+            Toast.show({
+                type: 'danger',
+                text2: 'Não foi possível deletar. Tente novamente mais tarde',
+            })
         }
     }
 
@@ -228,7 +247,7 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
-                            onRefresh={getExamList}
+                            onRefresh={() => setRefreshing(true)}
                         />
                     }
                     ListEmptyComponent={<EmptyComponent message='Nenhum exame encontrado' />}

@@ -2,7 +2,6 @@ import TermsConditions from '@components/acceptTerms'
 import RegisterHeader from '@components/header/register'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import Stepper from '@components/stepper'
-import toast from '@helpers/toast'
 import { PatientProfileCreatorDto, PatientProfileCreatorTypeEnum, RelationshipPatient } from '@models/PatientProfileCreator'
 import { RegisterParams } from '@models/SignUpProps'
 import { UserDoctorData, UserPatientData } from '@models/User'
@@ -12,19 +11,19 @@ import { createPatientProfileCreator, createUser } from '@services/user.service'
 import { Button, CheckBox, Spinner, useStyleSheet } from '@ui-kitten/components'
 import { extractFieldString } from '@utils/common'
 import { cleanNumberMask } from '@utils/mask'
-import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Alert, BackHandler, Platform, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import { Modalize } from 'react-native-modalize'
 import { Host, Portal } from 'react-native-portalize'
+import Toast from 'react-native-toast-message'
 import { creatorRelationship } from './data'
 import PatientSignUpEndScreen from './patient/last'
 import PatientSignUpPart1Screen from './patient/part1'
 import DoctorSignUpPart1Screen from './specialist/part1'
 import DoctorSignUpPart2Screen from './specialist/part2'
 import { signupStyle } from './style'
-
 
 const SignUpScreen: FC = (): ReactElement => {
 
@@ -226,7 +225,11 @@ const SignUpScreen: FC = (): ReactElement => {
             setSending(false)
         }
 
-        if (messageError !== '') toast.danger({ message: messageError, duration: 3000 })
+        if (messageError !== '')
+            Toast.show({
+                type: 'danger',
+                text2: messageError,
+            })
         else navigation.navigate('RegistrationConfirmation')
     }
 

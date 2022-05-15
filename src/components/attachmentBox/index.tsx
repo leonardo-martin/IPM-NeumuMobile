@@ -1,10 +1,10 @@
-import toast from '@helpers/toast'
 import { getFileFromDevice } from '@services/document.service'
 import { Icon, Text, useStyleSheet } from '@ui-kitten/components'
 import React, { Dispatch, FC, ReactElement } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { DocumentPickerOptions, DocumentPickerResponse } from 'react-native-document-picker'
 import { SupportedPlatforms } from 'react-native-document-picker/lib/typescript/fileTypes'
+import Toast from 'react-native-toast-message'
 import { attachBoxStyle } from './style'
 
 interface AttachmentBoxProps {
@@ -24,7 +24,10 @@ const AttachmentBoxComponent: FC<AttachmentBoxProps> = ({ ...props }): ReactElem
             props.handleFile(response)
         } catch (err: any) {
             if (!err.toString().includes('cancelled.'))
-                toast.danger({ message: 'Operação cancelada.', duration: 3000 })
+                Toast.show({
+                    type: 'info',
+                    text2: 'Operação cancelada',
+                })
         }
     }
 

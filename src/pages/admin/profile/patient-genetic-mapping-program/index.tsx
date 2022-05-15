@@ -2,7 +2,6 @@ import CustomErrorMessage from '@components/error'
 import HeaderAdmin from '@components/header/admin'
 import ModalizeFixed from '@components/modalize'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import toast from '@helpers/toast'
 import { useModal } from '@hooks/useModal'
 import { PatientDto } from '@models/Patient'
 import { useFocusEffect } from '@react-navigation/native'
@@ -17,6 +16,7 @@ import { Keyboard, TouchableOpacity, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Modalize } from 'react-native-modalize'
 import { Host, Portal } from 'react-native-portalize'
+import Toast from 'react-native-toast-message'
 import { examResult } from './data'
 import { mappingStyle } from './style'
 
@@ -50,7 +50,10 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             setSelectedIndex(undefined)
             setSelectTmp(undefined)
             setUnidentifiedError(true)
-            toast.danger({ message: 'Erro ao buscar os dados do usuário', duration: 3000 })
+            Toast.show({
+                type: 'danger',
+                text2: 'Erro ao buscar os dados do usuário',
+            })
         }
     }
 
@@ -86,16 +89,27 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             // send email
             if (selectedIndex === 0 && !data.pastExams) {
                 await optIn()
+                Toast.show({
+                    type: 'success',
+                    text2: 'Obrigado por inscrever-se!',
+                })
             } else if (selectedIndex === 1) {
                 await optOut()
+                Toast.show({
+                    type: 'info',
+                    text2: 'Que pena... Agradeçemos pelo apoio',
+                })
             }
             setSelectTmp(data.abrafeuRegistrationOptIn === 'true' ? 0 : 1)
             setIsLoading(false)
-            toast.success({ message: 'Perfil atualizado com sucesso!', duration: 3000 })
+           
         } catch (error) {
             setIsLoading(false)
             setSelectedIndex(selectTmp)
-            toast.danger({ message: 'Ocorreu um erro. Tente novamente mais tarde', duration: 3000 })
+            Toast.show({
+                type: 'danger',
+                text2: 'Ocorreu um erro. Tente novamente mais tarde!',
+            })
         } finally {
             ref.current?.close()
         }

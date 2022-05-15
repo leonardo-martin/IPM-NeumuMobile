@@ -1,5 +1,4 @@
 import HeaderProfile from '@components/header/admin/profile'
-import toast from '@helpers/toast'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { EUserRole } from '@models/UserRole'
@@ -14,6 +13,7 @@ import { validateCNS } from '@utils/validators'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { ImageStyle, Keyboard, RefreshControl, ScrollView, StyleProp, View } from 'react-native'
+import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
 import ProfileAvatar from './profile-avatar'
 import ProfileSetting from './profile-setting'
@@ -92,7 +92,10 @@ const EditProfileScreen: FC = (): ReactElement => {
       updateUserStore()
 
     } catch (error) {
-      toast.danger({ message: 'Erro ao atualizar o perfil. Tente novamente mais tarde', duration: 3000 })
+      Toast.show({
+        type: 'danger',
+        text2: 'Erro ao atualizar o perfil. Tente novamente mais tarde',
+      })
     }
   }
 
@@ -118,7 +121,10 @@ const EditProfileScreen: FC = (): ReactElement => {
   const updateUserStore = async () => {
     const res = await getUserDetails()
     dispatch(setProfile(res.data))
-    toast.success({ message: 'Perfil atualizado com sucesso', duration: 3000 })
+    Toast.show({
+      type: 'success',
+      text2: 'Perfil atualizado',
+    })
     setRefreshing(false)
   }
 
@@ -130,13 +136,13 @@ const EditProfileScreen: FC = (): ReactElement => {
       form.setValue('city', obj?.localidade)
       form.setValue('state', obj?.uf)
       form.setValue('address1', obj?.logradouro)
-      if (sessionUser && sessionUser.userRole.find(e => e.id !== EUserRole.patient)) {
-        form.setValue('address2', obj?.bairro)
-      }
       form.setValue('addressComplement', obj?.complemento)
       Keyboard.dismiss()
     } catch (error) {
-      toast.danger({ message: 'Erro ao buscar endereço. Tente novamente mais tarde', duration: 3000 })
+      Toast.show({
+        type: 'danger',
+        text2: 'Erro ao buscar endereço. Tente novamente mais tarde',
+      })
     }
   }
 
@@ -467,7 +473,7 @@ const EditProfileScreen: FC = (): ReactElement => {
                 value: field.value,
                 onBlur: field.onBlur,
                 onChangeText: field.onChange,
-                keyboardType: (sessionUser && sessionUser.userRole.find(e => e.id === EUserRole.patient)) ? 'number-pad' : 'default',
+                keyboardType: 'number-pad',
                 editable: true,
                 textAlign: 'right',
                 multiline: true,

@@ -1,5 +1,4 @@
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import toast from '@helpers/toast'
 import { JSONContent } from '@models/Common'
 import { DiseaseDataDto, DiseaseDto } from '@models/Disease'
 import { useIsFocused, useRoute } from '@react-navigation/native'
@@ -7,6 +6,7 @@ import { getDiseaseDataById } from '@services/disease.service'
 import { Spinner, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Linking, RefreshControl, ScrollView, TextStyle, View, ViewStyle } from 'react-native'
+import Toast from 'react-native-toast-message'
 import { detailsAboutStyle } from './details.style'
 
 const DetailsAboutScreen: FC = (): ReactElement => {
@@ -30,10 +30,16 @@ const DetailsAboutScreen: FC = (): ReactElement => {
     const openLink = (url: any) => {
         try {
             Linking.openURL(url).catch(() => {
-                toast.info({ message: 'Endereço não encontrado', duration: 3000 })
+                Toast.show({
+                    type: 'info',
+                    text2: 'Endereço não encontrado',
+                })
             })
         } catch (error) {
-            toast.info({ message: 'Erro ao abrir link', duration: 3000 })
+            Toast.show({
+                type: 'danger',
+                text2: 'Erro ao abrir link',
+            })
         }
     }
 
@@ -42,7 +48,11 @@ const DetailsAboutScreen: FC = (): ReactElement => {
             if (diseaseData)
                 setDiseaseDataParsed(JSON.parse(JSON.parse(diseaseData.payload)) as JSONContent)
         } catch (error) {
-            toast.danger({ message: 'Erro ao exibir texto', duration: 3000 })
+            Toast.show({
+                type: 'danger',
+                text2: 'Erro ao exibir texto',
+            })
+
         }
     }, [diseaseData])
 
@@ -51,7 +61,10 @@ const DetailsAboutScreen: FC = (): ReactElement => {
             try {
                 loadData((route.params as DiseaseDto).id)
             } catch (error) {
-                toast.danger({ message: 'Nenhum ID fornecido', duration: 3000 })
+                Toast.show({
+                    type: 'danger',
+                    text2: 'Nenhum ID fornecido',
+                })
             }
         }
     }, [route.params, isLoading])

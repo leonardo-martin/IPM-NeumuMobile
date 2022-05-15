@@ -49,6 +49,9 @@
       "@components/*": [
         "components/*"
       ],
+      "@configs/*": [
+        "configs/*"
+      ],
       "@constants/*": [
         "constants/*"
       ],

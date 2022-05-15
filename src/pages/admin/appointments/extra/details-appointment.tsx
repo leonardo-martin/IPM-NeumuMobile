@@ -1,6 +1,5 @@
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _DEFAULT_FORMAT_DATE } from '@constants/date'
-import toast from '@helpers/toast'
 import { useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { AppointmentDto } from '@models/Appointment'
@@ -15,6 +14,7 @@ import { addMinutes } from 'date-fns'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
+import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
 import { detailsStyle } from './details-appointment.style'
 
@@ -40,21 +40,35 @@ const DetailsAppointmentsScreen: FC = (): ReactElement => {
             if (params?.patientDto) {
                 const response = await requestAuthorizationAsDoctor(params?.patientDto.patientId)
                 if (response.status === 201 || response.status === 200) {
-                    toast.success({ message: 'Solicitação efetuada com sucesso. Aguarde o aceite do Paciente', duration: 3000 })
+                    Toast.show({
+                        type: 'info',
+                        text2: 'Solicitação efetuada. Aguarde o aceite do Paciente',
+                    })
                 } else {
-                    toast.danger({ message: 'Erro ao solicitar o acesso. Tente novamente mais tarde', duration: 3000 })
+                    Toast.show({
+                        type: 'danger',
+                        text2: 'Erro ao solicitar o acesso. Tente novamente mais tarde',
+                    })
                 }
             } else {
-                toast.danger({ message: 'Erro desconhecido. Entre em contato com o administrador', duration: 3000 })
+                Toast.show({
+                    type: 'danger',
+                    text2: 'Erro desconhecido. Entre em contato com o administrador',
+                })
             }
 
         } catch (error) {
             const err = error as any
             if (err && err.status === 400) {
-                toast.info({ message: 'Solicitação já efetuada. Aguarde o aceite do Paciente', duration: 3000 })
+                Toast.show({
+                    type: 'info',
+                    text2: 'Solicitação já efetuada. Aguarde o aceite do Paciente',
+                })
             } else {
-                toast.danger({ message: 'Solicitação já efetuada. Aguarde o aceite do Paciente', duration: 3000 })
-
+                Toast.show({
+                    type: 'danger',
+                    text2: 'Erro desconhecido. Entre em contato com o administrador',
+                })
             }
         }
     }
@@ -75,7 +89,10 @@ const DetailsAppointmentsScreen: FC = (): ReactElement => {
                 }
             } catch (error) {
                 setPatientDisplay(undefined)
-                toast.danger({ message: 'Erro ao carregar informações. Tente novamente mais tarde', duration: 3000 })
+                Toast.show({
+                    type: 'danger',
+                    text2: 'Erro ao carregar informações. Tente novamente mais tarde',
+                })
             } finally {
                 setIsLoading(false)
             }

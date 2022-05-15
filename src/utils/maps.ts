@@ -1,5 +1,5 @@
-import toast from "@helpers/toast"
-import { Linking, Platform } from "react-native"
+import { Linking, Platform } from 'react-native'
+import Toast from 'react-native-toast-message'
 
 export const openMapsWithAddress = async (address: string) => {
 
@@ -11,7 +11,10 @@ export const openMapsWithAddress = async (address: string) => {
     if (supported) {
         await Linking.openURL(url)
     } else {
-        toast.danger({ message: 'Maps app não encontrado ou há um erro na URL..', duration: 3000 })
+        Toast.show({
+            type: 'danger',
+            text2: 'Maps app não encontrado ou há um erro na URL..',
+        })
     }
 
 }

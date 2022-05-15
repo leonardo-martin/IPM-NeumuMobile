@@ -1,7 +1,6 @@
 import HeaderAdmin from '@components/header/admin'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _DATE_FROM_ISO_8601 } from '@constants/date'
-import toast from '@helpers/toast'
 import { useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { AppointmentAvailabilityParams } from '@models/Appointment'
@@ -14,6 +13,7 @@ import React, { createRef, FC, ReactElement, useCallback, useEffect, useState } 
 import { ListRenderItemInfo, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Animated, { Easing, FadeInRight, FadeOutRight, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
 import { professionalStyle } from './style'
 
@@ -268,13 +268,19 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
                 // if (amountSavedItems > 0) loadData()
 
             } catch (e) {
-                toast.danger({ message: 'Erro ao editar os horários. Tente novamente mais tarde.', duration: 2000 })
+                Toast.show({
+                    type: 'danger',
+                    text2: 'Erro ao editar os horários. Tente novamente mais tarde',
+                })
             } finally {
                 setIsLoading(false)
             }
         } else {
             setIsLoading(false)
-            toast.warning({ message: 'Nenhum horário selecionado.', duration: 2000 })
+            Toast.show({
+                type: 'warning',
+                text2: 'Nenhum horário selecionado',
+            })
         }
     }
 

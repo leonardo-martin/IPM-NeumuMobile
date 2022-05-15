@@ -17,6 +17,7 @@ module.exports = {
           tests: ['./tests/'],
           "@assets": "./src/assets",
           "@components": "./src/components",
+          "@configs": "./src/configs",
           "@constants": "./src/constants",
           "@contexts": "./src/contexts",
           "@helpers": "./src/helpers",

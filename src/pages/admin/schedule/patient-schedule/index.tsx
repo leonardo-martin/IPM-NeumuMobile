@@ -2,7 +2,6 @@ import HeaderAdmin from '@components/header/admin'
 import ModalizeFixed from '@components/modalize'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATETIME } from '@constants/date'
-import toast from '@helpers/toast'
 import { useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { useModal } from '@hooks/useModal'
@@ -18,12 +17,13 @@ import { Avatar, Button, Card, Icon, IconProps, List, Text, TranslationWidth, us
 import { getTimeBlocksByTime, getTimesByInterval, scrollToRef } from '@utils/common'
 import { openMapsWithAddress } from '@utils/maps'
 import { addMinutes } from 'date-fns'
-import addHours from 'date-fns/add_hours/index.js'
+import addHours from 'date-fns/add_hours'
 import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, ImageStyle, LayoutRectangle, Platform, Pressable, ScrollView, StyleProp, TouchableOpacity, View } from 'react-native'
 import { Modalize } from 'react-native-modalize'
 import { Host, Portal } from 'react-native-portalize'
 import Animated, { Easing, SlideInRight, SlideOutRight, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
 import { doctorScheduleStyle } from './style'
 
@@ -149,13 +149,26 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                 const message = response.data?.message?.message
                 if (message !== "" && message !== undefined) {
                     if (message === "ScheduleConflictException")
-                        toast.danger({ message: 'Já existe uma solicitação para este horário. Aguarde a confirmação do Profissional de Saúde', duration: 5000 })
+                        Toast.show({
+                            type: 'info',
+                            text2: 'Já existe uma solicitação para este horário. Aguarde a confirmação do Profissional de Saúde',
+                        })
                     else
-                        toast.danger({ message: 'Erro ao agendar consulta. Tente novamente mais tarde', duration: 5000 })
-                } else toast.danger({ message: 'Erro ao agendar consulta. Tente novamente mais tarde', duration: 5000 })
+                        Toast.show({
+                            type: 'danger',
+                            text2: 'Erro ao agendar consulta. Tente novamente mais tarde',
+                        })
+                } else
+                    Toast.show({
+                        type: 'danger',
+                        text2: 'Erro ao agendar consulta. Tente novamente mais tarde',
+                    })
             }
         } catch (error) {
-            toast.danger({ message: 'Ocorreu um erro. Tente novamente mais tarde.', duration: 1000 })
+            Toast.show({
+                type: 'danger',
+                text2: 'Erro desconhecido. Contate o administrador',
+            })
         } finally {
             setLoading(false)
             handleClose()

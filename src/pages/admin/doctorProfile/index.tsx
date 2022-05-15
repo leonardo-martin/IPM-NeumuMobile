@@ -1,13 +1,13 @@
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import toast from '@helpers/toast'
 import { MedicalDoctorDisplay } from '@models/Medical'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
 import { patientGetAuthorizationRequests, patientGrantAuthorization } from '@services/patient.service'
 import { Button, CheckBox, Divider, Text, useStyleSheet } from '@ui-kitten/components'
+import { formatPhone } from '@utils/mask'
 import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { Image, ImageStyle, Linking, Platform, Share, StyleProp, View } from 'react-native'
-import { formatPhone } from 'utils/mask'
+import Toast from 'react-native-toast-message'
 import { PhoneCallIcon, ShareIcon } from './extra/icons'
 import { doctorProfileStyle } from './style'
 
@@ -31,7 +31,7 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement =>
 
   useFocusEffect(
     useCallback(() => {
-      if(profile) loadChecked()
+      if (profile) loadChecked()
     }, [profile])
   )
 
@@ -49,7 +49,10 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement =>
       if (profile?.medicalDoctorId)
         await patientGrantAuthorization({ medicalDoctorId: profile.medicalDoctorId.toString(), authorization: checked })
     } catch (error) {
-      toast.danger({ message: 'Erro ao permitir o compartilhamento', duration: 3000 })
+      Toast.show({
+        type: 'danger',
+        text2: 'Erro ao permitir o compartilhamento',
+      })
     }
   }
 
@@ -65,10 +68,16 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement =>
       if (supported) {
         await Linking.openURL(url)
       } else {
-        toast.danger({ message: 'Ocorreu um erro ao abrir o Phone app.', duration: 1000 })
+        Toast.show({
+          type: 'danger',
+          text2: 'Ocorreu um erro ao abrir o Phone app',
+        })
       }
     } else
-      toast.info({ message: 'Nenhum telefone encontrado.', duration: 1000 })
+      Toast.show({
+        type: 'info',
+        text2: 'Telefone não informado',
+      })
   }, [profile])
 
   const onShare = async () => {
@@ -78,7 +87,10 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement =>
         message: `Olá, eu sou ${profile?.name}, minha especialidade é ${profile?.specialty}. Telefone para contato: ${formatPhone(profile?.phone1)}`
       })
     } catch (error: any) {
-      toast.danger({ message: 'Ocorreu um erro ao compartilhar.', duration: 1000 })
+      Toast.show({
+        type: 'danger',
+        text2: 'Ocorreu um erro ao compartilhar',
+      })
     }
   }
 
@@ -106,7 +118,7 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement =>
             <Button style={styles.profileButton}
               status='control'
               accessoryLeft={PhoneCallIcon}
-              onPress={onCallButtonPress} />           
+              onPress={onCallButtonPress} />
             <Button style={styles.profileButton}
               status='control'
               accessoryLeft={ShareIcon}

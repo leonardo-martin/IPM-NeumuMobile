@@ -1,14 +1,14 @@
-import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { SafeAreaView, View } from 'react-native'
-import { changePasswdReqStyle } from './style'
-import { Button, Input, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
-import { Controller, useForm } from 'react-hook-form'
-import { changePassReq } from '@services/login.service'
+import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useNavigation, useRoute } from '@react-navigation/native'
+import { changePassReq } from '@services/login.service'
+import { Button, Input, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { cleanNumberMask, formatCpf, isEmailValid } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
-import { SafeAreaLayout } from '@components/safeAreaLayout'
-import toast from '@helpers/toast'
+import React, { FC, ReactElement, useEffect, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { SafeAreaView, View } from 'react-native'
+import Toast from 'react-native-toast-message'
+import { changePasswdReqStyle } from './style'
 
 interface ChangePasswordRequestParams {
     choice: 'CPF' | 'EMAIL'
@@ -38,13 +38,19 @@ const ChangePasswordRequest: FC = (): ReactElement => {
             })
 
             if (response.status !== 200 && response.status !== 201) {
-                toast.danger({ message: 'Ocorreu um erro. Tente novamente mais tarde.', duration: 1000 })
+                Toast.show({
+                    type: 'danger',
+                    text2: 'Ocorreu um erro. Tente novamente mais tarde',
+                })
             } else {
                 navigation.navigate('PasswordRequestSuccessfully')
             }
 
         } catch (error) {
-            toast.danger({ message: 'Ocorreu um erro. Contate o administrador.', duration: 1000 })
+            Toast.show({
+                type: 'danger',
+                text2: 'Ocorreu um erro. Contate o administrador',
+            })
 
         } finally {
             setIsLoading(false)

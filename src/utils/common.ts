@@ -1,5 +1,4 @@
 import { _DATE_FROM_ISO_8601 } from "@constants/date"
-import toast from '@helpers/toast'
 import { useDatepickerService } from "@hooks/useDatepickerService"
 import { AscendingOrder } from "@models/Common"
 import { PatientDiaryEntryDto } from "@models/Patient"
@@ -9,6 +8,7 @@ import { CalendarRange } from "@ui-kitten/components"
 import { addMinutes } from 'date-fns'
 import { MutableRefObject } from "react"
 import { Linking } from "react-native"
+import Toast from 'react-native-toast-message'
 
 export const matchMessage = (message: any) => {
 
@@ -138,7 +138,10 @@ export const sortByDate = (a: Date | string, b: Date | string, order: AscendingO
 export const openMailTo = () => {
     Linking.openURL('mailto:contato@teleneumu.com.br?subject=Contato TeleNeuMu')
         .catch(() => {
-            toast.warning({ message: 'Erro desconhecido. Contate o administrador', duration: 3000 })
+            Toast.show({
+                type: 'warning',
+                text2: 'Erro desconhecido. Contate o administrador',
+              })
         })
 }
 

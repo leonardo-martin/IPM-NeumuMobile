@@ -1,6 +1,5 @@
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATE } from '@constants/date'
-import toast from '@helpers/toast'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { MedicalDataAuthorizationDTO } from '@models/Medical'
 import { useRoute } from '@react-navigation/native'
@@ -9,6 +8,7 @@ import { List, Text, useStyleSheet } from '@ui-kitten/components'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { ListRenderItemInfo, RefreshControl, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import Toast from 'react-native-toast-message'
 import { shareInfoTabItemStyle } from './style'
 
 const ShareInfoTabItemScreen: FC = (): ReactElement => {
@@ -47,9 +47,16 @@ const ShareInfoTabItemScreen: FC = (): ReactElement => {
             const res = await patientGrantAuthorization({ medicalDoctorId, authorization })
             if (res.status === 201)
                 loadBadgeCount()
-
+            else
+                Toast.show({
+                    type: 'danger',
+                    text2: 'Erro desconhecido. Contate o administrador',
+                })
         } catch (error) {
-            toast.danger({ message: 'Erro ao permitir o compartilhamento', duration: 3000 })
+            Toast.show({
+                type: 'danger',
+                text2: 'Erro ao permitir o compartilhamento',
+            })
         }
     }
 

@@ -1,6 +1,5 @@
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _FORMAT_DATE_EN_US } from '@constants/date'
-import toast from '@helpers/toast'
 import { useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { AppointmentDto } from '@models/Appointment'
@@ -10,10 +9,11 @@ import { doctorConfirmAppointment, doctorDeleteAppointment, getAppointmentListDo
 import { Divider, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
 import axios, { AxiosRequestConfig } from 'axios'
 import { addMinutes } from 'date-fns'
-import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { View } from 'react-native'
 import { Agenda, AgendaEntry, AgendaSchedule } from 'react-native-calendars'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
 import AppointmentsEmptyData from './extra/empty-data'
 import { appointmentStyle } from './style'
@@ -101,11 +101,17 @@ const AppointmentsScreen: FC = (): ReactElement => {
         try {
             const res = await doctorConfirmAppointment(appointmentId)
             if (res.status === 200) {
-                toast.success({ message: 'Apontamento aprovado com sucesso!', duration: 3000 })
+                Toast.show({
+                    type: 'success',
+                    text2: 'Apontamento aprovado',
+                })
                 loadData()
             }
         } catch (error) {
-            toast.danger({ message: 'Erro ao aprovar o apontamento.', duration: 3000 })
+            Toast.show({
+                type: 'error',
+                text2: 'Erro ao aprovar o apontamento',
+            })
         }
     }
 
@@ -114,19 +120,28 @@ const AppointmentsScreen: FC = (): ReactElement => {
             if (TypeUser.MEDICAL_DOCTOR === type) {
                 const res = await doctorDeleteAppointment(appointmentId)
                 if (res.status === 200) {
-                    toast.info({ message: 'Apontamento cancelado com sucesso!', duration: 3000 })
+                    Toast.show({
+                        type: 'info',
+                        text2: 'Apontamento cancelado',
+                    })
                     loadData()
                 }
             } else if (TypeUser.PATIENT === type) {
 
                 const res = await patientDeleteAppointment(appointmentId)
                 if (res.status === 200) {
-                    toast.info({ message: 'Apontamento cancelado com sucesso!', duration: 3000 })
+                    Toast.show({
+                        type: 'info',
+                        text2: 'Apontamento cancelado',
+                    })
                     loadData()
                 }
             }
         } catch (error) {
-            toast.danger({ message: 'Erro ao cancelar o apontamento.', duration: 3000 })
+            Toast.show({
+                type: 'error',
+                text2: 'Erro ao cancelar o apontamento',
+            })
         }
     }
 

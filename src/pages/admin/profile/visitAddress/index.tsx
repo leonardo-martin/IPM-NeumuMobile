@@ -2,7 +2,7 @@ import AutoCompleteComponent from '@components/autoComplete'
 import CustomErrorMessage from '@components/error'
 import HeaderGenericWithTitleAndAddIcon from '@components/header/admin/generic-with-add-icon'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import toast from '@helpers/toast'
+import Toast from 'react-native-toast-message'
 import { useAppSelector } from '@hooks/redux'
 import { City, UF } from '@models/Places'
 import { VisitAddressDTO } from '@models/VisitAddress'
@@ -57,9 +57,15 @@ const VisitAddressScreen: FC = (): ReactElement => {
                 list.push(response.data)
                 verifyData(list)
             }
-            toast.success({ message: 'Dados atualizados com sucesso!', duration: 3000 })
+            Toast.show({
+                type: 'success',
+                text2: 'Dados atualizados',
+            })
         } catch (error) {
-            toast.danger({ message: 'Erro ao atualizar os dados. Tente novamente mais tarde', duration: 3000 })
+            Toast.show({
+                type: 'danger',
+                text2: 'Erro ao atualizar os dados. Tente novamente mais tarde',
+            })
         }
     }
 
@@ -138,7 +144,10 @@ const VisitAddressScreen: FC = (): ReactElement => {
             setCities(list)
             setCitiesTemp(list)
         } catch (error) {
-            toast.danger({ message: 'Ocorreu um erro. Tente novamente mais tarde', duration: 3000 })
+            Toast.show({
+                type: 'danger',
+                text2: 'Ocorreu um erro. Tente novamente mais tarde',
+            })
         }
     }
 
@@ -233,7 +242,7 @@ const VisitAddressScreen: FC = (): ReactElement => {
             <HeaderGenericWithTitleAndAddIcon title='Endereço Comercial' hideIcon={true} />
             <SafeAreaLayout level='1' style={styles.safeArea}>
                 <View style={styles.box}>
-                    
+
                     <Controller
                         control={form.control}
                         rules={{

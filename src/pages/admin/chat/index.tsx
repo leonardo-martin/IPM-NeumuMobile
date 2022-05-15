@@ -1,5 +1,4 @@
 import { API_BASE_URL } from '@constants/uri'
-import toast from '@helpers/toast'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { ChatListEntryDto, Message } from '@models/ChatMessage'
@@ -11,6 +10,7 @@ import { Button, Input, useStyleSheet } from '@ui-kitten/components'
 import { sortByDate } from '@utils/common'
 import React, { FC, ReactElement, useEffect, useRef, useState } from 'react'
 import { Keyboard, Platform, RefreshControl } from 'react-native'
+import Toast from 'react-native-toast-message'
 import io, { Socket } from "socket.io-client"
 import { RootState } from 'store'
 import { AttachmentsMenu } from './extra/attachments-menu.component'
@@ -82,7 +82,10 @@ const ChatRoomScreen: FC = (): ReactElement => {
     try {
       await loadMessages()
     } catch (error) {
-      toast.danger({ message: 'Erro ao carregar o chat. Tente novamente mais tarde', duration: 3000 })
+      Toast.show({
+        type: 'danger',
+        text2: 'Erro ao carregar o chat. Tente novamente mais tarde',
+      })
     } finally {
       setIsLoading(false)
     }

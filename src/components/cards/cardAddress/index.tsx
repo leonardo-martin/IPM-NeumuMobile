@@ -1,14 +1,14 @@
 import AutoCompleteComponent from "@components/autoComplete"
 import CustomErrorMessage from "@components/error"
-import toast from "@helpers/toast"
 import { City, Country, UF } from "@models/Places"
 import { UserDoctorData, UserPatientData } from "@models/User"
 import { getAddressByPostalCode, getCities, getCountries, getStates } from "@services/common.service"
-import { AutocompleteItem, Icon, IconProps, Input, Text } from "@ui-kitten/components"
+import { AutocompleteItem, Icon, IconProps, Input } from "@ui-kitten/components"
 import { filterBy } from "@utils/common"
 import React, { Dispatch, FC, ReactElement, useEffect, useState } from "react"
 import { Controller, UseFormReturn } from "react-hook-form"
 import { StyleSheet } from "react-native"
+import Toast from 'react-native-toast-message'
 
 interface CardAddressProps {
     form: UseFormReturn<UserPatientData & UserDoctorData, any>
@@ -140,7 +140,10 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
             setCities(list)
             setCitiesTemp(list)
         } catch (error) {
-            toast.danger({ message: 'Ocorreu um erro. Tente novamente mais tarde', duration: 3000 })
+            Toast.show({
+                type: 'danger',
+                text2: 'Ocorreu um erro. Tente novamente mais tarde',
+              })
         }
     }
 

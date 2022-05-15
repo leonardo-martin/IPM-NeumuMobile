@@ -5,7 +5,6 @@ import HeaderGenericWithTitleAndAddIcon from '@components/header/admin/generic-w
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import Timeline from '@components/timeline'
 import { _DATE_FROM_ISO_8601 } from '@constants/date'
-import toast from '@helpers/toast'
 import { useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { useModal } from '@hooks/useModal'
@@ -19,6 +18,7 @@ import { CalendarRange, Icon, Modal, Text, useStyleSheet } from '@ui-kitten/comp
 import { groupByDateTime } from '@utils/common'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { RefreshControl, TouchableOpacity, View } from 'react-native'
+import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
 import { notesStyle } from './style'
 
@@ -71,6 +71,19 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
         convertList(arr)
     }, [params])
 
+    const onRefresh = async () => {
+        await getPatientCalendarList()
+        Toast.show({
+            type: 'success',
+            text2: 'Atualizado',
+        })
+        setRefreshing(false)
+    }
+
+    useEffect(() => {
+        if (refreshing) onRefresh()
+    }, [refreshing])
+
     const convertList = (list: PatientDiaryEntryDto[]) => {
         let array = groupByDateTime(list)
         setData(array)
@@ -108,9 +121,16 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
                     setOriginalData(arr)
                     convertList(arr)
                 }
+                Toast.show({
+                    type: 'success',
+                    text2: 'Nota deletada',
+                })
             }
         } catch (error) {
-            toast.danger({ message: 'Não foi possível deletar. Tente novamente mais tarde', duration: 3000 })
+            Toast.show({
+                type: 'danger',
+                text2: 'Não foi possível deletar. Tente novamente mais tarde',
+            })
 
         }
     }
@@ -184,7 +204,7 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
-                            onRefresh={getPatientCalendarList}
+                            onRefresh={() => setRefreshing(true)}
                         />
                     }
                     readonly={params?.readonly}

@@ -2,7 +2,6 @@ import CardAddressComponent from '@components/cards/cardAddress'
 import CustomErrorMessage from '@components/error'
 import RegisterHeader from '@components/header/register'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import toast from '@helpers/toast'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { UserDoctorData } from '@models/User'
 import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native'
@@ -17,6 +16,7 @@ import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, BackHandler, Keyboard, TouchableOpacity, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import Toast from 'react-native-toast-message'
 import { managementStyle } from './new-user.style'
 
 const NewUserScreen: FC = (): ReactElement => {
@@ -123,9 +123,16 @@ const NewUserScreen: FC = (): ReactElement => {
             setIsLoading(false)
         }
 
-        if (messageError !== '') toast.danger({ message: messageError, duration: 3000 })
+        if (messageError !== '')
+            Toast.show({
+                type: 'danger',
+                text2: messageError,
+            })
         else {
-            toast.success({ message: 'Usuário cadastrado com sucesso!', duration: 5000 })
+            Toast.show({
+                type: 'success',
+                text2: 'Usuário cadastrado',
+            })
             form.reset()
         }
     }

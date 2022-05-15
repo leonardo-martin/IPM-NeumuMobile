@@ -1,19 +1,19 @@
 import AutoCompleteComponent from '@components/autoComplete'
 import CustomErrorMessage from '@components/error'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import toast from '@helpers/toast'
+import { MedicalDoctorDisplay, MedicalSpecialtyDto } from '@models/Medical'
 import { City, UF } from '@models/Places'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
 import { getCities, getStates } from '@services/common.service'
+import { getDisplayMedicalDoctorBySpecialtyArray } from '@services/medical-doctor.service'
 import { getAll } from '@services/medical-specialty.service'
 import { AutocompleteItem, Button, Icon, IconProps, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { filterBy } from '@utils/common'
-import { MedicalDoctorDisplay, MedicalSpecialtyDto } from 'models/Medical'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Keyboard, View } from 'react-native'
-import { getDisplayMedicalDoctorBySpecialtyArray } from 'services/medical-doctor.service'
+import Toast from 'react-native-toast-message'
 import { filterScheduleStyle } from './filter-schedule.style'
 
 interface FilterScheduleParams {
@@ -115,7 +115,10 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
     } catch (error) {
       setCities([])
       setCitiesTemp([])
-      toast.danger({ message: 'Ocorreu um erro. Tente novamente mais tarde', duration: 3000 })
+      Toast.show({
+        type: 'danger',
+        text2: 'Ocorreu um erro. Tente novamente mais tarde',
+      })
     }
   }
 
@@ -228,7 +231,10 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
       const response = await getDisplayMedicalDoctorBySpecialtyArray(specialtyIdArray)
       result = response.data
     } catch (error) {
-      toast.danger({ message: 'Erro ao buscar. Tente novamente mais tarde', duration: 3000 })
+      Toast.show({
+        type: 'danger',
+        text2: 'Erro ao buscar. Tente novamente mais tarde',
+      })
       result = []
     } finally {
       setIsFetching(false)

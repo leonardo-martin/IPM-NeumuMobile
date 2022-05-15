@@ -1,6 +1,6 @@
 import EmptyComponent from '@components/empty'
+import HeaderGenericWithTitleAndAddIcon from '@components/header/admin/generic-with-add-icon'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import toast from "@helpers/toast"
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { ChatListEntryDto } from '@models/ChatMessage'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
@@ -8,9 +8,9 @@ import { useFocusEffect } from '@react-navigation/native'
 import { getChatList } from '@services/chat-message.service'
 import { setChatList } from '@store/ducks/chat'
 import { Divider, Icon, IconProps, Input, List, Spinner, useStyleSheet } from '@ui-kitten/components'
-import HeaderGenericWithTitleAndAddIcon from 'components/header/admin/generic-with-add-icon'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { ListRenderItemInfo, RefreshControl, View } from 'react-native'
+import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
 import MessageItem from './extra/message-item'
 import { messagesStyle } from './style'
@@ -67,13 +67,22 @@ const MessagesScreen: FC<DrawerContentComponentProps> = ({
                 setMessagesList(response.data)
                 dispatch(setChatList(response.data))
                 if (refreshing) {
-                    toast.success({ message: 'Atualizado com sucesso!', duration: 3000 })
+                    Toast.show({
+                        type: 'success',
+                        text2: 'Mensagens atualizadas',
+                    })
                 }
             } else {
-                toast.warning({ message: 'Erro ao carregar as mensagens.', duration: 3000 })
+                Toast.show({
+                    type: 'danger',
+                    text2: 'Erro ao carregar as mensagens',
+                })
             }
         } catch (error) {
-            toast.danger({ message: 'Erro ao carregar as mensagens.', duration: 3000 })
+            Toast.show({
+                type: 'danger',
+                text2: 'Erro ao carregar as mensagens',
+            })
         } finally {
             setRefreshing(false)
             setIsLoading(false)

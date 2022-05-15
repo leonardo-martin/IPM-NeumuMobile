@@ -3,7 +3,6 @@ import SignUpOptDialog from '@components/dialog/signUpOptDialog'
 import CustomErrorMessage from '@components/error'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import TitleNeumu from '@components/titleNeumu'
-import toast from '@helpers/toast'
 import { useAppDispatch } from '@hooks/redux'
 import { useModal } from '@hooks/useModal'
 import { ApprovalsMessageError } from '@models/Common'
@@ -20,6 +19,7 @@ import { Keyboard, Platform, StatusBar, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Keychain from 'react-native-keychain'
+import Toast from 'react-native-toast-message'
 import { loginStyle } from './style'
 
 const _VERSION: string = AppInfoService.getVersion()
@@ -93,11 +93,17 @@ const SignInScreen: FC = (): ReactElement => {
           messageToast = 'Usuário e/ou senha incorretos'
         }
         setIsLoading(false)
-        toast.danger({ message: messageToast, duration: 2000 })
+        Toast.show({
+          type: 'danger',
+          text2: messageToast,
+        })
       }
     } catch (error) {
       setIsLoading(false)
-      toast.danger({ message: 'Ocorreu um erro inesperado.', duration: 2000 })
+      Toast.show({
+        type: 'danger',
+        text2: 'Ocorreu um erro inesperado. Entre em contato com o administrador',
+      })
     }
 
   }
