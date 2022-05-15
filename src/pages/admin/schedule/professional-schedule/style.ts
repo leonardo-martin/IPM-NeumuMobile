@@ -23,8 +23,8 @@ export const professionalStyle = StyleSheet.create({
     textTransform: 'uppercase'
   },
   listItem: {
-    borderColor: 'border-primary-color-1',
-    borderWidth: .2,
+    borderColor: 'border-basic-color-5',
+    borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 10,
     marginHorizontal: 5,
