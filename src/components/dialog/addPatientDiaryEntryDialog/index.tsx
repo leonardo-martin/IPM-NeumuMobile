@@ -207,7 +207,7 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                                 onPress={form.handleSubmit(submitForm)}
                                 style={styles.button}
                                 accessoryLeft={isLoading ? LoadingIndicator : undefined}>
-                                {isLoading ? '' : 'Salvar'}
+                                {isLoading ? '' : props.patientDiaryEntry ? 'Editar' : 'Salvar'}
                             </Button>
                         </View>
                     </>
