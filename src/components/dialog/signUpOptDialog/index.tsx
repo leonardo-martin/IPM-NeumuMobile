@@ -3,7 +3,7 @@ import { useFocusEffect } from '@react-navigation/native'
 import { Button, Card, Icon, IconProps, Modal, Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
 import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { View } from 'react-native'
+import { Keyboard, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { modalStyle } from './style'
 
@@ -38,6 +38,7 @@ const SignUpOptDialog: FC<SignUpOptDialogProps> = forwardRef<Modal, React.PropsW
     useFocusEffect(
         useCallback(() => {
             if (!props.visible) form.reset()
+            else Keyboard.dismiss()
         }, [props.visible])
     )
 

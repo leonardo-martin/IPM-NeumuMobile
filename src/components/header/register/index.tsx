@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native'
 import { Layout, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
 import React, { FC, ReactElement } from 'react'
 import { UseFormReturn } from 'react-hook-form'
-import { Alert, TouchableOpacity } from 'react-native'
+import { Alert, Keyboard, TouchableOpacity } from 'react-native'
 import { BackIcon } from '../icons'
 import { headerStyle } from './style'
 
@@ -43,6 +43,7 @@ const RegisterHeader: FC<HeaderProps> = ({ ...props }): ReactElement => {
     if (props.active > 0) {
       props.onBack()
     } else {
+      Keyboard.dismiss()
       Alert.alert("Deseja sair do cadastro?", "Todos os dados serão perdidos", [
         {
           text: "Não",
