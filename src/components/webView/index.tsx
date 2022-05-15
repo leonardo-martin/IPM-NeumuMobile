@@ -3,7 +3,7 @@ import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { Spinner, useStyleSheet } from '@ui-kitten/components'
 import React, { FC, ForwardedRef, forwardRef, ReactElement, useCallback, useState } from 'react'
-import { ActivityIndicator, BackHandler, Platform, View } from 'react-native'
+import { BackHandler, Keyboard, Platform, View } from 'react-native'
 import { WebView, WebViewNavigation, WebViewProps } from 'react-native-webview'
 import { WebViewErrorEvent, WebViewNavigationEvent } from 'react-native-webview/lib/WebViewTypes'
 import { html } from './data'
@@ -27,6 +27,7 @@ const RNWebView: FC<RNWebViewProps> = forwardRef<WebView, React.PropsWithChildre
 
   useFocusEffect(
     useCallback(() => {
+      Keyboard.dismiss()
       const onBackPress = () => {
         if (back) combinedRef.current.goBack()
         else navigation.goBack()
@@ -43,17 +44,13 @@ const RNWebView: FC<RNWebViewProps> = forwardRef<WebView, React.PropsWithChildre
 
       if (url.includes('?message=success')) combinedRef.current.stopLoading()
       if (url.includes('?errors=true')) combinedRef.current.stopLoading()
-    },
-    [],
-  )
+    }, [])
 
-  function LoadingIndicatorView() {
-    return (
-      <View style={styles.spinnerView}>
-        <Spinner size='giant' status='primary' />
-      </View>
-    )
-  }
+  const LoadingIndicatorView = () => (
+    <View style={styles.spinnerView}>
+      <Spinner size='giant' status='primary' />
+    </View>
+  )
 
   return (
     <>
