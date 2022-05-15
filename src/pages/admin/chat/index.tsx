@@ -1,16 +1,15 @@
-import { _DATE_FROM_ISO_8601 } from '@constants/date'
 import { API_BASE_URL } from '@constants/uri'
 import toast from '@helpers/toast'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { ChatListEntryDto, Message } from '@models/ChatMessage'
 import { AscendingOrder } from '@models/Common'
-import { useFocusEffect, useRoute } from '@react-navigation/native'
+import { useRoute } from '@react-navigation/native'
 import { getMessageHistory } from '@services/chat-message.service'
 import { updateMessageList } from '@store/ducks/chat'
 import { Button, Input, useStyleSheet } from '@ui-kitten/components'
 import { sortByDate } from '@utils/common'
-import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
+import React, { FC, ReactElement, useEffect, useRef, useState } from 'react'
 import { Keyboard, Platform, RefreshControl } from 'react-native'
 import io, { Socket } from "socket.io-client"
 import { RootState } from 'store'
@@ -69,7 +68,7 @@ const ChatRoomScreen: FC = (): ReactElement => {
       const list = response.data.sort((a, b) => sortByDate(a.timestamp, b.timestamp, AscendingOrder.ASC))
       list.forEach(e => {
         const msg = e.payload.split(' ').slice(2, e.payload.length).join(' ') ?? e.payload
-        items.push(new Message(msg ?? '', localeDateService.format(localeDateService.parse(e.timestamp.toString(), _DATE_FROM_ISO_8601), 'HH:mm A'),
+        items.push(new Message(msg ?? '', e.timestamp.toString(),
           !(e.receiverUserId === ids?.userId)
           , null))
       })
@@ -113,7 +112,7 @@ const ChatRoomScreen: FC = (): ReactElement => {
         const payload = receiverId + ' ' + ids?.userId + ' ' + message
         socketRef.current.emit('msgToServer', payload)
         const timestamp = localeDateService.today()
-        setMessages([...messages, new Message(message, localeDateService.format(timestamp, 'HH:mm A'), true, null)])
+        setMessages([...messages, new Message(message, timestamp, true, null)])
         dispatch(updateMessageList({
           message: message ?? '',
           senderID: params?.senderID ?? 0,
@@ -140,7 +139,7 @@ const ChatRoomScreen: FC = (): ReactElement => {
 
     socketRef.current.on('msgToClient', (message: string) => {
       if (message)
-        setMessages([...messages, new Message(message.split(' ').slice(2, message.length).join(' ') ?? message, localeDateService.format(localeDateService.today(), 'HH:mm A'), false, null)])
+        setMessages([...messages, new Message(message.split(' ').slice(2, message.length).join(' ') ?? message, localeDateService.today(), false, null)])
     })
 
     return () => {
@@ -182,13 +181,12 @@ const ChatRoomScreen: FC = (): ReactElement => {
           }
           style={styles.list}
           contentContainerStyle={styles.listContent}
-          followEnd={true}
+          followEnd
           data={messages}
         />)}
       <KeyboardAvoidingView
         style={styles.messageInputContainer}
         offset={keyboardOffset}>
-
         {/* 
          //! Botao para envio de midia (habilitar somente se for requisitado )
         <Button
@@ -201,10 +199,13 @@ const ChatRoomScreen: FC = (): ReactElement => {
           style={styles.messageInput}
           placeholder='Mensagem'
           value={message}
+          multiline
+          textStyle={{
+            maxHeight: 100
+          }}
           onChangeText={setMessage}
           // onFocus={toggleAttachmentsMenu}
           returnKeyType='send'
-          onSubmitEditing={onSendButtonPress}
         />
         <Button
           appearance='ghost'

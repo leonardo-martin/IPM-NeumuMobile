@@ -1,3 +1,4 @@
+import { useDatepickerService } from '@hooks/useDatepickerService'
 import { Message } from '@models/ChatMessage'
 import { StyleService, Text, TextElement, useStyleSheet } from '@ui-kitten/components'
 import React, { ReactElement } from 'react'
@@ -17,13 +18,14 @@ export const ChatMessage = (props: ChatMessageProps): ReactElement => {
   const styles = useStyleSheet(themedStyles)
 
   const { style, message, shouldShowIndicator, children, ...viewProps } = props
+  const { localeDateService } = useDatepickerService()
 
   const renderDateElement = (): TextElement => (
     <Text
       style={styles.date}
       appearance='hint'
       category='c1'>
-      {message.date?.toString()}      
+      {localeDateService.format(new Date(message.date), 'HH:mm')}
     </Text>
   )
 
@@ -40,7 +42,7 @@ export const ChatMessage = (props: ChatMessageProps): ReactElement => {
       style={[message.reply ? styles.containerOut : styles.containerIn, styles.container, style]}>
       {shouldShowIndicator && renderIndicator()}
       {children}
-      {renderDateElement()} 
+      {renderDateElement()}
     </View>
   )
 }

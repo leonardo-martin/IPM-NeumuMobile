@@ -46,10 +46,10 @@ const MessageItem: FC<MessageItemProps> = ({ message, onPress }): ReactElement =
     <ListItem
       style={styles.listItem}
       onPress={onPress}
-      title={(evaProps) => <Text {...evaProps} style={[evaProps?.style]}>{message.senderID === ids?.userId ? message.receiverName : message.senderName}</Text>}
-      description={(evaProps) => <Text {...evaProps} style={[evaProps?.style]}>{generateDescription(message.payload) ?? ''}</Text>}
+      title={(evaProps) => <Text {...evaProps} style={[evaProps?.style, { fontSize: 16 }]}>{message.senderID === ids?.userId ? message.receiverName : message.senderName}</Text>}
+      description={(evaProps) => <Text {...evaProps} style={[evaProps?.style, { fontSize: 14 }]}>{generateDescription(message.payload) ?? ''}</Text>}
       // accessoryLeft={renderProfileAvatar}
-      accessoryLeft={(props: IconProps) => <Icon {...props} name='person-circle-outline' size={30} pack='ionicons' />}
+      accessoryLeft={(props: IconProps) => <Icon {...props} name='person-circle-outline' size={40} pack='ionicons' />}
       accessoryRight={renderMessageDate}
     />
   )

@@ -8,7 +8,6 @@ import {
   KeyboardEventName,
   Platform,
   TouchableWithoutFeedback,
-  TransformsStyle,
   ViewProps
 } from 'react-native'
 
@@ -77,17 +76,14 @@ export const KeyboardAvoidingView = (props: KeyboardAvoidingViewProps): ReactEle
     })
   }
 
-  const transformsStyle: TransformsStyle = {
-    // @ts-ignore
-    transform: [{ translateY }],
-  }
-
   return (
     <TouchableWithoutFeedback
       disabled={!autoDismiss}
       onPress={Keyboard.dismiss}>
       <Animated.View
-        style={[transformsStyle, style]}
+        style={[{
+          transform: [{ translateY: translateY }]
+        }, style]}
         {...viewProps}
       />
     </TouchableWithoutFeedback>

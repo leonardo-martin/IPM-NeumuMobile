@@ -7,7 +7,7 @@ import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect } from '@react-navigation/native'
 import { getChatList } from '@services/chat-message.service'
 import { setChatList } from '@store/ducks/chat'
-import { Icon, IconProps, Input, List, Spinner, useStyleSheet } from '@ui-kitten/components'
+import { Divider, Icon, IconProps, Input, List, Spinner, useStyleSheet } from '@ui-kitten/components'
 import HeaderGenericWithTitleAndAddIcon from 'components/header/admin/generic-with-add-icon'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { ListRenderItemInfo, RefreshControl, View } from 'react-native'
@@ -129,6 +129,7 @@ const MessagesScreen: FC<DrawerContentComponentProps> = ({
                                 onRefresh={() => setRefreshing(true)}
                             />
                         }
+                        ItemSeparatorComponent={() => <Divider />}
                     /> : (
                         <>
                             <View style={{

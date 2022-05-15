@@ -3,7 +3,7 @@ import { ImageRequireSource } from "react-native"
 export class Message {
 
     constructor(readonly text: string | undefined,
-        readonly date: string | null,
+        readonly date: string | Date,
         readonly reply: boolean,
         readonly attachment: MessageAttachment | null) {
     }
