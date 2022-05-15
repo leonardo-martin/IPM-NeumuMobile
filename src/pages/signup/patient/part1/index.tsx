@@ -63,7 +63,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
     <React.Fragment>
       <View style={styles.labelCNSView}>
         <Text category="label" style={styles.labelCNSText}>
-          Cartão Nacional de Saúde (CNS)
+          Cartão Nacional de Saúde
         </Text>
         <TouchableOpacity
           onPress={() => ref.current?.open()}
@@ -446,7 +446,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           defaultValue=''
         />
         {form.formState.errors.susNumber?.type !== 'validate' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} />}
-        {form.formState.errors.susNumber?.type === 'validate' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} custommMessage='CNS inválido' />}
+        {form.formState.errors.susNumber?.type === 'validate' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} custommMessage='Número de cartão inválido' />}
       </View>
       <Portal>
         <Modalize

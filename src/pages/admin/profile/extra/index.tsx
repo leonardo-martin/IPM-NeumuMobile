@@ -1,16 +1,19 @@
 import HeaderProfile from '@components/header/admin/profile'
+import toast from '@helpers/toast'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { EUserRole } from '@models/UserRole'
 import { useFocusEffect } from '@react-navigation/native'
-import { getPatient, updatePatient } from '@services/patient.service'
+import { getAddressByPostalCode } from '@services/common.service'
+import { getPatient } from '@services/patient.service'
 import { getUserDetails, updateUser } from '@services/user.service'
 import { setProfile } from '@store/ducks/profile'
 import { Button, Icon, IconProps, useStyleSheet } from '@ui-kitten/components'
 import { formatCpf, formatPhone } from '@utils/mask'
-import React, { FC, ReactElement, useCallback } from 'react'
-import { useForm } from 'react-hook-form'
-import { ImageStyle, ScrollView, StyleProp, View } from 'react-native'
+import { validateCNS } from '@utils/validators'
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { ImageStyle, Keyboard, RefreshControl, ScrollView, StyleProp, View } from 'react-native'
 import { RootState } from 'store'
 import ProfileAvatar from './profile-avatar'
 import ProfileSetting from './profile-setting'
@@ -24,17 +27,16 @@ const EditProfileScreen: FC = (): ReactElement => {
   const form = useForm()
   const dispatch = useAppDispatch()
   const { profile: userDetails } = useAppSelector((state: RootState) => state.profile)
+  const [refreshing, setRefreshing] = useState<boolean>(false)
 
   const loadFields = async () => {
-    const isPatient = sessionUser && sessionUser.userRole.find(e => e.id === EUserRole.patient)
     let obj: any = {
       ...userDetails,
       dateOfBirth: userDetails?.dateOfBirth ? localeDateService.format(localeDateService.parse(userDetails?.dateOfBirth.toString(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"), format) : '',
-      cpf: userDetails?.cpf ? formatCpf(userDetails?.cpf) : userDetails?.cpf,
-      phone1: userDetails?.phone1 ? formatPhone(userDetails?.phone1) : userDetails?.phone1,
-      phone2: userDetails?.phone2 ? formatPhone(userDetails?.phone2) : userDetails?.phone2,
-      username: userDetails?.cpf,
+      username: userDetails?.cpf
     }
+
+    const isPatient = sessionUser && sessionUser.userRole.find(e => e.id === EUserRole.patient)
     if (isPatient) {
       const response = await getPatient()
       obj = {
@@ -46,41 +48,51 @@ const EditProfileScreen: FC = (): ReactElement => {
     }
     form.reset(obj)
   }
+
   useFocusEffect(
     useCallback(() => {
       loadFields()
     }, [userDetails])
   )
 
-  const editProfile = async () => {
+  const editProfile = async (type: 1 | 2) => {
     const obj = form.getValues()
 
+    let userDto = null
+    switch (type) {
+      case 1:
+        userDto = {
+          name: obj.name,
+          phone1: obj.phone1,
+          phone2: obj.phone2,
+        }
+        // const isPatient = sessionUser && sessionUser.userRole.find(e => e.id === EUserRole.patient)
+        // if (isPatient)
+        //   await updatePatient({
+        //     susNumber: obj.susNumber
+        //   })
+        break
+      case 2:
+        userDto = {
+          address1: obj.address1,
+          address2: obj.address2,
+          state: obj.state,
+          city: obj.city,
+          postalCode: obj.postalCode,
+          addressComplement: obj.addressComplement,
+          country: obj.country
+        }
+        break
+      default:
+        break
+    }
     try {
-      await updateUser({
-        name: obj.name,
-        phone1: obj.phone1,
-        phone2: obj.phone2,
-        mothersName: obj.mothersName,
 
-        address1: obj.address1,
-        address2: obj.address2,
-        state: obj.state,
-        city: obj.city,
-        postalCode: obj.postalCode,
-        addressComplement: obj.addressComplement,
-        country: obj.country
-      })
+      await updateUser(userDto)
+      updateUserStore()
 
-      const isPatient = sessionUser && sessionUser.userRole.find(e => e.id === EUserRole.patient)
-      if (isPatient)
-        await updatePatient({
-          susNumber: obj.susNumber
-        })
-
-      const res = await getUserDetails()
-      dispatch(setProfile(res.data))
     } catch (error) {
-
+      toast.danger({ message: 'Erro ao atualizar o perfil. Tente novamente mais tarde', duration: 3000 })
     }
   }
 
@@ -103,149 +115,265 @@ const EditProfileScreen: FC = (): ReactElement => {
     />
   )
 
+  const updateUserStore = async () => {
+    const res = await getUserDetails()
+    dispatch(setProfile(res.data))
+    toast.success({ message: 'Perfil atualizado com sucesso', duration: 3000 })
+    setRefreshing(false)
+  }
+
+  const loadDataFromPostalCode = async (value: string) => {
+    try {
+      const obj = await getAddressByPostalCode(value)
+
+      form.setValue('country', 'Brasil')
+      form.setValue('city', obj?.localidade)
+      form.setValue('state', obj?.uf)
+      form.setValue('address1', obj?.logradouro)
+      if (sessionUser && sessionUser.userRole.find(e => e.id !== EUserRole.patient)) {
+        form.setValue('address2', obj?.bairro)
+      }
+      form.setValue('addressComplement', obj?.complemento)
+      Keyboard.dismiss()
+    } catch (error) {
+      toast.danger({ message: 'Erro ao buscar endereço. Tente novamente mais tarde', duration: 3000 })
+    }
+  }
+
+  useEffect(() => {
+    if (refreshing) updateUserStore()
+  }, [refreshing])
+
   return (
     <>
       <HeaderProfile />
       <ScrollView
+        showsVerticalScrollIndicator={false}
         style={styles.container}
-        contentContainerStyle={styles.contentContainer}>
+        contentContainerStyle={styles.contentContainer}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => setRefreshing(true)}
+          />
+        }
+      >
         <ProfileAvatar
           style={styles.profileAvatar as StyleProp<ImageStyle>}
           source={require('../../../../assets/profile/profile.png')}
           editButton={renderPhotoButton}
         />
-        <ProfileSetting
+        <Controller
+          control={form.control}
+          render={({ field }) => (
+            <ProfileSetting
+              style={[styles.profileSetting, styles.section]}
+              hint='Usuário'
+              inputProps={{
+                value: field.value,
+                editable: false,
+                disabled: true,
+                textAlign: 'right',
+                multiline: true,
+                scrollEnabled: true
+              }}
+            />
+          )}
           name='username'
-          form={form}
-          style={[styles.profileSetting, styles.section]}
-          hint='Usuário'
-          inputProps={{
-            editable: false,
-            textAlign: 'right',
-            multiline: true,
-            scrollEnabled: true
-          }}
         />
-        <ProfileSetting
+        <Controller
+          control={form.control}
+          render={({ field }) => (
+            <ProfileSetting
+              style={styles.profileSetting}
+              hint='CPF'
+              inputProps={{
+                value: formatCpf(field.value),
+                editable: false,
+                disabled: true,
+                textAlign: 'right',
+                multiline: true,
+                scrollEnabled: true,
+                keyboardType: 'number-pad',
+              }}
+            />
+          )}
           name='cpf'
-          form={form}
-          style={styles.profileSetting}
-          hint='CPF'
-          inputProps={{
-            editable: false,
-            textAlign: 'right',
-            multiline: true,
-            scrollEnabled: true
-          }}
         />
-        <ProfileSetting
+        <Controller
+          control={form.control}
+          render={({ field }) => (
+            <ProfileSetting
+              style={styles.profileSetting}
+              hint='E-mail'
+              inputProps={{
+                value: field.value,
+                editable: false,
+                disabled: true,
+                textAlign: 'right',
+                multiline: true,
+                scrollEnabled: true
+              }}
+            />
+          )}
           name='email'
-          form={form}
-          style={styles.profileSetting}
-          hint='E-mail'
-          inputProps={{
-            editable: false,
-            textAlign: 'right',
-            multiline: true,
-            scrollEnabled: true,
-          }}
         />
-
-        <ProfileSetting
+        <Controller
+          control={form.control}
+          render={({ field }) => (
+            <ProfileSetting
+              style={[styles.profileSetting, styles.section]}
+              hint='Meu Nome'
+              inputProps={{
+                value: field.value,
+                onBlur: field.onBlur,
+                onChangeText: field.onChange,
+                editable: true,
+                textAlign: 'right',
+                keyboardType: 'default',
+                multiline: true,
+                scrollEnabled: true,
+                maxLength: 60,
+                returnKeyType: "default",
+                autoCapitalize: "words",
+                textContentType: "name"
+              }}
+            />
+          )}
           name='name'
-          form={form}
-          style={[styles.profileSetting, styles.section]}
-          hint='Meu Nome'
-          inputProps={{
-            editable: true,
-            textAlign: 'right',
-            keyboardType: 'default',
-            multiline: true,
-            scrollEnabled: true,
-            maxLength: 60,
-            returnKeyType: "next",
-            onSubmitEditing: () => form.setFocus('mothersName'),
-            autoCapitalize: "words",
-            textContentType: "name"
-          }}
         />
         {sessionUser && sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
-          <ProfileSetting
+          <Controller
+            control={form.control}
+            render={({ field }) => (
+              <ProfileSetting
+                style={styles.profileSetting}
+                hint='Nome da Mãe'
+                inputProps={{
+                  value: field.value,
+                  editable: false,
+                  disabled: true,
+                  textAlign: 'right',
+                  keyboardType: 'default',
+                  multiline: true,
+                  scrollEnabled: true,
+                  maxLength: 60,
+                  returnKeyType: "default",
+                  autoCapitalize: "words",
+                  textContentType: "familyName"
+                }}
+              />
+            )}
             name='mothersName'
-            form={form}
-            style={styles.profileSetting}
-            hint='Nome da Mãe'
-            inputProps={{
-              editable: true,
-              textAlign: 'right',
-              keyboardType: 'default',
-              multiline: true,
-              scrollEnabled: true,
-              maxLength: 60,
-              returnKeyType: "next",
-              autoCapitalize: "words"
-              // onSubmitEditing: () => form.setFocus('dateOfBirth')
-            }}
           />
         )}
-        <ProfileSetting
+        <Controller
+          control={form.control}
+          render={({ field }) => (
+            <ProfileSetting
+              style={styles.profileSetting}
+              hint='Data de Nascimento'
+              inputProps={{
+                value: field.value,
+                editable: false,
+                disabled: true,
+                textAlign: 'right',
+                keyboardType: 'default',
+                multiline: true,
+                scrollEnabled: true,
+                maxLength: 60,
+                returnKeyType: "default",
+                autoCapitalize: "words",
+                textContentType: "familyName"
+              }}
+            />
+          )}
           name='dateOfBirth'
-          form={form}
-          style={styles.profileSetting}
-          hint='Data de Nascimento'
-          inputProps={{
-            editable: false,
-            textAlign: 'right',
-            multiline: true,
-            scrollEnabled: true
-          }}
         />
-
-        <ProfileSetting
+        <Controller
+          control={form.control}
+          rules={{
+            minLength: {
+              value: 13,
+              message: `Mín. 13 caracteres`
+            },
+          }}
+          render={({ field }) => (
+            <ProfileSetting
+              style={styles.profileSetting}
+              hint='Telefone 1'
+              inputProps={{
+                value: formatPhone(field.value),
+                onBlur: field.onBlur,
+                onChangeText: field.onChange,
+                keyboardType: 'number-pad',
+                editable: true,
+                textAlign: 'right',
+                multiline: true,
+                scrollEnabled: true,
+                maxLength: 15,
+                textContentType: "telephoneNumber",
+                returnKeyType: "default",
+              }}
+            />
+          )}
           name='phone1'
-          form={form}
-          style={styles.profileSetting}
-          hint='Telefone 1'
-          inputProps={{
-            keyboardType: 'number-pad',
-            editable: true,
-            textAlign: 'right',
-            multiline: true,
-            scrollEnabled: true,
-            maxLength: 15,
-            textContentType: "telephoneNumber"
-          }}
         />
-        <ProfileSetting
+        <Controller
+          control={form.control}
+          rules={{
+            minLength: {
+              value: 13,
+              message: `Mín. 13 caracteres`
+            },
+          }}
+          render={({ field }) => (
+            <ProfileSetting
+              style={styles.profileSetting}
+              hint='Telefone 2'
+              inputProps={{
+                value: formatPhone(field.value),
+                onBlur: field.onBlur,
+                onChangeText: field.onChange,
+                keyboardType: 'number-pad',
+                editable: true,
+                textAlign: 'right',
+                multiline: true,
+                scrollEnabled: true,
+                maxLength: 15,
+                textContentType: "telephoneNumber"
+              }}
+            />
+          )}
           name='phone2'
-          form={form}
-          style={styles.profileSetting}
-          hint='Telefone 2'
-          inputProps={{
-            keyboardType: 'number-pad',
-            editable: true,
-            textAlign: 'right',
-            multiline: true,
-            scrollEnabled: true,
-            maxLength: 15,
-            textContentType: "telephoneNumber"
-          }}
         />
-
         {sessionUser && sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
-          <ProfileSetting
-            name='susNumber'
-            form={form}
-            style={styles.profileSetting}
-            hint='Cartão Nacional de Saúde'
-            inputProps={{
-              keyboardType: 'number-pad',
-              editable: true,
-              textAlign: 'right',
-              multiline: true,
-              scrollEnabled: true,
-              maxLength: 16
+          <Controller
+            control={form.control}
+            rules={{
+              minLength: {
+                value: 15,
+                message: `Mín. 15 caracteres`
+              },
+              validate: (e) => e !== "" ? validateCNS(e) : true
             }}
+            render={({ field }) => (
+              <ProfileSetting
+                style={styles.profileSetting}
+                hint='Cartão Nacional de Saúde'
+                inputProps={{
+                  value: field.value,
+                  keyboardType: 'number-pad',
+                  editable: false,
+                  disabled: true,
+                  textAlign: 'right',
+                  multiline: true,
+                  scrollEnabled: true,
+                  maxLength: 16
+                }}
+              />
+            )}
+            name='susNumber'
           />
         )}
         <View style={styles.editViewButton}>
@@ -253,105 +381,214 @@ const EditProfileScreen: FC = (): ReactElement => {
             size='small'
             status='primary'
             appearance='ghost'
-            onPress={editProfile}>
+            onPress={() => editProfile(1)}>
             SALVAR
           </Button>
         </View>
 
-        <ProfileSetting
+
+        {/* ############################ */}
+
+        <Controller
+          control={form.control}
+          rules={{
+            minLength: {
+              value: 5,
+              message: `Mín. 5 caracteres`
+            },
+          }}
+          render={({ field }) => (
+            <ProfileSetting
+              style={[styles.profileSetting, styles.section]}
+              hint='CEP'
+              inputProps={{
+                value: field.value,
+                onBlur: field.onBlur,
+                onChangeText: field.onChange,
+                keyboardType: 'number-pad',
+                editable: true,
+                textAlign: 'right',
+                multiline: true,
+                scrollEnabled: true,
+                maxLength: 8,
+                textContentType: "postalCode",
+                returnKeyType: "default",
+                onEndEditing: () => loadDataFromPostalCode(field.value),
+                onSubmitEditing: () => field.value ? loadDataFromPostalCode(field.value) : undefined
+              }}
+            />
+          )}
           name='postalCode'
-          form={form}
-          style={[styles.profileSetting, styles.section]}
-          hint='CEP'
-          inputProps={{
-            keyboardType: 'number-pad',
-            editable: true,
-            textAlign: 'right',
-            multiline: true,
-            scrollEnabled: true
-          }}
-        />
-        <ProfileSetting
-          name='address1'
-          form={form}
-          style={[styles.profileSetting]}
-          hint='Endereço'
-          inputProps={{
-            editable: true,
-            textAlign: 'right',
-            multiline: true,
-            scrollEnabled: true
-          }}
-        />
-        <ProfileSetting
-          name='address2'
-          form={form}
-          style={styles.profileSetting}
-          hint='Número'
-          inputProps={{
-            keyboardType: 'number-pad',
-            editable: true,
-            textAlign: 'right',
-            multiline: true,
-            scrollEnabled: true
-          }}
-        />
-        <ProfileSetting
-          name='addressComplement'
-          form={form}
-          style={styles.profileSetting}
-          hint='Complemento'
-          inputProps={{
-            editable: true,
-            textAlign: 'right',
-            multiline: true,
-            scrollEnabled: true
-          }}
-        />
-        <ProfileSetting
-          name='city'
-          form={form}
-          style={styles.profileSetting}
-          hint='Cidade'
-          inputProps={{
-            editable: true,
-            textAlign: 'right',
-            multiline: true,
-            scrollEnabled: true
-          }}
-        />
-        <ProfileSetting
-          name='state'
-          form={form}
-          style={styles.profileSetting}
-          hint='Estado'
-          inputProps={{
-            editable: true,
-            textAlign: 'right',
-            multiline: true,
-            scrollEnabled: true,
-            maxLength: 2,
-          }}
-        />
-        <ProfileSetting
-          name='country'
-          form={form}
-          style={styles.profileSetting}
-          hint='País'
-          inputProps={{
-            editable: true,
-            textAlign: 'right',
-            multiline: true,
-            scrollEnabled: true
-          }}
         />
 
+
+        <Controller
+          control={form.control}
+          rules={{
+            minLength: {
+              value: 5,
+              message: `Mín. 5 caracteres`
+            },
+          }}
+          render={({ field }) => (
+            <ProfileSetting
+              style={[styles.profileSetting]}
+              hint='Endereço'
+              inputProps={{
+                value: field.value,
+                onBlur: field.onBlur,
+                onChangeText: field.onChange,
+                keyboardType: 'default',
+                editable: true,
+                textAlign: 'right',
+                multiline: true,
+                scrollEnabled: true,
+                textContentType: "fullStreetAddress",
+                returnKeyType: "default",
+              }}
+            />
+          )}
+          name='address1'
+        />
+
+        <Controller
+          control={form.control}
+          rules={{
+            minLength: {
+              value: 5,
+              message: `Mín. 5 caracteres`
+            },
+          }}
+          render={({ field }) => (
+            <ProfileSetting
+              style={[styles.profileSetting]}
+              hint='Número'
+              inputProps={{
+                value: field.value,
+                onBlur: field.onBlur,
+                onChangeText: field.onChange,
+                keyboardType: (sessionUser && sessionUser.userRole.find(e => e.id === EUserRole.patient)) ? 'number-pad' : 'default',
+                editable: true,
+                textAlign: 'right',
+                multiline: true,
+                scrollEnabled: true,
+                returnKeyType: "default",
+              }}
+            />
+          )}
+          name='address2'
+        />
+
+        <Controller
+          control={form.control}
+          rules={{
+            required: false,
+            minLength: {
+              value: 2,
+              message: `Mín. 2 caracteres`
+            },
+            maxLength: {
+              value: 180,
+              message: `Max. 180 caracteres`
+            },
+          }}
+          render={({ field }) => (
+            <ProfileSetting
+              style={[styles.profileSetting]}
+              hint='Complemento'
+              inputProps={{
+                value: field.value,
+                onBlur: field.onBlur,
+                onChangeText: field.onChange,
+                keyboardType: 'default',
+                editable: true,
+                textAlign: 'right',
+                multiline: true,
+                scrollEnabled: true,
+                returnKeyType: "default",
+              }}
+            />
+          )}
+          name='addressComplement'
+        />
+        <Controller
+          control={form.control}
+          render={({ field }) => (
+            <ProfileSetting
+              style={[styles.profileSetting]}
+              hint='Cidade'
+              inputProps={{
+                value: field.value,
+                onBlur: field.onBlur,
+                onChangeText: field.onChange,
+                keyboardType: 'default',
+                editable: true,
+                textAlign: 'right',
+                multiline: true,
+                scrollEnabled: true,
+                returnKeyType: "default",
+                autoCapitalize: 'words'
+              }}
+            />
+          )}
+          name='city'
+        />
+        <Controller
+          control={form.control}
+          rules={{
+            minLength: {
+              value: 2,
+              message: `Mín. 2 caracteres`
+            },
+          }}
+          render={({ field }) => (
+            <ProfileSetting
+              style={[styles.profileSetting]}
+              hint='Estado'
+              inputProps={{
+                value: field.value,
+                onBlur: field.onBlur,
+                onChangeText: field.onChange,
+                keyboardType: 'default',
+                editable: true,
+                textAlign: 'right',
+                scrollEnabled: true,
+                returnKeyType: "default",
+                autoCapitalize: 'characters',
+                maxLength: 2,
+              }}
+            />
+          )}
+          name='state'
+        />
+
+        <Controller
+          control={form.control}
+          render={({ field }) => (
+            <ProfileSetting
+              style={[styles.profileSetting]}
+              hint='País'
+              inputProps={{
+                value: field.value,
+                onBlur: field.onBlur,
+                onChangeText: field.onChange,
+                keyboardType: 'default',
+                editable: true,
+                textAlign: 'right',
+                scrollEnabled: true,
+                returnKeyType: "default",
+                autoCapitalize: 'words'
+              }}
+            />
+          )}
+          name='country'
+        />
         <View style={styles.editViewButton}>
           <Button
             size='small'
             status='primary'
             appearance='ghost'
-            onPress={editProfile}>
+            onPress={() => editProfile(2)}>
             SALVAR
           </Button>
         </View>

@@ -239,7 +239,6 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
         form.resetField(`${textFieldPrefix}address1` as const)
         form.resetField(`${textFieldPrefix}address2` as const)
         form.resetField(`${textFieldPrefix}addressComplement` as const)
-        form.resetField(`${textFieldPrefix}country` as const)
 
         setCountry(obj ? 'Brasil' : '')
         form.setValue(`${textFieldPrefix}city` as const, obj?.localidade)
