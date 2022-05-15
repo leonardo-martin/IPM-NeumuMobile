@@ -1,13 +1,13 @@
-import React, { FC, ReactElement, useCallback, useState, forwardRef, ForwardedRef } from 'react'
-import { BackHandler, Platform, View } from 'react-native'
-import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
-import { WebView, WebViewNavigation, WebViewProps } from 'react-native-webview'
-import { WebViewSource, WebViewSourceUri } from 'react-native-webview/lib/WebViewTypes'
-import { Spinner, useStyleSheet } from '@ui-kitten/components'
-import { webViewStyle } from './style'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
+import { Spinner, useStyleSheet } from '@ui-kitten/components'
+import React, { FC, ForwardedRef, forwardRef, ReactElement, useCallback, useState } from 'react'
+import { BackHandler, Platform, View } from 'react-native'
+import { WebView, WebViewNavigation, WebViewProps } from 'react-native-webview'
+import { WebViewErrorEvent, WebViewNavigationEvent } from 'react-native-webview/lib/WebViewTypes'
 import { html } from './data'
+import { webViewStyle } from './style'
 
 const isAndroid = Platform.OS === 'android'
 
@@ -23,11 +23,10 @@ const RNWebView: FC<RNWebViewProps> = forwardRef<WebView, React.PropsWithChildre
   const route = useRoute()
   const { params } = route
   const [back, setBack] = useState<boolean>(false)
-  const [source, setSource] = useState<WebViewSource>()
+  const [loading, setLoading] = useState<boolean>(false)
 
   useFocusEffect(
     useCallback(() => {
-      setSource(params ? params as WebViewSourceUri : props.source)
       const onBackPress = () => {
         if (back) combinedRef.current.goBack()
         else navigation.goBack()
@@ -47,20 +46,31 @@ const RNWebView: FC<RNWebViewProps> = forwardRef<WebView, React.PropsWithChildre
     [],
   )
 
+  function LoadingIndicatorView() {
+    return (
+      <View style={styles.spinnerView}>
+        <Spinner size='giant' status='primary' />
+      </View>
+    )
+  }
+
   return (
     <>
       <SafeAreaLayout style={styles.safeArea}>
         <WebView
           {...{ ...props, ref: combinedRef }}
           source={props.source}
-          renderLoading={() => (
-            <View style={styles.spinnerView}>
-              <Spinner size='giant' status='primary' />
-            </View>
-          )}
+          onLoadStart={(event: WebViewNavigationEvent) => {
+            setLoading(event.nativeEvent.loading)
+          }}
+          onLoadEnd={(event: WebViewNavigationEvent | WebViewErrorEvent) => {
+            setLoading(event.nativeEvent.loading)
+          }}
           scrollEnabled={!isAndroid}
           onNavigationStateChange={onNavigationStateChange}
-        />
+        >
+          {loading && LoadingIndicatorView()}
+        </WebView>
       </SafeAreaLayout>
     </>
   )
@@ -71,7 +81,7 @@ RNWebView.defaultProps = {
     html: html
   },
   originWhitelist: ['*'],
-  startInLoadingState: true,
+  startInLoadingState: false,
   allowsBackForwardNavigationGestures: true,
   showsVerticalScrollIndicator: true
 }
