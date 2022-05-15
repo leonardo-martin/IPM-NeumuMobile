@@ -1,4 +1,5 @@
 import { _DATE_FROM_ISO_8601 } from "@constants/date"
+import { TELENEUMU_CONTACT, TELENEUMU_SUBJECT } from '@constants/mail'
 import { useDatepickerService } from "@hooks/useDatepickerService"
 import { AscendingOrder } from "@models/Common"
 import { PatientDiaryEntryDto } from "@models/Patient"
@@ -136,7 +137,7 @@ export const sortByDate = (a: Date | string, b: Date | string, order: AscendingO
 }
 
 export const openMailTo = () => {
-    Linking.openURL('mailto:contato@teleneumu.com.br?subject=Contato TeleNeuMu')
+    Linking.openURL(`mailto:${TELENEUMU_CONTACT}?subject=${TELENEUMU_SUBJECT}`)
         .catch(() => {
             Toast.show({
                 type: 'warning',
