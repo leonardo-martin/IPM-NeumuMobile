@@ -1,3 +1,4 @@
+import CustomErrorMessage from '@components/error'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import toast from '@helpers/toast'
 import { UserAccRecoveryPasswd } from '@models/User'
@@ -101,8 +102,7 @@ const ChangePasswordWithToken: FC = (): ReactElement => {
                         )}
                         name='token'
                     />
-                    {form.formState.errors.token && <Text category='s2' style={styles.text}>{form.formState.errors.token?.message}</Text>}
-
+                    <CustomErrorMessage name='token' errors={form.formState.errors} />
                     <Controller
                         control={form.control}
                         rules={{
@@ -147,9 +147,8 @@ const ChangePasswordWithToken: FC = (): ReactElement => {
                         )}
                         name='password'
                     />
-                    {form.formState.errors.password?.type === 'minLength' && <Text category='s2' style={styles.text}>{form.formState.errors.password?.message}</Text>}
-                    {form.formState.errors.password?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.password?.message}</Text>}
-                    {form.formState.errors.password?.type === 'validate' && <Text category='s2' style={styles.text}>Senha inválida</Text>}
+                    {form.formState.errors.password?.type !== 'validate' && <CustomErrorMessage name='password' errors={form.formState.errors} />}
+                    {form.formState.errors.password?.type === 'validate' && <CustomErrorMessage name='password' errors={form.formState.errors} custommMessage='Senha inválida' />}
                     <Controller
                         control={form.control}
                         rules={{
@@ -189,10 +188,9 @@ const ChangePasswordWithToken: FC = (): ReactElement => {
                         )}
                         name='newPassword'
                     />
-                    {form.formState.errors.newPassword?.type === 'minLength' && <Text category='s2' style={styles.text}>{form.formState.errors.newPassword?.message}</Text>}
-                    {form.formState.errors.newPassword?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.newPassword?.message}</Text>}
-                    {form.formState.errors.newPassword?.type === 'valid' && <Text category='s2' style={styles.text}>Senha inválida</Text>}
-                    {form.formState.errors.newPassword?.type === 'equal' && <Text category='s2' style={styles.text}>Senhas não conferem</Text>}
+                    {(form.formState.errors.newPassword?.type !== 'valid' && form.formState.errors.newPassword?.type !== 'equal') && <CustomErrorMessage name='newPassword' errors={form.formState.errors} />}
+                    {(form.formState.errors.newPassword?.type === 'valid') && <CustomErrorMessage name='newPassword' errors={form.formState.errors} custommMessage='Senha inválida' />}
+                    {(form.formState.errors.newPassword?.type === 'equal') && <CustomErrorMessage name='newPassword' errors={form.formState.errors} custommMessage='Senhas não conferem' />}
                     <View style={styles.viewButton}>
                         <Button
                             size='small'

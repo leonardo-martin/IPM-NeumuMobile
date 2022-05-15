@@ -1,4 +1,5 @@
 import AutoCompleteComponent from '@components/autoComplete'
+import CustomErrorMessage from '@components/error'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import toast from '@helpers/toast'
 import { City, UF } from '@models/Places'
@@ -270,7 +271,7 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
               name='state'
               defaultValue=''
             />
-            {form.formState.errors.state && (<Text category='s2' style={styles?.text}>{form.formState.errors.state?.message}</Text>)}
+            <CustomErrorMessage name='state' errors={form.formState.errors} />
             <Controller
               control={form.control}
               render={({ field: { onBlur, name, value, ref } }) => (
@@ -296,7 +297,7 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
               name='city'
               defaultValue=''
             />
-            {form.formState.errors.city && (<Text category='s2' style={styles?.text}>{form.formState.errors.city?.message}</Text>)}
+            <CustomErrorMessage name='city' errors={form.formState.errors} />
           </>
         )}
 
@@ -329,7 +330,7 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
           name='specialty.description'
           defaultValue=''
         />
-        {form.formState.errors.specialty?.description && (<Text category='s2' style={styles?.text}>{form.formState.errors.specialty?.description?.message}</Text>)}
+        <CustomErrorMessage name='specialty.description' errors={form.formState.errors} />
         <View style={styles.viewButton}>
           <Button
             size='small'

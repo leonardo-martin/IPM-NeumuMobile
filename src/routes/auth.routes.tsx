@@ -39,6 +39,7 @@ const AuthRoutes: FC = (): ReactElement => {
       initialRouteName="SignIn"
       screenOptions={{
         headerShown: false,
+        gestureEnabled: false,
       }}
     >
       <Group screenOptions={{
@@ -71,7 +72,6 @@ const AuthRoutes: FC = (): ReactElement => {
       <Group screenOptions={{
         headerShown: true,
         header: () => <HeaderAuth />,
-        gestureEnabled: false,
         transitionSpec: transitionSpec,
         cardStyleInterpolator: cardStyleInterpolator
       }}>
@@ -88,7 +88,6 @@ const AuthRoutes: FC = (): ReactElement => {
 
       <Group screenOptions={{
         headerShown: false,
-        gestureEnabled: false,
         transitionSpec: transitionSpec,
         cardStyleInterpolator: cardStyleInterpolator
       }}>

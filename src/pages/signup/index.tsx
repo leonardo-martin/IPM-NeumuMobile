@@ -12,7 +12,7 @@ import { createPatientProfileCreator, createUser } from '@services/user.service'
 import { Button, CheckBox, Spinner, useStyleSheet } from '@ui-kitten/components'
 import { extractFieldString } from '@utils/common'
 import { cleanNumberMask } from '@utils/mask'
-import React, { FC, ReactElement, useCallback, useRef, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Alert, BackHandler, Platform, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
@@ -56,7 +56,28 @@ const SignUpScreen: FC = (): ReactElement => {
         } else setChecked(false)
     }
 
-    const onBack = () => setActive((p) => p - 1)
+    const hasUnsavedChanges = () => {
+        Alert.alert(
+            'Descartar alterações?',
+            'Você tem alterações não salvas. Tem certeza que deseja sair dessa tela?',
+            [
+                { text: "Não", style: 'cancel', onPress: () => { } },
+                {
+                    text: 'Sim',
+                    style: 'destructive',
+                    onPress: () => navigation.goBack(),
+                },
+            ]
+        )
+    }
+
+    const onBack = () => {
+        if (active > 0)
+            setActive((p) => p - 1)
+        else
+            hasUnsavedChanges()
+    }
+
     const onNext = () => setActive((p) => p + 1)
     const onDone = () => modalizeRef.current?.open()
 
@@ -67,14 +88,7 @@ const SignUpScreen: FC = (): ReactElement => {
                     onBack()
                     return true
                 } else {
-                    Alert.alert("Deseja sair do cadastro?", "Todos os dados serão perdidos", [
-                        {
-                          text: "Não",
-                          onPress: () => null,
-                          style: "cancel"
-                        },
-                        { text: "Sim", onPress: () => navigation.goBack() }
-                      ])
+                    hasUnsavedChanges()
                     return true
                 }
             }

@@ -1,4 +1,5 @@
 import AutoCompleteComponent from '@components/autoComplete'
+import CustomErrorMessage from '@components/error'
 import HeaderGenericWithTitleAndAddIcon from '@components/header/admin/generic-with-add-icon'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import toast from '@helpers/toast'
@@ -6,14 +7,14 @@ import { useAppSelector } from '@hooks/redux'
 import { City, UF } from '@models/Places'
 import { VisitAddressDTO } from '@models/VisitAddress'
 import { useFocusEffect } from '@react-navigation/native'
-import { getAddressByPostalCode, getStates, getCities } from '@services/common.service'
+import { getAddressByPostalCode, getCities, getStates } from '@services/common.service'
 import { createVisitAddress, getVisitAddressListByDoctorId, updateVisitAddress } from '@services/visit-address.service'
-import { AutocompleteItem, Button, Icon, IconProps, Input, Text, useStyleSheet } from '@ui-kitten/components'
+import { AutocompleteItem, Button, Icon, IconProps, Input, useStyleSheet } from '@ui-kitten/components'
+import { filterBy } from '@utils/common'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { View } from 'react-native'
 import { RootState } from 'store'
-import { filterBy } from 'utils/common'
 import { visitAddressStyle } from './style'
 
 const VisitAddressScreen: FC = (): ReactElement => {
@@ -267,8 +268,7 @@ const VisitAddressScreen: FC = (): ReactElement => {
                         name='cep'
                         defaultValue=''
                     />
-                    {form.formState.errors.cep && (<Text category='s2' style={styles.text}>{form.formState.errors.cep?.message}</Text>)}
-
+                    <CustomErrorMessage name='cep' errors={form.formState.errors} />
                     <Controller
                         control={form.control}
                         rules={{
@@ -302,8 +302,7 @@ const VisitAddressScreen: FC = (): ReactElement => {
                         name='street'
                         defaultValue=''
                     />
-                    {form.formState.errors.street && (<Text category='s2' style={styles.text}>{form.formState.errors.street?.message}</Text>)}
-
+                    <CustomErrorMessage name='street' errors={form.formState.errors} />
                     <Controller
                         control={form.control}
                         rules={{
@@ -337,8 +336,7 @@ const VisitAddressScreen: FC = (): ReactElement => {
                         name='district'
                         defaultValue=''
                     />
-                    {form.formState.errors.district && (<Text category='s2' style={styles.text}>{form.formState.errors.district?.message}</Text>)}
-
+                    <CustomErrorMessage name='district' errors={form.formState.errors} />
                     <Controller
                         control={form.control}
                         rules={{

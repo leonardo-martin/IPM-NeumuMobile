@@ -58,7 +58,7 @@ const DetailsAboutScreen: FC = (): ReactElement => {
 
     const isFocused = useIsFocused()
     useEffect(() => {
-        setIsLoading(true)
+        if (isFocused) setIsLoading(true)
     }, [isFocused])
 
     const styleRichText = (marks?: {

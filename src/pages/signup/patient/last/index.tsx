@@ -1,4 +1,5 @@
 import CardPatientRelationshipComponent from '@components/cards/cardPatientRelationship'
+import CustomErrorMessage from '@components/error'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { useModal } from '@hooks/useModal'
 import { PatientProfileCreatorTypeEnum, RelationshipPatient } from '@models/PatientProfileCreator'
@@ -124,7 +125,7 @@ const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): Rea
           )}
           name='creator.patientProfileCreatorTypeId'
         />
-        {form.formState.errors.creator?.patientProfileCreatorTypeId && <Text category='s2' style={styles.text}>{form.formState.errors.creator?.patientProfileCreatorTypeId?.message}</Text>}
+        <CustomErrorMessage name='creator.patientProfileCreatorTypeId' errors={form.formState.errors} />
       </View>
       {patientProfileCreator === PatientProfileCreatorTypeEnum.Other && relationship ?
         <>

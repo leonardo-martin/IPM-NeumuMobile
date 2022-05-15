@@ -1,3 +1,4 @@
+import CustomErrorMessage from '@components/error'
 import { useAppSelector } from '@hooks/redux'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useDatepickerService } from '@hooks/useDatepickerService'
@@ -144,8 +145,7 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                             name='data.title'
                             defaultValue=''
                         />
-                        {form.formState.errors.data?.title && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.data?.title?.message}</Text>}
-
+                        <CustomErrorMessage name='data.title' errors={form.formState.errors} />
                         <Controller
                             control={form.control}
                             rules={{
@@ -180,8 +180,7 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                             name='data.description'
                             defaultValue=''
                         />
-                        {form.formState.errors.data?.description && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.data?.description?.message}</Text>}
-
+                        <CustomErrorMessage name='data.description' errors={form.formState.errors} />
                         {isError && (
                             <View style={{ paddingBottom: 10 }}>
                                 <Text status='danger' category='s1' style={[styles.text, { textAlign: 'center' }]}>{errorMessage}</Text>

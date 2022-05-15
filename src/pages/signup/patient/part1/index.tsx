@@ -1,3 +1,4 @@
+import CustomErrorMessage from '@components/error'
 import RNWebView from '@components/webView'
 import { CONECTESUS_URI } from '@constants/uri'
 import { useDatepickerService } from '@hooks/useDatepickerService'
@@ -115,7 +116,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           name='name'
           defaultValue=''
         />
-        {form.formState.errors.name && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.name?.message}</Text>}
+        <CustomErrorMessage name='name' errors={form.formState.errors} />
         <Controller
           control={form.control}
           rules={{
@@ -149,7 +150,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           name='mothersName'
           defaultValue=''
         />
-        {form.formState.errors.mothersName && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.mothersName?.message}</Text>}
+        <CustomErrorMessage name='mothersName' errors={form.formState.errors} />
         <Controller
           control={form.control}
           rules={{
@@ -184,9 +185,8 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           name='cpf'
           defaultValue=''
         />
-        {form.formState.errors.cpf?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.cpf?.message}</Text>}
-        {form.formState.errors.cpf?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.cpf?.message}</Text>}
-        {form.formState.errors.cpf?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>CPF inválido</Text>}
+        {form.formState.errors.cpf?.type !== 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} />}
+        {form.formState.errors.cpf?.type === 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} custommMessage='CPF inválido' />}
         <Controller
           control={form.control}
           rules={{
@@ -218,7 +218,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           )}
           name='dateOfBirth'
         />
-        {form.formState.errors.dateOfBirth?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.dateOfBirth?.message}</Text>}
+        <CustomErrorMessage name='dateOfBirth' errors={form.formState.errors} />
         <Text style={styles.labelBasic}>Gênero *</Text>
         <Controller
           control={form.control}
@@ -251,7 +251,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           )}
           name='sex'
         />
-        {form.formState.errors.sex?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.sex?.message}</Text>}
+        <CustomErrorMessage name='sex' errors={form.formState.errors} />
         <Controller
           control={form.control}
           rules={{
@@ -297,9 +297,8 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           name='email'
           defaultValue=''
         />
-        {form.formState.errors.email?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.email?.message}</Text>}
-        {form.formState.errors.email?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.email?.message}</Text>}
-        {form.formState.errors.email?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>E-mail inválido</Text>}
+        {form.formState.errors.email?.type !== 'validate' && <CustomErrorMessage name='email' errors={form.formState.errors} />}
+        {form.formState.errors.email?.type === 'validate' && <CustomErrorMessage name='email' errors={form.formState.errors} custommMessage='E-mail inválido' />}
         <Controller
           control={form.control}
           rules={{
@@ -345,9 +344,8 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           name='password'
           defaultValue=''
         />
-        {form.formState.errors.password?.type === 'minLength' && <Text category='s2' style={styles.text}>{form.formState.errors.password?.message}</Text>}
-        {form.formState.errors.password?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.password?.message}</Text>}
-        {form.formState.errors.password?.type === 'validate' && <Text category='s2' style={styles.text}>Senha inválida</Text>}
+        {form.formState.errors.password?.type !== 'validate' && <CustomErrorMessage name='password' errors={form.formState.errors} />}
+        {form.formState.errors.password?.type === 'validate' && <CustomErrorMessage name='password' errors={form.formState.errors} custommMessage='Senha inválida' />}
         <Controller
           control={form.control}
           rules={{
@@ -381,7 +379,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           name='phone'
           defaultValue=''
         />
-        {form.formState.errors.phone && <Text category='s2' style={styles.text}>{form.formState.errors.phone?.message}</Text>}
+        <CustomErrorMessage name='phone' errors={form.formState.errors} />
         <Controller
           control={form.control}
           rules={{
@@ -412,7 +410,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           name='phone2'
           defaultValue=''
         />
-        {form.formState.errors.phone2 && <Text category='s2' style={styles.text}>{form.formState.errors.phone2?.message}</Text>}
+        <CustomErrorMessage name='phone2' errors={form.formState.errors} />
         <Controller
           control={form.control}
           rules={{
@@ -447,9 +445,8 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           name='susNumber'
           defaultValue=''
         />
-        {form.formState.errors.susNumber?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.susNumber?.message}</Text>}
-        {form.formState.errors.susNumber?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.susNumber?.message}</Text>}
-        {form.formState.errors.susNumber?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>CNS inválido</Text>}
+        {form.formState.errors.susNumber?.type !== 'validate' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} />}
+        {form.formState.errors.susNumber?.type === 'validate' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} custommMessage='CNS inválido' />}
       </View>
       <Portal>
         <Modalize

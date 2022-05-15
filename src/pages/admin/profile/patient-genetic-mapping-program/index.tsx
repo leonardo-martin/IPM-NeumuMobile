@@ -1,3 +1,4 @@
+import CustomErrorMessage from '@components/error'
 import HeaderAdmin from '@components/header/admin'
 import ModalizeFixed from '@components/modalize'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
@@ -197,8 +198,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                         name='pastExams.doctor.crm'
                                         defaultValue=''
                                     />
-                                    {form.formState.errors.pastExams?.doctor?.crm && <Text category='s2' style={[styles.text, { paddingHorizontal: 5 }]}>{form.formState.errors.pastExams?.doctor?.crm?.message}</Text>}
-
+                                    <CustomErrorMessage name='pastExams.doctor.crm' errors={form.formState.errors} />
                                     <View style={styles.viewLabel}>
                                         <Text category='label' status='primary' style={styles.labelTitle}>Assinale uma das alternativas abaixo em relação ao teste genético: *</Text>
                                     </View>
@@ -229,7 +229,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                         )}
                                         name='pastExams.exam.id'
                                     />
-                                    {form.formState.errors.pastExams?.exam?.id && <Text category='s2' style={[styles.text, { paddingHorizontal: 5 }]}>{form.formState.errors.pastExams?.exam?.id?.message}</Text>}
+                                    <CustomErrorMessage name='pastExams.exam.id' errors={form.formState.errors} />
                                 </View>
                                 <View style={styles.containerBtn}>
                                     <Button

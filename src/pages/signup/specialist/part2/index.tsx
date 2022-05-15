@@ -1,8 +1,9 @@
+import CardAddressComponent from '@components/cards/cardAddress'
+import CustomErrorMessage from '@components/error'
 import { DoctorSignUpProps } from '@models/SignUpProps'
 import { registerStyle } from '@pages/signup/style'
-import { Input, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import { Input, Spinner, useStyleSheet } from '@ui-kitten/components'
 import { formatPhone } from '@utils/mask'
-import CardAddressComponent from '@components/cards/cardAddress'
 import React, { FC, ReactElement, useState } from 'react'
 import { Controller } from 'react-hook-form'
 import { View } from 'react-native'
@@ -62,7 +63,7 @@ const DoctorSignUpPart2Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
           name='phone'
           defaultValue=''
         />
-        {form.formState.errors.phone && <Text category='s2' style={styles.text}>{form.formState.errors.phone?.message}</Text>}
+        <CustomErrorMessage name='phone' errors={form.formState.errors} />
         <Controller
           control={form.control}
           rules={{
@@ -94,7 +95,7 @@ const DoctorSignUpPart2Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
           name='phone2'
           defaultValue=''
         />
-        {form.formState.errors.phone2 && <Text category='s2' style={styles.text}>{form.formState.errors.phone2?.message}</Text>}
+        <CustomErrorMessage name='phone2' errors={form.formState.errors} />
       </View>
     </>
   )

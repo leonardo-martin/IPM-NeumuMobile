@@ -1,20 +1,21 @@
 import CardAddressComponent from '@components/cards/cardAddress'
+import CustomErrorMessage from '@components/error'
+import RegisterHeader from '@components/header/register'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import toast from '@helpers/toast'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { UserDoctorData } from '@models/User'
-import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native'
 import { createUser } from '@services/user.service'
 import { Datepicker, Icon, IconProps, IndexPath, Input, PopoverPlacements, Radio, RadioGroup, Select, SelectItem, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { extractFieldString, getGender, openMailTo } from '@utils/common'
 import { formatCpf, formatPhone, isEmailValid, onlyNumbers } from '@utils/mask'
 import specialties from '@utils/specialties'
 import { validatePasswd } from '@utils/validators'
-import RegisterHeader from 'components/header/register'
 import { validate } from 'gerador-validador-cpf'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Keyboard, TouchableOpacity, View } from 'react-native'
+import { Alert, BackHandler, Keyboard, TouchableOpacity, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { managementStyle } from './new-user.style'
 
@@ -31,6 +32,7 @@ const NewUserScreen: FC = (): ReactElement => {
     const isFocused = useIsFocused()
     const [selectedIndex, setSelectedIndex] = useState(-1)
     const [secureTextEntry, setSecureTextEntry] = useState(true)
+    const navigation = useNavigation<any>()
 
     useFocusEffect(
         useCallback(() => {
@@ -39,6 +41,32 @@ const NewUserScreen: FC = (): ReactElement => {
 
             const specialty = form.getValues('specialty.description')
             if (specialty) setSelectedSpecialty(new IndexPath(specialties.indexOf(specialty)))
+        }, [])
+    )
+
+    const hasUnsavedChanges = () => {
+        Alert.alert(
+            'Descartar alterações?',
+            'Você tem alterações não salvas. Tem certeza que deseja sair dessa tela?',
+            [
+                { text: "Não", style: 'cancel', onPress: () => { } },
+                {
+                    text: 'Sim',
+                    style: 'destructive',
+                    onPress: () => navigation.goBack(),
+                },
+            ]
+        )
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            const onBackPress = () => {
+                hasUnsavedChanges()
+                return true
+            }
+            const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress)
+            return () => subscription.remove()
         }, [])
     )
 
@@ -107,7 +135,7 @@ const NewUserScreen: FC = (): ReactElement => {
             <RegisterHeader
                 form={form}
                 active={0}
-                onBack={() => null}
+                onBack={hasUnsavedChanges}
                 onNext={() => null}
                 onFinish={form.handleSubmit(onSubmit)}
                 numberScreens={1}
@@ -162,7 +190,7 @@ const NewUserScreen: FC = (): ReactElement => {
                             name='name'
                             defaultValue=''
                         />
-                        {form.formState.errors.name && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.name?.message}</Text>}
+                        <CustomErrorMessage name='name' errors={form.formState.errors} />
                         <Controller
                             control={form.control}
                             rules={{
@@ -197,9 +225,8 @@ const NewUserScreen: FC = (): ReactElement => {
                             name='cpf'
                             defaultValue=''
                         />
-                        {form.formState.errors.cpf?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.cpf?.message}</Text>}
-                        {form.formState.errors.cpf?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.cpf?.message}</Text>}
-                        {form.formState.errors.cpf?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>CPF inválido</Text>}
+                        {form.formState.errors.cpf?.type !== 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} />}
+                        {form.formState.errors.cpf?.type === 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} custommMessage='CPF inválido' />}
                         <Controller
                             control={form.control}
                             rules={{
@@ -231,7 +258,7 @@ const NewUserScreen: FC = (): ReactElement => {
                             )}
                             name='dateOfBirth'
                         />
-                        {form.formState.errors.dateOfBirth?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.dateOfBirth?.message}</Text>}
+                        <CustomErrorMessage name='dateOfBirth' errors={form.formState.errors} />
                         <Text style={styles.labelBasic}>Gênero *</Text>
                         <Controller
                             control={form.control}
@@ -264,7 +291,7 @@ const NewUserScreen: FC = (): ReactElement => {
                             )}
                             name='sex'
                         />
-                        {form.formState.errors.sex?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.sex?.message}</Text>}
+                        <CustomErrorMessage name='sex' errors={form.formState.errors} />
                         <Controller
                             control={form.control}
                             rules={{
@@ -310,9 +337,8 @@ const NewUserScreen: FC = (): ReactElement => {
                             name='email'
                             defaultValue=''
                         />
-                        {form.formState.errors.email?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.email?.message}</Text>}
-                        {form.formState.errors.email?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.email?.message}</Text>}
-                        {form.formState.errors.email?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>E-mail inválido</Text>}
+                        {form.formState.errors.email?.type !== 'validate' && <CustomErrorMessage name='email' errors={form.formState.errors} />}
+                        {form.formState.errors.email?.type === 'validate' && <CustomErrorMessage name='email' errors={form.formState.errors} custommMessage='E-mail inválido' />}
                         <Controller
                             control={form.control}
                             rules={{
@@ -358,10 +384,8 @@ const NewUserScreen: FC = (): ReactElement => {
                             name='password'
                             defaultValue=''
                         />
-                        {form.formState.errors.password?.type === 'minLength' && <Text category='s2' style={styles.text}>{form.formState.errors.password?.message}</Text>}
-                        {form.formState.errors.password?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.password?.message}</Text>}
-                        {form.formState.errors.password?.type === 'validate' && <Text category='s2' style={styles.text}>Senha inválida</Text>}
-
+                        {form.formState.errors.password?.type !== 'validate' && <CustomErrorMessage name='password' errors={form.formState.errors} />}
+                        {form.formState.errors.password?.type === 'validate' && <CustomErrorMessage name='password' errors={form.formState.errors} custommMessage='Senha inválida' />}
                         <Controller
                             control={form.control}
                             rules={{
@@ -394,7 +418,7 @@ const NewUserScreen: FC = (): ReactElement => {
                             name='crm'
                             defaultValue=''
                         />
-                        {form.formState.errors.crm && <Text category='s2' style={styles.text}>{form.formState.errors.crm?.message}</Text>}
+                        <CustomErrorMessage name='crm' errors={form.formState.errors} />
                         <Controller
                             control={form.control}
                             rules={{
@@ -424,10 +448,7 @@ const NewUserScreen: FC = (): ReactElement => {
                             name='specialty.description'
                             defaultValue=''
                         />
-                        {form.formState.errors.specialty?.description && <Text category='s2' style={styles.text}>{form.formState.errors.specialty.description?.message}</Text>}
-
-
-
+                        <CustomErrorMessage name='specialty.description' errors={form.formState.errors} />
                         <CardAddressComponent
                             styles={styles}
                             form={form}
@@ -469,7 +490,7 @@ const NewUserScreen: FC = (): ReactElement => {
                             name='phone'
                             defaultValue=''
                         />
-                        {form.formState.errors.phone && <Text category='s2' style={styles.text}>{form.formState.errors.phone?.message}</Text>}
+                        <CustomErrorMessage name='phone' errors={form.formState.errors} />
                         <Controller
                             control={form.control}
                             rules={{
@@ -501,7 +522,7 @@ const NewUserScreen: FC = (): ReactElement => {
                             name='phone2'
                             defaultValue=''
                         />
-                        {form.formState.errors.phone2 && <Text category='s2' style={styles.text}>{form.formState.errors.phone2?.message}</Text>}
+                        <CustomErrorMessage name='phone2' errors={form.formState.errors} />
                     </View>
                 </KeyboardAwareScrollView>
             </SafeAreaLayout>

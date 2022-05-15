@@ -1,9 +1,11 @@
 import AttachmentBoxComponent from '@components/attachmentBox'
+import CustomErrorMessage from '@components/error'
 import { _DATE_FROM_ISO_8601 } from '@constants/date'
 import { useAppSelector } from '@hooks/redux'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { ExamDto, ExamImage } from '@models/Exam'
+import { EUserRole } from '@models/UserRole'
 import { useFocusEffect } from '@react-navigation/native'
 import { uploadUserFile } from '@services/document.service'
 import { uploadExam } from '@services/exam.service'
@@ -39,6 +41,19 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
     const [errorMessage, setErrorMessage] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [fileResponse, setFileResponse] = useState<DocumentPickerResponse[] | undefined>()
+    const { sessionUser } = useAppSelector((state: RootState) => state.auth)
+
+    const loadFile = async () => {
+        if (props.exam) {
+            // TODO - buscar o documento e fazer o download
+            if (sessionUser?.userRole.find(e => e.id === EUserRole.patient)) {
+                
+            } else if (sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor)) {
+                
+            }
+        }
+
+    }
 
     useFocusEffect(
         useCallback(() => {
@@ -56,6 +71,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                     },
                     value: undefined
                 })
+                loadFile()
             }
         }, [visible])
     )
@@ -183,7 +199,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                         )}
                         name='examDate'
                     />
-                    {form.formState.errors.examDate?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.examDate?.message}</Text>}
+                    <CustomErrorMessage name='examDate' errors={form.formState.errors} />
                     <Controller
                         control={form.control}
                         rules={{
@@ -215,8 +231,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                         )}
                         name='examResultDate'
                     />
-                    {form.formState.errors.examResultDate?.type === 'required' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.examResultDate?.message}</Text>}
-
+                    <CustomErrorMessage name='examResultDate' errors={form.formState.errors} />
                     {readonly ? (
                         <>
                             <View>
@@ -262,7 +277,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                                 name='examType'
                                 defaultValue=''
                             />
-                            {form.formState.errors.examType && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.examType?.message}</Text>}
+                            <CustomErrorMessage name='examType' errors={form.formState.errors} />
                             <Controller
                                 control={form.control}
                                 rules={{
@@ -294,13 +309,12 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                                 name='data.examDescription'
                                 defaultValue=''
                             />
-                            {form.formState.errors.data?.examDescription && <Text category='s1' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.data?.examDescription?.message}</Text>}
-
+                            <CustomErrorMessage name='data.examDescription' errors={form.formState.errors} />
                             <AttachmentBoxComponent
                                 handleFile={setFileResponse}
                                 file={fileResponse}
                                 label='Anexar Documentação' />
-                            {form.formState.errors.examImage && <Text category='s2' style={styles?.text}>{form.formState.errors.examImage?.message}</Text>}
+                            <CustomErrorMessage name='examImage' errors={form.formState.errors} />
                         </>
                     )}
                 </View>

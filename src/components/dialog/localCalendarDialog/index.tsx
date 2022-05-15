@@ -1,3 +1,4 @@
+import CustomErrorMessage from '@components/error'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useFocusEffect } from '@react-navigation/native'
 import { listCalendars } from '@services/calendar.service'
@@ -102,8 +103,7 @@ const LocalCalendarDialog: FC<LocalCalendarDialogProps> = forwardRef<Modal, Reac
                                 defaultValue=''
                             />
                         </ScrollView>
-                        {form.formState.errors.calendar && <Text status='danger' category='c1' style={[{ paddingVertical: 10 }]}>{form.formState.errors.calendar?.message}</Text>}
-
+                        <CustomErrorMessage name='calendar' errors={form.formState.errors} />
                         <Button onPress={form.handleSubmit(submit)}>Salvar</Button>
                     </>
                 ) : (

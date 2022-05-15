@@ -1,9 +1,10 @@
 import AttachmentBoxComponent from '@components/attachmentBox'
+import CustomErrorMessage from '@components/error'
 import SelectComponent, { SelectItemData } from '@components/select'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { RelationshipPatient } from '@models/PatientProfileCreator'
 import { PatientSignUpProps } from '@models/SignUpProps'
-import { Datepicker, IndexPath, Input, PopoverPlacements, Text } from '@ui-kitten/components'
+import { Datepicker, IndexPath, Input, PopoverPlacements } from '@ui-kitten/components'
 import { sortByStringField } from '@utils/common'
 import { formatCpf, formatPhone, isEmailValid, onlyNumbers } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
@@ -108,7 +109,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 name='creator.data.name'
                 defaultValue=''
             />
-            {form.formState.errors.creator?.data?.name && <Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.name?.message}</Text>}
+            <CustomErrorMessage name='creator.data.name' errors={form.formState.errors} />
             <Controller
                 control={form.control}
                 rules={{
@@ -149,10 +150,9 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 name='creator.data.cpf'
                 defaultValue=''
             />
-            {form.formState.errors.creator?.data?.cpf?.type === 'minLength' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>{form.formState.errors.creator?.data?.cpf?.message}</Text>}
-            {form.formState.errors.creator?.data?.cpf?.type === 'required' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>{form.formState.errors.creator?.data?.cpf?.message}</Text>}
-            {form.formState.errors.creator?.data?.cpf?.type === 'valid' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>CPF inválido</Text>}
-            {form.formState.errors.creator?.data?.cpf?.type === 'equal' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>CPF não pode ser igual ao do paciente</Text>}
+            {(form.formState.errors.creator?.data?.cpf?.type !== 'valid' && form.formState.errors.creator?.data?.cpf?.type !== 'equal') && <CustomErrorMessage name='creator.data.cpf' errors={form.formState.errors} />}
+            {(form.formState.errors.creator?.data?.cpf?.type === 'valid') && <CustomErrorMessage name='creator.data.cpf' errors={form.formState.errors} custommMessage='CPF inválido' />}
+            {(form.formState.errors.creator?.data?.cpf?.type === 'equal') && <CustomErrorMessage name='creator.data.cpf' errors={form.formState.errors} custommMessage='CPF não pode ser igual ao do paciente' />}
             <Controller
                 control={form.control}
                 rules={{
@@ -183,7 +183,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 )}
                 name='creator.data.dateOfBirth'
             />
-            {form.formState.errors.creator?.data?.dateOfBirth && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>{form.formState.errors.creator?.data?.dateOfBirth?.message}</Text>}
+            <CustomErrorMessage name='creator.data.dateOfBirth' errors={form.formState.errors} />
             <Controller
                 control={form.control}
                 rules={{
@@ -222,11 +222,9 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 name='creator.data.email'
                 defaultValue=''
             />
-            {form.formState.errors.creator?.data?.email?.type === 'minLength' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>{form.formState.errors.creator?.data?.email?.message}</Text>}
-            {form.formState.errors.creator?.data?.email?.type === 'required' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>{form.formState.errors.creator?.data?.email?.message}</Text>}
-            {form.formState.errors.creator?.data?.email?.type === 'valid' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>E-mail inválido</Text>}
-            {form.formState.errors.creator?.data?.email?.type === 'equal' && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>E-mail não pode ser igual ao do paciente</Text>}
-
+            {(form.formState.errors.creator?.data?.email?.type !== 'valid' && form.formState.errors.creator?.data?.email?.type !== 'equal') && <CustomErrorMessage name='creator.data.email' errors={form.formState.errors} />}
+            {(form.formState.errors.creator?.data?.email?.type === 'valid') && <CustomErrorMessage name='creator.data.email' errors={form.formState.errors} custommMessage='E-mail inválido' />}
+            {(form.formState.errors.creator?.data?.email?.type === 'equal') && <CustomErrorMessage name='creator.data.email' errors={form.formState.errors} custommMessage='E-mail não pode ser igual ao do paciente' />}
             <Controller
                 control={form.control}
                 rules={{
@@ -260,7 +258,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 name='creator.data.phone'
                 defaultValue=''
             />
-            {form.formState.errors.creator?.data?.phone && <Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.phone?.message}</Text>}
+            <CustomErrorMessage name='creator.data.phone' errors={form.formState.errors} />
             <Controller
                 control={form.control}
                 rules={{
@@ -291,16 +289,14 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 name='creator.data.phone2'
                 defaultValue=''
             />
-            {form.formState.errors.creator?.data?.phone2 && <Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.phone2?.message}</Text>}
-
+            <CustomErrorMessage name='creator.data.phone2' errors={form.formState.errors} />
             {relationship === "Tutor Legal" && (
                 <View style={{ paddingVertical: 10 }}>
                     <AttachmentBoxComponent
                         handleFile={setFileResponse}
                         file={fileResponse}
                         label='Anexar Documentação *' />
-                    {form.formState.errors.creator?.data?.guardian?.attachment && <Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.guardian?.attachment?.message}</Text>}
-
+                    <CustomErrorMessage name='creator.guardian.attachment' errors={form.formState.errors} />
                 </View>
             )}
 
@@ -334,7 +330,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         )}
                         name='creator.data.kinship'
                     />
-                    {form.formState.errors.creator?.data?.kinship && <Text category='s2' style={[styles?.text, { paddingBottom: 10 }]}>{form.formState.errors.creator?.data?.kinship?.message}</Text>}
+                    <CustomErrorMessage name='creator.data.kinship' errors={form.formState.errors} />
                 </>
             )}
 
@@ -372,7 +368,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         name='creator.data.specialty.crm'
                         defaultValue=''
                     />
-                    {form.formState.errors?.creator?.data?.specialty?.crm && <Text category='s2' style={styles?.text}>{form.formState.errors?.creator?.data?.specialty?.crm.message}</Text>}
+                    <CustomErrorMessage name='creator.data.specialty.crm' errors={form.formState.errors} />
                     <Controller
                         control={form.control}
                         rules={{
@@ -407,7 +403,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         name='creator.data.specialty.description'
                         defaultValue=''
                     />
-                    {form.formState.errors?.creator?.data?.specialty?.description && <Text category='s2' style={styles?.text}>{form.formState.errors?.creator?.data?.specialty?.description.message}</Text>}
+                    <CustomErrorMessage name='creator.data.specialty.description' errors={form.formState.errors} />
                 </>
             )}
         </>

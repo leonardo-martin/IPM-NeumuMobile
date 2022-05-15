@@ -1,3 +1,4 @@
+import CustomErrorMessage from '@components/error'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useFocusEffect } from '@react-navigation/native'
 import { Button, Card, Icon, IconProps, Modal, Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
@@ -92,7 +93,7 @@ const SignUpOptDialog: FC<SignUpOptDialogProps> = forwardRef<Modal, React.PropsW
                         )}
                         name='type'
                     />
-                    {form.formState.errors.type && <Text status='danger' category='c1' style={[{ paddingVertical: 10 }]}>{form.formState.errors.type?.message}</Text>}
+                    <CustomErrorMessage name='type' errors={form.formState.errors} />
                 </View>
                 <View style={styles.containerButton}>
                     <Button

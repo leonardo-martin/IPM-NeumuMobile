@@ -1,4 +1,5 @@
 import AutoCompleteComponent from "@components/autoComplete"
+import CustomErrorMessage from "@components/error"
 import toast from "@helpers/toast"
 import { City, Country, UF } from "@models/Places"
 import { UserDoctorData, UserPatientData } from "@models/User"
@@ -288,9 +289,9 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                 defaultValue=''
             />
             {textFieldPrefix === 'creator.data.' ?
-                form.formState.errors.creator?.data?.postalCode && (<Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.postalCode?.message}</Text>) :
+                <CustomErrorMessage name='creator.data.postalCode' errors={form.formState.errors} /> :
                 textFieldPrefix === '' ?
-                    form.formState.errors.postalCode && (<Text category='s2' style={styles?.text}>{form.formState.errors.postalCode?.message}</Text>)
+                    <CustomErrorMessage name='postalCode' errors={form.formState.errors} />
                     : null
             }
             <Controller
@@ -327,9 +328,9 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                 defaultValue=''
             />
             {textFieldPrefix === 'creator.data.' ?
-                form.formState.errors.creator?.data?.address1 && (<Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.address1?.message}</Text>) :
+                <CustomErrorMessage name='creator.data.address1' errors={form.formState.errors} /> :
                 textFieldPrefix === '' ?
-                    form.formState.errors.address1 && (<Text category='s2' style={styles?.text}>{form.formState.errors.address1?.message}</Text>)
+                    <CustomErrorMessage name='address1' errors={form.formState.errors} />
                     : null
             }
             <Controller
@@ -344,7 +345,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                 render={({ field: { onChange, onBlur, value, name, ref } }) => (
                     <Input
                         size='small'
-                        label={commercial ? "Endereço Comercial 2 *" : "Endereço Residencial 2 *"}
+                        label={commercial ? "Endereço Comercial 2" : "Endereço Residencial 2"}
                         style={styles?.input}
                         keyboardType='default'
                         testID={name}
@@ -364,9 +365,9 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                 defaultValue=''
             />
             {textFieldPrefix === 'creator.data.' ?
-                form.formState.errors.creator?.data?.address2 && (<Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.address2?.message}</Text>) :
+                <CustomErrorMessage name='creator.data.address2' errors={form.formState.errors} /> :
                 textFieldPrefix === '' ?
-                    form.formState.errors.address2 && (<Text category='s2' style={styles?.text}>{form.formState.errors.address2?.message}</Text>)
+                    <CustomErrorMessage name='address2' errors={form.formState.errors} />
                     : null
             }
             <Controller
@@ -400,9 +401,9 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                 defaultValue=''
             />
             {textFieldPrefix === 'creator.data.' ?
-                form.formState.errors.creator?.data?.addressComplement && (<Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.addressComplement?.message}</Text>) :
+                <CustomErrorMessage name='creator.data.addressComplement' errors={form.formState.errors} /> :
                 textFieldPrefix === '' ?
-                    form.formState.errors.addressComplement && (<Text category='s2' style={styles?.text}>{form.formState.errors.addressComplement?.message}</Text>)
+                    <CustomErrorMessage name='addressComplement' errors={form.formState.errors} />
                     : null
             }
             <Controller
@@ -437,9 +438,9 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                 defaultValue=''
             />
             {textFieldPrefix === 'creator.data.' ?
-                form.formState.errors.creator?.data?.country && (<Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.country?.message}</Text>) :
+                <CustomErrorMessage name='creator.data.country' errors={form.formState.errors} /> :
                 textFieldPrefix === '' ?
-                    form.formState.errors.country && (<Text category='s2' style={styles?.text}>{form.formState.errors.country?.message}</Text>)
+                    <CustomErrorMessage name='country' errors={form.formState.errors} />
                     : null
             }
             {country.toUpperCase().includes('BRA') ?
@@ -479,9 +480,9 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                     />
 
                     {textFieldPrefix === 'creator.data.' ?
-                        form.formState.errors.creator?.data?.state && (<Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.state?.message}</Text>) :
+                        <CustomErrorMessage name='creator.data.state' errors={form.formState.errors} /> :
                         textFieldPrefix === '' ?
-                            form.formState.errors.state && (<Text category='s2' style={styles?.text}>{form.formState.errors.state?.message}</Text>)
+                            <CustomErrorMessage name='state' errors={form.formState.errors} />
                             : null
                     }
                     <Controller
@@ -517,9 +518,9 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                         defaultValue=''
                     />
                     {textFieldPrefix === 'creator.data.' ?
-                        form.formState.errors.creator?.data?.city && (<Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.city?.message}</Text>) :
+                        <CustomErrorMessage name='creator.data.city' errors={form.formState.errors} /> :
                         textFieldPrefix === '' ?
-                            form.formState.errors.city && (<Text category='s2' style={styles?.text}>{form.formState.errors.city?.message}</Text>)
+                            <CustomErrorMessage name='city' errors={form.formState.errors} />
                             : null
                     }
                 </>
@@ -560,9 +561,9 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                         defaultValue=''
                     />
                     {textFieldPrefix === 'creator.data.' ?
-                        form.formState.errors.creator?.data?.state && (<Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.state?.message}</Text>) :
+                        <CustomErrorMessage name='creator.data.state' errors={form.formState.errors} /> :
                         textFieldPrefix === '' ?
-                            form.formState.errors.state && (<Text category='s2' style={styles?.text}>{form.formState.errors.state?.message}</Text>)
+                            <CustomErrorMessage name='state' errors={form.formState.errors} />
                             : null
                     }
                     <Controller
@@ -599,9 +600,9 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                         defaultValue=''
                     />
                     {textFieldPrefix === 'creator.data.' ?
-                        form.formState.errors.creator?.data?.city && (<Text category='s2' style={styles?.text}>{form.formState.errors.creator?.data?.city?.message}</Text>) :
+                        <CustomErrorMessage name='creator.data.city' errors={form.formState.errors} /> :
                         textFieldPrefix === '' ?
-                            form.formState.errors.city && (<Text category='s2' style={styles?.text}>{form.formState.errors.city?.message}</Text>)
+                            <CustomErrorMessage name='city' errors={form.formState.errors} />
                             : null
                     }
                 </>

@@ -1,5 +1,6 @@
 import LogoPedroMolina from '@assets/svg/logo.svg'
 import SignUpOptDialog from '@components/dialog/signUpOptDialog'
+import CustomErrorMessage from '@components/error'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import TitleNeumu from '@components/titleNeumu'
 import toast from '@helpers/toast'
@@ -7,7 +8,7 @@ import { useAppDispatch } from '@hooks/redux'
 import { useModal } from '@hooks/useModal'
 import { ApprovalsMessageError } from '@models/Common'
 import { LoginDto } from '@models/User'
-import { useNavigation } from '@react-navigation/native'
+import { useIsFocused, useNavigation } from '@react-navigation/native'
 import { AppInfoService } from '@services/app-info.service'
 import { AppStorage } from '@services/app-storage.service'
 import { authLogin } from '@services/auth.service'
@@ -64,6 +65,7 @@ const SignInScreen: FC = (): ReactElement => {
 
   useEffect(() => {
     getStoredUsernameAndPassword()
+    return () => { setChecked(false) }
   }, [])
 
   const handleSignIn = async (data: LoginDto) => {
@@ -128,8 +130,10 @@ const SignInScreen: FC = (): ReactElement => {
     setChecked(isChecked)
   }
 
-
-
+  const isFocused = useIsFocused()
+  useEffect(() => {
+    if (isFocused) form.clearErrors()
+  }, [isFocused])
 
   return (
     <>
@@ -181,9 +185,7 @@ const SignInScreen: FC = (): ReactElement => {
                 name="username"
                 defaultValue=""
               />
-              {form.formState.errors.username?.type === 'required' && <Text category='s2' style={styles.text}>{form.formState.errors.username?.message}</Text>}
-              {form.formState.errors.username?.type === 'minLength' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.username?.message}</Text>}
-              {form.formState.errors.username?.type === 'validate' && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>Necessário ao menos 1 letra</Text>}
+              <CustomErrorMessage name='username' errors={form.formState.errors} />
               <Controller
                 control={form.control}
                 rules={{
@@ -221,7 +223,7 @@ const SignInScreen: FC = (): ReactElement => {
                 name="password"
                 defaultValue=""
               />
-              {form.formState.errors.password && <Text category='s2' style={[styles.text, { paddingBottom: 10 }]}>{form.formState.errors.password?.message}</Text>}
+              <CustomErrorMessage name='password' errors={form.formState.errors} />
               <View style={styles.containerCheckbox}>
                 <CheckBox
                   disabled={isLoading}
