@@ -1,5 +1,6 @@
-import React from 'react'
+import Badge from '@components/badge'
 import { Icon, IconElement, IconProps, useTheme } from "@ui-kitten/components"
+import React from 'react'
 import { Platform } from "react-native"
 
 export const BackIcon = (props: IconProps): IconElement => {
@@ -20,12 +21,15 @@ export const MenuIcon = (props: IconProps): IconElement => {
     )
 }
 
-export const ChatIcon = (props: IconProps): IconElement => {
+export const ChatIcon = (props: IconProps, _showBadge: boolean = false, count?: number) => {
     const theme = useTheme()
     return (
-        <Icon {...props} style={[props.style, {
-            color: theme['color-basic-600']
-        }]} name="chatbubbles" size={25} pack='ionicons' />
+        <>
+            <Icon {...props} style={[props.style, {
+                color: theme['color-basic-600']
+            }]} name="chatbubbles" size={25} pack='ionicons' />
+            {_showBadge && (<Badge position='absolute' count={count} />)}
+        </>
     )
 }
 

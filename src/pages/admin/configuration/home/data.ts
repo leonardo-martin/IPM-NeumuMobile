@@ -57,6 +57,7 @@ export const patientData: ItemInfo[] = [
             name: 'share-outline',
             pack: 'eva'
         },
+        badge: true
     },
 ]
 

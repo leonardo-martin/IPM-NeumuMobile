@@ -10,6 +10,7 @@ export interface ItemInfo {
     description: string
     icon?: Icons
     route?: string
+    badge?: boolean
 }
 
 interface ListComponentProps extends Omit<ListProps, 'renderItem'> {

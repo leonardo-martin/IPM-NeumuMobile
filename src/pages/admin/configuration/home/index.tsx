@@ -1,3 +1,4 @@
+import Badge from '@components/badge'
 import { useTheme } from '@contexts/theme'
 import { useAppSelector } from '@hooks/redux'
 import { Icons } from '@models/Common'
@@ -16,6 +17,7 @@ interface ItemInfo {
     description: string
     icon?: Icons
     route?: string
+    badge?: boolean
 }
 
 const ConfigurationScreen: FC = (): ReactElement => {
@@ -27,9 +29,10 @@ const ConfigurationScreen: FC = (): ReactElement => {
     const [data, setData] = useState<any[]>([])
     const navigation = useNavigation<any>()
 
-    const renderLeftIcon = (props: IconProps, icon?: Icons): ReactElement => (
+    const renderLeftIcon = (props: IconProps, icon?: Icons, badge?: boolean, badgeText?: number): ReactElement => (
         <View style={icon?.pack === 'ionicons' ? { paddingRight: 5, paddingStart: 10 } : null}>
             <Icon {...props} name={icon?.name} pack={icon?.pack} />
+
         </View>
     )
 
@@ -77,12 +80,9 @@ const ConfigurationScreen: FC = (): ReactElement => {
         <ListItem
             style={styles.item}
             title={(evaProps) => (
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ flexDirection: 'row' }}>
                     <Text {...evaProps}>{info.item.title}</Text>
-                    {info.item.route?.toLowerCase().includes('share') && pendingCounter > 0 && (
-                        <View style={styles.badge}
-                        ><Text style={styles.badgeText}>{pendingCounter}</Text></View>
-                    )}
+                    {info.item.badge && pendingCounter > 0 && (<Badge position='relative' count={pendingCounter} />)}
                 </View>
             )}
             description={info.item.description}

@@ -31,7 +31,7 @@ const HeaderAdmin: FC = (): ReactElement => {
 
   const renderChatIcon = () => (
     <TopNavigationAction
-      icon={ChatIcon}
+      icon={(props) => ChatIcon(props)}
       onPress={() => navigate('MessagesList')}
     />
   )
