@@ -135,7 +135,7 @@ const MessagesScreen: FC<DrawerContentComponentProps> = ({
                             <View style={{
                                 flex: 1, justifyContent: 'center', alignItems: 'center'
                             }}>
-                                <Spinner size='giant' />
+                                <Spinner status='primary' size='giant' />
                             </View>
                         </>
 

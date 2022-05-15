@@ -2,9 +2,9 @@ import { SafeAreaLayout } from '@components/safeAreaLayout'
 import toast from '@helpers/toast'
 import { JSONContent } from '@models/Common'
 import { DiseaseDataDto, DiseaseDto } from '@models/Disease'
-import { useFocusEffect, useRoute } from '@react-navigation/native'
+import { useIsFocused, useRoute } from '@react-navigation/native'
 import { getDiseaseDataById } from '@services/disease.service'
-import { Text, useStyleSheet, useTheme } from '@ui-kitten/components'
+import { Spinner, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Linking, RefreshControl, ScrollView, TextStyle, View, ViewStyle } from 'react-native'
 import { detailsAboutStyle } from './details.style'
@@ -13,6 +13,7 @@ const DetailsAboutScreen: FC = (): ReactElement => {
 
     const styles = useStyleSheet(detailsAboutStyle)
     const theme = useTheme()
+    const [isLoading, setIsLoading] = useState<boolean>(true)
     const [refreshing, setRefreshing] = useState<boolean>(false)
     const [diseaseData, setDiseaseData] = useState<DiseaseDataDto>()
     const [diseaseDataParsed, setDiseaseDataParsed] = useState<JSONContent>()
@@ -23,6 +24,7 @@ const DetailsAboutScreen: FC = (): ReactElement => {
         if (response.status === 200) {
             setDiseaseData(response.data)
         }
+        setIsLoading(false)
     }
 
     const openLink = (url: any) => {
@@ -44,15 +46,20 @@ const DetailsAboutScreen: FC = (): ReactElement => {
         }
     }, [diseaseData])
 
-    useFocusEffect(
-        useCallback(() => {
+    useEffect(() => {
+        if (isLoading && route.params) {
             try {
                 loadData((route.params as DiseaseDto).id)
             } catch (error) {
                 toast.danger({ message: 'Nenhum ID fornecido', duration: 3000 })
             }
-        }, [route.params])
-    )
+        }
+    }, [route.params, isLoading])
+
+    const isFocused = useIsFocused()
+    useEffect(() => {
+        setIsLoading(true)
+    }, [isFocused])
 
     const styleRichText = (marks?: {
         [key: string]: any;
@@ -109,70 +116,80 @@ const DetailsAboutScreen: FC = (): ReactElement => {
 
     return (
         <SafeAreaLayout level='1' style={styles.safeArea}>
-            <ScrollView
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                    />
-                }>
-                <View style={styles.container}>
-                    {diseaseDataParsed && (
-                        diseaseDataParsed.content && diseaseDataParsed.content?.length > 0 && (
-                            diseaseDataParsed.content.map((item, index) => (
-                                <View key={index}>
-                                    {item.type === 'heading' ?
-                                        (
-                                            <View style={[{ ...alignRichText(item.attrs) }, styles.heading]}>
-                                                {item.content?.map((e, i) =>
-                                                    <Text
-                                                        category={
-                                                            item.attrs?.level === 1 ? 'h3' :
-                                                                item.attrs?.level === 2 ? 'h4' : 'h5'
-                                                        }
-                                                        onPress={() => {
-                                                            e.marks && e.marks.find(e => e.type.includes('link')) ? openLink(e.marks[0].attrs?.href) : undefined
-                                                        }}
-                                                        key={`${e}${i}`}
-                                                        style={styleRichText(e.marks, item.attrs)}
-                                                    >{e.text}</Text>
-                                                )}
-                                            </View>
-                                        ) : null}
-                                    {item.type === 'paragraph' ?
-                                        (
-                                            <View style={{
-                                                ...alignRichText(item.attrs),
-                                                paddingVertical: 5
-                                            }}>
-                                                {renderParagraph(item)}
-                                            </View>
-                                        ) : null}
+            {isLoading ?
+                <>
+                    <View style={{
+                        flex: 1, justifyContent: 'center', alignItems: 'center'
+                    }}>
+                        <Spinner status='primary' size='giant' />
+                    </View>
+                </>
+                :
+                <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                        />
+                    }>
+                    <View style={styles.container}>
+                        {diseaseDataParsed && (
+                            diseaseDataParsed.content && diseaseDataParsed.content?.length > 0 && (
+                                diseaseDataParsed.content.map((item, index) => (
+                                    <View key={index}>
+                                        {item.type === 'heading' ?
+                                            (
+                                                <View style={[{ ...alignRichText(item.attrs) }, styles.heading]}>
+                                                    {item.content?.map((e, i) =>
+                                                        <Text
+                                                            category={
+                                                                item.attrs?.level === 1 ? 'h3' :
+                                                                    item.attrs?.level === 2 ? 'h4' : 'h5'
+                                                            }
+                                                            onPress={() => {
+                                                                e.marks && e.marks.find(e => e.type.includes('link')) ? openLink(e.marks[0].attrs?.href) : undefined
+                                                            }}
+                                                            key={`${e}${i}`}
+                                                            style={styleRichText(e.marks, item.attrs)}
+                                                        >{e.text}</Text>
+                                                    )}
+                                                </View>
+                                            ) : null}
+                                        {item.type === 'paragraph' ?
+                                            (
+                                                <View style={{
+                                                    ...alignRichText(item.attrs),
+                                                    paddingVertical: 5
+                                                }}>
+                                                    {renderParagraph(item)}
+                                                </View>
+                                            ) : null}
 
-                                    {item.type === 'blockquote' ?
-                                        (
-                                            <View style={styles.blockquote}>
-                                                <Text
-                                                    style={{
-                                                        ...styleRichText(item.marks),
-                                                    }}>&ldquo;</Text>
-                                                {item.content && item.content?.map((e, i) =>
-                                                    <View key={`${e}${i}`}>
-                                                        {renderParagraph(e, item.type)}
-                                                    </View>
-                                                )}
-                                                <Text
-                                                    style={{
-                                                        ...styleRichText(item.marks),
-                                                    }}>&rdquo;</Text>
-                                            </View>
-                                        ) : null}
-                                </View>
-                            ))
-                        )
-                    )}
-                </View>
-            </ScrollView>
+                                        {item.type === 'blockquote' ?
+                                            (
+                                                <View style={styles.blockquote}>
+                                                    <Text
+                                                        style={{
+                                                            ...styleRichText(item.marks),
+                                                        }}>&ldquo;</Text>
+                                                    {item.content && item.content?.map((e, i) =>
+                                                        <View key={`${e}${i}`}>
+                                                            {renderParagraph(e, item.type)}
+                                                        </View>
+                                                    )}
+                                                    <Text
+                                                        style={{
+                                                            ...styleRichText(item.marks),
+                                                        }}>&rdquo;</Text>
+                                                </View>
+                                            ) : null}
+                                    </View>
+                                ))
+                            )
+                        )}
+                    </View>
+                </ScrollView>
+            }
         </SafeAreaLayout>
     )
 }
