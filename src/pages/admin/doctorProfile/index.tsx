@@ -7,6 +7,7 @@ import { patientGetAuthorizationRequests, patientGrantAuthorization } from '@ser
 import { Button, CheckBox, Divider, Text, useStyleSheet } from '@ui-kitten/components'
 import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { Image, ImageStyle, Linking, Platform, Share, StyleProp, View } from 'react-native'
+import { formatPhone } from 'utils/mask'
 import { PhoneCallIcon, ShareIcon } from './extra/icons'
 import { doctorProfileStyle } from './style'
 
@@ -73,8 +74,8 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement =>
   const onShare = async () => {
     try {
       await Share.share({
-        title: `Dr(a) ${profile?.name} - TeleNeuMu`,
-        message: `Olá, eu sou ${profile?.name}. Aguardo seu contato pelo telefone ${profile?.name}`
+        title: `TeleNeuMu - ${profile?.name} (Profissional da Saúde)`,
+        message: `Olá, eu sou ${profile?.name}, minha especialidade é ${profile?.specialty}. Telefone para contato: ${formatPhone(profile?.phone1)}`
       })
     } catch (error: any) {
       toast.danger({ message: 'Ocorreu um erro ao compartilhar.', duration: 1000 })
