@@ -3,7 +3,7 @@ import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { Spinner, useStyleSheet } from '@ui-kitten/components'
 import React, { FC, ForwardedRef, forwardRef, ReactElement, useCallback, useState } from 'react'
-import { BackHandler, Platform, View } from 'react-native'
+import { ActivityIndicator, BackHandler, Platform, View } from 'react-native'
 import { WebView, WebViewNavigation, WebViewProps } from 'react-native-webview'
 import { WebViewErrorEvent, WebViewNavigationEvent } from 'react-native-webview/lib/WebViewTypes'
 import { html } from './data'
@@ -41,6 +41,7 @@ const RNWebView: FC<RNWebViewProps> = forwardRef<WebView, React.PropsWithChildre
     ({ url, canGoBack }: WebViewNavigation) => {
       setBack(canGoBack)
 
+      if (url.includes('?message=success')) combinedRef.current.stopLoading()
       if (url.includes('?errors=true')) combinedRef.current.stopLoading()
     },
     [],
@@ -68,9 +69,8 @@ const RNWebView: FC<RNWebViewProps> = forwardRef<WebView, React.PropsWithChildre
           }}
           scrollEnabled={!isAndroid}
           onNavigationStateChange={onNavigationStateChange}
-        >
-          {loading && LoadingIndicatorView()}
-        </WebView>
+        />
+        {loading && LoadingIndicatorView()}
       </SafeAreaLayout>
     </>
   )
@@ -83,7 +83,9 @@ RNWebView.defaultProps = {
   originWhitelist: ['*'],
   startInLoadingState: false,
   allowsBackForwardNavigationGestures: true,
-  showsVerticalScrollIndicator: true
+  showsVerticalScrollIndicator: true,
+  domStorageEnabled: true,
+  javaScriptEnabled: true
 }
 
 export default RNWebView

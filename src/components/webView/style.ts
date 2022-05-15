@@ -8,6 +8,11 @@ export const webViewStyle = StyleSheet.create({
     spinnerView: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
     }
 })
