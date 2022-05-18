@@ -60,6 +60,58 @@
             ReferencedContainer = "container:NeumuMobile.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "API_BASE_URL"
+            value = "https://neumu-api.azurewebsites.net"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "API_IBGE_GOV"
+            value = "https://servicodados.ibge.gov.br/api/v1"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "API_POSTAL_CODE_SEARCH"
+            value = "https://viacep.com.br/ws/$POSTAL_CODE/json/"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "GOV_BR_URI"
+            value = "https://www.gov.br"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "FLATICON_URI"
+            value = "https://cdn-icons-png.flaticon.com"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "BOOTDEY_URI"
+            value = "https://bootdey.com"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "INSTITUTE_URI"
+            value = "https://institutopedromolina.org.br"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "CONECTESUS_URI"
+            value = "https://conectesus-paciente.saude.gov.br"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "TELENEUMU_CONTACT"
+            value = "contato@teleneumu.com.br"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "TELENEUMU_SUBJECT"
+            value = "Contato TeleNeuMu"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

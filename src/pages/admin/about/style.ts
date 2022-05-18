@@ -23,10 +23,10 @@ export const aboutStyle = StyleSheet.create({
     alignItems: 'center'
   },
   itemTextMore: {
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: '600',
     textTransform: 'uppercase',
-    color: 'color-info-500',
+    color: 'color-info-500'
   },
   shadow: {
     ...Platform.select({
@@ -59,5 +59,15 @@ export const aboutStyle = StyleSheet.create({
   textEmpty: {
     fontSize: 14,
     color: 'text-hint-color'
+  },
+  containerText: {
+    flexDirection: 'column',
+    flexShrink: 1,
+    paddingEnd: 15
+  },
+  textId: {
+    fontSize: 8,
+    fontWeight: '500',
+    paddingBottom: 2
   }
 })

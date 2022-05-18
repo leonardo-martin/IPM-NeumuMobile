@@ -1,6 +1,7 @@
 export class DiseaseDto {
     id!: number
     name!: string
+    cid!: string
 }
 
 export class DiseaseDataDto {

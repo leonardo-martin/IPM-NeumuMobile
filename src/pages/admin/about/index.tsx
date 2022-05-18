@@ -68,8 +68,9 @@ const AboutScreen: FC = (): ReactElement => {
             })}
             style={[styles.item, styles.shadow]}>
             <View style={styles.container}>
-                <View style={{ flex: .9 }}>
-                    <Text category='label'>{info.item.name}</Text>
+                <View style={styles.containerText}>
+                    <Text style={styles.textId}>{'#' + info.item.cid}</Text>
+                    <Text category='label'>{info.item.name.length > 36 ? `${info.item.name.substring(0, 32)}...` : info.item.name}</Text>
                 </View>
                 <Text style={styles.itemTextMore}>saber mais</Text>
             </View>
