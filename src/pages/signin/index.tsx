@@ -173,7 +173,7 @@ const SignInScreen: FC = (): ReactElement => {
                   <Input
                     size='small'
                     style={styles.input}
-                    label="E-mail / CPF *"
+                    label="CPF"
                     keyboardType="default"
                     testID={name}
                     onBlur={onBlur}
@@ -208,7 +208,7 @@ const SignInScreen: FC = (): ReactElement => {
                   <Input
                     size='small'
                     style={styles.input}
-                    label="Senha *"
+                    label="Senha"
                     keyboardType='default'
                     testID={name}
                     onBlur={onBlur}
@@ -235,7 +235,7 @@ const SignInScreen: FC = (): ReactElement => {
                   disabled={isLoading}
                   status='primary'
                   checked={checked} onChange={onCheckedChange}>
-                  {evaProps => <Text style={[evaProps?.style, styles.checkboxText]}>Memorizar acesso</Text>}
+                  {evaProps => <Text style={[evaProps?.style, styles.checkboxText]}>Lembrar acesso</Text>}
                 </CheckBox>
 
                 <View style={styles.containerRecoveryPassword}>
