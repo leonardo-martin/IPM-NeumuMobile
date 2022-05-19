@@ -113,8 +113,8 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                 name: file.name,
                 type: file.type
             })
-            formData.append('entityId', 1)
-            formData.append('entityType', 'entityType')
+            formData.append('entityId', Number(1).toString())
+            formData.append('entityType', 'examEntity')
             formData.append('documentType', 'user-exam-file')
 
             let response = null
