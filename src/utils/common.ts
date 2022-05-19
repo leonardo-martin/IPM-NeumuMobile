@@ -142,7 +142,7 @@ export const openMailTo = () => {
             Toast.show({
                 type: 'warning',
                 text2: 'Erro desconhecido. Contate o administrador',
-              })
+            })
         })
 }
 
@@ -291,4 +291,17 @@ export const calcAge = (stringDate: string, _dateCompare: Date = new Date()): {
         formatted: formatted === '' ? '0' : formatted
     }
 
+}
+
+export const formatBytes = (bytes: number, decimals: number = 2): string => {
+    if (bytes === 0) return '0 Bytes'
+
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB"]
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return (
+        parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
+    )
 }

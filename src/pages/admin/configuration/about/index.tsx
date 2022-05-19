@@ -3,12 +3,13 @@ import { AppInfoService } from '@services/app-info.service'
 import { Text, useStyleSheet } from '@ui-kitten/components'
 import React, { FC, ReactElement } from 'react'
 import { View } from 'react-native'
+import CheckForUpdatesComponent from './extra/check-for-updates.component'
 import { infoAppStyle } from './style'
 
 const _VERSION: string = AppInfoService.getVersion()
 
 const InformationAppScreen: FC = (): ReactElement => {
-
+    
     const styles = useStyleSheet(infoAppStyle)
 
     return (
@@ -16,7 +17,7 @@ const InformationAppScreen: FC = (): ReactElement => {
             <View style={[styles.container, { flex: .1 }]}>
                 <Text category="p1" style={styles.text}>{'Versão do Aplicativo'.toUpperCase()}</Text>
                 <Text category="label" style={styles.text}>{_VERSION}</Text>
-
+                <CheckForUpdatesComponent />
             </View>
             <View style={[styles.container, { flex: .8, paddingHorizontal: 30 }]}>
                 <Text style={styles.about}>

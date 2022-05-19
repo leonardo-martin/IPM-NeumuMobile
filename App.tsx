@@ -16,12 +16,17 @@ import { FontistoIconsPack } from './fontisto-icon'
 import { IoniconsIconsPack } from './ionicons-icon'
 
 const codePushOptions: CodePushOptions = {
-  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+  checkFrequency: codePush.CheckFrequency.ON_APP_START,
+  installMode: codePush.InstallMode.IMMEDIATE,
   mandatoryInstallMode: codePush.InstallMode.IMMEDIATE,
   updateDialog: {
     appendReleaseDescription: true,
-    title: "Há uma nova versão disponível",
-    mandatoryUpdateMessage: "Clique para atualizar"
+    title: "Atualização",
+    mandatoryUpdateMessage: "Atualização obrigatória. Clique em 'Instalar e Reiniciar' para atualizar e aguarde o aplicativo reiniciar",
+    mandatoryContinueButtonLabel: "Instalar e Reiniciar",
+    optionalUpdateMessage: "Uma nova versão está disponível. Clique em 'INSTALAR AGORA' para atualizar.",
+    optionalIgnoreButtonLabel: 'Cancelar',
+    optionalInstallButtonLabel: 'Instalar Agora'
   }
 }
 
