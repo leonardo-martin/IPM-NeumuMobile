@@ -1,3 +1,4 @@
+#import <CodePush/CodePush.h>
 #import "AppDelegate.h"
 
 #if RCT_DEV
@@ -95,9 +96,9 @@
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
 #if DEBUG
-  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
-#else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+#else
+  return [CodePush bundleURL];
 #endif
 }
 
