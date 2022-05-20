@@ -888,7 +888,7 @@
 				C2F6A1A728368AD30086E970 /* Staging */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Staging;
+			defaultConfigurationName = Debug;
 		};
 		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "NeumuMobile" */ = {
 			isa = XCConfigurationList;
@@ -898,7 +898,7 @@
 				C2F6A1A628368AD30086E970 /* Staging */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Staging;
+			defaultConfigurationName = Debug;
 		};
 		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "NeumuMobile" */ = {
 			isa = XCConfigurationList;
@@ -908,7 +908,7 @@
 				C2F6A1A528368AD30086E970 /* Staging */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Staging;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

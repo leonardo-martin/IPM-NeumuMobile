@@ -5,7 +5,7 @@
   "scripts": {
     "start": "react-native start",
     "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "ios": "react-native run-ios --scheme TeleNeuMu_Debug",
     "ios:dev": "react-native run-ios --scheme TeleNeuMu_Staging",
     "ios:prod": "react-native run-ios --scheme TeleNeuMu_Production",
     "codepush:deploykey": "appcenter codepush deployment list -a ${OWNER_APP_NAME:=''} -k",
