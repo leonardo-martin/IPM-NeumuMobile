@@ -4,6 +4,7 @@ import { Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import React, { FC, ReactElement, useState } from 'react'
 import { Alert, TouchableOpacity } from 'react-native'
 import codePush, { DownloadProgress, RemotePackage } from "react-native-code-push"
+import Toast from 'react-native-toast-message'
 import { checkForUpdateStyle } from './check-for-updates.style'
 
 const MIN_TIME = 5
@@ -81,23 +82,37 @@ const CheckForUpdatesComponent: FC = (): ReactElement => {
     }
 
     const checkForUpdates = async () => {
-        await codePush.sync({
-            installMode: codePush.InstallMode.ON_NEXT_RESTART,
-            mandatoryInstallMode: codePush.InstallMode.ON_NEXT_RESTART,
-            updateDialog: {
-                appendReleaseDescription: true,
-                title: "Atualização",
-                mandatoryUpdateMessage: "Atualização obrigatória. Clique em 'INSTALAR AGORA' para atualizar",
-                mandatoryContinueButtonLabel: "Instalar Agora",
-                optionalUpdateMessage: "Uma nova versão está disponível. Clique em 'INSTALAR AGORA' para atualizar.",
-                optionalIgnoreButtonLabel: 'Cancelar',
-                optionalInstallButtonLabel: 'Instalar Agora'
+        try {
+            await codePush.sync({
+                installMode: codePush.InstallMode.ON_NEXT_RESTART,
+                mandatoryInstallMode: codePush.InstallMode.ON_NEXT_RESTART,
+                updateDialog: {
+                    appendReleaseDescription: true,
+                    title: "Atualização",
+                    mandatoryUpdateMessage: "Atualização obrigatória. Clique em 'INSTALAR AGORA' para atualizar",
+                    mandatoryContinueButtonLabel: "Instalar Agora",
+                    optionalUpdateMessage: "Uma nova versão está disponível. Clique em 'INSTALAR AGORA' para atualizar.",
+                    optionalIgnoreButtonLabel: 'Cancelar',
+                    optionalInstallButtonLabel: 'Instalar Agora'
+                },
             },
-        },
-            codePushStatusDidChange,
-            getProgress,
-            getRemotePackage
-        )
+                codePushStatusDidChange,
+                getProgress,
+                getRemotePackage
+            )
+        } catch (error) {
+            setIsCheckingForUpdate(false)
+            if (error && (error as any).toString().includes('valid deployment key'))
+                Toast.show({
+                    type: 'danger',
+                    text2: 'Chave incorreta. Entre em contato com o administrador',
+                })
+            else
+                Toast.show({
+                    type: 'danger',
+                    text2: 'Erro desconhecido. Entre em contato com o administrador',
+                })
+        }
     }
 
     const LoadingIndicator = () => (
