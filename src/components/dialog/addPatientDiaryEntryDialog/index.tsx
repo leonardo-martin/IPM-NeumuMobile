@@ -197,7 +197,7 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                                 <Text status='danger' category='s1' style={[styles.text, { textAlign: 'center' }]}>{errorMessage}</Text>
                             </View>
                         )}
-                        <View style={styles.viewCardBtn}>
+                        <View style={styles.containerBtn}>
                             <Button status='danger'
                                 onPress={isLoading ? undefined : handleVisibleModal}
                                 style={styles.button}>

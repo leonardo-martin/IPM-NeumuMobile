@@ -14,11 +14,7 @@ export const modalStyle = StyleSheet.create({
   modal: {
     width: '90%',
   },
-  viewCard: {
-    flexDirection: 'row',
-    paddingVertical: 15
-  },
-  viewCardBtn: {
+  containerBtn: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingTop: 10
