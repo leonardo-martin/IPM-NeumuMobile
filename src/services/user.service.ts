@@ -44,3 +44,7 @@ export const getUserRelatedIds = async (): Promise<AxiosResponse<UserRelatedIdsD
 export const updateUser = async (data: UserDto | any): Promise<AxiosResponse<UserDto, any>> => {
     return await api.post('user/update-user', data)
 }
+
+export const deleteUserSelf = async (): Promise<AxiosResponse<UserDto, any>> => {
+    return await api.delete('user')
+}

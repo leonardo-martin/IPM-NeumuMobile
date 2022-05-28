@@ -4,11 +4,13 @@ import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { EUserRole } from '@models/UserRole'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
+import { deleteUserSelf } from '@services/user.service'
 import { logout } from '@store/ducks/auth'
 import { RootState } from '@store/index'
-import { Avatar, Button, Icon, IconProps, Text, useStyleSheet } from '@ui-kitten/components'
-import React, { FC, ReactElement } from 'react'
-import { ImageStyle, StyleProp, TouchableOpacity, View } from 'react-native'
+import { Avatar, Button, Icon, IconProps, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import React, { FC, ReactElement, useState } from 'react'
+import { Alert, ImageStyle, StyleProp, TouchableOpacity, View } from 'react-native'
+import Toast from 'react-native-toast-message'
 import { patientBaseData, specialistBaseData } from './data'
 import { profileStyle } from './style'
 
@@ -17,6 +19,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
 }): ReactElement => {
 
   const dispatch = useAppDispatch()
+  const [accountIsBeingDeleted, setAccountIsBeingDeleted] = useState(false)
   const { sessionUser } = useAppSelector((state: RootState) => state.auth)
   const { profile } = useAppSelector((state: RootState) => state.profile)
   const styles = useStyleSheet(profileStyle)
@@ -42,12 +45,64 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
     </>
   )
 
+  const showModalDeleteAccount = () => {
+    Alert.alert(
+      'Deseja realmente DELETAR sua conta?',
+      'Após confirmar, todos os seus dados serão deletados e esta ação não pode ser desfeita.',
+      [
+        {
+          text: 'Sim',
+          style: 'default',
+          onPress: deleteAccount
+        },
+        {
+          text: 'Cancelar',
+          style: 'cancel'
+        }
+      ]
+    )
+  }
+
+  const deleteAccount = async () => {
+    setAccountIsBeingDeleted(true)
+
+    try {
+      const response = await deleteUserSelf()
+      if (response.status === 200) {
+
+        Alert.alert(
+          'Sentiremos sua falta',
+          '',
+          [
+            {
+              text: 'DESCONECTAR',
+              style: 'destructive',
+              onPress: () => dispatch(logout())
+            }
+          ]
+        )
+      } else {
+        Toast.show({
+          type: 'danger',
+          text2: 'Erro ao deletar a conta.',
+        })
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'danger',
+        text2: 'Erro ao deletar a conta. Entre em contato com o administrador',
+      })
+    } finally {
+      setAccountIsBeingDeleted(false)
+    }
+  }
+
   const exitComponent = () => (
     <View style={[styles.listFooter, styles.shadow]}>
       <TouchableOpacity
         style={styles.buttonContainer}
-        onPress={() => dispatch(logout())}>
-        <Text status='danger' category='label' style={styles.textFooter}>Sair</Text>
+        onPress={showModalDeleteAccount}>
+        <Text category='label' style={styles.textFooter}>Deleter Conta</Text>
       </TouchableOpacity>
     </View>
   )
@@ -55,6 +110,11 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
   return (
     <>
       <HeaderProfile />
+      {accountIsBeingDeleted && (
+        <View style={styles.backdropSpinner}>
+          <Spinner size='giant' />
+        </View>
+      )}
       <SafeAreaLayout level='2' style={styles.safeArea}>
         <ListComponent
           itemStyle={styles.shadow}
@@ -83,7 +143,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
           )}
           ListFooterComponent={
             sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? renderFooterComponent
-              : exitComponent}/>
+              : exitComponent} />
       </SafeAreaLayout>
     </>
   )
