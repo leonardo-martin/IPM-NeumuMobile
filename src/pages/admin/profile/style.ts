@@ -4,6 +4,18 @@ export const profileStyle = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
+  backdropSpinner: {
+    position: 'absolute',
+    flex: 1,
+    zIndex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    height: '100%',
+    width: '100%',
+    backgroundColor: 'background-basic-color-2',
+    opacity: 0.6
+  },
   contentContainer: {
     paddingTop: 24,
   },
@@ -38,11 +50,16 @@ export const profileStyle = StyleSheet.create({
     alignItems: 'center'
   },
   buttonContainer: {
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: 'text-danger-color',
+    borderRadius: 5
   },
   textFooter: {
-    fontSize: 16,
-    textTransform: 'uppercase'
+    fontSize: 12,
+    textTransform: 'uppercase',
+    textAlign: 'center',
+    padding: 10,
+    color: 'text-control-color'
   },
   item: {
     marginVertical: 4,
