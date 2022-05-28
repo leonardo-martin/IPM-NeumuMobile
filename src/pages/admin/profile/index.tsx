@@ -40,8 +40,8 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
           appearance='filled'
           status='success'
           accessoryLeft={renderIconDocumentAttach}>Meus Exames</Button>
+        {deleteAccountConfirm()}
       </View>
-      {exitComponent()}
     </>
   )
 
@@ -97,7 +97,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
     }
   }
 
-  const exitComponent = () => (
+  const deleteAccountConfirm = () => (
     <View style={[styles.listFooter, styles.shadow]}>
       <TouchableOpacity
         style={styles.buttonContainer}
@@ -143,7 +143,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
           )}
           ListFooterComponent={
             sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? renderFooterComponent
-              : exitComponent} />
+              : deleteAccountConfirm} />
       </SafeAreaLayout>
     </>
   )

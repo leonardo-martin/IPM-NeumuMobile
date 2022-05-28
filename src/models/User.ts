@@ -44,7 +44,7 @@ export class UserData {
         password?: string,
         city?: string,
         state?: string,
-        dateOfBirth?: Date,
+        dateOfBirth?: Date | string,
         postalCode?: string,
         address1?: string,
         address2?: string,
@@ -79,7 +79,7 @@ export class UserData {
     password?: string
     city?: string
     state?: string
-    dateOfBirth?: Date
+    dateOfBirth?: Date | string
     postalCode?: string
     address1?: string
     address2?: string

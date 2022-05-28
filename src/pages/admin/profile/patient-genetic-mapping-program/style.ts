@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native"
+import { Platform, StyleSheet } from "react-native"
 
 export const mappingStyle = StyleSheet.create({
     safeArea: {
@@ -79,5 +79,36 @@ export const mappingStyle = StyleSheet.create({
     containerBtn: {
         paddingVertical: 15,
         alignItems: 'center'
+    },
+    badge: {
+        borderRadius: 50,
+        padding: 10,
+        paddingHorizontal: 15
+    },
+    shadow: {
+        ...Platform.select({
+            ios: {
+                shadowColor: 'background-alternative-color-1',
+                shadowOffset: {
+                    width: 0,
+                    height: 10
+                },
+                shadowOpacity: .3,
+                shadowRadius: 20,
+            },
+            android: {
+                elevation: 10,
+            }
+        })
+    },
+    success: {
+        backgroundColor: 'color-success-400',
+    },
+    textBadge: {
+        color: 'text-control-color',
+        fontSize: 16,
+        textTransform: 'uppercase',
+        fontWeight: '600',
+        textAlign: 'center'
     }
 })

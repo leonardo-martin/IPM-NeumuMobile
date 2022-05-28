@@ -33,10 +33,10 @@ export const deleteDiaryEntry = async (date: Date) => {
     return api.delete('patient-diary-entry?' + params)
 }
 
-export const updatePatient = async (data: PatientDto | any) => {
+export const updatePatient = async (data: PatientDto | any): Promise<AxiosResponse<PatientDto, any>> => {
     var body = {
         ...data,
-        pastExams: JSON.stringify(data.pastExams) ?? null
+        pastExams: JSON.stringify(data.pastExams) ?? JSON.stringify({})
     }
     return await api.post('patient', body)
 }
