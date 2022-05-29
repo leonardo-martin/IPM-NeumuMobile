@@ -28,4 +28,9 @@ export declare type JSONContent = {
     }[];
     text?: string
     [key: string]: any
-};
+}
+
+export interface Buffer {
+    type: string
+    data: ArrayBuffer
+}

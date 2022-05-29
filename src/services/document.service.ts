@@ -1,3 +1,4 @@
+import { Buffer } from '@models/Common'
 import { DocumentDto } from '@models/Document'
 import { AxiosResponse } from 'axios'
 import DocumentPicker, { DocumentPickerOptions, DocumentPickerResponse } from 'react-native-document-picker'
@@ -42,4 +43,21 @@ export const getFileFromDevice = async (_opts: DocumentPickerOptions<SupportedPl
 export const fileToBlob = async (uri: string) => {
     const fetchResponse = await fetch(uri)
     return await fetchResponse.blob()
+}
+
+export const doctorGetDocumentFile = async (patientId: string | number, documentId: string | number): Promise<AxiosResponse<Buffer, any>> => {
+
+    const params = new URLSearchParams()
+    params.append('patientId', patientId.toString())
+    params.append('documentId', documentId.toString())
+
+    return await api.get('document/doctor/get-document-file?' + params)
+}
+
+export const userGetDocumentFile = async (documentId: string | number): Promise<AxiosResponse<Buffer, any>> => {
+
+    const params = new URLSearchParams()
+    params.append('documentId', documentId.toString())
+
+    return await api.get('document/user/get-document-file?' + params)
 }
