@@ -459,12 +459,6 @@ const EditProfileScreen: FC = (): ReactElement => {
 
         <Controller
           control={form.control}
-          rules={{
-            minLength: {
-              value: 5,
-              message: `Mín. 5 caracteres`
-            },
-          }}
           render={({ field }) => (
             <ProfileSetting
               style={[styles.profileSetting]}
