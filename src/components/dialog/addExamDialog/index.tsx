@@ -16,6 +16,7 @@ import { Keyboard, Platform, TouchableOpacity, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
+import { getDocumentType, getEntityId, getEntityType } from 'utils/entity'
 import { modalStyle } from './style'
 
 interface AddExamDialogProps {
@@ -50,7 +51,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
             if (sessionUser?.userRole.find(e => e.id === EUserRole.patient)) {
 
             } else if (sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor)) {
-                
+
             }
         }
 
@@ -113,9 +114,9 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                 name: file.name,
                 type: file.type
             })
-            formData.append('entityId', Number(1).toString())
-            formData.append('entityType', 'examEntity')
-            formData.append('documentType', 'user-exam-file')
+            formData.append('entityId', getEntityId('exam'))
+            formData.append('entityType', getEntityType('exam'))
+            formData.append('documentType', getDocumentType('exam'))
 
             let response = null
             try {
