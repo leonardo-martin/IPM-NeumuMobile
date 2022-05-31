@@ -97,8 +97,8 @@ const SignUpScreen: FC = (): ReactElement => {
     )
 
     const submit = async (data: UserPatientData | UserDoctorData) => {
-        setIsLoading(!isLoading)
-        setSending(!sending)
+        setIsLoading(true)
+        setSending(true)
 
         var messageError = ''
         let allowedToCreate: boolean = true
@@ -289,7 +289,7 @@ const SignUpScreen: FC = (): ReactElement => {
                                 <View style={styles.viewBtn}>
                                     <Button
                                         accessoryLeft={isLoading ? LoadingIndicator : undefined}
-                                        disabled={!checked || isLoading}
+                                        disabled={!checked}
                                         onPress={forms[params.type] ? forms[params.type].handleSubmit(submit) : undefined}
                                         status='warning'>
                                         CADASTRAR
