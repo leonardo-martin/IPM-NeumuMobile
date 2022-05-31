@@ -11,6 +11,7 @@ import { getRelationPatient } from '@utils/common'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 import { View } from 'react-native'
+import { DocumentPickerResponse } from 'react-native-document-picker'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { creatorRelationship, profileCreator } from '../../data'
 
@@ -24,6 +25,7 @@ const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): Rea
 
   const [selectedIndexRelationPatient, setSelectedIndexRelationPatient] = useState(-1)
   const [patientProfileCreator, setPatientProfileCreator] = useState<number | PatientProfileCreatorTypeEnum | undefined>()
+  const [fileResponse, setFileResponse] = useState<DocumentPickerResponse[] | undefined>()
 
   const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
   const [isLegalAge, setIsLegalAge] = useState<boolean>(false)
@@ -55,6 +57,14 @@ const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): Rea
       if (idRelationship)
         setRelationship(creatorRelationship.find((_, i) => i === idRelationship))
       else if (!idRelationship && !isLegalAge && result !== 1) setIsVisible(true)
+
+      const file: DocumentPickerResponse = form.getValues('creator.data.guardian.attachment')
+      if (file) {
+        const arr = [...fileResponse ?? []]
+        arr.push(file)
+        setFileResponse(arr)
+      }
+
     }, [])
   )
 
@@ -74,20 +84,13 @@ const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): Rea
   }
 
   useEffect(() => {
-    if (relationship) {
-      const relationToString = relationship as RelationshipPatient
-      if (relationToString === 'Tutor Legal') {
-        form.register('creator.data.guardian.attachment', {
-          required: {
-            value: true,
-            message: 'Necessário documentação'
-          }
-        })
-      } else {
-        form.unregister('creator.data.guardian.attachment')
-      }
+    if (fileResponse) {
+      form.setValue('creator.data.guardian.attachment', fileResponse[0])
+      form.clearErrors('creator.data.guardian.attachment')
+    } else {
+      form.setValue('creator.data.guardian.attachment', undefined)
     }
-  }, [relationship])
+  }, [fileResponse])
 
   return (
     <>
@@ -153,6 +156,8 @@ const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): Rea
             <CardPatientRelationshipComponent
               relationship={relationship}
               form={form}
+              file={fileResponse}
+              setFile={setFileResponse}
               styles={styles}
               onSubmit={onSubmit} />
           </View>

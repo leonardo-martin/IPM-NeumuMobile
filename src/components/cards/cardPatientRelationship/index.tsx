@@ -8,7 +8,7 @@ import { Datepicker, IndexPath, Input, PopoverPlacements } from '@ui-kitten/comp
 import { sortByStringField } from '@utils/common'
 import { formatCpf, formatPhone, isEmailValid, onlyNumbers } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
-import React, { FC, ReactElement, useEffect, useState } from 'react'
+import React, { Dispatch, FC, ReactElement, useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 import { StyleSheet, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
@@ -31,14 +31,15 @@ const kinList: SelectItemData[] = [
 interface CardPatientRelationshipProps extends PatientSignUpProps {
     relationship: RelationshipPatient,
     styles?: StyleSheet.NamedStyles<any>
+    file: DocumentPickerResponse[] | undefined
+    setFile: Dispatch<React.SetStateAction<DocumentPickerResponse[] | undefined>>
 }
 
-const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ form, onSubmit, relationship, styles }): ReactElement => {
+const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ form, onSubmit, relationship, styles, ...props }): ReactElement => {
 
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[] | undefined>()
     const { localeDateService } = useDatepickerService()
     const sortedKinList: SelectItemData[] = kinList.sort((a, b) => sortByStringField(a, b, 'title'))
-    const [fileResponse, setFileResponse] = useState<DocumentPickerResponse[] | undefined>()
     const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
 
     useEffect(() => {
@@ -46,15 +47,6 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
             form.setValue('creator.data.kinship', sortedKinList.find((_, i) => new IndexPath(i).row === (selectedIndex as IndexPath).row))
         else form.setValue('creator.data.kinship', '')
     }, [selectedIndex])
-
-    useEffect(() => {
-        if (fileResponse) {
-            form.setValue('creator.data.guardian.attachment', fileResponse[0])
-            form.clearErrors('creator.data.guardian.attachment')
-        } else {
-            form.setValue('creator.data.guardian.attachment', undefined)
-        }
-    }, [fileResponse])
 
     const verifyCpf = (value: string) => {
         if (value === form.getValues('cpf')) {
@@ -292,8 +284,8 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
             {relationship === "Tutor Legal" && (
                 <View style={{ paddingVertical: 10 }}>
                     <AttachmentBoxComponent
-                        handleFile={setFileResponse}
-                        file={fileResponse}
+                        handleFile={props.setFile}
+                        file={props.file}
                         label='Anexar Documentação *' />
                     <CustomErrorMessage name='creator.data.guardian.attachment' errors={form.formState.errors} />
                 </View>
@@ -350,7 +342,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         render={({ field: { onChange, onBlur, value, name, ref } }) => (
                             <Input
                                 size='small'
-                                label="Conselho Regional de Medicina (CRM) *"
+                                label="Número de Registro *"
                                 style={styles?.input}
                                 keyboardType='number-pad'
                                 placeholder=''
