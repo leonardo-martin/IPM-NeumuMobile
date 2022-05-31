@@ -82,28 +82,34 @@ const SignInScreen: FC = (): ReactElement => {
             navigation.navigate('WaitingApprovals', {
               message: message
             })
-          }
-          const matchId = matchMessage(message)
-          if (matchId === 2)
-            messageToast = 'E-mail não verificado'
-          else if (matchId === 1)
-            messageToast = 'Usuário e/ou senha incorretos'
+          } else {
+            const matchId = matchMessage(message)
+            if (matchId === 2)
+              messageToast = 'E-mail não verificado'
+            else if (matchId === 1)
+              messageToast = 'Usuário e/ou senha incorretos'
 
+          }
         } else {
           messageToast = 'Usuário e/ou senha incorretos'
         }
-        setIsLoading(false)
-        Toast.show({
-          type: 'danger',
-          text2: messageToast,
-        })
+
+        if (messageToast !== '') {
+          Toast.show({
+            type: 'danger',
+            text2: messageToast,
+          })
+        }
+
       }
     } catch (error) {
-      setIsLoading(false)
+
       Toast.show({
         type: 'danger',
         text2: 'Ocorreu um erro inesperado. Entre em contato com o administrador',
       })
+    } finally {
+      setIsLoading(false)
     }
 
   }
