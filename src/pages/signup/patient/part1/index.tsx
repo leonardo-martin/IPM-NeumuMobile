@@ -403,8 +403,8 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           control={form.control}
           rules={{
             minLength: {
-              value: 15,
-              message: `Mín. 15 caracteres`
+              value: 14,
+              message: `Mín. 14 caracteres`
             },
             validate: (e) => e !== null && e !== "" ? validateCNS(e) : true
           }}
@@ -418,7 +418,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
-              maxLength={16}
+              maxLength={15}
               underlineColorAndroid="transparent"
               ref={ref}
               returnKeyType="send"
