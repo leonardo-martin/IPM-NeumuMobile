@@ -345,7 +345,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                         <Button status='success'
                             style={styles.button}
                             onPress={form.handleSubmit(submitForm)}
-                            disabled={isLoading || props.exam !== null}
+                            disabled={isLoading}
                             accessoryLeft={isLoading ? LoadingIndicator : undefined}>
                             {isLoading ? '' : props.exam ? 'Editar' : 'Salvar'}
                         </Button>
