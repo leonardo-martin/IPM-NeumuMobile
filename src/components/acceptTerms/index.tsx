@@ -51,17 +51,17 @@ const TermsConditions: FC = (): ReactElement => {
                 O INSTITUTO não se responsabiliza por nenhuma perda de oportunidade ou prejuízos que esta indisponibilidade temporária possa gerar aos usuários.
                 Em caso de manutenção que exigirem um tempo maior, sera avisado previamente aos usuários da necessidade e do tempo previsto em que o TeleNeuMu ficará offline.
                 Será necessário realizar um cadastro junto a plataforma, onde o USUÁRIO deverá preencher um formulário com seus dados e informações, para ter acesso às funcionalidades do TeleNeuMu.
-                Todos os dados estão protegidos conforme a Lei Geral de Proteção de Dados, e ao realizar o cadastro junto ao site, o USUÁRIO concorda integralmente com a coleta de dados conforme a Lei e com a Política de Privacidade do TELENEUMU.
+                Todos os dados estão protegidos conforme a Lei Geral de Proteção de Dados, e ao realizar o cadastro junto ao site, o USUÁRIO concorda integralmente com a coleta de dados conforme a Lei e com a Política de Privacidade do TeleNeuMu.
                 Todos os direitos são preservados, conforme a legislação brasileira, principalmente na Lei de Direitos Autorais (regulamentada na Lei nº 9.610/18), assim como no Código Civil brasileiro (regulamentada na Lei nº 10.406/02), ou quaisquer outras legislações aplicáveis.
                 Todo o conteúdo do aplicativo é protegido por direitos autorais, e seu uso, cópia, transmissão, venda, cessão ou revenda, deve seguir a lei brasileira, tendo o INSTITUTO todos os seus direitos reservados, e não permitindo a cópia ou utilização de nenhuma forma e meio, sem autorização expressa e por escrita da mesma.
             </Text>
 
             <Text style={styles.textItem}>{'\t'}5. DAS OBRIGAÇÕES</Text>
             <Text style={styles.textJustify}>
-                O USUÁRIO ao utilizar o TELENEUMU, concorda integralmente em:
+                O USUÁRIO ao utilizar o TeleNeuMu, concorda integralmente em:
                 De nenhuma forma ou meio realizar qualquer tipo de ação que tente invadir, hacker, destruir ou prejudicar a estrutura do aplicativo, plataforma do INSTITUTO ou de seus parceiros comerciais. Incluindo-se, mas não se limitando, ao envio de vírus de computador, de ataques de DDOS, de acesso indevido por falhas da mesma ou quaisquer outras forma e meio.
                 Da proibição em reproduzir qualquer conteúdo do aplicativo sem autorização expressa, podendo responder civil e criminalmente pelo mesmo.
-                Com a Política de Privacidade TELENEUMU, assim como tratamos os dados referentes ao cadastro e histórico do USUÁRIO, podendo a qualquer momento e forma, requerer a exclusão dos mesmos, através de solicitação ao INSTITUTO.
+                Com a Política de Privacidade TeleNeuMu, assim como tratamos os dados referentes ao cadastro e histórico do USUÁRIO, podendo a qualquer momento e forma, requerer a exclusão dos mesmos, através de solicitação ao INSTITUTO.
             </Text>
         </>
     )
