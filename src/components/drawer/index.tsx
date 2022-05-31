@@ -131,14 +131,14 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
             <Icon {...props} name='settings-outline' size={iconSizeDefault} pack='ionicons' />
           )}
         />
-        <DrawerItem
+        {/* <DrawerItem
           style={drawerStyle.drawerItem}
           title='Ajuda'
           onPress={() => navigate('Help')}
           accessoryLeft={(props: IconProps) => (
             <Icon {...props} name="help-circle-outline" size={iconSizeDefault} pack='ionicons' />
           )}
-        />
+        /> */}
         <DrawerItem
           style={drawerStyle.drawerItem}
           title='Sair'

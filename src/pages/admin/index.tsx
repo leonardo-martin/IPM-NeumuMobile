@@ -151,7 +151,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                   </Card>
                 </View>
               )}
-              {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
+              {/* {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
                 <View style={styles.cardGroupSecondary}>
                   <Card style={[styles.card, styles.shadowCard]}
                     onPress={() => navigation.jumpTo('AboutDNM')}>
@@ -178,7 +178,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                     </Text>
                   </Card>
                 </View>
-              )}
+              )} */}
             </View>
           </View>
         </ScrollView>
