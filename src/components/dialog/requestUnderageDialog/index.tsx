@@ -90,7 +90,7 @@ const RequestUnderageDialog: FC<RequestUnderageDialogProps> = forwardRef<Modal, 
                         defaultValue=''
                     />
                     {form.formState.errors.responsibleEmail?.type !== 'validate' && <CustomErrorMessage name='responsibleEmail' errors={form.formState.errors} />}
-                    {form.formState.errors.responsibleEmail?.type === 'validate' && <CustomErrorMessage name='responsibleEmail' errors={form.formState.errors} custommMessage='E-mail inválido' />}
+                    {form.formState.errors.responsibleEmail?.type === 'validate' && <CustomErrorMessage name='responsibleEmail' errors={form.formState.errors} customMessage='E-mail inválido' />}
                 </View>
 
                 <View style={styles.viewCardBtn}>

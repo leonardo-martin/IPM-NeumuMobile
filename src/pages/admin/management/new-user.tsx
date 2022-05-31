@@ -233,7 +233,7 @@ const NewUserScreen: FC = (): ReactElement => {
                             defaultValue=''
                         />
                         {form.formState.errors.cpf?.type !== 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} />}
-                        {form.formState.errors.cpf?.type === 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} custommMessage='CPF inválido' />}
+                        {form.formState.errors.cpf?.type === 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} customMessage='CPF inválido' />}
                         <Controller
                             control={form.control}
                             rules={{
@@ -345,7 +345,7 @@ const NewUserScreen: FC = (): ReactElement => {
                             defaultValue=''
                         />
                         {form.formState.errors.email?.type !== 'validate' && <CustomErrorMessage name='email' errors={form.formState.errors} />}
-                        {form.formState.errors.email?.type === 'validate' && <CustomErrorMessage name='email' errors={form.formState.errors} custommMessage='E-mail inválido' />}
+                        {form.formState.errors.email?.type === 'validate' && <CustomErrorMessage name='email' errors={form.formState.errors} customMessage='E-mail inválido' />}
                         <Controller
                             control={form.control}
                             rules={{
@@ -392,7 +392,7 @@ const NewUserScreen: FC = (): ReactElement => {
                             defaultValue=''
                         />
                         {form.formState.errors.password?.type !== 'validate' && <CustomErrorMessage name='password' errors={form.formState.errors} />}
-                        {form.formState.errors.password?.type === 'validate' && <CustomErrorMessage name='password' errors={form.formState.errors} custommMessage='Senha inválida' />}
+                        {form.formState.errors.password?.type === 'validate' && <CustomErrorMessage name='password' errors={form.formState.errors} customMessage='Senha inválida' />}
                         <Controller
                             control={form.control}
                             rules={{

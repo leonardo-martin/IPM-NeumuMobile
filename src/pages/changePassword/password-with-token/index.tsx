@@ -154,7 +154,7 @@ const ChangePasswordWithToken: FC = (): ReactElement => {
                         name='password'
                     />
                     {form.formState.errors.password?.type !== 'validate' && <CustomErrorMessage name='password' errors={form.formState.errors} />}
-                    {form.formState.errors.password?.type === 'validate' && <CustomErrorMessage name='password' errors={form.formState.errors} custommMessage='Senha inválida' />}
+                    {form.formState.errors.password?.type === 'validate' && <CustomErrorMessage name='password' errors={form.formState.errors} customMessage='Senha inválida' />}
                     <Controller
                         control={form.control}
                         rules={{
@@ -195,8 +195,8 @@ const ChangePasswordWithToken: FC = (): ReactElement => {
                         name='newPassword'
                     />
                     {(form.formState.errors.newPassword?.type !== 'valid' && form.formState.errors.newPassword?.type !== 'equal') && <CustomErrorMessage name='newPassword' errors={form.formState.errors} />}
-                    {(form.formState.errors.newPassword?.type === 'valid') && <CustomErrorMessage name='newPassword' errors={form.formState.errors} custommMessage='Senha inválida' />}
-                    {(form.formState.errors.newPassword?.type === 'equal') && <CustomErrorMessage name='newPassword' errors={form.formState.errors} custommMessage='Senhas não conferem' />}
+                    {(form.formState.errors.newPassword?.type === 'valid') && <CustomErrorMessage name='newPassword' errors={form.formState.errors} customMessage='Senha inválida' />}
+                    {(form.formState.errors.newPassword?.type === 'equal') && <CustomErrorMessage name='newPassword' errors={form.formState.errors} customMessage='Senhas não conferem' />}
                     <View style={styles.viewButton}>
                         <Button
                             size='small'

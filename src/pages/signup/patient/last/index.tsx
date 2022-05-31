@@ -32,7 +32,7 @@ const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): Rea
     useCallback(() => {
 
       const patientDate = form.getValues('dateOfBirth')
-      const result = patientDate ? localeDateService.compareDatesSafe(dateForOver, patientDate) : -1
+      const result = patientDate ? localeDateService.compareDatesSafe(dateForOver, new Date(patientDate)) : -1
 
       if (result === 1) {
         setIsLegalAge(true)

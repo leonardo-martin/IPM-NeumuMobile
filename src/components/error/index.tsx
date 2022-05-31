@@ -7,7 +7,7 @@ import { StyleSheet } from "react-native"
 interface CustomErrorMessageProps {
     name: string
     errors: FieldErrors<any>
-    custommMessage?: string
+    customMessage?: string
 }
 
 const CustomErrorMessage: FC<CustomErrorMessageProps> = ({ ...props }): ReactElement => {
@@ -16,7 +16,7 @@ const CustomErrorMessage: FC<CustomErrorMessageProps> = ({ ...props }): ReactEle
         <ErrorMessage
             errors={props.errors}
             name={props.name}
-            render={({ message }) => <Text style={styles.text}>{props.custommMessage ?? message}</Text>}
+            render={({ message }) => <Text style={styles.text}>{props.customMessage ?? message}</Text>}
         />
     )
 }

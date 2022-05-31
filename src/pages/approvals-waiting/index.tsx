@@ -1,7 +1,7 @@
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { Button, Text, useStyleSheet } from '@ui-kitten/components'
-import { ApprovalsMessageError } from 'models/Common'
+import { ApprovalsMessageError } from '@models/Common'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { View } from 'react-native'
 import { approvalsWaitingStyle } from './style'
