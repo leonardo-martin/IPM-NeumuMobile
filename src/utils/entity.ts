@@ -15,6 +15,6 @@ export const getEntityType = (entity: string): string | undefined => {
 export const getDocumentType = (entity: string): string | undefined => {
     return {
         'exam': 'user-exam-file',
-        'user': 'user-file'
+        'user': 'user-profile-picture'
     }[entity]
 }

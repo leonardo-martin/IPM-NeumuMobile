@@ -3,7 +3,7 @@ import { AxiosResponse } from "axios"
 import { api } from "./api.service"
 
 export const getPatientExamList = async () => {
-    return await api.get('/exam/get-patient-exam-list')
+    return await api.get('exam/get-patient-exam-list')
 }
 
 export const uploadExam = async (data: ExamDto): Promise<AxiosResponse<ExamDto, any>> => {
