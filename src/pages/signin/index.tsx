@@ -13,6 +13,7 @@ import { AppStorage } from '@services/app-storage.service'
 import { authLogin } from '@services/auth.service'
 import { Button, CheckBox, Icon, IconProps, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { matchMessage, openMailTo } from '@utils/common'
+import { cleanNumberMask, formatCpf } from '@utils/mask'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Keyboard, Platform, StatusBar, View } from 'react-native'
@@ -72,8 +73,12 @@ const SignInScreen: FC = (): ReactElement => {
     Keyboard.dismiss()
     setIsLoading(!isLoading)
     try {
-      const response = await dispatch(authLogin(data, checked))
+      const response = await dispatch(authLogin({
+        ...data,
+        username: cleanNumberMask(data.username),
+      }, checked))
       if (response) {
+        setIsLoading(false)
         const message = response.data?.message?.message
         let messageToast = ''
         if (message !== "" && message !== undefined) {
@@ -103,15 +108,12 @@ const SignInScreen: FC = (): ReactElement => {
 
       }
     } catch (error) {
-
+      setIsLoading(false)
       Toast.show({
         type: 'danger',
         text2: 'Ocorreu um erro inesperado. Entre em contato com o administrador',
       })
-    } finally {
-      setIsLoading(false)
     }
-
   }
 
   const registerName = () => {
@@ -180,14 +182,14 @@ const SignInScreen: FC = (): ReactElement => {
                     size='small'
                     style={styles.input}
                     label="CPF"
-                    keyboardType="default"
+                    keyboardType='number-pad'
                     testID={name}
                     onBlur={onBlur}
                     onChangeText={onChange}
-                    value={value ? value.toLowerCase() : value}
+                    value={formatCpf(value)}
                     returnKeyType="next"
                     ref={ref}
-                    maxLength={40}
+                    maxLength={14}
                     onSubmitEditing={() => form.setFocus('password')}
                     autoCapitalize="none"
                     textContentType="username"
