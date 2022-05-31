@@ -28,19 +28,20 @@ const NewUserScreen: FC = (): ReactElement => {
     const { localeDateService } = useDatepickerService()
     const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
     const [selectedSpecialty, setSelectedSpecialty] = useState<IndexPath | IndexPath[]>()
-
+    const emailConfirm = form.watch("email")
     const isFocused = useIsFocused()
-    const [selectedIndex, setSelectedIndex] = useState(-1)
+    const [selectedIndex, setSelectedIndex] = useState<number>(-1)
     const [secureTextEntry, setSecureTextEntry] = useState(true)
     const navigation = useNavigation<any>()
 
     useFocusEffect(
         useCallback(() => {
-            const sex = form.getValues('sex')
-            if (sex) setSelectedIndex(sex === 'male' ? 0 : sex === 'female' ? 1 : 2)
-
-            const specialty = form.getValues('specialty.description')
-            if (specialty) setSelectedSpecialty(new IndexPath(specialties.indexOf(specialty)))
+            form.reset()
+            setSelectedIndex(-1)
+            setSecureTextEntry(false)
+            setIsLoading(false)
+            setSelectedSpecialty(undefined)
+            setIsLoadingPostalCode(false)
         }, [])
     )
 
@@ -327,7 +328,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     maxLength={60}
                                     ref={ref}
                                     returnKeyType="next"
-                                    onSubmitEditing={() => form.setFocus('password')}
+                                    onSubmitEditing={() => form.setFocus('emailConfirmation')}
                                     textContentType="emailAddress"
                                     caption={(evaProps) => (
                                         <>
@@ -346,6 +347,47 @@ const NewUserScreen: FC = (): ReactElement => {
                         />
                         {form.formState.errors.email?.type !== 'validate' && <CustomErrorMessage name='email' errors={form.formState.errors} />}
                         {form.formState.errors.email?.type === 'validate' && <CustomErrorMessage name='email' errors={form.formState.errors} customMessage='E-mail inválido' />}
+                        <Controller
+                            control={form.control}
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: 'Campo obrigatório'
+                                },
+                                minLength: {
+                                    value: 5,
+                                    message: `Mín. 5 caracteres`
+                                },
+                                validate: {
+                                    valid: (e) => e ? isEmailValid(e) : undefined,
+                                    equal: (e) => e === emailConfirm
+                                }
+                            }}
+                            render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                                <Input
+                                    size='small'
+                                    label='Confirmar E-mail *'
+                                    style={styles.input}
+                                    keyboardType='email-address'
+                                    testID={name}
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value ? value.replace(/[^0-9A-Za-z]*/, "").toLowerCase() : value}
+                                    underlineColorAndroid="transparent"
+                                    autoCapitalize='none'
+                                    maxLength={60}
+                                    ref={ref}
+                                    returnKeyType="next"
+                                    onSubmitEditing={() => form.setFocus('password')}
+                                    textContentType="emailAddress"
+                                />
+                            )}
+                            name='emailConfirmation'
+                            defaultValue=''
+                        />
+                        {form.formState.errors.emailConfirmation?.type !== 'valid' && form.formState.errors.emailConfirmation?.type !== 'equal' && <CustomErrorMessage name='emailConfirmation' errors={form.formState.errors} />}
+                        {form.formState.errors.emailConfirmation?.type === 'valid' && <CustomErrorMessage name='emailConfirmation' errors={form.formState.errors} customMessage={'E-mail inválido'} />}
+                        {form.formState.errors.emailConfirmation?.type === 'equal' && <CustomErrorMessage name='emailConfirmation' errors={form.formState.errors} customMessage={'E-mails não conferem'} />}
                         <Controller
                             control={form.control}
                             rules={{

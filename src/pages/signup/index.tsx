@@ -112,6 +112,9 @@ const SignUpScreen: FC = (): ReactElement => {
             // defined that the username is your CPF
             data.username = data.cpf
 
+            if (data.emailConfirmation)
+                delete data.emailConfirmation
+
             if (params?.type === 0) {
                 let newData = data as UserPatientData
                 newData = {
@@ -124,6 +127,9 @@ const SignUpScreen: FC = (): ReactElement => {
                         }
                     }
                 }
+
+                if (newData.creator?.data['emailConfirmation'])
+                    delete newData.creator?.data['emailConfirmation']
 
                 if (newData.creator && newData.creator.data && newData.creator?.data['cpf'])
                     newData.creator.data['cpf'] = cleanNumberMask(newData.creator.data['cpf'])

@@ -38,6 +38,7 @@ export class UserData {
     constructor(name?: string,
         cpf?: string,
         email?: string,
+        emailConfirmation?: string,
         phone?: string,
         phone2?: string,
         username?: string,
@@ -55,6 +56,7 @@ export class UserData {
         this.name = name
         this.cpf = cpf
         this.email = email
+        this.emailConfirmation = emailConfirmation
         this.phone = phone
         this.phone2 = phone2
         this.username = username
@@ -73,6 +75,7 @@ export class UserData {
     name?: string
     cpf?: string
     email?: string
+    emailConfirmation?: string
     phone?: string
     phone2?: string
     username?: string
@@ -99,6 +102,7 @@ export class UserPatientData extends UserData {
     constructor(name?: string,
         cpf?: string,
         email?: string,
+        emailConfirmation?: string,
         phone?: string,
         phone2?: string,
         username?: string,
@@ -117,7 +121,7 @@ export class UserPatientData extends UserData {
         abrafeuRegistrationOptIn?: string,
         pastExams?: ExamDNA) {
 
-        super(name, cpf, email, phone, phone2, username,
+        super(name, cpf, email, emailConfirmation, phone, phone2, username,
             password, city, state, dateOfBirth, postalCode, address1, address2, addressComplement, country, sex)
         this.mothersName = mothersName
         this.susNumber = susNumber
@@ -137,6 +141,7 @@ export class UserDoctorData extends UserData {
     constructor(name?: string,
         cpf?: string,
         email?: string,
+        emailConfirmation?: string,
         phone?: string,
         phone2?: string,
         username?: string,
@@ -153,7 +158,7 @@ export class UserDoctorData extends UserData {
         crm?: string, specialty?: MedicalSpecialtyDto,
         professionalTypeId?: string) {
 
-        super(name, cpf, email, phone, phone2, username,
+        super(name, cpf, email, emailConfirmation, phone, phone2, username,
             password, city, state, dateOfBirth, postalCode, address1, address2, addressComplement, country, sex)
         this.crm = crm
         this.specialty = specialty

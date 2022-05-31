@@ -19,7 +19,7 @@ export const managementStyle = StyleSheet.create({
         paddingHorizontal: 30
     },
     input: {
-        paddingVertical: 15
+        paddingVertical: 10
     },
     labelBasic: {
         color: "text-hint-color",

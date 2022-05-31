@@ -42,6 +42,8 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
     const sortedKinList: SelectItemData[] = kinList.sort((a, b) => sortByStringField(a, b, 'title'))
     const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
 
+    const emailConfirm = form.watch("creator.data.email")
+
     useEffect(() => {
         if (selectedIndex)
             form.setValue('creator.data.kinship', sortedKinList.find((_, i) => new IndexPath(i).row === (selectedIndex as IndexPath).row))
@@ -206,7 +208,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         maxLength={60}
                         ref={ref}
                         returnKeyType="next"
-                        onSubmitEditing={() => form.setFocus('creator.data.phone')}
+                        onSubmitEditing={() => form.setFocus('creator.data.emailConfirmation')}
                         textContentType="emailAddress"
                     />
                 )}
@@ -216,6 +218,47 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
             {(form.formState.errors.creator?.data?.email?.type !== 'valid' && form.formState.errors.creator?.data?.email?.type !== 'equal') && <CustomErrorMessage name='creator.data.email' errors={form.formState.errors} />}
             {(form.formState.errors.creator?.data?.email?.type === 'valid') && <CustomErrorMessage name='creator.data.email' errors={form.formState.errors} customMessage='E-mail inválido' />}
             {(form.formState.errors.creator?.data?.email?.type === 'equal') && <CustomErrorMessage name='creator.data.email' errors={form.formState.errors} customMessage='E-mail não pode ser igual ao do paciente' />}
+            <Controller
+                control={form.control}
+                rules={{
+                    required: {
+                        value: true,
+                        message: 'Campo obrigatório'
+                    },
+                    minLength: {
+                        value: 5,
+                        message: `Mín. 5 caracteres`
+                    },
+                    validate: {
+                        valid: (e) => e ? isEmailValid(e) : undefined,
+                        equal: (e) => e === emailConfirm
+                    }
+                }}
+                render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                    <Input
+                        size='small'
+                        label='Confirmar E-mail *'
+                        style={styles?.input}
+                        keyboardType='email-address'
+                        testID={name}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value ? value.replace(/[^0-9A-Za-z]*/, "").toLowerCase() : value}
+                        underlineColorAndroid="transparent"
+                        autoCapitalize='none'
+                        maxLength={60}
+                        ref={ref}
+                        returnKeyType="next"
+                        onSubmitEditing={() => form.setFocus('creator.data.phone')}
+                        textContentType="emailAddress"
+                    />
+                )}
+                name='creator.data.emailConfirmation'
+                defaultValue=''
+            />
+            {form.formState.errors.creator?.data?.emailConfirmation?.type !== 'valid' && form.formState.errors.creator?.data?.emailConfirmation?.type !== 'equal' && <CustomErrorMessage name='creator.data.emailConfirmation' errors={form.formState.errors} />}
+            {form.formState.errors.creator?.data?.emailConfirmation?.type === 'valid' && <CustomErrorMessage name='creator.data.emailConfirmation' errors={form.formState.errors} customMessage={'E-mail inválido'} />}
+            {form.formState.errors.creator?.data?.emailConfirmation?.type === 'equal' && <CustomErrorMessage name='creator.data.emailConfirmation' errors={form.formState.errors} customMessage={'E-mails não conferem'} />}
             <Controller
                 control={form.control}
                 rules={{
