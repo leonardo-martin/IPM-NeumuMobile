@@ -14,7 +14,8 @@ export const acceptTermsStyle = StyleSheet.create({
     },
     textItem: {
         fontWeight: '600',
-        marginVertical: 10
+        marginVertical: 10,
+        textTransform: 'uppercase'
     },
     hiperlink: {
         fontWeight: 'bold',

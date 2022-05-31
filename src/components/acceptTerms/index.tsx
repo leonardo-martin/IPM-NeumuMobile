@@ -22,7 +22,7 @@ const TermsConditions: FC = (): ReactElement => {
                 A permanência no aplicativo implica-se automaticamente na leitura e aceitação tácita do presente termos de uso a seguir. Este termo foi atualizado pela última vez em 17 de março de 2022.
             </Text>
 
-            <Text style={styles.textItem}>{'\t'}1. DA FUNÇÃO TeleNeuMU</Text>
+            <Text style={styles.textItem}>{'\t'}1. DA FUNÇÃO TELENEUMU</Text>
             <Text style={styles.textJustify}>Este aplicativo foi criado e desenvolvido com a função de auxiliar no tratamento de pacientes com doenças Neuro Musculares. O INSTITUTO busca através do aplicativo, desenvolvido por profissionais da área, auxiliar na identificação, informação e tratamento de pacientes com doenças neuro musculares.
                 Nesta plataforma, poderá ser realizado  o cadastro, agendamento, conversas e manutenção do histórico médico.
                 É de responsabilidade do usuário de usar todas as funcionalidades presentes no aplicativo com senso crítico, considerando que ao compartilhar suas informações com os profissionais de saúde, está de acordo que os mesmos possam visualizar essas informações.
