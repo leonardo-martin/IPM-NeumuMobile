@@ -1,5 +1,5 @@
 import { API_IBGE_GOV, API_POSTAL_CODE_SEARCH } from "@constants/uri"
-import { City, Country, UF, AddressDto } from "@models/Places"
+import { AddressIBGEDto, City, Country, UF } from "@models/Places"
 
 interface PlacesOpt {
     orderBy: string
@@ -39,7 +39,7 @@ export const getCities = async (state: string | undefined, options: PlacesOpt = 
     }).then(async (response) => await response.json())
 }
 
-export const getAddressByPostalCode = async (postalCode: string): Promise<AddressDto> => {
+export const getAddressByPostalCode = async (postalCode: string): Promise<AddressIBGEDto> => {
     return await fetch(`${API_POSTAL_CODE_SEARCH.replace('$POSTAL_CODE', postalCode)}`, {
         method: 'GET'
     }).then(async (response) =>

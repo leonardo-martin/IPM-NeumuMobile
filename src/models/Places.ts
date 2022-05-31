@@ -71,7 +71,7 @@ export class Country {
 }
 
 
-export interface AddressDto {
+export interface AddressIBGEDto {
     localidade?: string
     logradouro?: string
     bairro?: string
