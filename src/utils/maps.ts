@@ -3,17 +3,25 @@ import Toast from 'react-native-toast-message'
 
 export const openMapsWithAddress = async (address: string) => {
 
-    const company = Platform.OS === "ios" ? "apple" : "google"
+    if (address !== '') {
 
-    const url = `http://maps.${company}.com/maps?daddr=${encodeURIComponent(address)}`
-    const supported = await Linking.canOpenURL(url)
+        const url = Platform.select({
+            ios: `maps:0,0?q=${encodeURIComponent(address)}`,
+            android: `geo:0,0?q=${encodeURIComponent(address)}`,
+        })
+        try {
+            await Linking.openURL(url ?? '')
+        } catch (error) {
+            Toast.show({
+                type: 'danger',
+                text2: 'Maps app não encontrado ou há um erro na URL..',
+            })
+        }
 
-    if (supported) {
-        await Linking.openURL(url)
     } else {
         Toast.show({
-            type: 'danger',
-            text2: 'Maps app não encontrado ou há um erro na URL..',
+            type: 'info',
+            text2: 'Nenhum endereço encontrado',
         })
     }
 
