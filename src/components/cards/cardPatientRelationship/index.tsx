@@ -37,7 +37,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
 
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[] | undefined>()
     const { localeDateService } = useDatepickerService()
-    const [sortedKinList, setSortedKinList] = useState<SelectItemData[]>(kinList.sort((a, b) => sortByStringField(a, b, 'title')))
+    const sortedKinList: SelectItemData[] = kinList.sort((a, b) => sortByStringField(a, b, 'title'))
     const [fileResponse, setFileResponse] = useState<DocumentPickerResponse[] | undefined>()
     const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
 
@@ -51,7 +51,6 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
         if (fileResponse) {
             form.setValue('creator.data.guardian.attachment', fileResponse[0])
             form.clearErrors('creator.data.guardian.attachment')
-
         } else {
             form.setValue('creator.data.guardian.attachment', undefined)
         }
@@ -296,7 +295,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         handleFile={setFileResponse}
                         file={fileResponse}
                         label='Anexar Documentação *' />
-                    <CustomErrorMessage name='creator.guardian.attachment' errors={form.formState.errors} />
+                    <CustomErrorMessage name='creator.data.guardian.attachment' errors={form.formState.errors} />
                 </View>
             )}
 
