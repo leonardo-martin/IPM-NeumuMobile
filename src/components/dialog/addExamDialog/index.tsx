@@ -1,6 +1,6 @@
 import AttachmentBoxComponent from '@components/attachmentBox'
 import CustomErrorMessage from '@components/error'
-import { _DATE_FROM_ISO_8601 } from '@constants/date'
+import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATE } from '@constants/date'
 import { useAppSelector } from '@hooks/redux'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useDatepickerService } from '@hooks/useDatepickerService'
@@ -166,10 +166,6 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
         <Spinner size='small' status='basic' />
     )
 
-    const CalendarIcon = (props: IconProps) => (
-        <Icon {...props} name='calendar-outline' pack='eva' />
-    )
-
     return (
         <Modal
             {...{ ...props, ref: combinedRef }}
@@ -180,83 +176,21 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
         >
             <Card disabled={true}>
                 <View style={styles.viewCard}>
-                    <Controller
-                        control={form.control}
-                        rules={{
-                            required: {
-                                value: true,
-                                message: 'Campo obrigatório'
-                            }
-                        }}
-                        render={({ field: { onChange, onBlur, value, name, ref } }) => (
-                            <Datepicker
-                                disabled={readonly}
-                                size='small'
-                                label={'Data do Exame' + (readonly ? '' : ' *')}
-                                date={value}
-                                onSelect={onChange}
-                                accessoryRight={CalendarIcon}
-                                onBlur={onBlur}
-                                ref={ref}
-                                testID={name}
-                                style={styles.input}
-                                dateService={localeDateService}
-                                max={localeDateService.today()}
-                                placement={PopoverPlacements.BOTTOM}
-                                min={new Date(1900, 0, 0)}
-                                backdropStyle={styles.backdropDatepicker}
-                                boundingMonth={false}
-                                onPress={() => Keyboard.dismiss()}
-                            />
-                        )}
-                        name='examDate'
-                    />
-                    <CustomErrorMessage name='examDate' errors={form.formState.errors} />
-                    <Controller
-                        control={form.control}
-                        rules={{
-                            required: {
-                                value: true,
-                                message: 'Campo obrigatório'
-                            }
-                        }}
-                        render={({ field: { onChange, onBlur, value, name, ref } }) => (
-                            <Datepicker
-                                disabled={readonly}
-                                size='small'
-                                label={'Resultado do Exame' + (readonly ? '' : ' *')}
-                                date={value}
-                                onSelect={onChange}
-                                accessoryRight={CalendarIcon}
-                                onBlur={onBlur}
-                                ref={ref}
-                                testID={name}
-                                style={styles.input}
-                                dateService={localeDateService}
-                                max={localeDateService.today()}
-                                placement={PopoverPlacements.BOTTOM}
-                                min={new Date(1900, 0, 0)}
-                                backdropStyle={styles.backdropDatepicker}
-                                boundingMonth={false}
-                                onPress={() => Keyboard.dismiss()}
-                            />
-                        )}
-                        name='examResultDate'
-                    />
-                    <CustomErrorMessage name='examResultDate' errors={form.formState.errors} />
                     {readonly ? (
                         <>
                             <View>
+                                <Text style={styles.label}>Data</Text>
+                                <Text style={styles.textValue}>{form.getValues('examDate') && localeDateService.format(form.getValues('examDate') as Date, _DEFAULT_FORMAT_DATE)}</Text>
                                 <Text style={styles.label}>Tipo de Exame</Text>
                                 <Text style={styles.textValue}>{form.getValues('examType')}</Text>
                                 <Text style={styles.label}>Descrição</Text>
                                 <Text style={styles.textValue}>{form.getValues('data.examDescription')}</Text>
                             </View>
-                            <View style={{ paddingVertical: 10 }}>
+                            {/* <View style={{ paddingVertical: 10 }}>
                                 <TouchableOpacity disabled style={styles.downloadBtn}>
                                     <Icon name='cloud-download-outline' size={20} style={styles.downloadIcon} />
                                 </TouchableOpacity>
-                            </View>
+                            </View> */}
                         </>
                     ) : (
                         <>
@@ -325,7 +259,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                             <AttachmentBoxComponent
                                 handleFile={setFileResponse}
                                 file={fileResponse}
-                                label='Anexar Documentação' />
+                                label='Anexo *' />
                             <CustomErrorMessage name='examImage' errors={form.formState.errors} />
                         </>
                     )}

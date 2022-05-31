@@ -11,6 +11,7 @@ import { Icon, IconProps, Menu, MenuGroup, MenuItem, Modal, Text, useStyleSheet 
 import { calcAge } from '@utils/common'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { Platform } from 'react-native'
+import { formatPhone } from 'utils/mask'
 import { patientDisplayStyle } from './patient-display.style'
 
 const PatientDisplayAsDoctorScreen: FC = (): ReactElement => {
@@ -67,7 +68,7 @@ const PatientDisplayAsDoctorScreen: FC = (): ReactElement => {
                             />
                             <MenuItem
                                 accessoryLeft={(props: IconProps) => <Icon {...props} name='phone-call-outline' pack='eva' />}
-                                title={'Contato: ' + ((params.userDto.phone2 ? (params.userDto.phone1 + ' | ' + params.userDto.phone2) : params.userDto.phone1))}
+                                title={'Contato: ' + ((params.userDto.phone2 ? (formatPhone(params.userDto.phone1) + ' | ' + formatPhone(params.userDto.phone2)) : formatPhone(params.userDto.phone1)))}
                             />
                             <MenuItem
                                 accessoryLeft={(props: IconProps) => <Icon {...props} name='person-outline' pack='eva' />}
