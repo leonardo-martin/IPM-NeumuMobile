@@ -1,8 +1,6 @@
 import CustomErrorMessage from '@components/error'
-import RNWebView from '@components/webView'
 import { CONECTESUS_URI } from '@constants/uri'
 import { useDatepickerService } from '@hooks/useDatepickerService'
-import { useModal } from '@hooks/useModal'
 import { PatientSignUpProps } from '@models/SignUpProps'
 import { registerStyle } from '@pages/signup/style'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
@@ -11,21 +9,13 @@ import { getGender, openMailTo } from '@utils/common'
 import { formatCpf, formatPhone, isEmailValid } from '@utils/mask'
 import { validateCNS, validatePasswd } from '@utils/validators'
 import { validate } from 'gerador-validador-cpf'
-import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
-import { Dimensions, Keyboard, TouchableOpacity, View } from 'react-native'
-import { Modalize } from 'react-native-modalize'
-import { Portal } from 'react-native-portalize'
-import WebView from 'react-native-webview'
-
-const { height: initialHeight } = Dimensions.get('window')
+import { Keyboard, Linking, TouchableOpacity, View } from 'react-native'
 
 const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): ReactElement => {
 
   const { localeDateService } = useDatepickerService()
-  const { ref } = useModal<Modalize>()
-  const refWebView = useRef<WebView>(null)
-  const [height, setHeight] = useState(initialHeight)
   const isFocused = useIsFocused()
 
   const [selectedIndex, setSelectedIndex] = useState(-1)
@@ -59,6 +49,8 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
     <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} onPress={toggleSecureEntry} pack='eva' />
   )
 
+  const openLink = (url: string) => Linking.openURL(url)
+
   const renderLabelCNS = () => (
     <React.Fragment>
       <View style={styles.labelCNSView}>
@@ -66,7 +58,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           Cartão Nacional de Saúde
         </Text>
         <TouchableOpacity
-          onPress={() => ref.current?.open()}
+          onPress={() => openLink(CONECTESUS_URI)}
           style={styles.toggleButton}
         >
           <Icon style={styles.iconCns} name="information-circle-outline" pack='ionicons' size={20} />
@@ -74,10 +66,6 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
       </View>
     </React.Fragment>
   )
-
-  const onLayout = ({ layout }: any) => {
-    setHeight(layout.height)
-  }
 
   return (
     <>
@@ -448,17 +436,6 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
         {form.formState.errors.susNumber?.type !== 'validate' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} />}
         {form.formState.errors.susNumber?.type === 'validate' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} customMessage='Número de cartão inválido' />}
       </View>
-      <Portal>
-        <Modalize
-          ref={ref}
-          onLayout={onLayout}>
-          <RNWebView
-            ref={refWebView}
-            source={{ uri: CONECTESUS_URI }}
-            style={{ height }}
-          />
-        </Modalize>
-      </Portal>
     </>
   )
 }
