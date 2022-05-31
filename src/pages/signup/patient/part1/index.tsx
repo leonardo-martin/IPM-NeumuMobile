@@ -402,15 +402,11 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
         <Controller
           control={form.control}
           rules={{
-            required: {
-              value: false,
-              message: 'Campo obrigatório'
-            },
             minLength: {
               value: 15,
               message: `Mín. 15 caracteres`
             },
-            validate: (e) => e !== "" ? validateCNS(e) : true
+            validate: (e) => e !== null && e !== "" ? validateCNS(e) : true
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
