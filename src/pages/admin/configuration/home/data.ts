@@ -37,7 +37,7 @@ export const baseData: ItemInfo[] = [
         },
     },
     {
-        title: 'Informações do Aplicativo',
+        title: 'Sobre',
         description: '',
         route: 'InformationApp',
         icon: {

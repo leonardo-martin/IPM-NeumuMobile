@@ -10,7 +10,7 @@ import { formatCpf, formatPhone, isEmailValid, onlyNumbers } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
 import React, { Dispatch, FC, ReactElement, useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
-import { StyleSheet, View } from 'react-native'
+import { Keyboard, StyleSheet, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import { CalendarIcon } from './icons'
 
@@ -171,6 +171,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         backdropStyle={styles?.backdropDatepicker}
                         boundingMonth={false}
                         style={styles?.input}
+                        onPress={() => Keyboard.dismiss()}
                         caption='* Necessário ser maior de 18 anos'
                     />
                 )}
@@ -283,7 +284,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         value={formatPhone(value)}
                         maxLength={15}
                         ref={ref}
-                        returnKeyType="next"
+                        returnKeyType="done"
                         onSubmitEditing={() => form.setFocus('creator.data.phone2')}
                         underlineColorAndroid="transparent"
                         textContentType="telephoneNumber"
