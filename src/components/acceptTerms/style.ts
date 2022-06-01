@@ -10,11 +10,14 @@ export const acceptTermsStyle = StyleSheet.create({
         color: 'color-primary-default'
     },
     textJustify: {
-        textAlign: 'justify'
+        fontFamily: 'System',
+        textAlign: 'justify',
+        fontSize: 14,
+        lineHeight: 25
     },
     textItem: {
         fontWeight: '600',
-        marginVertical: 10,
+        paddingVertical: 15,
         textTransform: 'uppercase'
     },
     hiperlink: {

@@ -401,7 +401,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               value={formatPhone(value)}
               maxLength={15}
               ref={ref}
-              returnKeyType="next"
+              returnKeyType="done"
               onSubmitEditing={() => form.setFocus('phone2')}
               underlineColorAndroid="transparent"
               textContentType="telephoneNumber"

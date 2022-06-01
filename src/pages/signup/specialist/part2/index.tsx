@@ -53,7 +53,7 @@ const DoctorSignUpPart2Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               value={formatPhone(value)}
               maxLength={15}
               ref={ref}
-              returnKeyType="next"
+              returnKeyType="done"
               onSubmitEditing={() => form.setFocus('phone2')}
               underlineColorAndroid="transparent"
               disabled={isLoadingPostalCode}
