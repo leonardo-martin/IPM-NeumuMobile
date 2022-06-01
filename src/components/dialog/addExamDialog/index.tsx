@@ -9,14 +9,14 @@ import { EUserRole } from '@models/UserRole'
 import { useFocusEffect } from '@react-navigation/native'
 import { uploadUserFile } from '@services/document.service'
 import { uploadExam } from '@services/exam.service'
-import { Button, Card, Datepicker, Icon, IconProps, Input, Modal, PopoverPlacements, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import { Button, Card, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Keyboard, Platform, TouchableOpacity, View } from 'react-native'
+import { Platform, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
-import { getDocumentType, getEntityId, getEntityType } from 'utils/entity'
+import { getDocumentType, getEntityType } from 'utils/entity'
 import { modalStyle } from './style'
 
 interface AddExamDialogProps {
@@ -114,7 +114,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                 name: file.name,
                 type: file.type
             })
-            formData.append('entityId', getEntityId('exam'))
+            formData.append('entityId', ids?.patientId.toString())
             formData.append('entityType', getEntityType('exam'))
             formData.append('documentType', getDocumentType('exam'))
 
