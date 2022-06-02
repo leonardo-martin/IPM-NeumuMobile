@@ -102,7 +102,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
       <TouchableOpacity
         style={styles.buttonContainer}
         onPress={showModalDeleteAccount}>
-        <Text category='label' style={styles.textFooter}>Deleter Conta</Text>
+        <Text category='label' style={styles.textFooter}>Deletar Conta</Text>
       </TouchableOpacity>
     </View>
   )
@@ -143,7 +143,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
           )}
           ListFooterComponent={
             sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? renderFooterComponent
-              : deleteAccountConfirm} />
+              : undefined} />
       </SafeAreaLayout>
     </>
   )
