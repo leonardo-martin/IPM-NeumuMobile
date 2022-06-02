@@ -47,8 +47,7 @@ export const baseData: ItemInfo[] = [
     },
 ]
 
-export const patientData: ItemInfo[] = [
-    ...baseData,
+export const patientData: ItemInfo[] = [    
     {
         title: 'Compartilhar Informações',
         description: '',
@@ -59,6 +58,7 @@ export const patientData: ItemInfo[] = [
         },
         badge: true
     },
+    ...baseData,
 ]
 
 export const doctorData: ItemInfo[] = [

@@ -10,6 +10,10 @@ export const uploadExam = async (data: ExamDto): Promise<AxiosResponse<ExamDto, 
     return await api.post('exam/upload-exam', data)
 }
 
+export const updateExam = async (data: ExamDto): Promise<AxiosResponse<ExamDto, any>> => {
+    return await api.post('exam/update-exam', data)
+}
+
 export const deleteExam = async (examId: number): Promise<AxiosResponse<ExamDto, any>> => {
 
     const params = new URLSearchParams()

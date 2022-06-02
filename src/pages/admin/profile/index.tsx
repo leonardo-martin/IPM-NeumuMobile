@@ -39,7 +39,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
           onPress={goToMyExams}
           appearance='filled'
           status='success'
-          accessoryLeft={renderIconDocumentAttach}>Meus Exames</Button>
+          accessoryLeft={renderIconDocumentAttach}>Meus Documentos</Button>
         {deleteAccountConfirm()}
       </View>
     </>

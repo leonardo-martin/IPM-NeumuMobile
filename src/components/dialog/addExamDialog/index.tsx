@@ -8,15 +8,16 @@ import { ExamDto, ExamImage } from '@models/Exam'
 import { EUserRole } from '@models/UserRole'
 import { useFocusEffect } from '@react-navigation/native'
 import { uploadUserFile } from '@services/document.service'
-import { uploadExam } from '@services/exam.service'
-import { Button, Card, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import { updateExam, uploadExam } from '@services/exam.service'
+import { Button, Card, Datepicker, Icon, IconProps, IndexPath, Input, Modal, PopoverPlacements, Select, SelectItem, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Platform, View } from 'react-native'
+import { Keyboard, Platform, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
 import { getDocumentType, getEntityType } from 'utils/entity'
+import { typesOfDocuments } from './data'
 import { modalStyle } from './style'
 
 interface AddExamDialogProps {
@@ -31,6 +32,7 @@ interface AddExamDialogProps {
 const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithChildren<AddExamDialogProps>>(({
     onVisible, visible, readonly = false, ...props }, ref): ReactElement => {
 
+    const [selectedType, setSelectedType] = useState<IndexPath | IndexPath[]>()
     const { ids } = useAppSelector((state: RootState) => state.user)
     const { localeDateService } = useDatepickerService()
     const combinedRef = useCombinedRefs(ref, ref)
@@ -60,19 +62,25 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
     useFocusEffect(
         useCallback(() => {
             if (visible) {
+                setSelectedType(undefined)
                 setFileResponse(undefined)
                 form.reset({
                     ...props.exam,
                     examDate: typeof props.exam?.examDate === 'string' ? localeDateService.parse(props.exam?.examDate, _DATE_FROM_ISO_8601) : localeDateService.today(),
                     examResultDate: typeof props.exam?.examResultDate === 'string' ? localeDateService.parse(props.exam?.examResultDate, _DATE_FROM_ISO_8601) : localeDateService.today()
                 })
-                form.register('examImage', {
-                    required: {
-                        value: true,
-                        message: 'Necessário documentação'
-                    },
-                    value: undefined
-                })
+                if (!props.exam) {
+                    form.register('examImage', {
+                        required: {
+                            value: true,
+                            message: 'Necessário documentação'
+                        },
+                        value: undefined
+                    })
+                } else {
+                    const examType = form.getValues('examType')
+                    if (examType) setSelectedType(new IndexPath(typesOfDocuments.indexOf(examType)))
+                }
                 loadFile()
             }
         }, [visible])
@@ -104,51 +112,58 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
         setIsLoading(!isLoading)
 
         try {
-            const formData = new FormData()
-            const file = data.examImage as DocumentPickerResponse
-            formData.append('fileFormat', file.name)
-            formData.append('file', {
-                uri: Platform.OS === 'android'
-                    ? file.uri
-                    : file.uri.replace('file://', ''),
-                name: file.name,
-                type: file.type
-            })
-            formData.append('entityId', ids?.patientId.toString())
-            formData.append('entityType', getEntityType('exam'))
-            formData.append('documentType', getDocumentType('exam'))
-
             let response = null
-            try {
-                response = await uploadUserFile(formData)
-            } catch (e) {
-                setErrorMessage('Erro ao enviar o documento. Tente novamente mais tarde.')
-                setIsError(true)
+            if (!props.exam) {
+                const formData = new FormData()
+                const file = data.examImage as DocumentPickerResponse
+                formData.append('fileFormat', file.name)
+                formData.append('file', {
+                    uri: Platform.OS === 'android'
+                        ? file.uri
+                        : file.uri.replace('file://', ''),
+                    name: file.name,
+                    type: file.type
+                })
+                formData.append('entityId', ids?.patientId.toString())
+                formData.append('entityType', getEntityType('exam'))
+                formData.append('documentType', getDocumentType('exam'))
+
+
+                try {
+                    response = await uploadUserFile(formData)
+                } catch (e) {
+                    setErrorMessage('Erro ao enviar o documento. Tente novamente mais tarde.')
+                    setIsError(true)
+                }
             }
 
-            if (response && response.status === 201 || response?.status === 200 && response?.data) {
+            if ((response && response.status === 201 || response?.status === 200 && response?.data) || (props.exam && !response)) {
                 const item: ExamDto & ExamImage = {
                     ...data,
+                    documentId: response?.data?.id ?? data.documentId,
                     patientId: ids?.patientId as number,
-                    documentId: response.data.id
                 }
-                await uploadExam(item)
+
+                if (props.exam)
+                    await updateExam(item)
+                else
+                    await uploadExam(item)
                 props.onRefresh ? props.onRefresh(item) : undefined
                 handleVisibleModal()
                 if (props.exam)
                     Toast.show({
                         type: 'success',
-                        text2: 'Exame atualizado',
+                        text2: 'Documento atualizado',
                     })
                 else
                     Toast.show({
                         type: 'success',
-                        text2: 'Exame adicionado',
+                        text2: 'Documento adicionado',
                     })
             }
 
         } catch (error) {
-            setErrorMessage('Erro ao cadastrar exame. Tente novamente mais tarde.')
+            setErrorMessage('Erro ao cadastrar documento. Tente novamente mais tarde.')
             setIsError(true)
         } finally {
             setIsLoading(false)
@@ -164,6 +179,15 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
 
     const LoadingIndicator = () => (
         <Spinner size='small' status='basic' />
+    )
+    useEffect(() => {
+        if (selectedType)
+            form.setValue('examType', typesOfDocuments[Number(selectedType) - 1])
+        else form.setValue('examType', '')
+    }, [selectedType])
+
+    const CalendarIcon = (props: IconProps) => (
+        <Icon {...props} name='calendar-outline' pack='eva' />
     )
 
     return (
@@ -181,7 +205,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                             <View>
                                 <Text style={styles.label}>Data</Text>
                                 <Text style={styles.textValue}>{form.getValues('examDate') && localeDateService.format(form.getValues('examDate') as Date, _DEFAULT_FORMAT_DATE)}</Text>
-                                <Text style={styles.label}>Tipo de Exame</Text>
+                                <Text style={styles.label}>Tipo de Documento</Text>
                                 <Text style={styles.textValue}>{form.getValues('examType')}</Text>
                                 <Text style={styles.label}>Descrição</Text>
                                 <Text style={styles.textValue}>{form.getValues('data.examDescription')}</Text>
@@ -203,22 +227,54 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                                     }
                                 }}
                                 render={({ field: { onChange, onBlur, value, name, ref } }) => (
-                                    <Input
+                                    <Datepicker
+                                        disabled={readonly}
                                         size='small'
-                                        label={evaProps => <Text {...evaProps}>Tipo de Exame *</Text>}
+                                        label={'Data do Documento *'}
+                                        date={value}
+                                        onSelect={onChange}
+                                        accessoryRight={CalendarIcon}
+                                        onBlur={onBlur}
+                                        ref={ref}
+                                        testID={name}
                                         style={styles.input}
-                                        keyboardType='default'
+                                        dateService={localeDateService}
+                                        max={localeDateService.today()}
+                                        placement={PopoverPlacements.BOTTOM}
+                                        min={new Date(1900, 0, 0)}
+                                        backdropStyle={styles.backdropDatepicker}
+                                        boundingMonth={false}
+                                        onPress={() => Keyboard.dismiss()}
+                                    />
+                                )}
+                                name='examDate'
+                            />
+                            <CustomErrorMessage name='examDate' errors={form.formState.errors} />
+                            <Controller
+                                control={form.control}
+                                rules={{
+                                    required: {
+                                        value: true,
+                                        message: 'Campo obrigatório'
+                                    }
+                                }}
+                                render={({ field: { onBlur, value, name, ref } }) => (
+                                    <Select
+                                        size='small'
+                                        label="Tipo de Documento *"
+                                        style={styles.input}
+                                        placeholder='Selecione'
                                         testID={name}
                                         onBlur={onBlur}
-                                        onChangeText={!readonly ? onChange : undefined}
-                                        value={value}
                                         ref={ref}
-                                        maxLength={30}
-                                        returnKeyType="next"
-                                        onSubmitEditing={() => form.setFocus('data.examDescription')}
-                                        underlineColorAndroid="transparent"
-                                        onPressIn={clearError}
-                                    />
+                                        selectedIndex={selectedType}
+                                        onSelect={setSelectedType}
+                                        value={value}
+                                    >
+                                        {typesOfDocuments.map(item => (
+                                            <SelectItem key={item} title={item} />
+                                        ))}
+                                    </Select>
                                 )}
                                 name='examType'
                                 defaultValue=''
@@ -256,11 +312,15 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                                 defaultValue=''
                             />
                             <CustomErrorMessage name='data.examDescription' errors={form.formState.errors} />
-                            <AttachmentBoxComponent
-                                handleFile={setFileResponse}
-                                file={fileResponse}
-                                label='Anexo *' />
-                            <CustomErrorMessage name='examImage' errors={form.formState.errors} />
+                            {form.getValues('id') ? null : (
+                                <>
+                                    <AttachmentBoxComponent
+                                        handleFile={setFileResponse}
+                                        file={fileResponse}
+                                        label='Anexo *' />
+                                    <CustomErrorMessage name='examImage' errors={form.formState.errors} />
+                                </>
+                            )}
                         </>
                     )}
                 </View>

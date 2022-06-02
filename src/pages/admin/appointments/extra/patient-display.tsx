@@ -87,7 +87,7 @@ const PatientDisplayAsDoctorScreen: FC = (): ReactElement => {
                                 })}
                                 accessoryRight={renderRightIcon}
                             />
-                            <MenuGroup title='Exames do Paciente'
+                            <MenuGroup title='Documentos do Paciente'
                                 accessoryLeft={(props: IconProps) => <Icon {...props} name='thermometer' pack='eva' />}>
                                 {params.exams.length > 0 ? (params.exams.map(item =>
                                     <MenuItem key={item.id}
@@ -102,7 +102,7 @@ const PatientDisplayAsDoctorScreen: FC = (): ReactElement => {
                                     <MenuItem
                                         title={(evaProps) => <Text {...evaProps} style={[evaProps?.style, {
                                             textAlign: 'center', flex: 1
-                                        }]}>Nenhum exame encontrado</Text>}
+                                        }]}>Nenhum documento encontrado</Text>}
                                     />
                                 )}
                             </MenuGroup>

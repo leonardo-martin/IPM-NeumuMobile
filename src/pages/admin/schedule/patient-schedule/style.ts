@@ -173,4 +173,10 @@ export const doctorScheduleStyle = StyleSheet.create({
     buttonTextOutline: {
         color: 'text-primary-color',
     },
+    freeAlert: {
+        padding: 10,
+        fontSize: 14,
+        paddingHorizontal: 0,
+        textAlign: 'center'
+    }
 })

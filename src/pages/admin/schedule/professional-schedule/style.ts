@@ -78,5 +78,11 @@ export const professionalStyle = StyleSheet.create({
   undoText: {
     fontSize: 10,
     fontWeight: '500'
+  },
+  freeAlert: {
+    padding: 10,
+    fontSize: 14,
+    paddingHorizontal: 0,
+    textAlign: 'center'
   }
 })

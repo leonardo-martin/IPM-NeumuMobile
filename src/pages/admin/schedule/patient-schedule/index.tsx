@@ -353,11 +353,6 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                                             category="c1"
                                             status="basic"
                                             style={styles.textDoctorInfo}
-                                        >Tel: {params?.phone1 ?? ''} {params?.phone2 ? (" | " + params?.phone2) : ''}</Text>
-                                        <Text
-                                            category="c1"
-                                            status="basic"
-                                            style={styles.textDoctorInfo}
                                         >Local: {fullAddress}</Text>
                                         <TouchableOpacity style={styles.viewLocation} onPress={() => openMapsWithAddress(fullAddress ?? '')}>
                                             <Text
@@ -370,6 +365,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                                 </View>
                             </Card>
                             <View style={styles.daysInMonth}>
+                                <Text appearance='hint' style={styles.freeAlert}>Inicialmente está disponível somente agendamento de consultas nas quais o atendimento for gratuito. </Text>
                                 <Text style={styles.text}>Para quando é a consulta?</Text>
                                 <View style={styles.monthContainer}>
                                     <Icon name='caret-back-outline' size={25} pack='ionicons' style={[styles.arrowIcon, {

@@ -3,13 +3,13 @@ import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { ChatListEntryDto, Message } from '@models/ChatMessage'
 import { AscendingOrder } from '@models/Common'
-import { useRoute } from '@react-navigation/native'
+import { useFocusEffect, useRoute } from '@react-navigation/native'
 import { getMessageHistory } from '@services/chat-message.service'
 import { updateMessageList } from '@store/ducks/chat'
 import { Button, Input, useStyleSheet } from '@ui-kitten/components'
 import { sortByDate } from '@utils/common'
-import React, { FC, ReactElement, useEffect, useRef, useState } from 'react'
-import { Keyboard, Platform, RefreshControl } from 'react-native'
+import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
+import { Alert, Keyboard, Platform, RefreshControl } from 'react-native'
 import Toast from 'react-native-toast-message'
 import io, { Socket } from "socket.io-client"
 import { RootState } from 'store'
@@ -169,6 +169,21 @@ const ChatRoomScreen: FC = (): ReactElement => {
     await loadMessages()
     setRefreshing(false)
   }
+
+  useFocusEffect(
+    useCallback(() => {
+      Alert.alert(
+        'IMPORTANTE',
+        'A interação com o chat é somente a nível de dúvidas, para facilitar a interação Paciente X Profissional de Saúde. Se precisar de qualquer atendimento de urgência, por favor entre em contato com a emergência local.',
+        [
+          {
+            text: 'OK',
+            style: 'default'
+          },
+        ]
+      )
+    }, [])
+  )
 
   return (
     <React.Fragment>

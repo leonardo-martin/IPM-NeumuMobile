@@ -113,7 +113,7 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
 
                 Toast.show({
                     type: 'success',
-                    text2: 'Exame deletado',
+                    text2: 'Documento deletado',
                 })
             }
         } catch (error) {
@@ -228,7 +228,7 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
     return (
         <>
             <HeaderGenericWithTitleAndAddIcon
-                title='Meus Exames'
+                title='Meus Documentos'
                 onVisible={() => {
                     setDataModal(undefined)
                     setVisibleAddModal(!visibleAddModal)
@@ -250,7 +250,7 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
                             onRefresh={() => setRefreshing(true)}
                         />
                     }
-                    ListEmptyComponent={<EmptyComponent message='Nenhum exame encontrado' />}
+                    ListEmptyComponent={<EmptyComponent message='Nenhum documento encontrado' />}
                 />
                 <FilterByDateDialog
                     ref={refFilter}

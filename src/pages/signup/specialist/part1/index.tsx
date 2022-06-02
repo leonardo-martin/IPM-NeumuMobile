@@ -380,7 +380,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
               message: 'Campo obrigatório'
             }
           }}
-          render={({ field: { onChange, onBlur, value, name, ref } }) => (
+          render={({ field: { onBlur, value, name, ref } }) => (
             <Select
               size='small'
               label="Especialidade *"

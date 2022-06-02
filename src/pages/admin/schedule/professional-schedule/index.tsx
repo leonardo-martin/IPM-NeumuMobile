@@ -244,7 +244,7 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
                         endTime: addMinutes(new Date(element.title as string), 14).toISOString(),
                         dayOfWeek: dayOfWeek
                     }
-                    
+
                     const response = await doctorCreateAppointmentAvailability(data)
                     if (response.status === 201 || response.status === 200) {
                         amountSavedItems++
@@ -297,6 +297,7 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
             <HeaderAdmin />
             <SafeAreaLayout style={styles.safeArea}>
                 <View style={styles.container}>
+                    <Text appearance='hint' style={styles.freeAlert}>Inicialmente está disponível somente agendamento de consultas nas quais o atendimento for gratuito.</Text>
                     <View style={styles.containerTitle}>
                         <Text style={styles.title}>Selecione o dia e defina seus horários</Text>
                         <List
