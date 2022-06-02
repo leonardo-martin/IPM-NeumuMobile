@@ -113,6 +113,7 @@ const PatientDisplayAsDoctorScreen: FC = (): ReactElement => {
                             exam={exam}
                             onVisible={setVisibleAddModal}
                             visible={visibleAddModal}
+                            owningUserId={params.userDto.id}
                             readonly
                         />
                     </>

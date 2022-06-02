@@ -4,19 +4,20 @@ import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATE } from '@constants/date'
 import { useAppSelector } from '@hooks/redux'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useDatepickerService } from '@hooks/useDatepickerService'
+import { DocumentDto } from '@models/Document'
 import { ExamDto, ExamImage } from '@models/Exam'
 import { EUserRole } from '@models/UserRole'
 import { useFocusEffect } from '@react-navigation/native'
-import { uploadUserFile } from '@services/document.service'
+import { doctorGetDocumentData, uploadUserFile, userDelete, userGetDocument } from '@services/document.service'
 import { updateExam, uploadExam } from '@services/exam.service'
 import { Button, Card, Datepicker, Icon, IconProps, IndexPath, Input, Modal, PopoverPlacements, Select, SelectItem, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import { getDocumentType, getEntityType } from '@utils/entity'
 import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Keyboard, Platform, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
-import { getDocumentType, getEntityType } from 'utils/entity'
 import { typesOfDocuments } from './data'
 import { modalStyle } from './style'
 
@@ -27,6 +28,7 @@ interface AddExamDialogProps {
     visible: boolean
     exam?: ExamDto
     readonly?: boolean
+    owningUserId?: number
 }
 
 const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithChildren<AddExamDialogProps>>(({
@@ -44,19 +46,44 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
     const [isError, setIsError] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [documentDto, setDocumentDto] = useState<DocumentDto>()
+    const [loadingDocumentDto, setLoadingDocumentDto] = useState<boolean>(true)
     const [fileResponse, setFileResponse] = useState<DocumentPickerResponse[] | undefined>()
     const { sessionUser } = useAppSelector((state: RootState) => state.auth)
 
     const loadFile = async () => {
-        if (props.exam) {
-            // TODO - buscar o documento e fazer o download
-            if (sessionUser?.userRole.find(e => e.id === EUserRole.patient)) {
+        try {
+            if (props.exam) {
+                // TODO - buscar o documento e fazer o download
+                // por enquanto só vai exibir o nome do anexo...
+                if (sessionUser?.userRole.find(e => e.id === EUserRole.patient)) {
+                    const response = await userGetDocument({
+                        entityId: props.exam.patientId,
+                        entityType: getEntityType('exam'),
+                        documentType: getDocumentType('exam'),
+                        documentId: props.exam.documentId
+                    })
+                    if (response.status === 201) {
+                        setDocumentDto(response.data[0] ?? undefined)
+                    } else setDocumentDto(undefined)
 
-            } else if (sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor)) {
-
+                } else if (sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor)) {
+                    const response = await doctorGetDocumentData({
+                        owningUserId: props.owningUserId,
+                        entityId: props.exam.patientId,
+                        entityType: getEntityType('exam'),
+                        documentType: getDocumentType('exam'),
+                        documentId: props.exam.documentId
+                    })
+                    if (response.status === 201) {
+                        setDocumentDto(response.data[0] ?? undefined)
+                    } else setDocumentDto(undefined)
+                }
             }
+        } catch (error) {
+            setErrorMessage('Erro ao buscar o documento. Tente novamente mais tarde.')
         }
-
+        setLoadingDocumentDto(false)
     }
 
     useFocusEffect(
@@ -70,6 +97,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                     examResultDate: typeof props.exam?.examResultDate === 'string' ? localeDateService.parse(props.exam?.examResultDate, _DATE_FROM_ISO_8601) : localeDateService.today()
                 })
                 if (!props.exam) {
+                    setLoadingDocumentDto(false)
                     form.register('examImage', {
                         required: {
                             value: true,
@@ -78,6 +106,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                         value: undefined
                     })
                 } else {
+                    setLoadingDocumentDto(true)
                     const examType = form.getValues('examType')
                     if (examType) setSelectedType(new IndexPath(typesOfDocuments.indexOf(examType)))
                 }
@@ -102,10 +131,22 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
     )
 
     const handleVisibleModal = () => {
+        setDocumentDto(undefined)
         setIsLoading(false)
         setIsError(false)
         setErrorMessage('')
         onVisible(!visible)
+    }
+
+    const handleDocumentDto = () => {
+        setDocumentDto(undefined)
+        form.register('examImage', {
+            required: {
+                value: true,
+                message: 'Necessário documentação'
+            },
+            value: undefined
+        })
     }
 
     const submitForm = async (data: ExamDto & ExamImage) => {
@@ -113,7 +154,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
 
         try {
             let response = null
-            if (!props.exam) {
+            if (!props.exam || (props.exam && !documentDto)) {
                 const formData = new FormData()
                 const file = data.examImage as DocumentPickerResponse
                 formData.append('fileFormat', file.name)
@@ -127,7 +168,6 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                 formData.append('entityId', ids?.patientId.toString())
                 formData.append('entityType', getEntityType('exam'))
                 formData.append('documentType', getDocumentType('exam'))
-
 
                 try {
                     response = await uploadUserFile(formData)
@@ -143,10 +183,14 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                     documentId: response?.data?.id ?? data.documentId,
                     patientId: ids?.patientId as number,
                 }
-
-                if (props.exam)
+                if (props.exam) {
                     await updateExam(item)
-                else
+
+                    if (!documentDto && props.exam) {
+                        const docOldId = props.exam.documentId
+                        await userDelete(docOldId)
+                    }
+                } else
                     await uploadExam(item)
                 props.onRefresh ? props.onRefresh(item) : undefined
                 handleVisibleModal()
@@ -202,14 +246,23 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                 <View style={styles.viewCard}>
                     {readonly ? (
                         <>
-                            <View>
-                                <Text style={styles.label}>Data</Text>
-                                <Text style={styles.textValue}>{form.getValues('examDate') && localeDateService.format(form.getValues('examDate') as Date, _DEFAULT_FORMAT_DATE)}</Text>
-                                <Text style={styles.label}>Tipo de Documento</Text>
-                                <Text style={styles.textValue}>{form.getValues('examType')}</Text>
-                                <Text style={styles.label}>Descrição</Text>
-                                <Text style={styles.textValue}>{form.getValues('data.examDescription')}</Text>
-                            </View>
+                            {!documentDto ? (
+                                <View style={styles.backdropSpinner}>
+                                    <Spinner status='primary' size='small' />
+                                </View>
+                            ) : (
+                                <View>
+                                    <Text style={styles.label}>Data</Text>
+                                    <Text style={styles.textValue}>{form.getValues('examDate') && localeDateService.format(form.getValues('examDate') as Date, _DEFAULT_FORMAT_DATE)}</Text>
+                                    <Text style={styles.label}>Tipo de Documento</Text>
+                                    <Text style={styles.textValue}>{form.getValues('examType')}</Text>
+                                    <Text style={styles.label}>Descrição</Text>
+                                    <Text style={styles.textValue}>{form.getValues('data.examDescription')}</Text>
+                                    <Text style={styles.label}>Anexo</Text>
+                                    <Text style={styles.textValue}>{documentDto?.documentFormat}</Text>
+                                </View>
+                            )}
+
                             {/* <View style={{ paddingVertical: 10 }}>
                                 <TouchableOpacity disabled style={styles.downloadBtn}>
                                     <Icon name='cloud-download-outline' size={20} style={styles.downloadIcon} />
@@ -312,15 +365,15 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                                 defaultValue=''
                             />
                             <CustomErrorMessage name='data.examDescription' errors={form.formState.errors} />
-                            {form.getValues('id') ? null : (
-                                <>
-                                    <AttachmentBoxComponent
-                                        handleFile={setFileResponse}
-                                        file={fileResponse}
-                                        label='Anexo *' />
-                                    <CustomErrorMessage name='examImage' errors={form.formState.errors} />
-                                </>
-                            )}
+
+                            <AttachmentBoxComponent
+                                handleFile={setFileResponse}
+                                file={fileResponse}
+                                documentDto={documentDto}
+                                loading={loadingDocumentDto}
+                                handleDocumentDto={handleDocumentDto}
+                                label='Anexo *' />
+                            <CustomErrorMessage name='examImage' errors={form.formState.errors} />
                         </>
                     )}
                 </View>

@@ -1,13 +1,13 @@
-export const getEntityType = (entity: string): string | undefined => {
+export const getEntityType = (entity: string): string  => {
     return {
         'exam': 'examEntity',
         'user': 'userEntity'
-    }[entity]
+    }[entity] ?? ''
 }
 
-export const getDocumentType = (entity: string): string | undefined => {
+export const getDocumentType = (entity: string): string => {
     return {
         'exam': 'user-exam-file',
         'user': 'user-profile-picture'
-    }[entity]
+    }[entity] ?? ''
 }
