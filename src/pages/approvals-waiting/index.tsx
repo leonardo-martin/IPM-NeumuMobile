@@ -1,7 +1,8 @@
 import { SafeAreaLayout } from '@components/safeAreaLayout'
+import { ApprovalsMessageError } from '@models/Common'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { Button, Text, useStyleSheet } from '@ui-kitten/components'
-import { ApprovalsMessageError } from '@models/Common'
+import { openMailTo } from '@utils/common'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { View } from 'react-native'
 import { approvalsWaitingStyle } from './style'
@@ -44,7 +45,9 @@ const WaitingApprovalsScreen: FC = (): ReactElement => {
                 </View>
                 {params?.message === ApprovalsMessageError.NOTVERIFIED && (
                     <View style={styles.containerBottom}>
-                        <Text style={[styles.text, { fontSize: 12 }]}>Caso esteja demorando mais do que o normal, entre em contato via e-email.</Text>
+                        <Text style={[styles.text, { fontSize: 12 }]}>Caso esteja demorando mais do que o normal, entre em
+                            <Text onPress={openMailTo} style={[styles.contactLink, styles.text, { fontSize: 12 }]}>{" "}contato</Text>{"."}
+                        </Text>
                     </View>
                 )}
             </SafeAreaLayout>
