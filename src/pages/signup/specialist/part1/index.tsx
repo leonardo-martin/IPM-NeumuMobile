@@ -270,8 +270,8 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
-              onFocus={() => Clipboard.setString('')}
-              onSelectionChange={() => Clipboard.setString('')}
+              onFocus={() => (__DEV__) ? undefined : Clipboard.setString('')}
+              onSelectionChange={() => (__DEV__) ? undefined : Clipboard.setString('')}
               size='small'
               label='Confirmar E-mail *'
               style={styles.input}

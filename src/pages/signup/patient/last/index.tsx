@@ -154,7 +154,6 @@ const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): Rea
 
           <View style={styles.box}>
             <CardPatientRelationshipComponent
-              relationship={relationship}
               form={form}
               file={fileResponse}
               setFile={setFileResponse}

@@ -10,9 +10,9 @@ import { uploadTutorFile } from '@services/document.service'
 import { createPatientProfileCreator, createUser } from '@services/user.service'
 import { Button, CheckBox, Spinner, useStyleSheet } from '@ui-kitten/components'
 import { extractFieldString } from '@utils/common'
-import { cleanNumberMask } from '@utils/mask'
-import React, { FC, ReactElement, useCallback, useRef, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { cleanNumberMask, formatCpf } from '@utils/mask'
+import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
+import { useForm, UseFormReturn } from 'react-hook-form'
 import { Alert, BackHandler, Platform, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import { Modalize } from 'react-native-modalize'
@@ -144,51 +144,63 @@ const SignUpScreen: FC = (): ReactElement => {
                     delete newData.pastExams
                 }
 
-                if (newData.creator?.patientProfileCreatorTypeId === PatientProfileCreatorTypeEnum.Other) {
+                try {
+                    if (newData.creator?.patientProfileCreatorTypeId === PatientProfileCreatorTypeEnum.Other) {
 
-                    const id = newData.creator.data['creatorRelationship']
-                    newData.creator.data['creatorRelationship'] = creatorRelationship.find((_, index) => index === id)
+                        const id = newData.creator.data['creatorRelationship']
+                        newData.creator.data['creatorRelationship'] = creatorRelationship.find((_, index) => index === id)
 
-                    if (newData.creator.data['creatorRelationship'] as RelationshipPatient === 'Familiar') {
-                        const kinship: {
-                            id: number,
-                            title: string
-                        } = JSON.parse(JSON.stringify(newData.creator.data['kinship']))
-                        newData.creator.data['kinship'] = kinship.title
-                    } else {
-                        delete newData.creator.data['kinship']
-                    }
+                        if (newData.creator.data['creatorRelationship'] as RelationshipPatient === 'Familiar') {
+                            const kinship: {
+                                id: number,
+                                title: string
+                            } = JSON.parse(JSON.stringify(newData.creator.data['kinship']))
+                            newData.creator.data['kinship'] = kinship.title
+                        } else {
+                            delete newData.creator.data['kinship']
+                        }
 
-                    if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Profissional de Saúde') {
-                        delete newData.creator.data['specialty']
-                    }
+                        if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Profissional de Saúde') {
+                            delete newData.creator.data['specialty']
+                        }
 
-                    if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Tutor Legal') {
-                        delete newData.creator.data['guardian']
-                    } else {
-                        allowedToCreate = false
-                        try {
-                            const file = newData.creator.data['guardian'].attachment as DocumentPickerResponse
-                            const formData = new FormData()
-                            formData.append('fileFormat', file.name)
-                            formData.append('file', {
-                                uri: Platform.OS === 'android'
-                                    ? file.uri
-                                    : file.uri.replace('file://', ''),
-                                name: file.name,
-                                type: file.type
-                            })
+                        if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Tutor Legal') {
+                            delete newData.creator.data['guardian']
+                        } else {
+                            allowedToCreate = false
+                            try {
+                                const file = newData.creator.data['guardian'].attachment as DocumentPickerResponse
+                                const formData = new FormData()
+                                formData.append('fileFormat', file.name)
+                                formData.append('file', {
+                                    uri: Platform.OS === 'android'
+                                        ? file.uri
+                                        : file.uri.replace('file://', ''),
+                                    name: file.name,
+                                    type: file.type
+                                })
 
-                            const result = await uploadTutorFile(formData, newData.cpf as string, newData.creator.data['cpf'])
-                            if (result.status === 201) {
-                                allowedToCreate = true
-                                newData.creator.data['guardian'].attachment.uri = '[hidden]'
+                                const response = await uploadTutorFile(formData, newData.cpf as string, newData.creator.data['cpf'])
+
+                                if (response.status === 201) {
+                                    allowedToCreate = true
+                                    newData.creator.data['guardian'].attachment.uri = '[hidden]'
+                                } else {
+                                    const message: string = response.data.message.message ?? ""
+                                    if (message.includes('Patient profile already exists')) {
+                                        messageError = `Tutor já cadastrado para o CPF ${formatCpf(data.cpf)}`
+                                    } else messageError = 'Erro ao enviar anexo'
+                                }
+
+                            } catch (error) {
+                                allowedToCreate = false
+                                messageError = 'Erro ao enviar a documentação'
                             }
-
-                        } catch (error) {
-                            messageError = 'Erro ao enviar a documentação'
                         }
                     }
+                } catch (error) {
+                    allowedToCreate = false
+                    messageError = 'Erro desconhecido. Entre em contato com o suporte'
                 }
 
                 if (allowedToCreate) {
@@ -238,6 +250,22 @@ const SignUpScreen: FC = (): ReactElement => {
             })
         else navigation.navigate('RegistrationConfirmation')
     }
+
+    // useEffect(() => {
+    //     if (forms[params.type].formState.isSubmitted && params.type === 0 && active === (patientSteps.length - 1)) {
+    //         const form = (forms[params.type] as UseFormReturn<UserPatientData, any>)
+    //         if (form.getValues('creator.data.guardian.attachment') === '') {
+    //             form.setError(
+    //                 'creator.data.guardian.attachment', {
+    //                 type: 'required',
+    //                 message: 'Campo obrigatório'
+    //             }
+    //             )
+    //         } else {
+    //             form.clearErrors('creator.data.guardian.attachment')
+    //         }
+    //     }
+    // }, [forms[params.type].formState.isSubmitted, params.type])
 
     const LoadingIndicator = () => (
         <Spinner size='small' status='basic' />

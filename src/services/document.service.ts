@@ -29,6 +29,11 @@ export const uploadTutorFile = async (data: FormData, patientCpf: string, tutorC
         transformRequest: (content) => {
             return content
         }
+    }).catch(error => {
+        if (error.response) {
+            return error.response
+        }
+        throw error
     })
 }
 

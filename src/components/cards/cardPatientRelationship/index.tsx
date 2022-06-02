@@ -2,14 +2,14 @@ import AttachmentBoxComponent from '@components/attachmentBox'
 import CustomErrorMessage from '@components/error'
 import SelectComponent, { SelectItemData } from '@components/select'
 import { useDatepickerService } from '@hooks/useDatepickerService'
-import { RelationshipPatient } from '@models/PatientProfileCreator'
 import { PatientSignUpProps } from '@models/SignUpProps'
 import Clipboard from '@react-native-clipboard/clipboard'
+import { useFocusEffect } from '@react-navigation/native'
 import { Datepicker, IndexPath, Input, PopoverPlacements } from '@ui-kitten/components'
 import { sortByStringField } from '@utils/common'
 import { formatCpf, formatPhone, isEmailValid, onlyNumbers } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
-import React, { Dispatch, FC, ReactElement, useEffect, useState } from 'react'
+import React, { Dispatch, FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 import { Keyboard, StyleSheet, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
@@ -30,13 +30,12 @@ const kinList: SelectItemData[] = [
 ]
 
 interface CardPatientRelationshipProps extends PatientSignUpProps {
-    relationship: RelationshipPatient,
     styles?: StyleSheet.NamedStyles<any>
     file: DocumentPickerResponse[] | undefined
     setFile: Dispatch<React.SetStateAction<DocumentPickerResponse[] | undefined>>
 }
 
-const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ form, onSubmit, relationship, styles, ...props }): ReactElement => {
+const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ form, onSubmit, styles, ...props }): ReactElement => {
 
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[] | undefined>()
     const { localeDateService } = useDatepickerService()
@@ -44,6 +43,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
     const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
 
     const emailConfirm = form.watch("creator.data.email")
+    const relationship = form.watch("creator.data.creatorRelationship")
 
     useEffect(() => {
         if (selectedIndex)
@@ -66,6 +66,23 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
             return true
         }
     }
+
+    useFocusEffect(
+        useCallback(() => {
+            if (relationship === 3)
+                form.register('creator.data.guardian.attachment', {
+                    required: {
+                        value: true,
+                        message: 'Necessário documentação'
+                    },
+                    value: undefined
+                })
+            else {
+                form.unregister('creator.data.guardian.attachment')
+            }
+
+        }, [relationship])
+    )
 
     return (
         <>
@@ -238,8 +255,8 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 }}
                 render={({ field: { onChange, onBlur, value, name, ref } }) => (
                     <Input
-                        onFocus={() => Clipboard.setString('')}
-                        onSelectionChange={() => Clipboard.setString('')}
+                        onFocus={() => (__DEV__) ? undefined : Clipboard.setString('')}
+                        onSelectionChange={() => (__DEV__) ? undefined : Clipboard.setString('')}
                         size='small'
                         label='Confirmar E-mail *'
                         style={styles?.input}
@@ -328,7 +345,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 defaultValue=''
             />
             <CustomErrorMessage name='creator.data.phone2' errors={form.formState.errors} />
-            {relationship === "Tutor Legal" && (
+            {relationship === 3 && (
                 <View style={{ paddingVertical: 10 }}>
                     <AttachmentBoxComponent
                         handleFile={props.setFile}
@@ -338,7 +355,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 </View>
             )}
 
-            {relationship === "Familiar" && (
+            {relationship === 2 && (
                 <>
                     <Controller
                         control={form.control}
@@ -372,7 +389,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 </>
             )}
 
-            {relationship === "Profissional de Saúde" && (
+            {relationship === 4 && (
                 <>
                     <Controller
                         control={form.control}
