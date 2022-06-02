@@ -5,7 +5,7 @@ import { ChatListEntryDto, Message } from '@models/ChatMessage'
 import { AscendingOrder } from '@models/Common'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
 import { getMessageHistory } from '@services/chat-message.service'
-import { updateMessageList } from '@store/ducks/chat'
+import { noticeViewed, updateMessageList } from '@store/ducks/chat'
 import { Button, Input, useStyleSheet } from '@ui-kitten/components'
 import { sortByDate } from '@utils/common'
 import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
@@ -44,6 +44,7 @@ const ChatRoomScreen: FC = (): ReactElement => {
   const [params, setParams] = useState<ChatListEntryDto>()
   const route = useRoute()
   const dispatch = useAppDispatch()
+  const { showNotice } = useAppSelector((state: RootState) => state.chat)
 
   useEffect(() => {
     setParams(route.params as ChatListEntryDto)
@@ -73,7 +74,8 @@ const ChatRoomScreen: FC = (): ReactElement => {
           , null))
       })
       setSkip(skip + list.length)
-      setMessages([...items, ...messages])
+      const arr = [...items, ...messages]
+      setMessages([...new Set(arr.filter((v, i, a) => a.findIndex((v2: Message) => v2['date'] === v['date'] && v2['text'] === v['text']) === i))])
     }
   }
 
@@ -90,11 +92,6 @@ const ChatRoomScreen: FC = (): ReactElement => {
       setIsLoading(false)
     }
   }
-
-  useEffect(() => {
-    if (params)
-      loadInitialChatMessage()
-  }, [params])
 
   const sendButtonEnabled = (): boolean => {
     if (message && message.length > 0 && !(new RegExp(/^\s+$/).test(message)))
@@ -172,17 +169,26 @@ const ChatRoomScreen: FC = (): ReactElement => {
 
   useFocusEffect(
     useCallback(() => {
-      Alert.alert(
-        'IMPORTANTE',
-        'A interação com o chat é somente a nível de dúvidas, para facilitar a interação Paciente X Profissional de Saúde. Se precisar de qualquer atendimento de urgência, por favor entre em contato com a emergência local.',
-        [
-          {
-            text: 'OK',
-            style: 'default'
-          },
-        ]
-      )
-    }, [])
+      if (showNotice)
+        Alert.alert(
+          'IMPORTANTE',
+          'A interação com o chat é somente a nível de dúvidas, para facilitar a interação Paciente X Profissional de Saúde. Se precisar de qualquer atendimento de urgência, por favor entre em contato com a emergência local.',
+          [
+            {
+              text: 'OK',
+              style: 'default',
+              onPress: () => {
+                dispatch(noticeViewed({
+                  showNotice: false
+                }))
+              }
+            },
+          ]
+        )
+      if (params) {
+        loadInitialChatMessage()
+      }
+    }, [params, showNotice])
   )
 
   return (

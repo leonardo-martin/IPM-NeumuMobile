@@ -3,10 +3,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface ChatContextType {
   messages: ChatListEntryDto[]
+  showNotice: boolean
 }
 
 const initialState: ChatContextType = {
-  messages: []
+  messages: [],
+  showNotice: true
 }
 
 export const chatSlice = createSlice({
@@ -28,11 +30,14 @@ export const chatSlice = createSlice({
       }
 
       state.messages = list
+    },
+    noticeViewed: (state = initialState, action: PayloadAction<{ showNotice: boolean }>) => {
+      state.showNotice = action.payload.showNotice
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setChatList, updateMessageList } = chatSlice.actions
+export const { setChatList, updateMessageList, noticeViewed } = chatSlice.actions
 
 export default chatSlice.reducer
