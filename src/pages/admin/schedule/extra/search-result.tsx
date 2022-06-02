@@ -64,7 +64,7 @@ const ScheduleSearchResultScreen: FC = (): ReactElement => {
                     <View style={styles.viewItem}>
                         <View style={styles.inlineText}>
                             <Text style={styles.itemTitle}>{info.item.name}</Text>
-                            <Text style={styles.itemCRM}>CRM {info.item.crm}</Text>
+                            <Text style={styles.itemCRM}>N° {info.item.crm}</Text>
                         </View>
                         <Text style={styles.itemDescription}>{info.item.specialty ?? ''}</Text>
                     </View>

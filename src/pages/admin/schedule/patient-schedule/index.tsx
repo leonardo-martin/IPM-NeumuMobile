@@ -10,14 +10,13 @@ import { MedicalDoctorDisplay } from '@models/Medical'
 import { VisitAddressDTO } from '@models/VisitAddress'
 import { useRoute } from '@react-navigation/core'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+import { useFocusEffect } from '@react-navigation/native'
 import { createAppointment, getAppointmentAvailabilityWithBookedAppointments } from '@services/appointment.service'
 import { getVisitAddressListByDoctorId } from '@services/visit-address.service'
-import { Avatar, Button, Card, Icon, IconProps, List, Text, TranslationWidth, useStyleSheet, useTheme } from '@ui-kitten/components'
+import { Avatar, Button, Card, Icon, IconProps, Layout, List, Spinner, Text, TranslationWidth, useStyleSheet, useTheme } from '@ui-kitten/components'
 import { getTimeBlocksByTime, getTimesByInterval, scrollToRef } from '@utils/common'
 import { openMapsWithAddress } from '@utils/maps'
-import { addMinutes } from 'date-fns'
-import addHours from 'date-fns/add_hours'
+import { addHours, addMinutes } from 'date-fns'
 import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, ImageStyle, LayoutRectangle, Platform, Pressable, ScrollView, StyleProp, TouchableOpacity, View } from 'react-native'
 import { Modalize } from 'react-native-modalize'
@@ -52,7 +51,6 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
     const [daysInMonth, setDaysInMonth] = useState<string[]>([])
     const [numColumns, setNumColumns] = useState<number>(0)
     const [dataSourceCords, setDataSourceCords] = useState<Data[]>([])
-    const isFocused = useIsFocused()
     const [confirmDate, setConfirmDate] = useState<Date>(new Date())
     const [scheduleData, setScheduleData] = useState<CreateAppointment | undefined>()
     const [loading, setLoading] = useState<boolean>(false)
@@ -60,42 +58,51 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
     const [availableTimes, setAvailableTimes] = useState<string[]>([])
     const [visitAddress, setVisitAddress] = useState<VisitAddressDTO>()
     const [fullAddress, setFullAddress] = useState<string>('')
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
     const route = useRoute()
     const { ref } = useModal<Modalize>()
-
-    useEffect(() => {
-        setDateSelected(currentDate)
-        setDateTimeSelected(undefined)
-        setTimeSelected(undefined)
-        setCount(0)
-        newDaysInMonthArray(currentDate)
-        scrollToRef(scrollViewDaysInMonthRef, 0, 0)
-        handleClose()
-    }, [isFocused])
 
     const getVisitAddressFromId = async (id: number) => {
         const response = await getVisitAddressListByDoctorId(id.toString())
         if (response.data && response.data.length > 0) {
             setVisitAddress(response.data[0])
             setFullAddress(`${response.data[0]?.street}, ${response.data[0]?.number} - ${response.data[0]?.city}`)
+        } else {
+            setVisitAddress(undefined)
+            setFullAddress('')
         }
     }
 
-    useEffect(() => {
-        if (params?.medicalDoctorId) {
-            getVisitAddressFromId(params.medicalDoctorId)
-        }
-    }, [params])
-
     useFocusEffect(
         useCallback(() => {
-            setParams(route.params as MedicalDoctorDisplay)
+            const param = route.params as MedicalDoctorDisplay
+            setParams(param)
             setAvailableTimes([])
             setDateTimeSelected(undefined)
+            if (param?.medicalDoctorId) {
+                getVisitAddressFromId(param.medicalDoctorId)
+            }
 
+            setIsLoading(false)
+            handleClose()
+
+            return () => {
+                setIsLoading(true)
+                setDateSelected(currentDate)
+                setDateTimeSelected(undefined)
+                setTimeSelected(undefined)
+                setCount(0)
+                newDaysInMonthArray(currentDate)
+            }
         }, [route.params])
     )
+
+    useEffect(() => {
+        if (!isLoading) {
+            scrollToRef(scrollViewDaysInMonthRef, 0, 0)
+        }
+    }, [isLoading])
 
     const getArray = (date: Date) => {
         return Array.from({ length: localeDateService.getNumberOfDaysInMonth(date) }, (x, i) => localeDateService.format(localeDateService.addDay(localeDateService.getMonthStart(date), i), 'DD'))
@@ -147,33 +154,40 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                 })
             } else {
                 const message = response.data?.message?.message
-                if (message !== "" && message !== undefined) {
+                if (message !== "") {
                     if (message === "ScheduleConflictException")
                         Toast.show({
                             type: 'info',
                             text2: 'Já existe uma solicitação para este horário. Aguarde a confirmação do Profissional de Saúde',
                         })
-                    else
-                        Toast.show({
+                    else {
+                        if ((response.data?.message as string).includes('visitAddress')) {
+                            Toast.show({
+                                type: 'danger',
+                                text2: 'Especialista não possui um endereço comercial cadastrado.',
+                            })
+                        } else Toast.show({
                             type: 'danger',
                             text2: 'Erro ao agendar consulta. Tente novamente mais tarde',
                         })
+                    }
+
                 } else
                     Toast.show({
                         type: 'danger',
                         text2: 'Erro ao agendar consulta. Tente novamente mais tarde',
                     })
             }
+            handleClose()
+            setLoading(false)
         } catch (error) {
+            handleClose()
+            setLoading(false)
             Toast.show({
                 type: 'danger',
                 text2: 'Erro desconhecido. Contate o administrador',
             })
-        } finally {
-            setLoading(false)
-            handleClose()
         }
-
     }
 
     const newDaysInMonthArray = (date: Date) => setDaysInMonth(getArray(date))
@@ -240,8 +254,20 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
     }
 
     const navigateToDoctorProfile = () => {
-        const doctor = params
-        navigation.navigate("DoctorProfile", { ...doctor })
+        if (visitAddress && params) {
+            const doctor: MedicalDoctorDisplay = {
+                ...params,
+                address1: visitAddress.street ?? params.address1,
+                address2: visitAddress.district ?? params.address2,
+                city: visitAddress.city ?? params.city,
+                state: visitAddress.state ?? params.state,
+                addressComplement: visitAddress.complement ?? params.addressComplement,
+                postalCode: visitAddress.cep ?? params.postalCode
+
+            }
+            navigation.navigate("DoctorProfile", { ...doctor })
+        }
+
     }
     const footerCard = (props: IconProps) => (
         <View style={styles.footerCard}>
@@ -318,125 +344,140 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
             <Host>
                 <HeaderAdmin />
                 <SafeAreaLayout level='1' style={styles.safeArea}>
-                    <ScrollView
-                        contentContainerStyle={styles.contentContainerScrollView}
-                        showsVerticalScrollIndicator={false}>
-                        <View style={styles.viewContent}>
-                            <Card
-                                style={{
-                                    backgroundColor: theme['background-basic-color-2']
-                                }}
-                                disabled
-                                footer={footerCard}
-                                status='info'>
-                                <View style={styles.viewDoctorProfile}>
-                                    <Avatar
-                                        style={styles.avatarDoctor as StyleProp<ImageStyle>}
-                                        source={require('../../../../assets/commons/doctor.png')}
-                                    />
-                                    <View style={{ flex: 1 }}>
-                                        <Text
-                                            category="h5"
-                                            status="basic"
-                                        >{params?.name}</Text>
-                                        <Text
-                                            category="c1"
-                                            status="basic"
-                                            style={styles.textDoctorInfo}
-                                        >Especialidade: {params?.specialty ?? ''}</Text>
-                                        <Text
-                                            category="c1"
-                                            status="basic"
-                                            style={styles.textDoctorInfo}
-                                        >CRM: {params?.crm ?? ''}</Text>
-                                        <Text
-                                            category="c1"
-                                            status="basic"
-                                            style={styles.textDoctorInfo}
-                                        >Local: {fullAddress}</Text>
-                                        <TouchableOpacity style={styles.viewLocation} onPress={() => openMapsWithAddress(fullAddress ?? '')}>
+                    {isLoading ? (
+                        <Layout style={{
+                            flex: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}>
+                            <Spinner status='primary' size='giant' />
+                        </Layout>
+                    ) : (
+                        <ScrollView
+                            contentContainerStyle={styles.contentContainerScrollView}
+                            showsVerticalScrollIndicator={false}>
+                            <View style={styles.viewContent}>
+                                <Card
+                                    style={{
+                                        backgroundColor: theme['background-basic-color-2']
+                                    }}
+                                    disabled
+                                    footer={fullAddress !== '' ? footerCard : undefined}
+                                    status='info'>
+                                    <View style={styles.viewDoctorProfile}>
+                                        <Avatar
+                                            style={styles.avatarDoctor as StyleProp<ImageStyle>}
+                                            source={require('../../../../assets/commons/doctor.png')}
+                                        />
+                                        <View style={{ flex: 1 }}>
+                                            <Text
+                                                category="h5"
+                                                status="basic"
+                                            >{params?.name}</Text>
                                             <Text
                                                 category="c1"
-                                                style={styles.textLocation}
-                                            >Ver no mapa</Text>
-                                            <Icon style={styles.icon} name="location-outline" size={15} pack='ionicons' />
-                                        </TouchableOpacity>
+                                                status="basic"
+                                                style={styles.textDoctorInfo}
+                                            >Especialidade: {params?.specialty ?? ''}</Text>
+                                            <Text
+                                                category="c1"
+                                                status="basic"
+                                                style={styles.textDoctorInfo}
+                                            >N°: {params?.crm ?? ''}</Text>
+                                            {fullAddress !== '' && (
+                                                <>
+                                                    <Text
+                                                        category="c1"
+                                                        status="basic"
+                                                        style={styles.textDoctorInfo}
+                                                    >Local: {fullAddress}</Text>
+                                                    <TouchableOpacity style={styles.viewLocation} onPress={() => openMapsWithAddress(fullAddress ?? '')}>
+                                                        <Text
+                                                            category="c1"
+                                                            style={styles.textLocation}
+                                                        >Ver no mapa</Text>
+                                                        <Icon style={styles.icon} name="location-outline" size={15} pack='ionicons' />
+                                                    </TouchableOpacity>
+                                                </>
+                                            )}
+                                        </View>
                                     </View>
+                                </Card>
+                                <View style={styles.daysInMonth}>
+                                    <Text appearance='hint' style={styles.freeAlert}>Inicialmente está disponível somente agendamento de consultas nas quais o atendimento for gratuito. </Text>
+                                    <Text style={styles.text}>Para quando é a consulta?</Text>
+                                    <View style={styles.monthContainer}>
+                                        <Icon name='caret-back-outline' size={25} pack='ionicons' style={[styles.arrowIcon, {
+                                            color: count === 0 ? theme['text-primary-disabled-color'] : theme['text-primary-color']
+                                        }]} onPress={count === 0 ? undefined : previous} />
+                                        <Text style={styles.textMonth}>{localeDateService.getMonthName(dateSelected, TranslationWidth.LONG)}</Text>
+                                        <Icon name='caret-forward-outline' size={25} pack='ionicons' style={[styles.arrowIcon, {
+                                            color: count === 1 ? theme['text-primary-disabled-color'] : theme['text-primary-color']
+                                        }]} onPress={count === 1 ? undefined : next} />
+                                    </View>
+                                    <ScrollView
+                                        showsHorizontalScrollIndicator={false}
+                                        showsVerticalScrollIndicator={false}
+                                        horizontal={true}
+                                        ref={scrollViewDaysInMonthRef}>
+                                        <List
+                                            style={{ backgroundColor: 'transparent' }}
+                                            key={numColumns}
+                                            data={daysInMonth}
+                                            renderItem={renderItem}
+                                            numColumns={numColumns}
+                                        />
+                                    </ScrollView>
                                 </View>
-                            </Card>
-                            <View style={styles.daysInMonth}>
-                                <Text appearance='hint' style={styles.freeAlert}>Inicialmente está disponível somente agendamento de consultas nas quais o atendimento for gratuito. </Text>
-                                <Text style={styles.text}>Para quando é a consulta?</Text>
-                                <View style={styles.monthContainer}>
-                                    <Icon name='caret-back-outline' size={25} pack='ionicons' style={[styles.arrowIcon, {
-                                        color: count === 0 ? theme['text-primary-disabled-color'] : theme['text-primary-color']
-                                    }]} onPress={count === 0 ? undefined : previous} />
-                                    <Text style={styles.textMonth}>{localeDateService.getMonthName(dateSelected, TranslationWidth.LONG)}</Text>
-                                    <Icon name='caret-forward-outline' size={25} pack='ionicons' style={[styles.arrowIcon, {
-                                        color: count === 1 ? theme['text-primary-disabled-color'] : theme['text-primary-color']
-                                    }]} onPress={count === 1 ? undefined : next} />
-                                </View>
-                                <ScrollView
-                                    showsHorizontalScrollIndicator={false}
-                                    showsVerticalScrollIndicator={false}
-                                    horizontal={true}
-                                    ref={scrollViewDaysInMonthRef}>
-                                    <List
-                                        style={{ backgroundColor: 'transparent' }}
-                                        key={numColumns}
-                                        data={daysInMonth}
-                                        renderItem={renderItem}
-                                        numColumns={numColumns}
-                                    />
-                                </ScrollView>
-                            </View>
 
-                            <View style={{ paddingVertical: 15 }}>
-                                <Text style={styles.text}>Horários disponíveis</Text>
-                                <Animated.View
-                                    entering={SlideInRight}
-                                    exiting={SlideOutRight}
-                                    style={animatedStyle}>
-                                    <View style={[styles.timesContainer, {
-                                        display: availableTimes.length === 0 ? 'none' : 'flex'
-                                    }]}>
-                                        {availableTimes.map(item => {
-                                            const date = localeDateService.parse(item, _DATE_FROM_ISO_8601)
-                                            return (
-                                                <Pressable key={`${item}`}
-                                                    onPress={() => handleTimeSelected(date)}>
-                                                    <View style={[styles.timesCard, {
-                                                        backgroundColor: timeSelected === localeDateService.format(date, 'HH:mm') ? theme['color-primary-500'] : theme['color-basic-400'],
-                                                    }]}>
-                                                        <Text style={[styles.timesText, {
-                                                            color: timeSelected === localeDateService.format(date, 'HH:mm') ? theme['color-control-default'] : theme['text-hint-color']
-                                                        }]}>{localeDateService.format(date, 'HH:mm')}</Text>
-                                                    </View>
-                                                </Pressable>
-                                            )
-                                        })}
-                                    </View>
-                                </Animated.View>
-                                <Animated.View
-                                    entering={SlideInRight}
-                                    style={{ display: availableTimes.length > 0 ? 'none' : 'flex' }}>
-                                    <View style={styles.timesContainer}>
-                                        <Text style={[styles.timesText, styles.textWithoutSelectedDate]}>
-                                            {availableTimes.length === 0 && dateTimeSelected ? 'Nenhum horário disponível' : 'Selecione o dia desejado'}
-                                        </Text>
-                                    </View>
-                                </Animated.View>
+                                <View style={{ paddingVertical: 15 }}>
+                                    <Text style={styles.text}>Horários disponíveis</Text>
+                                    <Animated.View
+                                        entering={SlideInRight}
+                                        exiting={SlideOutRight}
+                                        style={animatedStyle}>
+                                        <View style={[styles.timesContainer, {
+                                            display: availableTimes.length === 0 ? 'none' : 'flex'
+                                        }]}>
+                                            {availableTimes.map(item => {
+                                                const date = localeDateService.parse(item, _DATE_FROM_ISO_8601)
+                                                return (
+                                                    <Pressable key={`${item}`}
+                                                        onPress={() => handleTimeSelected(date)}>
+                                                        <View style={[styles.timesCard, {
+                                                            backgroundColor: timeSelected === localeDateService.format(date, 'HH:mm') ? theme['color-primary-500'] : theme['color-basic-400'],
+                                                        }]}>
+                                                            <Text style={[styles.timesText, {
+                                                                color: timeSelected === localeDateService.format(date, 'HH:mm') ? theme['color-control-default'] : theme['text-hint-color']
+                                                            }]}>{localeDateService.format(date, 'HH:mm')}</Text>
+                                                        </View>
+                                                    </Pressable>
+                                                )
+                                            })}
+                                        </View>
+                                    </Animated.View>
+                                    <Animated.View
+                                        entering={SlideInRight}
+                                        style={{ display: availableTimes.length > 0 ? 'none' : 'flex' }}>
+                                        <View style={styles.timesContainer}>
+                                            <Text style={[styles.timesText, styles.textWithoutSelectedDate]}>
+                                                {availableTimes.length === 0 && dateTimeSelected ? 'Nenhum horário disponível' : 'Selecione o dia desejado'}
+                                            </Text>
+                                        </View>
+                                    </Animated.View>
+                                </View>
+                                <View style={styles.viewBtn}>
+                                    <Button
+                                        style={styles.btnToSchedule}
+                                        onPress={onSubmit}
+                                        status="success"
+                                        disabled={!timeSelected || !dateTimeSelected}
+                                    >CONFIRMAR</Button>
+                                </View>
                             </View>
-                            <View style={styles.viewBtn}>
-                                <Button
-                                    style={styles.btnToSchedule}
-                                    onPress={onSubmit}
-                                    status="success"
-                                    disabled={!timeSelected || !dateTimeSelected}
-                                >CONFIRMAR</Button>
-                            </View>
-                        </View>
-                    </ScrollView>
+                        </ScrollView>
+                    )}
+
                 </SafeAreaLayout >
                 <Portal>
                     <ModalizeFixed ref={ref} snapPoint={300} adjustToContentHeight={true} >

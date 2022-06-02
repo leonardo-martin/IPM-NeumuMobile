@@ -106,7 +106,8 @@ export const doctorScheduleStyle = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         flexWrap: 'wrap',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     timesCard: {
         backgroundColor: 'color-basic-400',
