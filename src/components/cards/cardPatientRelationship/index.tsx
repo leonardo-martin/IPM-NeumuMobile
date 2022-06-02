@@ -4,6 +4,7 @@ import SelectComponent, { SelectItemData } from '@components/select'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { RelationshipPatient } from '@models/PatientProfileCreator'
 import { PatientSignUpProps } from '@models/SignUpProps'
+import Clipboard from '@react-native-clipboard/clipboard'
 import { Datepicker, IndexPath, Input, PopoverPlacements } from '@ui-kitten/components'
 import { sortByStringField } from '@utils/common'
 import { formatCpf, formatPhone, isEmailValid, onlyNumbers } from '@utils/mask'
@@ -237,6 +238,8 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 }}
                 render={({ field: { onChange, onBlur, value, name, ref } }) => (
                     <Input
+                        onFocus={() => Clipboard.setString('')}
+                        onSelectionChange={() => Clipboard.setString('')}
                         size='small'
                         label='Confirmar E-mail *'
                         style={styles?.input}

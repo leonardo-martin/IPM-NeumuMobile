@@ -2,6 +2,7 @@ import CustomErrorMessage from '@components/error'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { DoctorSignUpProps } from '@models/SignUpProps'
 import { registerStyle } from '@pages/signup/style'
+import Clipboard from '@react-native-clipboard/clipboard'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { Datepicker, Icon, IconProps, IndexPath, Input, PopoverPlacements, Radio, RadioGroup, Select, SelectItem, Text, useStyleSheet } from '@ui-kitten/components'
 import { getGender, openMailTo } from '@utils/common'
@@ -26,7 +27,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
   const [secureTextEntry, setSecureTextEntry] = useState(true)
 
   const emailConfirm = form.watch("email")
-  
+
   useFocusEffect(
     useCallback(() => {
       const sex = form.getValues('sex')
@@ -269,6 +270,8 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
+              onFocus={() => Clipboard.setString('')}
+              onSelectionChange={() => Clipboard.setString('')}
               size='small'
               label='Confirmar E-mail *'
               style={styles.input}

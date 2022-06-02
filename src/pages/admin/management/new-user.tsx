@@ -4,6 +4,7 @@ import RegisterHeader from '@components/header/register'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { UserDoctorData } from '@models/User'
+import Clipboard from '@react-native-clipboard/clipboard'
 import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native'
 import { createUser } from '@services/user.service'
 import { Datepicker, Icon, IconProps, IndexPath, Input, PopoverPlacements, Radio, RadioGroup, Select, SelectItem, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
@@ -365,6 +366,8 @@ const NewUserScreen: FC = (): ReactElement => {
                             }}
                             render={({ field: { onChange, onBlur, value, name, ref } }) => (
                                 <Input
+                                    onFocus={() => Clipboard.setString('')}
+                                    onSelectionChange={() => Clipboard.setString('')}
                                     size='small'
                                     label='Confirmar E-mail *'
                                     style={styles.input}

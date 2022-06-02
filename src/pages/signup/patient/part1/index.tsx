@@ -3,6 +3,7 @@ import { CONECTESUS_URI } from '@constants/uri'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { PatientSignUpProps } from '@models/SignUpProps'
 import { registerStyle } from '@pages/signup/style'
+import Clipboard from '@react-native-clipboard/clipboard'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { Datepicker, Icon, IconProps, Input, PopoverPlacements, Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
 import { getGender, openMailTo } from '@utils/common'
@@ -307,6 +308,8 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
+              onFocus={() => Clipboard.setString('')}
+              onSelectionChange={() => Clipboard.setString('')}
               size='small'
               label='Confirmar E-mail *'
               style={styles.input}
