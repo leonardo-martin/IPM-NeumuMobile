@@ -3,7 +3,7 @@ import { JSONObject } from "./Common"
 export class PatientProfileCreatorDto {
     createdPatientProfileId!: string | number
     patientProfileCreatorTypeId!: PatientProfileCreatorTypeEnum | number | undefined
-    data!: JSONObject
+    data!: JSONObject | string | any
 }
 
 export class PatientProfileCreatorPatientRelatedDto extends PatientProfileCreatorDto {

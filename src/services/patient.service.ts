@@ -45,16 +45,12 @@ export const getPatient = async (): Promise<AxiosResponse<PatientDto, any>> => {
     return await api.get('patient')
 }
 
-export const patientGetAuthorizationRequests = async (data: { authorized: boolean }): Promise<AxiosResponse<MedicalDataAuthorizationDTO[], any>> => {
-    return await api.post('medical-data-authorization/patient-get-authorization-requests', data)
-}
-
-export const patientGrantAuthorization = async (data: { medicalDoctorId: string, authorization: boolean }): Promise<AxiosResponse<MedicalDataAuthorizationDTO[], any>> => {
-    return await api.post('medical-data-authorization/patient-grant-or-refuse-authorization', data)
-}
-
 export const getPatientDisplayAsDoc = async (patientId: number | string): Promise<AxiosResponse<PatientDisplay, any>> => {
     const params = new URLSearchParams()
     params.append('patientId', patientId.toString())
     return await api.get('patient/patient-display-as-doctor?' + params).catch(e => e.response)
+}
+
+export const getPatientDisplay = async (): Promise<AxiosResponse<PatientDisplay>> => {
+    return await api.get('patient/patient-display')
 }

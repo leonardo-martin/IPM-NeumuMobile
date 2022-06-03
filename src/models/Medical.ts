@@ -29,3 +29,10 @@ export class MedicalDataAuthorizationDTO {
     grantDate!: Date | null | string
     authorizationGranted!: boolean
 }
+
+export interface MedicalDoctorySummaryDto {
+    id: number
+    name: string
+    specialty: string
+    crm: string
+}

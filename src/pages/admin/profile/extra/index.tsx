@@ -4,12 +4,13 @@ import { useDatepickerService } from '@hooks/useDatepickerService'
 import { EUserRole } from '@models/UserRole'
 import { useFocusEffect } from '@react-navigation/native'
 import { getAddressByPostalCode } from '@services/common.service'
-import { getPatient } from '@services/patient.service'
+import { getPatientDisplay } from '@services/patient.service'
 import { getUserDetails, updateUser } from '@services/user.service'
 import { setProfile } from '@store/ducks/profile'
-import { Button, Icon, IconProps, useStyleSheet } from '@ui-kitten/components'
+import { Button, Icon, IconProps, Text, useStyleSheet } from '@ui-kitten/components'
 import { formatCpf, formatPhone } from '@utils/mask'
 import { validateCNS } from '@utils/validators'
+import { compareAsc, subYears } from 'date-fns'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { ImageStyle, Keyboard, RefreshControl, ScrollView, StyleProp, View } from 'react-native'
@@ -28,6 +29,7 @@ const EditProfileScreen: FC = (): ReactElement => {
   const dispatch = useAppDispatch()
   const { profile: userDetails } = useAppSelector((state: RootState) => state.profile)
   const [refreshing, setRefreshing] = useState<boolean>(false)
+  const [underage, setUnderage] = useState<boolean>(true)
 
   const loadFields = async () => {
     let obj: any = {
@@ -36,17 +38,37 @@ const EditProfileScreen: FC = (): ReactElement => {
       username: userDetails?.cpf
     }
 
-    const isPatient = sessionUser && sessionUser.userRole.find(e => e.id === EUserRole.patient)
-    if (isPatient) {
-      const response = await getPatient()
-      obj = {
-        ...obj,
-        mothersName: response?.data?.mothersName,
-        susNumber: response?.data?.susNumber,
-        sex: response?.data?.sex ?? undefined
+    try {
+      const isPatient = sessionUser && sessionUser.userRole.find(e => e.id === EUserRole.patient)
+      if (isPatient) {
+        let result = compareAsc(subYears(new Date(), 18), userDetails?.dateOfBirth as string)
+        if (result !== 1) {
+          setUnderage(true)
+        } else {
+          setUnderage(false)
+        }
+        const response = await getPatientDisplay()
+        if (response.status === 200) {
+          obj = {
+            ...obj,
+            mothersName: response.data.patientDto.mothersName,
+            susNumber: response.data.patientDto.susNumber,
+            sex: response.data.patientDto.sex ?? undefined,
+            ...response.data.responsiblePersonEmail && {
+              responsiblePersonEmail: response.data.responsiblePersonEmail,
+              responsiblePersonName: JSON.parse(response.data.patientProfileCreatorDto.data as string).name,
+              responsiblePersonCpf: formatCpf(JSON.parse(response.data.patientProfileCreatorDto.data as string).cpf ?? '')
+            }
+          }
+        }
       }
+      form.reset(obj)
+    } catch (error) {
+      Toast.show({
+        type: 'danger',
+        text2: 'Erro ao carregar o perfil',
+      })
     }
-    form.reset(obj)
   }
 
   useFocusEffect(
@@ -66,11 +88,6 @@ const EditProfileScreen: FC = (): ReactElement => {
           phone1: obj.phone1,
           phone2: obj.phone2,
         }
-        // const isPatient = sessionUser && sessionUser.userRole.find(e => e.id === EUserRole.patient)
-        // if (isPatient)
-        //   await updatePatient({
-        //     susNumber: obj.susNumber
-        //   })
         break
       case 2:
         userDto = {
@@ -224,6 +241,12 @@ const EditProfileScreen: FC = (): ReactElement => {
           )}
           name='email'
         />
+
+        <View style={styles.containerBadge}>
+          <View style={[styles.badge, styles.shadow, styles.primary]}>
+            <Text style={styles.textBadge}>Dados Pessoais</Text>
+          </View>
+        </View>
         <Controller
           control={form.control}
           render={({ field }) => (
@@ -395,6 +418,11 @@ const EditProfileScreen: FC = (): ReactElement => {
 
         {/* ############################ */}
 
+        <View style={styles.containerBadge}>
+          <View style={[styles.badge, styles.shadow, styles.primary]}>
+            <Text style={styles.textBadge}>Informação de Contato</Text>
+          </View>
+        </View>
         <Controller
           control={form.control}
           rules={{
@@ -592,6 +620,81 @@ const EditProfileScreen: FC = (): ReactElement => {
             SALVAR
           </Button>
         </View>
+
+
+        {/* ############################ */}
+        {sessionUser && sessionUser?.userRole.find(e => e.id === EUserRole.patient) && underage && (
+          <>
+            <View style={styles.containerBadge}>
+              <View style={[styles.badge, styles.shadow, styles.primary]}>
+                <Text style={styles.textBadge}>Informação do Responsável</Text>
+              </View>
+            </View>
+            <Controller
+              control={form.control}
+              render={({ field }) => (
+                <ProfileSetting
+                  style={[styles.profileSetting, styles.section]}
+                  hint='Nome Completo'
+                  inputProps={{
+                    value: field.value,
+                    onBlur: field.onBlur,
+                    onChangeText: field.onChange,
+                    editable: false,
+                    disabled: true,
+                    textAlign: 'right',
+                    keyboardType: 'default',
+                    multiline: true,
+                    scrollEnabled: true,
+                    maxLength: 60,
+                    returnKeyType: "default",
+                    autoCapitalize: "words",
+                    textContentType: "name"
+                  }}
+                />
+              )}
+              name='responsiblePersonName'
+            />
+            <Controller
+              control={form.control}
+              render={({ field }) => (
+                <ProfileSetting
+                  style={styles.profileSetting}
+                  hint='CPF'
+                  inputProps={{
+                    value: formatCpf(field.value),
+                    editable: false,
+                    disabled: true,
+                    textAlign: 'right',
+                    multiline: true,
+                    scrollEnabled: true,
+                    keyboardType: 'number-pad',
+                  }}
+                />
+              )}
+              name='responsiblePersonCpf'
+            />
+            <Controller
+              control={form.control}
+              render={({ field }) => (
+                <ProfileSetting
+                  style={styles.profileSetting}
+                  hint='E-mail'
+                  inputProps={{
+                    value: field.value,
+                    editable: false,
+                    disabled: true,
+                    textAlign: 'right',
+                    multiline: true,
+                    scrollEnabled: true
+                  }}
+                />
+              )}
+              name='responsiblePersonEmail'
+            />
+          </>
+        )}
+
       </ScrollView>
     </>
   )

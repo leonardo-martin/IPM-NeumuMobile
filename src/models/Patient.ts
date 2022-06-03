@@ -1,4 +1,6 @@
+import { ConsultAppointment } from "./Appointment"
 import { ExamDto } from "./Exam"
+import { PatientProfileCreatorDto } from "./PatientProfileCreator"
 import { TimelineTimeItem } from "./Timeline"
 import { UserDto } from "./User"
 
@@ -27,10 +29,17 @@ export class ExamDNA {
     }
 }
 
+export interface PatientSummaryDto {
+    id: number
+    name: string
+    patientId: number
+}
 
 export class PatientDisplay {
     userDto!: UserDto
     patientDto!: PatientDto
+    responsiblePersonEmail!: string | undefined
     exams!: ExamDto[]
-    // consultAppointments!: AppointmentDto[];
+    patientProfileCreatorDto!: PatientProfileCreatorDto
+    consultAppointments!: ConsultAppointment[]
 }

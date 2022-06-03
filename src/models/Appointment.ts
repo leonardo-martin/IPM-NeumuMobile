@@ -1,3 +1,5 @@
+import { MedicalDoctorySummaryDto } from "./Medical"
+import { PatientSummaryDto } from "./Patient"
 import { VisitAddressDTO } from "./VisitAddress"
 
 export class CreateAppointment {
@@ -27,20 +29,6 @@ export interface AppointmentDto {
     confirmedByMedicalDoctor: boolean
 }
 
-export interface MedicalDoctorySummaryDto {
-    id: number
-    name: string
-    specialty: string
-    crm: string
-}
-
-export interface PatientSummaryDto {
-    id: number
-    name: string
-    patientId: number
-}
-
-
 export interface AppointmentAvailabilityDTO {
     id?: number
     dayOfWeek?: number
@@ -60,9 +48,18 @@ export interface AppointmentAvailabilityWithBookedParams {
     endTime: Date | string
 }
 
-
 export class AppointmentAvailabilityHelper {
     date!: Date | string
     availability!: number[]
     booked!: number[]
+}
+
+export class ConsultAppointment {
+    id!: number
+    startTime!: Date
+    endTime!: Date
+    visitAddressId!: number
+    medicalDoctorId!: number
+    confirmedByMedicalDocto!: boolean
+    patientId!: number
 }
