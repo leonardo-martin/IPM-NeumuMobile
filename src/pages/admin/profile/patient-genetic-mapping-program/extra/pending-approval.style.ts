@@ -14,7 +14,8 @@ export const pendingApprovalMappingProgramStyle = StyleSheet.create({
     },
     text: {
         textAlign: 'center',
-        fontSize: 14
+        fontSize: 14,
+        lineHeight: 30
     },
     bold: {
         fontWeight: 'bold'

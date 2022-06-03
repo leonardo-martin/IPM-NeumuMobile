@@ -1,4 +1,3 @@
-import RequestUnderageDialog from '@components/dialog/requestUnderageDialog'
 import CustomErrorMessage from '@components/error'
 import HeaderAdmin from '@components/header/admin'
 import ModalizeFixed from '@components/modalize'
@@ -9,10 +8,9 @@ import { PatientDto } from '@models/Patient'
 import { UnderageStatus } from '@models/Underage'
 import { useFocusEffect } from '@react-navigation/native'
 import { getStatusAbrafeuForm, optIn, optOut } from '@services/abrafreu.service'
-import { AppStorage } from '@services/app-storage.service'
 import { getPatient, updatePatient } from '@services/patient.service'
-import { createUnderagePermission, getStatus } from '@services/underage.service'
-import { Button, Input, Modal, Radio, RadioGroup, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import { getStatus } from '@services/underage.service'
+import { Button, Input, Radio, RadioGroup, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { EvaSize, EvaStatus } from '@ui-kitten/components/devsupport'
 import { getRelationPastExams } from '@utils/common'
 import { onlyNumbers } from '@utils/mask'
@@ -37,8 +35,6 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
     const [patient, setPatient] = useState<PatientDto>()
     const form = useForm<PatientDto>()
     const { ref } = useModal<Modalize>()
-    const { ref: requestUnderageRef } = useModal<Modal>()
-    const [visibleModal, setVisibleModal] = useState<boolean>(false)
     const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined)
     const [selectTmp, setSelectTmp] = useState<number | undefined>(selectedIndex)
     const styles = useStyleSheet(mappingStyle)
@@ -47,7 +43,6 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
     const [statusPermission, setStatusPermission] = useState<UnderageStatus | undefined>(undefined)
     const [isCompleteAddress, setIsCompleteAddress] = useState(false)
     const [accept, setAccept] = useState<boolean>(false)
-    const [responsibleEmail, setResponsibleEmail] = useState<string>('')
     const [formAvailable, setFormAvailable] = useState<AbrafeuOptInStatus>(AbrafeuOptInStatus.NOT_REQUESTED)
 
     const { profile } = useAppSelector((state: RootState) => state.profile)
@@ -137,9 +132,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                             style: 'default',
                             onPress: () => {
                                 form.clearErrors()
-                                if (isCompleteAddress)
-                                    setVisibleModal(true)
-                                else
+                                if (!isCompleteAddress)
                                     modalRequiredAddress()
                             }
                         }
@@ -148,19 +141,13 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             }
         } else if (index === 0 && accept) {
             if (underage) {
-                if (isCompleteAddress)
-                    setVisibleModal(true)
-                else
+                if (!isCompleteAddress)
                     modalRequiredAddress()
             }
         } else {
-            if (isCompleteAddress) {
-                if (underage && statusPermission === UnderageStatus.NOT_REQUESTED) {
-                    setVisibleModal(true)
-                }
-            } else {
+            if (!isCompleteAddress)
                 modalRequiredAddress()
-            }
+
         }
 
         form.clearErrors()
@@ -197,6 +184,21 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
         }
     }
 
+    const checkIfFormIsAvailable = () => {
+        if (formAvailable !== AbrafeuOptInStatus.AVAILABLE) {
+            Alert.alert(
+                'Questionário DFEU',
+                'Questionário não disponível ainda. Informarems quando estiver preparado para realizar o documento',
+                [
+                    {
+                        text: 'Ok',
+                        style: 'default'
+                    }
+                ]
+            )
+        }
+    }
+
     const getUnderageStatus = async () => {
         const response = await getStatus()
         if (response.status === 200) {
@@ -222,50 +224,37 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             }
 
             try {
-                if ((underage && statusPermission === UnderageStatus.GRANTED) || (!underage)) {
-                    const response = await updatePatient(data)
-                    setPatient(response.data)
-                    // send email
-                    if (selectedIndex === 0) {
+                const response = await updatePatient(data)
+                setPatient(response.data)
+                // send email
+                if (selectedIndex === 0) {
+                    try {
                         await optIn()
                         Toast.show({
                             type: 'success',
                             text2: 'Obrigado por inscrever-se!',
                         })
-                    } else if (selectedIndex === 1) {
-                        if (underage) {
-                            setAccept(false)
+                    } catch (error) {
+                        if (error && ((error as any).response?.data?.message?.message as string).toString().toLowerCase().includes('underage and does not have permission')) {
+                            Toast.show({
+                                type: 'success',
+                                text2: 'Solicitação efetuada com sucesso. Aguarde aprovação do responsável',
+                            })
+                            setStatusPermission(UnderageStatus.PENDING)
                         }
-                        await optOut()
-                        Toast.show({
-                            type: 'info',
-                            text2: 'Que pena... Agradeçemos pelo apoio',
-                        })
                     }
-
-                    setSelectTmp(data.abrafeuRegistrationOptIn === 'true' ? 0 : 1)
-                } else if (underage && statusPermission === UnderageStatus.NOT_REQUESTED && responsibleEmail !== '') {
-                    const response = await createUnderagePermission({
-                        responsibleEmail: responsibleEmail
+                } else if (selectedIndex === 1) {
+                    if (underage) {
+                        setAccept(false)
+                    }
+                    await optOut()
+                    Toast.show({
+                        type: 'info',
+                        text2: 'Que pena... Agradeçemos pelo apoio',
                     })
-                    if (response.status === 201) {
-                        const response = await updatePatient(data)
-                        setPatient(response.data)
-                        await AppStorage.setItem('UNDERAGE_EMAIL', responsibleEmail)
-                        setStatusPermission(UnderageStatus.PENDING)
-
-                        Toast.show({
-                            type: 'success',
-                            text2: 'E-mail enviado ao responsável',
-                        })
-                    } else {
-                        Toast.show({
-                            type: 'danger',
-                            text2: 'Ocorreu um erro. Tente novamente mais tarde',
-                        })
-                    }
                 }
 
+                setSelectTmp(data.abrafeuRegistrationOptIn === 'true' ? 0 : 1)
 
             } catch (error) {
                 setSelectedIndex(selectTmp)
@@ -301,15 +290,6 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
     const LoadingIndicator = (size: EvaSize | undefined = 'tiny', status: EvaStatus | undefined = 'basic') => (
         <Spinner size={size} status={status} />
     )
-
-    const callbackRequestPermission = (success: boolean, data?: { responsibleEmail: string }) => {
-        if (success && data?.responsibleEmail) {
-            setResponsibleEmail(data.responsibleEmail)
-            alertCommon()
-        } else if (!success) {
-            setSelectedIndex(1)
-        }
-    }
 
     const alertCommon = () => {
         Alert.alert(
@@ -464,15 +444,13 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                                 )}
 
                                             {((statusPermission === UnderageStatus.GRANTED && underage && selectTmp === 0) ||
-                                                (statusPermission === UnderageStatus.NOT_REQUESTED && !underage && selectTmp === 0))
-                                                && formAvailable === AbrafeuOptInStatus.AVAILABLE && (
+                                                (statusPermission === UnderageStatus.NOT_REQUESTED && !underage && selectTmp === 0)) && (
                                                     <>
                                                         <View style={{ flexDirection: 'column', paddingBottom: 15, alignItems: 'center' }}>
 
                                                             <View style={styles.containerBtn}>
                                                                 <Button
-                                                                    disabled
-                                                                    onPress={form.handleSubmit(confirm)}
+                                                                    onPress={checkIfFormIsAvailable}
                                                                     status='success'>{'abrir questionário'.toUpperCase()}</Button>
                                                             </View>
                                                         </View>
@@ -485,12 +463,6 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                     )
                 }
 
-                <RequestUnderageDialog
-                    ref={requestUnderageRef}
-                    onVisible={setVisibleModal}
-                    visible={visibleModal}
-                    callback={callbackRequestPermission}
-                />
             </SafeAreaLayout>
             <Portal>
                 <ModalizeFixed
@@ -501,7 +473,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                     closeOnOverlayTap={false}
                     withHandle={false}>
                     <Text style={styles.textConfirmModalize}>
-                        {selectedIndex === 0 ? 'Deseja participar do programa?' : 'Deseja não participar do programa?'}
+                        {selectedIndex === 0 ? 'Deseja participar do programa?' : 'Deseja sair do programa?'}
                     </Text>
                     <TouchableOpacity style={styles.contentButton} activeOpacity={0.75} onPress={form.handleSubmit(confirm)}>
                         <Text style={styles.contentButtonText}>{'Confirmar'.toUpperCase()}</Text>

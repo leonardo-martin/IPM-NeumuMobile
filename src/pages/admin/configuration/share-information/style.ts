@@ -18,6 +18,7 @@ export const shareStyle = StyleSheet.create({
         textAlign: 'center',
         color: 'text-hint-color',
         fontStyle: 'italic',
-        fontSize: 14
+        fontSize: 14,
+        lineHeight: 25
     }
 })
