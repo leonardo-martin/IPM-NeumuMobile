@@ -11,8 +11,8 @@ import { createPatientProfileCreator, createUser } from '@services/user.service'
 import { Button, CheckBox, Spinner, useStyleSheet } from '@ui-kitten/components'
 import { extractFieldString } from '@utils/common'
 import { cleanNumberMask, formatCpf } from '@utils/mask'
-import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
-import { useForm, UseFormReturn } from 'react-hook-form'
+import React, { FC, ReactElement, useCallback, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { Alert, BackHandler, Platform, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import { Modalize } from 'react-native-modalize'
@@ -250,22 +250,6 @@ const SignUpScreen: FC = (): ReactElement => {
             })
         else navigation.navigate('RegistrationConfirmation')
     }
-
-    // useEffect(() => {
-    //     if (forms[params.type].formState.isSubmitted && params.type === 0 && active === (patientSteps.length - 1)) {
-    //         const form = (forms[params.type] as UseFormReturn<UserPatientData, any>)
-    //         if (form.getValues('creator.data.guardian.attachment') === '') {
-    //             form.setError(
-    //                 'creator.data.guardian.attachment', {
-    //                 type: 'required',
-    //                 message: 'Campo obrigatório'
-    //             }
-    //             )
-    //         } else {
-    //             form.clearErrors('creator.data.guardian.attachment')
-    //         }
-    //     }
-    // }, [forms[params.type].formState.isSubmitted, params.type])
 
     const LoadingIndicator = () => (
         <Spinner size='small' status='basic' />

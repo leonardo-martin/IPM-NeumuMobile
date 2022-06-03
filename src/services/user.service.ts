@@ -25,7 +25,8 @@ export const createPatientProfileCreator = async (patientId: number, creator?: P
 
     const creatorReq = {
         ...creator,
-        createdPatientProfileId: patientId
+        createdPatientProfileId: patientId,
+        data: JSON.stringify(creator?.data)
     }
 
     creatorReq.patientProfileCreatorTypeId = Number(creator?.patientProfileCreatorTypeId)
