@@ -6,6 +6,7 @@ import PasswordChangeConfirmationScreen from '@pages/changePassword/extra/change
 import PasswordRequestSuccessfullyScreen from '@pages/changePassword/extra/request-successfully'
 import ChangePasswordWithToken from '@pages/changePassword/password-with-token'
 import ChangePasswordRequest from '@pages/changePassword/selected-password-change-mode'
+import ContactUsScren from '@pages/contact-us'
 import SignIn from '@pages/signin'
 import SignUpScreen from '@pages/signup'
 import RegistrationConfirmation from '@pages/signup/confirmation'
@@ -81,6 +82,10 @@ const AuthRoutes: FC = (): ReactElement => {
           }} />
         <Screen name="ChangePasswordRequest" component={ChangePasswordRequest} />
         <Screen name="ChangePasswordWithToken" component={ChangePasswordWithToken}
+          options={{
+            ...TransitionPresets.ModalSlideFromBottomIOS
+          }} />
+        <Screen name="ContactUs" component={ContactUsScren}
           options={{
             ...TransitionPresets.ModalSlideFromBottomIOS
           }} />

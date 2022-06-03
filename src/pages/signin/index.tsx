@@ -149,6 +149,8 @@ const SignInScreen: FC = (): ReactElement => {
     if (isFocused) form.clearErrors()
   }, [isFocused])
 
+  const openContactUs = () => navigation.navigate('ContactUs')
+
   return (
     <>
       <StatusBar hidden={Platform.OS === 'ios' ? true : false} backgroundColor='transparent' translucent />
@@ -284,17 +286,17 @@ const SignInScreen: FC = (): ReactElement => {
         </SafeAreaLayout>
         <SafeAreaLayout insets='bottom'>
           <TouchableOpacity
-            onPress={isLoading ? undefined : openMailTo}>
+            onPress={isLoading ? undefined : openContactUs}>
             <View style={styles.containerContact}>
               <Text style={styles.contactText}>Fale Conosco</Text>
-              <Icon name='mail'
+              <Icon name='help-circle-outline'
                 size={20}
                 style={styles.icon} />
             </View>
-            <View style={styles.containerVersion}>
-              <Text style={[styles.contactText, { fontWeight: 'bold', textTransform: 'none' }]}>{"v" + _VERSION}</Text>
-            </View>
           </TouchableOpacity>
+          <View style={styles.containerVersion}>
+            <Text style={[styles.contactText, { fontWeight: 'bold', textTransform: 'none' }]}>{"v" + _VERSION}</Text>
+          </View>
         </SafeAreaLayout>
       </KeyboardAwareScrollView>
 
