@@ -2,6 +2,7 @@ import LogoPedroMolina from '@assets/svg/logo.svg'
 import SignUpOptDialog from '@components/dialog/signUpOptDialog'
 import CustomErrorMessage from '@components/error'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
+import SocialIconsComponent from '@components/social-icons'
 import TitleNeumu from '@components/titleNeumu'
 import { useAppDispatch } from '@hooks/redux'
 import { useModal } from '@hooks/useModal'
@@ -149,7 +150,7 @@ const SignInScreen: FC = (): ReactElement => {
     if (isFocused) form.clearErrors()
   }, [isFocused])
 
-  const openContactUs = () => navigation.navigate('ContactUs')
+
 
   return (
     <>
@@ -275,6 +276,7 @@ const SignInScreen: FC = (): ReactElement => {
                   {'Cadastre-se'.toUpperCase()}
                 </Button>
               </View>
+
             </View>
             <SignUpOptDialog
               ref={ref}
@@ -285,13 +287,15 @@ const SignInScreen: FC = (): ReactElement => {
           </View>
         </SafeAreaLayout>
         <SafeAreaLayout insets='bottom'>
+          <SocialIconsComponent /> 
           <TouchableOpacity
-            onPress={isLoading ? undefined : openContactUs}>
+            onPress={isLoading ? undefined : openMailTo}>
             <View style={styles.containerContact}>
               <Text style={styles.contactText}>Fale Conosco</Text>
-              <Icon name='help-circle-outline'
-                size={20}
-                style={styles.icon} />
+              <Icon name='mail'
+                size={15}
+                style={styles.icon}
+              />
             </View>
           </TouchableOpacity>
           <View style={styles.containerVersion}>

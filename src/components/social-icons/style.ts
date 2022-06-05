@@ -7,9 +7,8 @@ export const contactUsStyle = StyleSheet.create({
         flex: 1,
     },
     container: {
-        flex: 1,
+        flexDirection: 'row',
         alignItems: 'center',
-        padding: 25,
         justifyContent: 'center',
         flexWrap: 'wrap',
         alignContent: 'center'
@@ -27,29 +26,13 @@ export const contactUsStyle = StyleSheet.create({
         backgroundColor: 'color-danger-500',
     },
     linkedin: {
-        backgroundColor: 'color-primary-600',
+        backgroundColor: 'color-primary-500',
     },
     button: {
-        margin: 15,
-        borderRadius: 100,
-        width: 40,
+        margin: 10,
+        borderRadius: 50,
+        width: 15,
         borderWidth: 0
-    },
-    shadow: {
-        ...Platform.select({
-            ios: {
-                shadowColor: 'background-alternative-color-1',
-                shadowOffset: {
-                    width: 0,
-                    height: 5
-                },
-                shadowOpacity: .3,
-                shadowRadius: 5,
-            },
-            android: {
-                elevation: 5,
-            }
-        })
     },
     text: {
         lineHeight: 50,
@@ -59,11 +42,8 @@ export const contactUsStyle = StyleSheet.create({
         textAlign: 'center'
     },
     image: {
-        width: width / 4,
-        height: width / 4,
-        resizeMode: 'contain'
+        width: 50,
+        height: 50,
+        resizeMode: 'contain',
     },
-    containerSocial: {
-        paddingVertical: 15
-    }
 })

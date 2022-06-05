@@ -11,7 +11,7 @@ import { Avatar, Button, Icon, IconProps, Spinner, Text, useStyleSheet } from '@
 import React, { FC, ReactElement, useState } from 'react'
 import { Alert, ImageStyle, StyleProp, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'
-import { patientBaseData, specialistBaseData } from './data'
+import { commonData, operatorBaseData, patientBaseData, specialistBaseData } from './data'
 import { profileStyle } from './style'
 
 const ProfileScreen: FC<DrawerContentComponentProps> = ({
@@ -118,7 +118,10 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
       <SafeAreaLayout level='2' style={styles.safeArea}>
         <ListComponent
           itemStyle={styles.shadow}
-          data={sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? patientBaseData : specialistBaseData}
+          data={sessionUser?.userRole.find(e => e.id === EUserRole.patient) ?
+            patientBaseData : sessionUser?.userRole.find(e => e.id === EUserRole.operator) ?
+              operatorBaseData : sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor || e.id === EUserRole.specialist) ?
+                specialistBaseData : commonData}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={() => (
             <>

@@ -1,4 +1,6 @@
-import { Platform, StyleSheet } from 'react-native'
+import { Dimensions, Platform, StyleSheet } from 'react-native'
+
+const { width } = Dimensions.get('screen')
 
 export const loginStyle = StyleSheet.create({
   safeArea: {
@@ -83,7 +85,6 @@ export const loginStyle = StyleSheet.create({
     fontWeight: '400',
     fontStyle: 'normal',
     fontSize: 12,
-    paddingHorizontal: 5,
     textTransform: 'uppercase'
   },
   icon: {

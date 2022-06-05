@@ -1,6 +1,6 @@
 import { ItemInfo } from "@components/list"
 
-const commonData: ItemInfo[] = [
+export const commonData: ItemInfo[] = [
     {
         title: 'Editar Perfil',
         description: 'Editar as informações da minha conta',
@@ -45,4 +45,8 @@ export const specialistBaseData: ItemInfo[] = [
         },
         route: 'VisitAddress'
     },
+]
+
+export const operatorBaseData: ItemInfo[] = [
+    ...commonData,
 ]
