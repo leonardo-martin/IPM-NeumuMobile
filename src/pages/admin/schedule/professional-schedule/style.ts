@@ -26,17 +26,15 @@ export const professionalStyle = StyleSheet.create({
     borderColor: 'border-basic-color-5',
     borderWidth: 1,
     borderRadius: 10,
-    paddingHorizontal: 10,
     marginHorizontal: 5,
     backgroundColor: 'transparent',
-    height: 50,
-    width: 65,
   },
   listItemText: {
     fontWeight: 'bold',
     fontSize: 12,
     textTransform: 'uppercase',
-    textAlign: 'center'
+    textAlign: 'center',
+    padding: 5
   },
   containerSchedule: {
     flex: 1,

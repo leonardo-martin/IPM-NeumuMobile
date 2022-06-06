@@ -265,7 +265,7 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
                     }
                 }
 
-                // if (amountSavedItems > 0) loadData()
+                if (amountSavedItems > 0) loadData()
 
             } catch (e) {
                 Toast.show({
