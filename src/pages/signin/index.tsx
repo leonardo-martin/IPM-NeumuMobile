@@ -291,7 +291,7 @@ const SignInScreen: FC = (): ReactElement => {
           <TouchableOpacity
             onPress={isLoading ? undefined : openMailTo}>
             <View style={styles.containerContact}>
-              <Text style={styles.contactText}>Fale Conosco</Text>
+              <Text style={styles.contactText}>Fale Conosco{" "}</Text>
               <Icon name='mail'
                 size={15}
                 style={styles.icon}

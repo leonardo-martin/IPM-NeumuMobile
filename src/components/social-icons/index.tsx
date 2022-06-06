@@ -58,12 +58,6 @@ const SocialIconsComponent: FC = (): ReactElement => {
                     accessoryLeft={LinkedInIcon}
                     onPress={() => openSocialLink('https://www.linkedin.com/in/ipm-social-579897240')}
                 />
-
-                <Button
-                    style={[styles.button, styles.mail]}
-                    accessoryLeft={MailIcon}
-                    onPress={openMailTo}
-                />
                 <View style={{
                     justifyContent: 'center'
                 }}>
