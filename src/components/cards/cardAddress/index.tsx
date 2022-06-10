@@ -16,11 +16,10 @@ interface CardAddressProps {
     handleFetchingData: Dispatch<React.SetStateAction<boolean>>
     isFetching?: boolean
     textFieldPrefix?: '' | 'creator.data.'
-    commercial?: boolean
 }
 
 const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
-    isFetching, handleFetchingData, textFieldPrefix = '', commercial = false }): ReactElement => {
+    isFetching, handleFetchingData, textFieldPrefix = '' }): ReactElement => {
 
     /**
      * Countries
@@ -143,7 +142,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
             Toast.show({
                 type: 'danger',
                 text2: 'Ocorreu um erro. Tente novamente mais tarde',
-              })
+            })
         }
     }
 
@@ -240,13 +239,13 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
         form.resetField(`${textFieldPrefix}city` as const)
         form.resetField(`${textFieldPrefix}state` as const)
         form.resetField(`${textFieldPrefix}address1` as const)
-        form.resetField(`${textFieldPrefix}address2` as const)
+        // form.resetField(`${textFieldPrefix}address2` as const)
         form.resetField(`${textFieldPrefix}addressComplement` as const)
 
         setCountry(obj ? 'Brasil' : '')
         form.setValue(`${textFieldPrefix}city` as const, obj?.localidade)
         form.setValue(`${textFieldPrefix}address1` as const, obj?.logradouro)
-        form.setValue(`${textFieldPrefix}address2` as const, obj?.bairro)
+        // form.setValue(`${textFieldPrefix}address2` as const, obj?.bairro)
         form.setValue(`${textFieldPrefix}state` as const, obj?.uf)
         form.setValue(`${textFieldPrefix}addressComplement` as const, obj?.complemento)
         form.setValue(`${textFieldPrefix}country` as const, obj ? 'Brasil' : '')
@@ -311,7 +310,7 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                 render={({ field: { onChange, onBlur, value, name, ref } }) => (
                     <Input
                         size='small'
-                        label={commercial ? "Endereço Comercial 1 *" : "Endereço Residencial 1 *"}
+                        label={"Endereço Residencial 1 *"}
                         style={styles?.input}
                         keyboardType='default'
                         testID={name}
@@ -338,26 +337,30 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
             <Controller
                 control={form.control}
                 rules={{
-                    required: false,
+                    required: {
+                        value: true,
+                        message: 'Campo obrigatório'
+                    },
                     minLength: {
-                        value: 2,
-                        message: `Mín. 2 caracteres`
+                        value: 1,
+                        message: `Mín. 1 caracteres`
                     },
                 }}
                 render={({ field: { onChange, onBlur, value, name, ref } }) => (
                     <Input
                         size='small'
-                        label={commercial ? "Endereço Comercial 2" : "Endereço Residencial 2"}
+                        label="Número *"
                         style={styles?.input}
-                        keyboardType='default'
+                        keyboardType='number-pad'
                         testID={name}
                         onBlur={onBlur}
                         onChangeText={onChange}
                         value={value}
-                        ref={ref}
-                        maxLength={180}
-                        returnKeyType="next"
                         underlineColorAndroid="transparent"
+                        autoCapitalize='none'
+                        maxLength={10}
+                        ref={ref}
+                        returnKeyType="next"
                         onSubmitEditing={() => form.setFocus(`${textFieldPrefix}addressComplement` as const)}
                         editable={isFetching}
                         textContentType="streetAddressLine2"
