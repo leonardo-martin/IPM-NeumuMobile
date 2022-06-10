@@ -77,7 +77,8 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
     }, [timeBlockList])
 
     const resetData = () => {
-        const array = getTimesByInterval(15, 405, 18)
+        // startTime 06h | endTime 22h
+        const array = getTimesByInterval(15, 345, 22)
         const newArray: ScheduleItem[] = array.map(e => {
             const timeBlock = getTimeBlocksByTime(localeDateService.parse(e as string, _DATE_FROM_ISO_8601))
             return {
