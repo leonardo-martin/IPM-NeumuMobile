@@ -1,7 +1,6 @@
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { INSTITUTE_URI } from '@constants/uri'
 import { Button, Icon, IconElement, IconProps, useStyleSheet } from '@ui-kitten/components'
-import { openMailTo } from '@utils/common'
 import React, { FC, ReactElement } from 'react'
 import { Image, ImageStyle, Linking, Pressable, StyleProp, View } from 'react-native'
 import { contactUsStyle } from './style'
@@ -24,12 +23,6 @@ const SocialIconsComponent: FC = (): ReactElement => {
 
     const LinkedInIcon = (props: IconProps): IconElement => (
         <Icon {...props} name='linkedin-in'
-            style={styles.icon}
-            pack='font-awesome' />
-    )
-
-    const MailIcon = (props: IconProps): IconElement => (
-        <Icon {...props} name='envelope'
             style={styles.icon}
             pack='font-awesome' />
     )
