@@ -1,10 +1,11 @@
 import HeaderProfile from '@components/header/admin/profile'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
+import { PatientDisplay } from '@models/Patient'
 import { EUserRole } from '@models/UserRole'
 import { useFocusEffect } from '@react-navigation/native'
 import { getAddressByPostalCode } from '@services/common.service'
-import { getPatientDisplay } from '@services/patient.service'
+import { getPatientDisplay, updatePatient } from '@services/patient.service'
 import { getUserDetails, updateUser } from '@services/user.service'
 import { setProfile } from '@store/ducks/profile'
 import { Button, Icon, IconProps, Text, useStyleSheet } from '@ui-kitten/components'
@@ -30,6 +31,7 @@ const EditProfileScreen: FC = (): ReactElement => {
   const { profile: userDetails } = useAppSelector((state: RootState) => state.profile)
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const [underage, setUnderage] = useState<boolean>(true)
+  const [patientDisplay, setPatientDisplay] = useState<PatientDisplay>()
 
   const loadFields = async () => {
     let obj: any = {
@@ -49,18 +51,19 @@ const EditProfileScreen: FC = (): ReactElement => {
         }
         const response = await getPatientDisplay()
         if (response.status === 200) {
+          setPatientDisplay(response.data)
           obj = {
             ...obj,
             mothersName: response.data.patientDto.mothersName,
             susNumber: response.data.patientDto.susNumber,
             sex: response.data.patientDto.sex ?? undefined,
-            ...response.data.responsiblePersonEmail && {
-              responsiblePersonEmail: response.data.responsiblePersonEmail,
-              responsiblePersonName: JSON.parse(response.data.patientProfileCreatorDto.data as string).name,
-              responsiblePersonCpf: formatCpf(JSON.parse(response.data.patientProfileCreatorDto.data as string).cpf ?? '')
+            ...underage && {
+              responsiblePersonEmail: response.data.responsiblePersonEmail ?? JSON.parse(response.data.patientProfileCreatorDto.data as string).email,
+              responsiblePersonName: JSON.parse(response.data.patientProfileCreatorDto.data as string).name
             }
           }
         }
+        else setPatientDisplay(undefined)
       }
       form.reset(obj)
     } catch (error) {
@@ -79,6 +82,24 @@ const EditProfileScreen: FC = (): ReactElement => {
 
   const editProfile = async (type: 1 | 2) => {
     const obj = form.getValues()
+
+    if (obj.susNumber !== '' && obj.susNumber) {
+      if (!validateCNS(obj.susNumber)) {
+        Toast.show({
+          type: 'warning',
+          text2: 'Cartão Nacional de Saúde inválido',
+        })
+        return
+      }
+    } else {
+      if (patientDisplay?.patientDto.susNumber && !obj.susNumber) {
+        Toast.show({
+          type: 'info',
+          text2: 'Cartão Nacional de Saúde ausente',
+        })
+        return
+      }
+    }
 
     let userDto = null
     switch (type) {
@@ -105,9 +126,15 @@ const EditProfileScreen: FC = (): ReactElement => {
     }
     try {
 
+      if (sessionUser?.userRole.find(e => e.id === EUserRole.patient) && patientDisplay) {
+        await updatePatient({
+          ...patientDisplay.patientDto,
+          susNumber: obj.susNumber === '' || !obj.susNumber ? null : obj.susNumber,
+        })
+      }
       await updateUser(userDto)
       updateUserStore()
-
+      loadFields()
     } catch (error) {
       Toast.show({
         type: 'danger',
@@ -381,28 +408,29 @@ const EditProfileScreen: FC = (): ReactElement => {
             control={form.control}
             rules={{
               minLength: {
-                value: 15,
-                message: `Mín. 15 caracteres`
+                value: 14,
+                message: `Mín. 14 caracteres`
               },
-              validate: (e) => e !== "" ? validateCNS(e) : true
             }}
             render={({ field }) => (
               <ProfileSetting
                 style={styles.profileSetting}
                 hint='Cartão Nacional de Saúde'
                 inputProps={{
+                  onBlur: field.onBlur,
+                  onChangeText: field.onChange,
                   value: field.value,
                   keyboardType: 'number-pad',
-                  editable: false,
-                  disabled: true,
                   textAlign: 'right',
                   multiline: true,
                   scrollEnabled: true,
-                  maxLength: 16
+                  maxLength: 15,
+                  disabled: validateCNS(patientDisplay?.patientDto.susNumber ?? '')
                 }}
               />
             )}
             name='susNumber'
+            defaultValue=''
           />
         )}
         <View style={styles.editViewButton}>
@@ -654,26 +682,7 @@ const EditProfileScreen: FC = (): ReactElement => {
                 />
               )}
               name='responsiblePersonName'
-            />
-            <Controller
-              control={form.control}
-              render={({ field }) => (
-                <ProfileSetting
-                  style={styles.profileSetting}
-                  hint='CPF'
-                  inputProps={{
-                    value: formatCpf(field.value),
-                    editable: false,
-                    disabled: true,
-                    textAlign: 'right',
-                    multiline: true,
-                    scrollEnabled: true,
-                    keyboardType: 'number-pad',
-                  }}
-                />
-              )}
-              name='responsiblePersonCpf'
-            />
+            />            
             <Controller
               control={form.control}
               render={({ field }) => (
@@ -694,7 +703,6 @@ const EditProfileScreen: FC = (): ReactElement => {
             />
           </>
         )}
-
       </ScrollView>
     </>
   )
