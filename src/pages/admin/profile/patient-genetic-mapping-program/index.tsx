@@ -18,7 +18,8 @@ import { compareAsc, subYears } from 'date-fns'
 import { AbrafeuOptInStatus } from 'models/Abrafeu'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Alert, Keyboard, TouchableOpacity, View } from 'react-native'
+import { Alert, Keyboard, RefreshControl, TouchableOpacity, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Modalize } from 'react-native-modalize'
 import { Host, Portal } from 'react-native-portalize'
@@ -30,6 +31,7 @@ import { mappingStyle } from './style'
 
 const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
 
+    const [refreshing, setRefreshing] = useState<boolean>(false)
     const [isFetchingData, setIsFetchingData] = useState<boolean>(false)
     const [isOpenedModal, setIsOpenedModal] = useState<boolean>(false)
     const [patient, setPatient] = useState<PatientDto>()
@@ -131,6 +133,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                             text: 'OK',
                             style: 'default',
                             onPress: () => {
+                                setAccept(true)
                                 form.clearErrors()
                                 if (!isCompleteAddress)
                                     modalRequiredAddress()
@@ -305,6 +308,12 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
         )
     }
 
+    const onRefresh = useCallback(() => {
+        setRefreshing(true)
+        getUnderageStatus()
+        setRefreshing(false)
+    }, [])
+
     return (
         <Host>
             <HeaderAdmin />
@@ -322,10 +331,20 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                     : (
                         <>
                             {statusPermission === UnderageStatus.PENDING ?
-                                <PendingApprovalMappingProgram />
+                                <ScrollView
+                                    showsVerticalScrollIndicator={false}
+                                    contentContainerStyle={{ flex: 1 }}
+                                    refreshControl={
+                                        <RefreshControl
+                                            refreshing={refreshing}
+                                            onRefresh={onRefresh}
+                                        />
+                                    }>
+                                    <PendingApprovalMappingProgram />
+                                </ScrollView>
                                 : (
                                     <KeyboardAwareScrollView
-                                        keyboardShouldPersistTaps='handled'
+                                        keyboardShouldPersistTaps='never'
                                         showsVerticalScrollIndicator={false}
                                         enableOnAndroid>
                                         <View
