@@ -19,6 +19,15 @@ export const formatPhone = (value: string | undefined) => {
     } else return ''
 }
 
+export const formatPostalCode = (value: string | undefined) => {
+    if (value !== undefined && typeof value === 'string')
+        return value
+            .replace(/\D/g, '')
+            .replace(/[^0-9]/g, "")
+            .replace(/(\d{5})(\d{3})/, '$1-$2')
+    else return ''
+}
+
 export const cleanNumberMask = (value: string | undefined) => {
     if (value !== undefined && typeof value === 'string')
         return value.replace(_REGEX_VALID_NUMBERS, "")

@@ -1,7 +1,7 @@
 import React, { FC, ReactElement } from 'react'
 import { View } from 'react-native'
 import { Avatar, AvatarProps, ButtonElement } from '@ui-kitten/components'
-import { editProfileStyle } from './style'
+import { extraProfileStyle } from './style'
 
 export interface ProfileAvatarProps extends AvatarProps {
   editButton: () => ButtonElement
@@ -13,7 +13,7 @@ const ProfileAvatar: FC<ProfileAvatarProps> = ({ style, editButton, ...restProps
     <View style={style}>
       <Avatar
         {...restProps}
-        style={[style, editProfileStyle.avatar]}
+        style={[style, extraProfileStyle.avatar]}
       />
       {editButton()}
     </View>

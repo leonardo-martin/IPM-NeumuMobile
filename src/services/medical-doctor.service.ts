@@ -1,4 +1,4 @@
-import { MedicalDataAuthorizationDTO, MedicalDoctorDisplay } from "@models/Medical"
+import { MedicalDataAuthorizationDTO, MedicalDoctorDisplay, MedicalDoctorDto } from "@models/Medical"
 import { AxiosResponse } from "axios"
 import { api } from "./api.service"
 
@@ -16,3 +16,7 @@ export const requestAuthorizationAsDoctor = async (patientId: number | string): 
         })
 }
 
+export const getDoctor = async (medicalDoctorId: string | number): Promise<AxiosResponse<MedicalDoctorDto, any>> => {
+    return await api.get(`medicaldoctor/${medicalDoctorId}`)
+
+}

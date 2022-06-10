@@ -127,7 +127,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             } else {
                 Alert.alert(
                     'Atenção!',
-                    'Por questões legais, caso o paciente possua menos de 18 anos, será solicitado via e-mail, uma permissão ao seu responsável (com 18 anos ou mais) para participar do Programa de Mapeamento Genético',
+                    'Por questões legais, caso o paciente possua menos de 18 anos, será solicitado via e-mail, uma permissão ao seu responsável cadastrado no aplicativo (com 18 anos ou mais) para participar do Programa de Mapeamento Genético',
                     [
                         {
                             text: 'OK',
@@ -137,20 +137,18 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                 form.clearErrors()
                                 if (!isCompleteAddress)
                                     modalRequiredAddress()
+                                else
+                                    alertCommon()
                             }
                         }
                     ]
                 )
             }
         } else if (index === 0 && accept) {
-            if (underage) {
-                if (!isCompleteAddress)
-                    modalRequiredAddress()
-            }
-        } else {
             if (!isCompleteAddress)
                 modalRequiredAddress()
-
+            else
+                alertCommon()
         }
 
         form.clearErrors()
@@ -351,15 +349,19 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                             style={styles.container}>
                                             <Text style={styles.title}>Como funciona ?</Text>
                                             <Text style={styles.text}>
-                                                Aceitando participar, e após este cadastro feito, será enviado um e-mail direto do aplicativo para que você forneça informações sobre você e/ou seu filho.
+                                                {`\t`}Aceitando participar, e após este cadastro feito, será enviado um e-mail de boas vindas direto do aplicativo explicando as fases do projeto.
+                                                Ao participar deste projeto, você concorda em ceder informações ao parceiro Abrafeu sobre dados e a exames realizados para o diagnóstico clínico da distrofia muscular para o diagnóstico clínico da distrofia muscular, confirmado pelo seu médico neurologista.
                                             </Text>
                                             <Text style={styles.text}>
-                                                Você será solicitado a ceder informações importantes com relação a exames realizados para o diagnóstico clínico da distrofia muscular, confirmado pelo seu médico neurologista. Após o envio, os pais, responsáveis e/ou médicos dos pacientes deverão preencher o questionário que será disponibilizado pelo aplicativo.
+                                                {`\t`}Após o envio, os pais, responsáveis e/ou médicos dos pacientes deverão preencher o questionário que será disponibilizado pelo aplicativo.
                                             </Text>
                                             <View style={styles.subContainer}>
                                                 <Text style={styles.title}>Importante</Text>
                                                 <Text style={styles.text}>
-                                                    Todas as informações que você fornecer serão mantidas em um banco de dados seguro e, quaisquer informações que possam identificar você e seus familiares, não serão compartilhadas para fins comerciais. Nossa equipe está profundamente comprometida em proteger sua privacidade e identidade e usará todas as medidas disponíveis para garantir a segurança de suas informações pessoais. O TeleNeuMu respeita e cumpre a nova Lei Geral de Proteção de Dados (LGPD) implementada no Brasil desde 14/08/2018.
+                                                    {`\t`}Todas as informações que você fornecer serão mantidas em um banco de dados seguro e, quaisquer informações que possam identificar você e seus familiares, não serão compartilhadas para fins comerciais.  Nossa equipe está profundamente comprometida em proteger sua privacidade e identidade e usará todas as medidas disponíveis para garantir segurança de suas informações pessoais.
+                                                </Text>
+                                                <Text style={styles.text}>
+                                                    {`\t`}O TeleNeuMu e a Abrafeu respeita e cumpre a nova Lei Geral de Proteção de Dados (LGPD) implementada no Brasil desde 14/08/2018.
                                                 </Text>
                                             </View>
 
@@ -382,7 +384,8 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                                 />
                                             </View>
                                             {((selectedIndex === 0 && accept && underage) ||
-                                                (selectedIndex === 0 && accept && !underage)) && !patient?.pastExams?.exam && (
+                                                (selectedIndex === 0 && accept && !underage)) && !patient?.pastExams?.exam &&
+                                                isCompleteAddress && (
                                                     <>
                                                         <View style={[styles.subContainer, { alignItems: 'flex-start' }]}>
                                                             <Controller

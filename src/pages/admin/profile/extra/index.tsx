@@ -5,29 +5,33 @@ import { PatientDisplay } from '@models/Patient'
 import { EUserRole } from '@models/UserRole'
 import { useFocusEffect } from '@react-navigation/native'
 import { getAddressByPostalCode } from '@services/common.service'
+import { getDoctor } from '@services/medical-doctor.service'
 import { getPatientDisplay, updatePatient } from '@services/patient.service'
 import { getUserDetails, updateUser } from '@services/user.service'
 import { setProfile } from '@store/ducks/profile'
-import { Button, Icon, IconProps, Text, useStyleSheet } from '@ui-kitten/components'
-import { formatCpf, formatPhone } from '@utils/mask'
+import { Button, Icon, IconProps, useStyleSheet } from '@ui-kitten/components'
+import { cleanNumberMask, formatCpf, formatPhone, formatPostalCode } from '@utils/mask'
 import { validateCNS } from '@utils/validators'
 import { compareAsc, subYears } from 'date-fns'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { ImageStyle, Keyboard, RefreshControl, ScrollView, StyleProp, View } from 'react-native'
 import Toast from 'react-native-toast-message'
+import { getOne } from 'services/medical-specialty.service'
 import { RootState } from 'store'
+import BadgeProfile from './badge-profile'
 import ProfileAvatar from './profile-avatar'
 import ProfileSetting from './profile-setting'
-import { editProfileStyle } from './style'
+import { extraProfileStyle } from './style'
 
 const EditProfileScreen: FC = (): ReactElement => {
 
   const { sessionUser } = useAppSelector((state: RootState) => state.auth)
-  const styles = useStyleSheet(editProfileStyle)
+  const styles = useStyleSheet(extraProfileStyle)
   const { localeDateService, format } = useDatepickerService()
   const form = useForm()
   const dispatch = useAppDispatch()
+  const { ids } = useAppSelector((state: RootState) => state.user)
   const { profile: userDetails } = useAppSelector((state: RootState) => state.profile)
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const [underage, setUnderage] = useState<boolean>(true)
@@ -37,12 +41,12 @@ const EditProfileScreen: FC = (): ReactElement => {
     let obj: any = {
       ...userDetails,
       dateOfBirth: userDetails?.dateOfBirth ? localeDateService.format(localeDateService.parse(userDetails?.dateOfBirth.toString(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"), format) : '',
-      username: userDetails?.cpf
+      username: userDetails?.cpf,
+      postalCode: formatPostalCode(userDetails?.postalCode) ?? userDetails?.postalCode,
     }
 
     try {
-      const isPatient = sessionUser && sessionUser.userRole.find(e => e.id === EUserRole.patient)
-      if (isPatient) {
+      if (sessionUser?.userRole.find(e => e.id === EUserRole.patient)) {
         let result = compareAsc(subYears(new Date(), 18), userDetails?.dateOfBirth as string)
         if (result !== 1) {
           setUnderage(true)
@@ -57,7 +61,7 @@ const EditProfileScreen: FC = (): ReactElement => {
             mothersName: response.data.patientDto.mothersName,
             susNumber: response.data.patientDto.susNumber,
             sex: response.data.patientDto.sex ?? undefined,
-            ...underage && {
+            ...underage && patientDisplay?.patientProfileCreatorDto.patientProfileCreatorTypeId !== 1 && {
               responsiblePersonEmail: response.data.responsiblePersonEmail ?? JSON.parse(response.data.patientProfileCreatorDto.data as string).email,
               responsiblePersonName: JSON.parse(response.data.patientProfileCreatorDto.data as string).name
             }
@@ -65,6 +69,21 @@ const EditProfileScreen: FC = (): ReactElement => {
         }
         else setPatientDisplay(undefined)
       }
+
+      if (sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor) && ids) {
+        const response = await getDoctor(ids?.medicalDoctorId)
+        if (response.status === 200) {
+          const res = await getOne(response.data.specialtyId)
+          obj = {
+            ...obj,
+            specialty: {
+              crm: response.data.crm,
+              description: res.data.description
+            }
+          }
+        }
+      }
+
       form.reset(obj)
     } catch (error) {
       Toast.show({
@@ -83,24 +102,6 @@ const EditProfileScreen: FC = (): ReactElement => {
   const editProfile = async (type: 1 | 2) => {
     const obj = form.getValues()
 
-    if (obj.susNumber !== '' && obj.susNumber) {
-      if (!validateCNS(obj.susNumber)) {
-        Toast.show({
-          type: 'warning',
-          text2: 'Cartão Nacional de Saúde inválido',
-        })
-        return
-      }
-    } else {
-      if (patientDisplay?.patientDto.susNumber && !obj.susNumber) {
-        Toast.show({
-          type: 'info',
-          text2: 'Cartão Nacional de Saúde ausente',
-        })
-        return
-      }
-    }
-
     let userDto = null
     switch (type) {
       case 1:
@@ -109,6 +110,33 @@ const EditProfileScreen: FC = (): ReactElement => {
           phone1: obj.phone1,
           phone2: obj.phone2,
         }
+
+        if (sessionUser?.userRole.find(e => e.id === EUserRole.patient)) {
+          if (obj.susNumber !== '' && obj.susNumber) {
+            if (!validateCNS(obj.susNumber)) {
+              Toast.show({
+                type: 'warning',
+                text2: 'Cartão Nacional de Saúde inválido',
+              })
+              return
+            }
+          } else {
+            if (patientDisplay?.patientDto.susNumber && !obj.susNumber) {
+              Toast.show({
+                type: 'info',
+                text2: 'Cartão Nacional de Saúde ausente',
+              })
+              return
+            }
+          }
+          if (patientDisplay) {
+            await updatePatient({
+              ...patientDisplay.patientDto,
+              susNumber: obj.susNumber === '' || !obj.susNumber ? null : obj.susNumber,
+            })
+          }
+        }
+
         break
       case 2:
         userDto = {
@@ -116,7 +144,7 @@ const EditProfileScreen: FC = (): ReactElement => {
           address2: obj.address2,
           state: obj.state,
           city: obj.city,
-          postalCode: obj.postalCode,
+          postalCode: cleanNumberMask(obj.postalCode) ?? obj.postalCode,
           addressComplement: obj.addressComplement,
           country: obj.country
         }
@@ -124,14 +152,9 @@ const EditProfileScreen: FC = (): ReactElement => {
       default:
         break
     }
+
     try {
 
-      if (sessionUser?.userRole.find(e => e.id === EUserRole.patient) && patientDisplay) {
-        await updatePatient({
-          ...patientDisplay.patientDto,
-          susNumber: obj.susNumber === '' || !obj.susNumber ? null : obj.susNumber,
-        })
-      }
       await updateUser(userDto)
       updateUserStore()
       loadFields()
@@ -220,7 +243,7 @@ const EditProfileScreen: FC = (): ReactElement => {
               style={[styles.profileSetting, styles.section]}
               hint='Usuário'
               inputProps={{
-                value: field.value,
+                value: `@${field.value}`,
                 editable: false,
                 disabled: true,
                 textAlign: 'right',
@@ -269,11 +292,7 @@ const EditProfileScreen: FC = (): ReactElement => {
           name='email'
         />
 
-        <View style={styles.containerBadge}>
-          <View style={[styles.badge, styles.shadow, styles.primary]}>
-            <Text style={styles.textBadge}>Dados Pessoais</Text>
-          </View>
-        </View>
+        <BadgeProfile title='Dados Pessoais' />
         <Controller
           control={form.control}
           render={({ field }) => (
@@ -403,7 +422,7 @@ const EditProfileScreen: FC = (): ReactElement => {
           )}
           name='phone2'
         />
-        {sessionUser && sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
+        {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
           <Controller
             control={form.control}
             rules={{
@@ -445,225 +464,236 @@ const EditProfileScreen: FC = (): ReactElement => {
 
 
         {/* ############################ */}
-
-        <View style={styles.containerBadge}>
-          <View style={[styles.badge, styles.shadow, styles.primary]}>
-            <Text style={styles.textBadge}>Informação de Contato</Text>
-          </View>
-        </View>
-        <Controller
-          control={form.control}
-          rules={{
-            minLength: {
-              value: 5,
-              message: `Mín. 5 caracteres`
-            },
-          }}
-          render={({ field }) => (
-            <ProfileSetting
-              style={[styles.profileSetting, styles.section]}
-              hint='CEP'
-              inputProps={{
-                value: field.value,
-                onBlur: field.onBlur,
-                onChangeText: field.onChange,
-                keyboardType: 'number-pad',
-                editable: true,
-                textAlign: 'right',
-                multiline: true,
-                scrollEnabled: true,
-                maxLength: 8,
-                textContentType: "postalCode",
-                returnKeyType: "default",
-                onEndEditing: () => loadDataFromPostalCode(field.value),
-                onSubmitEditing: () => field.value ? loadDataFromPostalCode(field.value) : undefined
-              }}
-            />
-          )}
-          name='postalCode'
-        />
-
-
-        <Controller
-          control={form.control}
-          rules={{
-            minLength: {
-              value: 5,
-              message: `Mín. 5 caracteres`
-            },
-          }}
-          render={({ field }) => (
-            <ProfileSetting
-              style={[styles.profileSetting]}
-              hint='Endereço'
-              inputProps={{
-                value: field.value,
-                onBlur: field.onBlur,
-                onChangeText: field.onChange,
-                keyboardType: 'default',
-                editable: true,
-                textAlign: 'right',
-                multiline: true,
-                scrollEnabled: true,
-                textContentType: "fullStreetAddress",
-                returnKeyType: "default",
-              }}
-            />
-          )}
-          name='address1'
-        />
-
-        <Controller
-          control={form.control}
-          render={({ field }) => (
-            <ProfileSetting
-              style={[styles.profileSetting]}
-              hint='Número'
-              inputProps={{
-                value: field.value,
-                onBlur: field.onBlur,
-                onChangeText: field.onChange,
-                keyboardType: 'number-pad',
-                editable: true,
-                textAlign: 'right',
-                multiline: true,
-                scrollEnabled: true,
-                returnKeyType: "default",
-              }}
-            />
-          )}
-          name='address2'
-        />
-
-        <Controller
-          control={form.control}
-          rules={{
-            required: false,
-            minLength: {
-              value: 2,
-              message: `Mín. 2 caracteres`
-            },
-            maxLength: {
-              value: 180,
-              message: `Max. 180 caracteres`
-            },
-          }}
-          render={({ field }) => (
-            <ProfileSetting
-              style={[styles.profileSetting]}
-              hint='Complemento'
-              inputProps={{
-                value: field.value,
-                onBlur: field.onBlur,
-                onChangeText: field.onChange,
-                keyboardType: 'default',
-                editable: true,
-                textAlign: 'right',
-                multiline: true,
-                scrollEnabled: true,
-                returnKeyType: "default",
-              }}
-            />
-          )}
-          name='addressComplement'
-        />
-        <Controller
-          control={form.control}
-          render={({ field }) => (
-            <ProfileSetting
-              style={[styles.profileSetting]}
-              hint='Cidade'
-              inputProps={{
-                value: field.value,
-                onBlur: field.onBlur,
-                onChangeText: field.onChange,
-                keyboardType: 'default',
-                editable: true,
-                textAlign: 'right',
-                multiline: true,
-                scrollEnabled: true,
-                returnKeyType: "default",
-                autoCapitalize: 'words'
-              }}
-            />
-          )}
-          name='city'
-        />
-        <Controller
-          control={form.control}
-          rules={{
-            minLength: {
-              value: 2,
-              message: `Mín. 2 caracteres`
-            },
-          }}
-          render={({ field }) => (
-            <ProfileSetting
-              style={[styles.profileSetting]}
-              hint='Estado'
-              inputProps={{
-                value: field.value,
-                onBlur: field.onBlur,
-                onChangeText: field.onChange,
-                keyboardType: 'default',
-                editable: true,
-                textAlign: 'right',
-                scrollEnabled: true,
-                returnKeyType: "default",
-                autoCapitalize: 'characters',
-                maxLength: 2,
-              }}
-            />
-          )}
-          name='state'
-        />
-
-        <Controller
-          control={form.control}
-          render={({ field }) => (
-            <ProfileSetting
-              style={[styles.profileSetting]}
-              hint='País'
-              inputProps={{
-                value: field.value,
-                onBlur: field.onBlur,
-                onChangeText: field.onChange,
-                keyboardType: 'default',
-                editable: true,
-                textAlign: 'right',
-                scrollEnabled: true,
-                returnKeyType: "default",
-                autoCapitalize: 'words'
-              }}
-            />
-          )}
-          name='country'
-        />
-        <View style={styles.editViewButton}>
-          <Button
-            size='small'
-            status='primary'
-            appearance='ghost'
-            onPress={() => editProfile(2)}>
-            SALVAR
-          </Button>
-        </View>
-
-
-        {/* ############################ */}
-        {sessionUser && sessionUser?.userRole.find(e => e.id === EUserRole.patient) && underage && (
+        {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
           <>
-            <View style={styles.containerBadge}>
-              <View style={[styles.badge, styles.shadow, styles.primary]}>
-                <Text style={styles.textBadge}>Informação do Responsável</Text>
-              </View>
+            <BadgeProfile title='Informação de Contato' />
+            <Controller
+              control={form.control}
+              rules={{
+                minLength: {
+                  value: 5,
+                  message: `Mín. 5 caracteres`
+                },
+              }}
+              render={({ field }) => (
+                <ProfileSetting
+                  style={[styles.profileSetting, styles.section]}
+                  hint='CEP'
+                  inputProps={{
+                    value: formatPostalCode(field.value),
+                    onBlur: field.onBlur,
+                    onChangeText: field.onChange,
+                    keyboardType: 'number-pad',
+                    editable: true,
+                    textAlign: 'right',
+                    multiline: true,
+                    scrollEnabled: true,
+                    maxLength: 8,
+                    textContentType: "postalCode",
+                    returnKeyType: "default",
+                    onEndEditing: () => loadDataFromPostalCode(field.value),
+                    onSubmitEditing: () => field.value ? loadDataFromPostalCode(field.value) : undefined
+                  }}
+                />
+              )}
+              name='postalCode'
+            />
+            <Controller
+              control={form.control}
+              rules={{
+                minLength: {
+                  value: 5,
+                  message: `Mín. 5 caracteres`
+                },
+              }}
+              render={({ field }) => (
+                <ProfileSetting
+                  style={[styles.profileSetting]}
+                  hint='Endereço'
+                  inputProps={{
+                    value: field.value,
+                    onBlur: field.onBlur,
+                    onChangeText: field.onChange,
+                    keyboardType: 'default',
+                    editable: true,
+                    textAlign: 'right',
+                    multiline: true,
+                    scrollEnabled: true,
+                    textContentType: "fullStreetAddress",
+                    returnKeyType: "default",
+                  }}
+                />
+              )}
+              name='address1'
+            />
+
+            <Controller
+              control={form.control}
+              render={({ field }) => (
+                <ProfileSetting
+                  style={[styles.profileSetting]}
+                  hint='Número'
+                  inputProps={{
+                    value: field.value,
+                    onBlur: field.onBlur,
+                    onChangeText: field.onChange,
+                    keyboardType: 'number-pad',
+                    editable: true,
+                    textAlign: 'right',
+                    multiline: true,
+                    scrollEnabled: true,
+                    returnKeyType: "default",
+                  }}
+                />
+              )}
+              name='address2'
+            />
+
+            <Controller
+              control={form.control}
+              rules={{
+                required: false,
+                minLength: {
+                  value: 2,
+                  message: `Mín. 2 caracteres`
+                },
+                maxLength: {
+                  value: 180,
+                  message: `Max. 180 caracteres`
+                },
+              }}
+              render={({ field }) => (
+                <ProfileSetting
+                  style={[styles.profileSetting]}
+                  hint='Complemento'
+                  inputProps={{
+                    value: field.value,
+                    onBlur: field.onBlur,
+                    onChangeText: field.onChange,
+                    keyboardType: 'default',
+                    editable: true,
+                    textAlign: 'right',
+                    multiline: true,
+                    scrollEnabled: true,
+                    returnKeyType: "default",
+                  }}
+                />
+              )}
+              name='addressComplement'
+            />
+            <Controller
+              control={form.control}
+              render={({ field }) => (
+                <ProfileSetting
+                  style={[styles.profileSetting]}
+                  hint='Cidade'
+                  inputProps={{
+                    value: field.value,
+                    onBlur: field.onBlur,
+                    onChangeText: field.onChange,
+                    keyboardType: 'default',
+                    editable: true,
+                    textAlign: 'right',
+                    multiline: true,
+                    scrollEnabled: true,
+                    returnKeyType: "default",
+                    autoCapitalize: 'words'
+                  }}
+                />
+              )}
+              name='city'
+            />
+            <Controller
+              control={form.control}
+              rules={{
+                minLength: {
+                  value: 2,
+                  message: `Mín. 2 caracteres`
+                },
+              }}
+              render={({ field }) => (
+                <ProfileSetting
+                  style={[styles.profileSetting]}
+                  hint='Estado'
+                  inputProps={{
+                    value: field.value,
+                    onBlur: field.onBlur,
+                    onChangeText: field.onChange,
+                    keyboardType: 'default',
+                    editable: true,
+                    textAlign: 'right',
+                    scrollEnabled: true,
+                    returnKeyType: "default",
+                    autoCapitalize: 'characters',
+                    maxLength: 2,
+                  }}
+                />
+              )}
+              name='state'
+            />
+            <Controller
+              control={form.control}
+              render={({ field }) => (
+                <ProfileSetting
+                  style={[styles.profileSetting]}
+                  hint='País'
+                  inputProps={{
+                    value: field.value,
+                    onBlur: field.onBlur,
+                    onChangeText: field.onChange,
+                    keyboardType: 'default',
+                    editable: true,
+                    textAlign: 'right',
+                    scrollEnabled: true,
+                    returnKeyType: "default",
+                    autoCapitalize: 'words'
+                  }}
+                />
+              )}
+              name='country'
+            />
+            <View style={styles.editViewButton}>
+              <Button
+                size='small'
+                status='primary'
+                appearance='ghost'
+                onPress={() => editProfile(2)}>
+                SALVAR
+              </Button>
             </View>
+          </>
+        )}
+
+        {sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor) && (
+          <>
+            <BadgeProfile title='Dados Profissionais' />
+
             <Controller
               control={form.control}
               render={({ field }) => (
                 <ProfileSetting
                   style={[styles.profileSetting, styles.section]}
-                  hint='Nome Completo'
+                  hint='N° de Registro'
+                  inputProps={{
+                    onBlur: field.onBlur,
+                    onChangeText: field.onChange,
+                    value: field.value,
+                    keyboardType: 'number-pad',
+                    textAlign: 'right',
+                    scrollEnabled: true,
+                    disabled: true
+                  }}
+                />
+              )}
+              name='specialty.crm'
+              defaultValue=''
+            />
+            <Controller
+              control={form.control}
+              render={({ field }) => (
+                <ProfileSetting
+                  style={styles.profileSetting}
+                  hint='Especialidade'
                   inputProps={{
                     value: field.value,
                     onBlur: field.onBlur,
@@ -674,35 +704,67 @@ const EditProfileScreen: FC = (): ReactElement => {
                     keyboardType: 'default',
                     multiline: true,
                     scrollEnabled: true,
-                    maxLength: 60,
                     returnKeyType: "default",
                     autoCapitalize: "words",
                     textContentType: "name"
                   }}
                 />
               )}
-              name='responsiblePersonName'
-            />            
-            <Controller
-              control={form.control}
-              render={({ field }) => (
-                <ProfileSetting
-                  style={styles.profileSetting}
-                  hint='E-mail'
-                  inputProps={{
-                    value: field.value,
-                    editable: false,
-                    disabled: true,
-                    textAlign: 'right',
-                    multiline: true,
-                    scrollEnabled: true
-                  }}
-                />
-              )}
-              name='responsiblePersonEmail'
+              name='specialty.description'
             />
           </>
         )}
+
+        {/* ############################ */}
+        {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && underage
+          && patientDisplay?.patientProfileCreatorDto.patientProfileCreatorTypeId !== 1 && (
+            <>
+              <BadgeProfile title='Informação do Responsável' />
+              <Controller
+                control={form.control}
+                render={({ field }) => (
+                  <ProfileSetting
+                    style={[styles.profileSetting, styles.section]}
+                    hint='Nome Completo'
+                    inputProps={{
+                      value: field.value,
+                      onBlur: field.onBlur,
+                      onChangeText: field.onChange,
+                      editable: false,
+                      disabled: true,
+                      textAlign: 'right',
+                      keyboardType: 'default',
+                      multiline: true,
+                      scrollEnabled: true,
+                      maxLength: 60,
+                      returnKeyType: "default",
+                      autoCapitalize: "words",
+                      textContentType: "name"
+                    }}
+                  />
+                )}
+                name='responsiblePersonName'
+              />
+              <Controller
+                control={form.control}
+                render={({ field }) => (
+                  <ProfileSetting
+                    style={styles.profileSetting}
+                    hint='E-mail'
+                    inputProps={{
+                      value: field.value,
+                      editable: false,
+                      disabled: true,
+                      textAlign: 'right',
+                      multiline: true,
+                      scrollEnabled: true
+                    }}
+                  />
+                )}
+                name='responsiblePersonEmail'
+              />
+            </>
+          )}
       </ScrollView>
     </>
   )

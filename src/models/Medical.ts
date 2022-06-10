@@ -1,3 +1,5 @@
+import { VisitAddressDTO } from "./VisitAddress"
+
 export class MedicalSpecialtyDto {
     id!: number
     description!: string
@@ -35,4 +37,12 @@ export interface MedicalDoctorySummaryDto {
     name: string
     specialty: string
     crm: string
+}
+
+export class MedicalDoctorDto {
+    id!: number
+    crm!: string
+    specialtyId!: number 
+    professionalTypeId!: number 
+    visitAddress!: VisitAddressDTO
 }

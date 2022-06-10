@@ -1,7 +1,8 @@
 import { Dimensions, Platform, StyleSheet } from 'react-native'
 
 const { width } = Dimensions.get('screen')
-export const editProfileStyle = StyleSheet.create({
+
+export const extraProfileStyle = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'background-basic-color-2',
