@@ -1,33 +1,19 @@
-import CardAddressComponent from '@components/cards/cardAddress'
 import CustomErrorMessage from '@components/error'
 import { DoctorSignUpProps } from '@models/SignUpProps'
 import { registerStyle } from '@pages/signup/style'
-import { Input, Spinner, useStyleSheet } from '@ui-kitten/components'
+import { Input, useStyleSheet } from '@ui-kitten/components'
 import { formatPhone } from '@utils/mask'
-import React, { FC, ReactElement, useState } from 'react'
+import React, { FC, ReactElement } from 'react'
 import { Controller } from 'react-hook-form'
 import { View } from 'react-native'
 
 const DoctorSignUpPart2Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): ReactElement => {
 
   const styles = useStyleSheet(registerStyle)
-  const [isLoadingPostalCode, setIsLoadingPostalCode] = useState<boolean>(false)
 
   return (
     <>
       <View style={styles.box}>
-        {isLoadingPostalCode ?
-          <>
-            <View style={styles.backdropSpinner}>
-              <Spinner size='giant' />
-            </View>
-          </> : null}
-        <CardAddressComponent
-          styles={styles}
-          form={form}
-          isFetching={isLoadingPostalCode}
-          handleFetchingData={setIsLoadingPostalCode}
-          />
         <Controller
           control={form.control}
           rules={{
@@ -55,7 +41,6 @@ const DoctorSignUpPart2Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               returnKeyType="done"
               onSubmitEditing={() => form.setFocus('phone2')}
               underlineColorAndroid="transparent"
-              disabled={isLoadingPostalCode}
               textContentType="telephoneNumber"
             />
           )}
@@ -87,7 +72,6 @@ const DoctorSignUpPart2Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               returnKeyType="send"
               onSubmitEditing={form.handleSubmit(onSubmit)}
               underlineColorAndroid="transparent"
-              disabled={isLoadingPostalCode}
               textContentType="telephoneNumber"
             />
           )}

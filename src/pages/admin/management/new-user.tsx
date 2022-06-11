@@ -152,6 +152,7 @@ const NewUserScreen: FC = (): ReactElement => {
             <SafeAreaLayout style={styles.safeArea}>
                 <KeyboardAwareScrollView
                     keyboardShouldPersistTaps='handled'
+                    keyboardDismissMode='interactive'
                     showsVerticalScrollIndicator={false}
                     enableOnAndroid
                     contentContainerStyle={{ flexGrow: 1 }}>
@@ -506,7 +507,6 @@ const NewUserScreen: FC = (): ReactElement => {
                             form={form}
                             isFetching={isLoadingPostalCode}
                             handleFetchingData={setIsLoadingPostalCode}
-                            commercial
                         />
                         <Controller
                             control={form.control}

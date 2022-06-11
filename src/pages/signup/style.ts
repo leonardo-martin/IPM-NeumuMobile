@@ -13,14 +13,6 @@ export const signupStyle = StyleSheet.create({
         borderRadius: 30,
         backgroundColor: 'color-primary-default'
     },
-    stepIndicator: {
-        backgroundColor: 'color-primary-default',
-        width: 40,
-        height: 40,
-        borderRadius: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     termsModal: {
         padding: 25
     },

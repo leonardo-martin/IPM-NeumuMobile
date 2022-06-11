@@ -157,6 +157,7 @@ const SignInScreen: FC = (): ReactElement => {
       <StatusBar hidden={Platform.OS === 'ios' ? true : false} backgroundColor='transparent' translucent />
       <KeyboardAwareScrollView
         keyboardShouldPersistTaps='handled'
+        keyboardDismissMode='interactive'
         showsVerticalScrollIndicator={false}
         enableOnAndroid
         contentContainerStyle={{ flexGrow: 1 }}>
