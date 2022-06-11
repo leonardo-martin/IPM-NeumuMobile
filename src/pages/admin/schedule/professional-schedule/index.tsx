@@ -10,7 +10,7 @@ import { Button, CheckBox, List, ListItem, Spinner, Text, useStyleSheet, useThem
 import { getTimeBlocksByTime, getTimesByInterval, sortByNumber } from '@utils/common'
 import { addMinutes } from 'date-fns'
 import React, { createRef, FC, ReactElement, useCallback, useEffect, useState } from 'react'
-import { ListRenderItemInfo, View } from 'react-native'
+import { Alert, ListRenderItemInfo, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Animated, { Easing, FadeInRight, FadeOutRight, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import Toast from 'react-native-toast-message'
@@ -90,8 +90,22 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
         setOriginalScheduleList(newArray)
     }
 
+    const alert = () => {
+        Alert.alert(
+            'Informativo',
+            'Para que o seu perfil esteja visível aos pacientes, faça o cadastro do seu Endereço Comercial em seu perfil',
+            [
+                {
+                    text: 'Ok',
+                    style: 'default',
+                }
+            ]
+        )
+    }
+
     useFocusEffect(
         useCallback(() => {
+            alert()
             loadData()
             opacity.value = 0
             if (listRef)

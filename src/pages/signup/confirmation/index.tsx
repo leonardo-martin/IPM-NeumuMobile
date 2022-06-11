@@ -1,15 +1,18 @@
-import React, { createRef, FC, ReactElement, useCallback, useRef } from 'react'
-import { StyleProp, BackHandler, View, Animated, ListRenderItemInfo, Dimensions, Image, StatusBar, StyleSheet, Pressable, TouchableOpacity, FlatList, Platform, ImageStyle } from 'react-native'
-import { useNavigation, CommonActions, useFocusEffect } from '@react-navigation/native'
-import { Icon, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
 import { FlatData } from '@models/FlatData'
-import { style } from './style'
+import { RegisterParams } from '@models/SignUpProps'
+import { CommonActions, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
+import { Icon, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
+import React, { createRef, FC, ReactElement, useCallback, useRef } from 'react'
+import { Animated, BackHandler, Dimensions, FlatList, Image, ImageStyle, ListRenderItemInfo, Platform, Pressable, StatusBar, StyleProp, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { flatList } from './data'
+import { style } from './style'
 
 const { width, height } = Dimensions.get('screen')
 
 const RegistrationConfirmation: FC = (): ReactElement => {
 
+  const route = useRoute()
+  const params = route.params as RegisterParams
   const scrollX = useRef<Animated.Value>(new Animated.Value(0)).current
   const flatRef = createRef<FlatList>()
   const nextPage = (index: number) => flatRef.current?.scrollToIndex({ animated: true, index })
@@ -116,8 +119,8 @@ const RegistrationConfirmation: FC = (): ReactElement => {
         <Image source={info.item.image} style={styles.image as StyleProp<ImageStyle>} />
       </View>
       <View style={styles.itemDetails}>
-        <Text style={styles.itemTitle}>{info.item.title}</Text>
-        <Text style={styles.itemDescription}>{info.item.description}</Text>
+        <Text style={styles.itemTitle}>{info.item.title[params.type]}</Text>
+        <Text style={styles.itemDescription}>{info.item.description[params.type]}</Text>
         {info.index === (flatList.length - 1) ?
           <View style={styles.viewIcon}>
             <TouchableOpacity onPress={() => navigation.dispatch(actions)}>

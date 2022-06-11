@@ -5,7 +5,7 @@ import { useDatepickerService } from '@hooks/useDatepickerService'
 import { PatientSignUpProps } from '@models/SignUpProps'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { useFocusEffect } from '@react-navigation/native'
-import { Datepicker, IndexPath, Input, PopoverPlacements } from '@ui-kitten/components'
+import { Datepicker, IndexPath, Input, PopoverPlacements, Select, SelectItem, Text } from '@ui-kitten/components'
 import { sortByStringField } from '@utils/common'
 import { formatCpf, formatPhone, isEmailValid, onlyNumbers } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
@@ -13,6 +13,7 @@ import React, { Dispatch, FC, ReactElement, useCallback, useEffect, useState } f
 import { Controller } from 'react-hook-form'
 import { Keyboard, StyleSheet, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
+import specialties from 'utils/specialties'
 import { CalendarIcon } from './icons'
 
 const kinList: SelectItemData[] = [
@@ -37,6 +38,7 @@ interface CardPatientRelationshipProps extends PatientSignUpProps {
 
 const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ form, onSubmit, styles, ...props }): ReactElement => {
 
+    const [selectedSpecialty, setSelectedSpecialty] = useState<IndexPath | IndexPath[]>()
     const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[] | undefined>()
     const { localeDateService } = useDatepickerService()
     const sortedKinList: SelectItemData[] = kinList.sort((a, b) => sortByStringField(a, b, 'title'))
@@ -67,22 +69,37 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
         }
     }
 
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         if (relationship === 3)
+    //             form.register('creator.data.guardian.attachment', {
+    //                 required: {
+    //                     value: true,
+    //                     message: 'Necessário documentação'
+    //                 },
+    //                 value: undefined
+    //             })
+
+    //         return () => {
+    //             form.unregister('creator.data.guardian.attachment')
+    //         }
+
+    //     }, [relationship])
+    // )
+
     useFocusEffect(
         useCallback(() => {
-            if (relationship === 3)
-                form.register('creator.data.guardian.attachment', {
-                    required: {
-                        value: true,
-                        message: 'Necessário documentação'
-                    },
-                    value: undefined
-                })
-            else {
-                form.unregister('creator.data.guardian.attachment')
-            }
-
-        }, [relationship])
+            const specialty = form.getValues('creator.data.specialty.description')
+            if (specialty) setSelectedSpecialty(new IndexPath(specialties.indexOf(specialty)))
+        }, [])
     )
+
+    useEffect(() => {
+        if (selectedSpecialty) {
+            form.setValue('creator.data.specialty.description', specialties[Number(selectedSpecialty) - 1])
+            form.clearErrors('creator.data.specialty.description')
+        } else form.setValue('creator.data.specialty.description', '')
+    }, [selectedSpecialty])
 
     return (
         <>
@@ -345,7 +362,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 defaultValue=''
             />
             <CustomErrorMessage name='creator.data.phone2' errors={form.formState.errors} />
-            {relationship === 3 && (
+            {/* {relationship === 3 && (
                 <View style={{ paddingVertical: 10 }}>
                     <AttachmentBoxComponent
                         handleFile={props.setFile}
@@ -353,7 +370,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         label='Anexar Documentação *' />
                     <CustomErrorMessage name='creator.data.guardian.attachment' errors={form.formState.errors} />
                 </View>
-            )}
+            )} */}
 
             {relationship === 2 && (
                 <>
@@ -430,30 +447,25 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                             required: {
                                 value: true,
                                 message: 'Campo obrigatório'
-                            },
-                            minLength: {
-                                value: 5,
-                                message: `Mín. 5 caracteres`
-                            },
+                            }
                         }}
-                        render={({ field: { onChange, onBlur, value, name, ref } }) => (
-                            <Input
+                        render={({ field: { onBlur, value, name, ref } }) => (
+                            <Select
                                 size='small'
                                 label="Especialidade *"
                                 style={styles?.input}
-                                keyboardType='default'
-                                placeholder=''
+                                placeholder='Selecione'
                                 testID={name}
                                 onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
                                 ref={ref}
-                                maxLength={50}
-                                underlineColorAndroid="transparent"
-                                onSubmitEditing={form.handleSubmit(onSubmit)}
-                                autoCapitalize='words'
-                                returnKeyType="send"
-                            />
+                                selectedIndex={selectedSpecialty}
+                                onSelect={setSelectedSpecialty}
+                                value={value}
+                            >
+                                {specialties.map((item, index) => (
+                                    <SelectItem key={item + index} title={item} />
+                                ))}
+                            </Select>
                         )}
                         name='creator.data.specialty.description'
                         defaultValue=''

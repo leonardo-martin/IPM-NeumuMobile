@@ -58,12 +58,12 @@ const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): Rea
         setRelationship(creatorRelationship.find((_, i) => i === idRelationship))
       else if (!idRelationship && !isLegalAge && result !== 1) setIsVisible(true)
 
-      const file: DocumentPickerResponse = form.getValues('creator.data.guardian.attachment')
-      if (file) {
-        const arr = [...fileResponse ?? []]
-        arr.push(file)
-        setFileResponse(arr)
-      }
+      // const file: DocumentPickerResponse = form.getValues('creator.data.guardian.attachment')
+      // if (file) {
+      //   const arr = [...fileResponse ?? []]
+      //   arr.push(file)
+      //   setFileResponse(arr)
+      // }
 
     }, [])
   )
@@ -83,14 +83,14 @@ const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): Rea
 
   }
 
-  useEffect(() => {
-    if (fileResponse) {
-      form.setValue('creator.data.guardian.attachment', fileResponse[0])
-      form.clearErrors('creator.data.guardian.attachment')
-    } else {
-      form.setValue('creator.data.guardian.attachment', undefined)
-    }
-  }, [fileResponse])
+  // useEffect(() => {
+  //   if (fileResponse) {
+  //     form.setValue('creator.data.guardian.attachment', fileResponse[0])
+  //     form.clearErrors('creator.data.guardian.attachment')
+  //   } else {
+  //     form.setValue('creator.data.guardian.attachment', undefined)
+  //   }
+  // }, [fileResponse])
 
   return (
     <>

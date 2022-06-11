@@ -13,7 +13,7 @@ import { extractFieldString } from '@utils/common'
 import { cleanNumberMask, formatCpf } from '@utils/mask'
 import React, { FC, ReactElement, useCallback, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Alert, BackHandler, Platform, View } from 'react-native'
+import { Alert, BackHandler, Keyboard, Platform, View } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import { Modalize } from 'react-native-modalize'
 import { Host, Portal } from 'react-native-portalize'
@@ -78,7 +78,12 @@ const SignUpScreen: FC = (): ReactElement => {
     }
 
     const onNext = () => setActive((p) => p + 1)
-    const onDone = () => modalizeRef.current?.open()
+    const onDone = () => {
+        Keyboard.dismiss()
+        setIsLoading(false)
+        setSending(false)
+        modalizeRef.current?.open()
+    }
 
     useFocusEffect(
         useCallback(() => {
@@ -144,6 +149,10 @@ const SignUpScreen: FC = (): ReactElement => {
                     delete newData.pastExams
                 }
 
+                if(newData.susNumber === '' || !newData.susNumber) {
+                    delete newData.susNumber
+                }
+
                 try {
                     if (newData.creator?.patientProfileCreatorTypeId === PatientProfileCreatorTypeEnum.Other) {
 
@@ -167,35 +176,35 @@ const SignUpScreen: FC = (): ReactElement => {
                         if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Tutor Legal') {
                             delete newData.creator.data['guardian']
                         } else {
-                            allowedToCreate = false
-                            try {
-                                const file = newData.creator.data['guardian'].attachment as DocumentPickerResponse
-                                const formData = new FormData()
-                                formData.append('fileFormat', file.name)
-                                formData.append('file', {
-                                    uri: Platform.OS === 'android'
-                                        ? file.uri
-                                        : file.uri.replace('file://', ''),
-                                    name: file.name,
-                                    type: file.type
-                                })
+                            // allowedToCreate = false
+                            // try {
+                            //     const file = newData.creator.data['guardian'].attachment as DocumentPickerResponse
+                            //     const formData = new FormData()
+                            //     formData.append('fileFormat', file.name)
+                            //     formData.append('file', {
+                            //         uri: Platform.OS === 'android'
+                            //             ? file.uri
+                            //             : file.uri.replace('file://', ''),
+                            //         name: file.name,
+                            //         type: file.type
+                            //     })
 
-                                const response = await uploadTutorFile(formData, newData.cpf as string, newData.creator.data['cpf'])
+                            //     const response = await uploadTutorFile(formData, newData.cpf as string, newData.creator.data['cpf'])
 
-                                if (response.status === 201) {
-                                    allowedToCreate = true
-                                    newData.creator.data['guardian'].attachment.uri = '[hidden]'
-                                } else {
-                                    const message: string = response.data.message.message ?? ""
-                                    if (message.includes('Patient profile already exists')) {
-                                        messageError = `Tutor já cadastrado para o CPF ${formatCpf(data.cpf)}`
-                                    } else messageError = 'Erro ao enviar anexo'
-                                }
+                            //     if (response.status === 201) {
+                            //         allowedToCreate = true
+                            //         newData.creator.data['guardian'].attachment.uri = '[hidden]'
+                            //     } else {
+                            //         const message: string = response.data.message.message ?? ""
+                            //         if (message.includes('Patient profile already exists')) {
+                            //             messageError = `Tutor já cadastrado para o CPF ${formatCpf(data.cpf)}`
+                            //         } else messageError = 'Erro ao enviar anexo'
+                            //     }
 
-                            } catch (error) {
-                                allowedToCreate = false
-                                messageError = 'Erro ao enviar a documentação'
-                            }
+                            // } catch (error) {
+                            //     allowedToCreate = false
+                            //     messageError = 'Erro ao enviar a documentação'
+                            // }
                         }
                     }
                 } catch (error) {
@@ -216,6 +225,12 @@ const SignUpScreen: FC = (): ReactElement => {
                             messageError = 'Ocorreu um erro. Tente novamente mais tarde.'
                         }
                     } else await createPatientProfileCreator(Number(response.data.patientId), newData.creator)
+
+                    setIsLoading(false)
+                    setSending(false)
+                } else {
+                    setIsLoading(false)
+                    setSending(false)
                 }
             } else if (params?.type === 1) {
                 const newData = data as UserDoctorData
@@ -233,14 +248,16 @@ const SignUpScreen: FC = (): ReactElement => {
                         messageError = 'Ocorreu um erro. Tente novamente mais tarde.'
                     }
                 }
+                setIsLoading(false)
+                setSending(false)
             }
 
         } catch (error) {
-            messageError = 'Ocorreu um erro inesperado. Entre em contato com o administrador'
-        } finally {
-            modalizeRef.current?.close()
             setIsLoading(false)
             setSending(false)
+            messageError = 'Ocorreu um erro inesperado. Entre em contato com o administrador'
+        } finally {
+            modalizeRef.current?.close()            
         }
 
         if (messageError !== '')
@@ -248,7 +265,9 @@ const SignUpScreen: FC = (): ReactElement => {
                 type: 'danger',
                 text2: messageError,
             })
-        else navigation.navigate('RegistrationConfirmation')
+        else navigation.navigate('RegistrationConfirmation', {
+            type: params.type
+        })
     }
 
     const LoadingIndicator = () => (
@@ -285,7 +304,6 @@ const SignUpScreen: FC = (): ReactElement => {
                     <Stepper
                         active={active}
                         content={steps[params.type] ? steps[params.type] : []}
-                        stepStyle={styles.stepIndicator}
                     />
                 </View>
                 <Portal>
