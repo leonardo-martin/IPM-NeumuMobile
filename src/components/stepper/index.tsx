@@ -11,15 +11,10 @@ interface StepperProps {
     stepTextStyle?: TextStyle
 }
 
-const search = (keyName: number, myArray: number[]): boolean => {
-    return myArray.some((val) => val === keyName)
-}
 
 const Stepper: FC<StepperProps> = ({
     active,
     content,
-    stepStyle,
-    stepTextStyle,
 }): ReactElement => {
 
     const styles = useStyleSheet(stepperStyle)
@@ -46,59 +41,12 @@ const Stepper: FC<StepperProps> = ({
 
     return (
         <>
-            <View style={styles.lineProgress}>
-                {content.map((_, i) => {
-                    return (
-                        <React.Fragment key={i}>
-                            {i !== 0 && (
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        height: 1,
-                                        backgroundColor: 'gray',
-                                        opacity: 1,
-                                        marginHorizontal: 10,
-                                    }}
-                                />
-                            )}
-                            <View
-                                style={[
-                                    styles.step,
-                                    {
-                                        opacity: search(i, step) ? 1 : 0.3,
-                                    },
-                                    stepStyle,
-                                ]}
-                            >
-                                {search(i, step) ? (
-                                    <Text
-                                        style={[
-                                            styles.label,
-                                            stepTextStyle,
-                                        ]}
-                                    >
-                                        &#10003;
-                                    </Text>
-                                ) : (
-                                    <Text
-                                        style={[
-                                            styles.label,
-                                            stepTextStyle,
-                                        ]}
-                                    >
-                                        {i + 1}
-                                    </Text>
-                                )}
-                            </View>
-                        </React.Fragment>
-                    )
-                })}
-            </View>
             <KeyboardAwareScrollView
                 enableOnAndroid
                 keyboardShouldPersistTaps='handled'
+                keyboardDismissMode='interactive'
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ flexGrow: 1 }}>
+                contentContainerStyle={styles.content}>
                 {content[active]}
             </KeyboardAwareScrollView>
         </>
