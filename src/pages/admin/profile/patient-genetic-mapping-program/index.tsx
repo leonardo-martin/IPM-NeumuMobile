@@ -342,7 +342,8 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                 </ScrollView>
                                 : (
                                     <KeyboardAwareScrollView
-                                        keyboardShouldPersistTaps='never'
+                                        keyboardShouldPersistTaps='handled'
+                                        keyboardDismissMode='interactive'
                                         showsVerticalScrollIndicator={false}
                                         enableOnAndroid>
                                         <View
@@ -350,7 +351,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                             <Text style={styles.title}>Como funciona ?</Text>
                                             <Text style={styles.text}>
                                                 {`\t`}Aceitando participar, e após este cadastro feito, será enviado um e-mail de boas vindas direto do aplicativo explicando as fases do projeto.
-                                                Ao participar deste projeto, você concorda em ceder informações ao parceiro Abrafeu sobre dados e a exames realizados para o diagnóstico clínico da distrofia muscular para o diagnóstico clínico da distrofia muscular, confirmado pelo seu médico neurologista.
+                                                Ao participar deste projeto, você concorda em ceder informações ao parceiro Abrafeu sobre dados pessoais necessários, laudos, e a exames realizados para o diagnóstico clínico da distrofia muscular confirmado pelo seu médico neurologista.
                                             </Text>
                                             <Text style={styles.text}>
                                                 {`\t`}Após o envio, os pais, responsáveis e/ou médicos dos pacientes deverão preencher o questionário que será disponibilizado pelo aplicativo.
@@ -358,7 +359,8 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                             <View style={styles.subContainer}>
                                                 <Text style={styles.title}>Importante</Text>
                                                 <Text style={styles.text}>
-                                                    {`\t`}Todas as informações que você fornecer serão mantidas em um banco de dados seguro e, quaisquer informações que possam identificar você e seus familiares, não serão compartilhadas para fins comerciais.  Nossa equipe está profundamente comprometida em proteger sua privacidade e identidade e usará todas as medidas disponíveis para garantir segurança de suas informações pessoais.
+                                                    {`\t`}Todas as informações que você fornecer serão mantidas em um banco de dados seguro e, quaisquer informações que possam identificar você e seus familiares, não serão compartilhadas para fins comerciais.
+                                                    Nossa equipe está profundamente comprometida em proteger sua privacidade e identidade e usará todas as medidas disponíveis para garantir segurança de suas informações pessoais.
                                                 </Text>
                                                 <Text style={styles.text}>
                                                     {`\t`}O TeleNeuMu e a Abrafeu respeita e cumpre a nova Lei Geral de Proteção de Dados (LGPD) implementada no Brasil desde 14/08/2018.
@@ -466,7 +468,8 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                                 )}
 
                                             {((statusPermission === UnderageStatus.GRANTED && underage && selectTmp === 0) ||
-                                                (statusPermission === UnderageStatus.NOT_REQUESTED && !underage && selectTmp === 0)) && (
+                                                (statusPermission === UnderageStatus.NOT_REQUESTED && !underage && selectTmp === 0)) &&
+                                                formAvailable === AbrafeuOptInStatus.AVAILABLE && (
                                                     <>
                                                         <View style={{ flexDirection: 'column', paddingBottom: 15, alignItems: 'center' }}>
 
