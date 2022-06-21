@@ -19,6 +19,9 @@ const specialties = [
     'Dermatologia',
     'Endocrinologia e Metabolismo',
     'Endoscopia',
+    'Fisiatria',
+    'Fisioterapia',
+    'Fonoaudiologia',
     'Gastroenterologia',
     'Genética Médica',
     'Geriatria',
@@ -40,9 +43,11 @@ const specialties = [
     'Neurocirurgia',
     'Neurologia',
     'Nutrilogia',
+    'Nutrição',
     'Oftalmologia',
     'Ortopedia e Traumatologia',
     'Otorrinolaringologia',
+    'Outro(a)',
     'Patologia',
     'Patologia Clínica / Medicina Laboratorial',
     'Pediatria',
@@ -51,6 +56,7 @@ const specialties = [
     'Radiologia e diagnóstico por imagem',
     'Radioterapia',
     'Reumatologia',
+    'Terapia Ocupacional',
     'Urologia'
 ]
 

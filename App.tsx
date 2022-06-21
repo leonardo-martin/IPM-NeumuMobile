@@ -16,9 +16,8 @@ import { FontistoIconsPack } from './fontisto-icon'
 import { IoniconsIconsPack } from './ionicons-icon'
 
 const codePushOptions: CodePushOptions = {
-  checkFrequency: codePush.CheckFrequency.ON_APP_START,
+  checkFrequency: __DEV__ ? codePush.CheckFrequency.MANUAL : codePush.CheckFrequency.ON_APP_START,
   installMode: codePush.InstallMode.IMMEDIATE,
-  mandatoryInstallMode: codePush.InstallMode.IMMEDIATE,
   updateDialog: {
     appendReleaseDescription: true,
     title: "Atualização",
@@ -27,6 +26,9 @@ const codePushOptions: CodePushOptions = {
     optionalUpdateMessage: "Uma nova versão está disponível. Clique em 'INSTALAR AGORA' para atualizar.",
     optionalIgnoreButtonLabel: 'Cancelar',
     optionalInstallButtonLabel: 'Instalar Agora'
+  },
+  rollbackRetryOptions: {
+    maxRetryAttempts: 3,
   }
 }
 

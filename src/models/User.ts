@@ -1,3 +1,4 @@
+import { JSONObject } from "./Common"
 import { ExamDNA } from "./Patient"
 import { PatientProfileCreatorDto } from "./PatientProfileCreator"
 import { UserRole } from "./UserRole"
@@ -172,6 +173,7 @@ class MedicalSpecialtyDto {
     id!: number
     description!: string
     professionalTypeId!: string
+    others!: JSONObject | string | any
 }
 
 export class UserAccRecoveryPasswdRequest {

@@ -1,4 +1,5 @@
 import CustomErrorMessage from '@components/error'
+import specialties from '@constants/specialties'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { DoctorSignUpProps } from '@models/SignUpProps'
 import { registerStyle } from '@pages/signup/style'
@@ -7,7 +8,6 @@ import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { Datepicker, Icon, IconProps, IndexPath, Input, PopoverPlacements, Radio, RadioGroup, Select, SelectItem, Text, useStyleSheet } from '@ui-kitten/components'
 import { getGender, openMailTo } from '@utils/common'
 import { formatCpf, isEmailValid, onlyNumbers } from '@utils/mask'
-import specialties from '@utils/specialties'
 import { validatePasswd } from '@utils/validators'
 import { validate } from 'gerador-validador-cpf'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
@@ -27,6 +27,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
   const [secureTextEntry, setSecureTextEntry] = useState(true)
 
   const emailConfirm = form.watch("email")
+  const [bOtherDescription, setBOtherDescription] = useState(false)
 
   useFocusEffect(
     useCallback(() => {
@@ -34,14 +35,30 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
       if (sex) setSelectedIndex(sex === 'male' ? 0 : sex === 'female' ? 1 : 2)
 
       const specialty = form.getValues('specialty.description')
-      if (specialty) setSelectedSpecialty(new IndexPath(specialties.indexOf(specialty)))
+      if (specialty) {
+        setSelectedSpecialty(new IndexPath(specialties.indexOf(specialty)))
+        if (specialty.toLowerCase().includes('outro')) setBOtherDescription(true)
+        else {
+          form.setValue('specialty.others', '')
+          setBOtherDescription(false)
+        }
+      }
     }, [])
   )
 
   useEffect(() => {
-    if (selectedSpecialty)
-      form.setValue('specialty.description', specialties[Number(selectedSpecialty) - 1])
-    else form.setValue('specialty.description', '')
+    if (selectedSpecialty) {
+      const specialty = specialties[Number(selectedSpecialty) - 1]
+      form.setValue('specialty.description', specialty)
+      if (specialty?.toLowerCase().includes('outro')) setBOtherDescription(true)
+      else {
+        form.setValue('specialty.others', '')
+        setBOtherDescription(false)
+      }
+    } else {
+      form.setValue('specialty.description', '')
+      setBOtherDescription(false)
+    }
   }, [selectedSpecialty])
 
   useEffect(() => {
@@ -405,6 +422,53 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
           defaultValue=''
         />
         <CustomErrorMessage name='specialty.description' errors={form.formState.errors} />
+
+        {bOtherDescription && (
+          <>
+            <Controller
+              control={form.control}
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Campo obrigatório'
+                },
+                minLength: {
+                  value: 5,
+                  message: `Mín. 5 caracteres`
+                },
+              }}
+              render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                <Input
+                  size='small'
+                  label="Outro(a) *"
+                  style={styles.input}
+                  keyboardType='default'
+                  testID={name}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  ref={ref}
+                  maxLength={60}
+                  returnKeyType="next"
+                  underlineColorAndroid="transparent"
+                  autoCapitalize="words"
+                  caption={(evaProps) => (
+                    <>
+                      <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        <Text {...evaProps}>Obrigatório, em caso da especialidade selecionada for: {" "}</Text>
+                        <Text {...evaProps} style={[evaProps?.style, { fontWeight: 'bold' }]}>{`${form.getValues('specialty.description')}`.toUpperCase()}</Text>
+                      </View>
+                    </>
+                  )}
+                />
+              )}
+              name='specialty.others'
+              defaultValue=''
+            />
+            <CustomErrorMessage name='specialty.others' errors={form.formState.errors} />
+          </>
+        )}
+
       </View>
     </>
   )

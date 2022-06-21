@@ -5,9 +5,9 @@
   "scripts": {
     "start": "react-native start",
     "android": "react-native run-android",
-    "ios": "react-native run-ios --scheme TeleNeuMu_Debug",
-    "ios:dev": "react-native run-ios --scheme TeleNeuMu_Staging",
-    "ios:prod": "react-native run-ios --scheme TeleNeuMu_Production",
+    "ios": "react-native run-ios --scheme TeleNeuMu_Debug --configuration Debug",
+    "ios:dev": "react-native run-ios --scheme TeleNeuMu_Staging --configuration Staging",
+    "ios:prod": "react-native run-ios --scheme TeleNeuMu_Production --configuration Production",
     "codepush:deploykey": "appcenter codepush deployment list -a ${OWNER_APP_NAME:=''} -k",
     "codepush:publish": "appcenter codepush release-react -a ${OWNER_APP_NAME:=''} -d ${ENVIRONMENT:='Staging'}",
     "codepush:clear": "appcenter codepush deployment clear -a ${OWNER_APP_NAME:=''} ${ENVIRONMENT:=''}",

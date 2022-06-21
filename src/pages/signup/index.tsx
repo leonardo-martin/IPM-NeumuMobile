@@ -149,7 +149,7 @@ const SignUpScreen: FC = (): ReactElement => {
                     delete newData.pastExams
                 }
 
-                if(newData.susNumber === '' || !newData.susNumber) {
+                if (newData.susNumber === '' || !newData.susNumber) {
                     delete newData.susNumber
                 }
 
@@ -238,6 +238,12 @@ const SignUpScreen: FC = (): ReactElement => {
                 newData.professionalTypeId = "1"
                 if (newData.specialty) newData.specialty.professionalTypeId = "1"
 
+                if (newData.specialty?.others && newData.specialty.others !== '') {
+                    newData.specialty.description = newData.specialty?.others
+                } else {
+                    delete newData.specialty?.others
+                }
+
                 const response = await createUser(newData, 'doctor')
                 if (response.status !== 201) {
                     const message = response.data?.message
@@ -257,7 +263,7 @@ const SignUpScreen: FC = (): ReactElement => {
             setSending(false)
             messageError = 'Ocorreu um erro inesperado. Entre em contato com o administrador'
         } finally {
-            modalizeRef.current?.close()            
+            modalizeRef.current?.close()
         }
 
         if (messageError !== '')
