@@ -5,7 +5,7 @@ export const creatorRelationship: RelationshipPatient[] = [
     "Cuidador",
     "Familiar",
     "Tutor Legal",
-    "Profissional de Saúde"
+    // "Profissional de Saúde"
 ]
 
 export const profileCreator = ['Paciente', 'Outro']
