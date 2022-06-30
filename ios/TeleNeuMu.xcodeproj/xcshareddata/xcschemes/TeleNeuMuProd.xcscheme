@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1330"
+   LastUpgradeVersion = "1340"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,15 +15,15 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "NeumuMobile.app"
-               BlueprintName = "NeumuMobile"
-               ReferencedContainer = "container:NeumuMobile.xcodeproj">
+               BuildableName = "TeleNeuMu.app"
+               BlueprintName = "TeleNeuMu"
+               ReferencedContainer = "container:TeleNeuMu.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
@@ -33,17 +33,17 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "NeumuMobileTests.xctest"
-               BlueprintName = "NeumuMobileTests"
-               ReferencedContainer = "container:NeumuMobile.xcodeproj">
+               BuildableName = "TeleNeuMuTests.xctest"
+               BlueprintName = "TeleNeuMuTests"
+               ReferencedContainer = "container:TeleNeuMu.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      buildConfiguration = "Release"
+      selectedDebuggerIdentifier = ""
+      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -55,15 +55,15 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "NeumuMobile.app"
-            BlueprintName = "NeumuMobile"
-            ReferencedContainer = "container:NeumuMobile.xcodeproj">
+            BuildableName = "TeleNeuMu.app"
+            BlueprintName = "TeleNeuMu"
+            ReferencedContainer = "container:TeleNeuMu.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "API_BASE_URL"
-            value = "https://neumu-api.azurewebsites.net"
+            value = "https://neumu-prod.azurewebsites.net"
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
@@ -114,7 +114,7 @@
       </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
@@ -124,17 +124,17 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "NeumuMobile.app"
-            BlueprintName = "NeumuMobile"
-            ReferencedContainer = "container:NeumuMobile.xcodeproj">
+            BuildableName = "TeleNeuMu.app"
+            BlueprintName = "TeleNeuMu"
+            ReferencedContainer = "container:TeleNeuMu.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
-      buildConfiguration = "Debug">
+      buildConfiguration = "Release">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>
