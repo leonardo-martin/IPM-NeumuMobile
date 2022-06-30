@@ -4,6 +4,7 @@ import ModalizeFixed from '@components/modalize'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useAppSelector } from '@hooks/redux'
 import { useModal } from '@hooks/useModal'
+import { AbrafeuOptInStatus } from '@models/Abrafeu'
 import { PatientDto } from '@models/Patient'
 import { UnderageStatus } from '@models/Underage'
 import { useFocusEffect } from '@react-navigation/native'
@@ -15,7 +16,6 @@ import { EvaSize, EvaStatus } from '@ui-kitten/components/devsupport'
 import { getRelationPastExams } from '@utils/common'
 import { onlyNumbers } from '@utils/mask'
 import { compareAsc, subYears } from 'date-fns'
-import { AbrafeuOptInStatus } from 'models/Abrafeu'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, Keyboard, RefreshControl, TouchableOpacity, View } from 'react-native'
@@ -31,6 +31,7 @@ import { mappingStyle } from './style'
 
 const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
 
+    const [isSending, setIsSending] = useState<boolean>(false)
     const [refreshing, setRefreshing] = useState<boolean>(false)
     const [isFetchingData, setIsFetchingData] = useState<boolean>(false)
     const [isOpenedModal, setIsOpenedModal] = useState<boolean>(false)
@@ -156,6 +157,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
         form.setValue('pastExams.exam.id', '')
         form.setValue('pastExams.exam.description', '')
         form.setValue('abrafeuRegistrationOptIn', index === 0 ? 'true' : 'false')
+        form.setValue('pastExams.questions', undefined)
         setSelectedIndexExamDNA(-1)
         if (selectTmp === 0 && index === 1) {
             setIsOpenedModal(true)
@@ -225,6 +227,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             }
 
             try {
+                setIsSending(true)
                 const response = await updatePatient(data)
                 setPatient(response.data)
                 // send email
@@ -255,22 +258,25 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                     })
                 }
 
+                setIsOpenedModal(false)
+                ref.current?.close()
+                setIsSending(false)
                 setSelectTmp(data.abrafeuRegistrationOptIn === 'true' ? 0 : 1)
-
             } catch (error) {
+                setIsOpenedModal(false)
+                ref.current?.close()
+                setIsSending(false)
                 setSelectedIndex(selectTmp)
                 Toast.show({
                     type: 'danger',
                     text2: 'Ocorreu um erro. Tente novamente mais tarde!',
                 })
-            } finally {
-                setIsOpenedModal(false)
-                ref.current?.close()
             }
         } else {
             setIsOpenedModal(true)
             ref.current?.open()
         }
+        setIsSending(false)
     }
 
     const close = () => {
@@ -390,6 +396,58 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                                 isCompleteAddress && (
                                                     <>
                                                         <View style={[styles.subContainer, { alignItems: 'flex-start' }]}>
+                                                            <View>
+                                                                <Text style={styles.text}>
+                                                                    Eu, <Text style={[styles.text, { fontWeight: 'bold', textTransform: 'uppercase', textDecorationLine: 'underline' }]}>{profile?.name}</Text>, portador do CPF<Text style={[styles.text, { fontWeight: 'bold', textDecorationLine: 'underline' }]}>{" " + profile?.cpf + " "}</Text> concordo que o meu DNA (ou o DNA do meu filho) seja tornado anônimo e utilizado com o objetivo de pesquisa.
+                                                                </Text>
+                                                                <Controller
+                                                                    control={form.control}
+                                                                    rules={{
+                                                                        required: {
+                                                                            value: true,
+                                                                            message: 'Campo obrigatório'
+                                                                        }
+                                                                    }}
+                                                                    render={({ field: { name, ref, onChange, value } }) => (
+                                                                        <RadioGroup
+                                                                            testID={name}
+                                                                            ref={ref}
+                                                                            style={{ paddingHorizontal: 5 }}
+                                                                            selectedIndex={value}
+                                                                            onChange={onChange}>
+                                                                            <Radio>Sim</Radio>
+                                                                            <Radio>Não (descarte imediato após a conclusão do teste autorizado neste documento)</Radio>
+                                                                        </RadioGroup>
+                                                                    )}
+                                                                    name='pastExams.questions.one'
+                                                                />
+                                                                <CustomErrorMessage name='pastExams.questions.one' errors={form.formState.errors} />
+                                                                <Text style={styles.text}>
+                                                                    Concordo que os dados genômicos sejam tornados anônimos e utilizados com o objetivo de pesquisa ou publicações científicas.
+                                                                </Text>
+                                                                <Controller
+                                                                    control={form.control}
+                                                                    rules={{
+                                                                        required: {
+                                                                            value: true,
+                                                                            message: 'Campo obrigatório'
+                                                                        }
+                                                                    }}
+                                                                    render={({ field: { name, ref, onChange, value } }) => (
+                                                                        <RadioGroup
+                                                                            testID={name}
+                                                                            ref={ref}
+                                                                            style={{ paddingHorizontal: 5 }}
+                                                                            selectedIndex={value}
+                                                                            onChange={onChange}>
+                                                                            <Radio>Sim</Radio>
+                                                                            <Radio>Não (informações serão descartadas em 60 meses)</Radio>
+                                                                        </RadioGroup>
+                                                                    )}
+                                                                    name='pastExams.questions.two'
+                                                                />
+                                                                <CustomErrorMessage name='pastExams.questions.two' errors={form.formState.errors} />
+                                                            </View>
                                                             <Controller
                                                                 control={form.control}
                                                                 rules={{
@@ -501,9 +559,15 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                         {selectedIndex === 0 ? 'Deseja participar do programa?' : 'Deseja sair do programa?'}
                     </Text>
                     <TouchableOpacity style={styles.contentButton} activeOpacity={0.75} onPress={form.handleSubmit(confirm)}>
-                        <Text style={styles.contentButtonText}>{'Confirmar'.toUpperCase()}</Text>
+                        {isSending ? (
+                            <View style={{ flex: 1, alignItems: 'center' }}>
+                                {LoadingIndicator('small', 'control')}
+                            </View>
+                        ) : (
+                            <Text style={styles.contentButtonText}>{'Confirmar'.toUpperCase()}</Text>
+                        )}
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.contentButton, styles.buttonOutline]} activeOpacity={0.75} onPress={close}>
+                    <TouchableOpacity disabled={isSending} style={[styles.contentButton, styles.buttonOutline]} activeOpacity={0.75} onPress={close}>
                         <Text style={[styles.contentButtonText, styles.buttonTextOutline]}>{'Cancelar'.toUpperCase()}</Text>
                     </TouchableOpacity>
                 </ModalizeFixed>

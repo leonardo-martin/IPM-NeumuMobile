@@ -1,4 +1,3 @@
-import { MedicalDataAuthorizationDTO } from "@models/Medical"
 import { PatientDiaryEntryDto, PatientDisplay, PatientDto } from "@models/Patient"
 import { CalendarRange } from "@ui-kitten/components"
 import { AxiosResponse } from "axios"
@@ -36,7 +35,15 @@ export const deleteDiaryEntry = async (date: Date) => {
 export const updatePatient = async (data: PatientDto | any): Promise<AxiosResponse<PatientDto, any>> => {
     var body = {
         ...data,
-        pastExams: JSON.stringify(data.pastExams) ?? JSON.stringify({})
+        pastExams: JSON.stringify({
+            ...data.pastExams,
+            ...data.pastExams?.questions && {
+                questions: {
+                    one: data.pastExams.questions.one === 0,
+                    two: data.pastExams.questions.two === 0
+                }
+            }
+        }) ?? JSON.stringify({})
     }
     return await api.post('patient', body)
 }

@@ -1,4 +1,5 @@
 import { ConsultAppointment } from "./Appointment"
+import { JSONObject } from "./Common"
 import { ExamDto } from "./Exam"
 import { PatientProfileCreatorDto } from "./PatientProfileCreator"
 import { TimelineTimeItem } from "./Timeline"
@@ -27,6 +28,7 @@ export class ExamDNA {
     doctor?: {
         crm?: string
     }
+    questions?: JSONObject
 }
 
 export interface PatientSummaryDto {
