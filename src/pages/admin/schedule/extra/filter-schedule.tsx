@@ -9,7 +9,7 @@ import { getCities, getStates } from '@services/common.service'
 import { getDisplayMedicalDoctorBySpecialtyArray } from '@services/medical-doctor.service'
 import { getAll } from '@services/medical-specialty.service'
 import { AutocompleteItem, Button, Icon, IconProps, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
-import { filterBy } from '@utils/common'
+import { filterBy, sortByStringField } from '@utils/common'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Keyboard, View } from 'react-native'
@@ -56,8 +56,8 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
 
   const fetchData = async () => {
     const response = await getAll()
-    setSpecialty(response.data)
-    setSpecialtyTemp(response.data)
+    setSpecialty(response.data.sort((a, b) => sortByStringField(a, b, 'description')) ?? response.data)
+    setSpecialtyTemp(response.data.sort((a, b) => sortByStringField(a, b, 'description')) ?? response.data)
   }
 
   useEffect(() => {
