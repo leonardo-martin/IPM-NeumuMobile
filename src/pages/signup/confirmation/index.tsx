@@ -119,8 +119,8 @@ const RegistrationConfirmation: FC = (): ReactElement => {
         <Image source={info.item.image} style={styles.image as StyleProp<ImageStyle>} />
       </View>
       <View style={styles.itemDetails}>
-        <Text style={styles.itemTitle}>{info.item.title[params.type]}</Text>
-        <Text style={styles.itemDescription}>{info.item.description[params.type]}</Text>
+        <Text style={styles.itemTitle}>{info.item.title[params?.type || 0]}</Text>
+        <Text style={styles.itemDescription}>{info.item.description[params?.type || 0]}</Text>
         {info.index === (flatList.length - 1) ?
           <View style={styles.viewIcon}>
             <TouchableOpacity onPress={() => navigation.dispatch(actions)}>
