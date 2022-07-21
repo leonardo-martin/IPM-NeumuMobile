@@ -1,4 +1,4 @@
-package com.teleneumu.newarchitecture.components;
+package net.atos.teleneumu.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

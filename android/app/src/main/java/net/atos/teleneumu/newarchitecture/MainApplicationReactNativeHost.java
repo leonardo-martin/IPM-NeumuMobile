@@ -1,4 +1,4 @@
-package com.teleneumu.newarchitecture;
+package net.atos.teleneumu.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.teleneumu.BuildConfig;
-import com.teleneumu.newarchitecture.components.MainComponentsRegistry;
-import com.teleneumu.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import net.atos.teleneumu.BuildConfig;
+import net.atos.teleneumu.newarchitecture.components.MainComponentsRegistry;
+import net.atos.teleneumu.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

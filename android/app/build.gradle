@@ -145,7 +145,7 @@ android {
     }
 
     defaultConfig {
-        applicationId 'com.teleneumu'
+        applicationId 'net.atos.teleneumu'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 10
@@ -177,6 +177,8 @@ android {
                 }
             }
         }
+        manifestPlaceholders = [schemeDeepLinking: "teleneumuappdev"]
+
     }
 
     if (isNewArchitectureEnabled()) {
@@ -225,7 +227,7 @@ android {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
             universalApk false  // If true, also generate a universal APK
-           include (*reactNativeArchitectures())
+            include (*reactNativeArchitectures())
         }
     }
     signingConfigs {
@@ -248,21 +250,37 @@ android {
             signingConfig signingConfigs.debug
             resValue "string", "CodePushDeploymentKey", '""'
         }
-        releaseStaging {
-            resValue "string", "CodePushDeploymentKey", '"DJ88mOVVktCdZUmAwDOfFQMLnfZluOpNgE4vi"'
-
-            // Note: It is a good idea to provide matchingFallbacks for the new buildType you create to prevent build issues
-            // Add the following line if not already there
-            matchingFallbacks = ['release']
-        }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            // signingConfig signingConfigs.release // (Comment this line (App Center). Uncomment only if you are releasing to playstore.)
+            signingConfig signingConfigs.release // (Comment this line (App Center). Uncomment only if you are releasing to playstore.)
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
 
-            resValue "string", "CodePushDeploymentKey", '"vs3aIHhQBCzQU9TzwFMFDai_CU-StQ13QhYxU"'
+    flavorDimensions 'br.com.teleneumu'
+
+    productFlavors {
+        development {   
+            dimension 'br.com.teleneumu'
+            applicationId 'net.atos.teleneumu'
+            signingConfig signingConfigs.release
+            manifestPlaceholders = [
+                schemeDeepLinking: "teleneumuappdev"
+            ]
+            resValue "string", "CodePushDeploymentKey", '"DJ88mOVVktCdZUmAwDOfFQMLnfZluOpNgE4vi"'
+            resValue "string", "app_name", '"' + "${project.rootProject.name}" + ' Test"'   
+        }
+        production {  
+            dimension 'br.com.teleneumu'
+            applicationId 'com.teleneumu'
+            signingConfig signingConfigs.release
+            manifestPlaceholders = [
+                schemeDeepLinking: "teleneumuapp"
+            ]
+            resValue "string", "CodePushDeploymentKey", '"vs3aIHhQBCzQU9TzwFMFDai_CU"'
+            resValue "string", "app_name", '"' + "${project.rootProject.name}" + '"'
         }
     }
 
@@ -278,6 +296,10 @@ android {
                 output.versionCodeOverride =
                         defaultConfig.versionCode * 1000 + versionCodes.get(abi)
             }
+            def newName = output.outputFile.name            
+            newName = newName.replace("app-", "${project.rootProject.name}-")
+            newName = newName.replace("-release", "-release-" + defaultConfig.versionName)
+            output.outputFileName = newName
         }
     }
 }
@@ -322,6 +344,7 @@ task copyDownloadableDepsToLibs(type: Copy) {
 
 task printProperties {
     doFirst {
+        println "APP_NAME           = " + "${project.rootProject.name}"
         println '############# gradle.properties #############'
         println 'storeFile          = ' + (rootProject.file('app/release.keystore') != null ? rootProject.file('app/release.keystore') : file(project.property('APPCENTER_KEYSTORE_FILE')))
         println 'storePassword      = ' + (System.getProperty('APPCENTER_KEYSTORE_PASSWORD') != null ? System.getProperty('APPCENTER_KEYSTORE_PASSWORD') : project.property('APPCENTER_KEYSTORE_PASSWORD'))

@@ -1,4 +1,4 @@
-package com.teleneumu;
+package net.atos.teleneumu;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
