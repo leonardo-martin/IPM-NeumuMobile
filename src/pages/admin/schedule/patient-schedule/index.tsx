@@ -422,10 +422,18 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                                         ref={scrollViewDaysInMonthRef}>
                                         <List
                                             style={{ backgroundColor: 'transparent' }}
-                                            key={numColumns}
-                                            data={daysInMonth}
+                                            key={localeDateService.getMonth(dateSelected) === localeDateService.getMonth(localeDateService.today()) ?
+                                                daysInMonth.filter(d => Number(d) >= Number(localeDateService.format(localeDateService.today(), 'DD'))).length
+                                                : numColumns || numColumns}
+                                            data={
+                                                localeDateService.getMonth(dateSelected) === localeDateService.getMonth(localeDateService.today()) ?
+                                                    daysInMonth.filter(d => Number(d) >= Number(localeDateService.format(localeDateService.today(), 'DD')))
+                                                    : daysInMonth || daysInMonth}
                                             renderItem={renderItem}
-                                            numColumns={numColumns}
+                                            numColumns={
+                                                localeDateService.getMonth(dateSelected) === localeDateService.getMonth(localeDateService.today()) ?
+                                                    daysInMonth.filter(d => Number(d) >= Number(localeDateService.format(localeDateService.today(), 'DD'))).length
+                                                    : numColumns || numColumns}
                                         />
                                     </ScrollView>
                                 </View>
