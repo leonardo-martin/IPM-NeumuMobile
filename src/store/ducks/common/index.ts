@@ -1,5 +1,6 @@
+import { SpecialtiesDTO } from '@models/Specialties'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { SpecialtiesDTO } from 'models/Specialties'
+import { sortByStringField } from '@utils/common'
 
 
 interface CommonContextType {
@@ -15,7 +16,7 @@ export const commonSlice = createSlice({
   initialState,
   reducers: {
     setSpecialties: (state = initialState, action: PayloadAction<SpecialtiesDTO[]>) => {
-      state.specialties = action.payload
+      state.specialties = action.payload.sort((a, b) => sortByStringField(a, b, 'description')) || action.payload
     }
   },
 })
