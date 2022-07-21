@@ -1,10 +1,13 @@
 import CustomErrorMessage from '@components/error'
-import specialties from '@constants/specialties'
+import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { DoctorSignUpProps } from '@models/SignUpProps'
+import { SpecialtiesDTO } from '@models/Specialties'
 import { registerStyle } from '@pages/signup/style'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+import { getSpecialties } from '@services/specialties.service'
+import { setSpecialties } from '@store/ducks/common'
 import { Datepicker, Icon, IconProps, IndexPath, Input, PopoverPlacements, Radio, RadioGroup, Select, SelectItem, Text, useStyleSheet } from '@ui-kitten/components'
 import { getGender, openMailTo } from '@utils/common'
 import { formatCpf, isEmailValid, onlyNumbers } from '@utils/mask'
@@ -13,6 +16,7 @@ import { validate } from 'gerador-validador-cpf'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 import { Keyboard, TouchableOpacity, View } from 'react-native'
+import { RootState } from 'store'
 
 const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement => {
 
@@ -29,37 +33,57 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
   const emailConfirm = form.watch("email")
   const [bOtherDescription, setBOtherDescription] = useState(false)
 
+  const dispatch = useAppDispatch()
+  const { specialties } = useAppSelector((state: RootState) => state.common)
+
+  const loadSpecialties = async () => {
+    if (specialties.length === 0) {
+      const res = await getSpecialties()
+      dispatch(setSpecialties(res.data))
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      loadSpecialties()
+    }, [])
+  )
+
   useFocusEffect(
     useCallback(() => {
       const sex = form.getValues('sex')
       if (sex) setSelectedIndex(sex === 'male' ? 0 : sex === 'female' ? 1 : 2)
 
-      const specialty = form.getValues('specialty.description')
+      if (specialties) {
+        const specialty = form.getValues('specialty.description')
+        if (specialty) {
+          setSelectedSpecialty(new IndexPath(specialties.indexOf(specialties.find(e => e.description === specialty) || {} as SpecialtiesDTO)))
+          if (specialty.toLowerCase().includes('outro')) setBOtherDescription(true)
+          else {
+            form.setValue('specialty.others', '')
+            setBOtherDescription(false)
+          }
+        }
+      }
+    }, [specialties])
+  )
+
+  useEffect(() => {
+    if (selectedSpecialty && specialties) {
+      const specialty = specialties[Number(selectedSpecialty) - 1]
       if (specialty) {
-        setSelectedSpecialty(new IndexPath(specialties.indexOf(specialty)))
-        if (specialty.toLowerCase().includes('outro')) setBOtherDescription(true)
+        form.setValue('specialty.description', specialty.description)
+        if (specialty.description.toLowerCase().includes('outro')) setBOtherDescription(true)
         else {
           form.setValue('specialty.others', '')
           setBOtherDescription(false)
         }
       }
-    }, [])
-  )
-
-  useEffect(() => {
-    if (selectedSpecialty) {
-      const specialty = specialties[Number(selectedSpecialty) - 1]
-      form.setValue('specialty.description', specialty)
-      if (specialty?.toLowerCase().includes('outro')) setBOtherDescription(true)
-      else {
-        form.setValue('specialty.others', '')
-        setBOtherDescription(false)
-      }
     } else {
       form.setValue('specialty.description', '')
       setBOtherDescription(false)
     }
-  }, [selectedSpecialty])
+  }, [selectedSpecialty, specialties])
 
   useEffect(() => {
     setSecureTextEntry(true)
@@ -413,8 +437,8 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
               onSelect={setSelectedSpecialty}
               value={value}
             >
-              {specialties.map((item, index) => (
-                <SelectItem key={item + index} title={item} />
+              {specialties && specialties.map((item, index) => (
+                <SelectItem key={item.id} title={item.description} />
               ))}
             </Select>
           )}

@@ -1,10 +1,13 @@
 import CustomErrorMessage from '@components/error'
 import SelectComponent, { SelectItemData } from '@components/select'
-import specialties from '@constants/specialties'
+import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { PatientSignUpProps } from '@models/SignUpProps'
+import { SpecialtiesDTO } from '@models/Specialties'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { useFocusEffect } from '@react-navigation/native'
+import { getSpecialties } from '@services/specialties.service'
+import { setSpecialties } from '@store/ducks/common'
 import { Datepicker, IndexPath, Input, PopoverPlacements, Select, SelectItem } from '@ui-kitten/components'
 import { sortByStringField } from '@utils/common'
 import { formatCpf, formatPhone, isEmailValid, onlyNumbers } from '@utils/mask'
@@ -13,21 +16,9 @@ import React, { Dispatch, FC, ReactElement, useCallback, useEffect, useState } f
 import { Controller } from 'react-hook-form'
 import { Keyboard, StyleSheet } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
+import { RootState } from 'store'
+import { kinList } from './data'
 import { CalendarIcon } from './icons'
-
-const kinList: SelectItemData[] = [
-    { id: '0', title: 'Irmão / Irmã' },
-    { id: '1', title: 'Pai' },
-    { id: '2', title: 'Mãe' },
-    { id: '3', title: 'Primo / Prima' },
-    { id: '4', title: 'Tio / Tia' },
-    { id: '5', title: 'Sobrinho / Sobrinha' },
-    { id: '6', title: 'Filho / Filha' },
-    { id: '7', title: 'Bisavô / Bisavó' },
-    { id: '8', title: 'Outros' },
-    { id: '9', title: 'Cônjuge' },
-    { id: '9', title: 'Avô / Avó' },
-]
 
 interface CardPatientRelationshipProps extends PatientSignUpProps {
     styles?: StyleSheet.NamedStyles<any>
@@ -86,16 +77,33 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
     //     }, [relationship])
     // )
 
+    const dispatch = useAppDispatch()
+    const { specialties } = useAppSelector((state: RootState) => state.common)
+
+    const loadSpecialties = async () => {
+        if (specialties.length === 0) {
+            const res = await getSpecialties()
+            dispatch(setSpecialties(res.data))
+        }
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            loadSpecialties()
+        }, [])
+    )
+
     useFocusEffect(
         useCallback(() => {
             const specialty = form.getValues('creator.data.specialty.description')
-            if (specialty) setSelectedSpecialty(new IndexPath(specialties.indexOf(specialty)))
+            if (specialty)
+                setSelectedSpecialty(new IndexPath(specialties.indexOf(specialties.find(e => e.description === specialty) || {} as SpecialtiesDTO)))
         }, [])
     )
 
     useEffect(() => {
         if (selectedSpecialty) {
-            form.setValue('creator.data.specialty.description', specialties[Number(selectedSpecialty) - 1])
+            form.setValue('creator.data.specialty.description', specialties[Number(selectedSpecialty) - 1].description || '')
             form.clearErrors('creator.data.specialty.description')
         } else form.setValue('creator.data.specialty.description', '')
     }, [selectedSpecialty])
@@ -462,7 +470,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                                 value={value}
                             >
                                 {specialties.map((item, index) => (
-                                    <SelectItem key={item + index} title={item} />
+                                    <SelectItem key={item.id} title={item.description} />
                                 ))}
                             </Select>
                         )}

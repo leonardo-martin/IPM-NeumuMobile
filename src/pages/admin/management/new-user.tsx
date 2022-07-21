@@ -1,12 +1,14 @@
 import CustomErrorMessage from '@components/error'
 import RegisterHeader from '@components/header/register'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import specialties from '@constants/specialties'
+import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { UserDoctorData } from '@models/User'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native'
+import { getSpecialties } from '@services/specialties.service'
 import { createUser } from '@services/user.service'
+import { setSpecialties } from '@store/ducks/common'
 import { Datepicker, Icon, IconProps, IndexPath, Input, PopoverPlacements, Radio, RadioGroup, Select, SelectItem, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { extractFieldString, getGender, openMailTo } from '@utils/common'
 import { formatCpf, formatPhone, isEmailValid, onlyNumbers } from '@utils/mask'
@@ -17,6 +19,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { Alert, BackHandler, Keyboard, TouchableOpacity, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Toast from 'react-native-toast-message'
+import { RootState } from 'store'
 import { managementStyle } from './new-user.style'
 
 const NewUserScreen: FC = (): ReactElement => {
@@ -35,6 +38,21 @@ const NewUserScreen: FC = (): ReactElement => {
     const navigation = useNavigation<any>()
     const [bOtherDescription, setBOtherDescription] = useState(false)
 
+    const dispatch = useAppDispatch()
+    const { specialties } = useAppSelector((state: RootState) => state.common)
+
+    const loadSpecialties = async () => {
+        if (specialties.length === 0) {
+            const res = await getSpecialties()
+            dispatch(setSpecialties(res.data))
+        }
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            loadSpecialties()
+        }, [])
+    )
     useFocusEffect(
         useCallback(() => {
             form.reset()
@@ -75,8 +93,8 @@ const NewUserScreen: FC = (): ReactElement => {
     useEffect(() => {
         if (selectedSpecialty) {
             const specialty = specialties[Number(selectedSpecialty) - 1]
-            form.setValue('specialty.description', specialty)
-            if (specialty?.toLowerCase().includes('outro')) setBOtherDescription(true)
+            form.setValue('specialty.description', specialty.description)
+            if (specialty && specialty.description.toLowerCase().includes('outro')) setBOtherDescription(true)
             else {
                 form.setValue('specialty.others', '')
                 setBOtherDescription(false)
@@ -510,7 +528,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     value={value}
                                 >
                                     {specialties.map((item, index) => (
-                                        <SelectItem key={item + index} title={item} />
+                                        <SelectItem key={item.id} title={item.description} />
                                     ))}
                                 </Select>
                             )}
