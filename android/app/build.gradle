@@ -266,9 +266,7 @@ android {
             dimension 'br.com.teleneumu'
             applicationId 'net.atos.teleneumu'
             signingConfig signingConfigs.release
-            manifestPlaceholders = [
-                schemeDeepLinking: "teleneumuappdev"
-            ]
+            manifestPlaceholders = [ schemeDeepLinking: "teleneumuappdev" ]
             resValue "string", "CodePushDeploymentKey", '"DJ88mOVVktCdZUmAwDOfFQMLnfZluOpNgE4vi"'
             resValue "string", "app_name", '"' + "${project.rootProject.name}" + ' Test"'   
         }
@@ -276,9 +274,7 @@ android {
             dimension 'br.com.teleneumu'
             applicationId 'com.teleneumu'
             signingConfig signingConfigs.release
-            manifestPlaceholders = [
-                schemeDeepLinking: "teleneumuapp"
-            ]
+            manifestPlaceholders = [ schemeDeepLinking: "teleneumuapp" ]
             resValue "string", "CodePushDeploymentKey", '"vs3aIHhQBCzQU9TzwFMFDai_CU"'
             resValue "string", "app_name", '"' + "${project.rootProject.name}" + '"'
         }
