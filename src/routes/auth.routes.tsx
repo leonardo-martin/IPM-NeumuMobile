@@ -11,6 +11,7 @@ import SignUpScreen from '@pages/signup'
 import RegistrationConfirmation from '@pages/signup/confirmation'
 import { createStackNavigator, StackCardInterpolationProps, TransitionPresets } from '@react-navigation/stack'
 import { TransitionSpec } from '@react-navigation/stack/lib/typescript/src/types'
+import AccountVerificationScreen from 'pages/account/verified'
 import React, { FC, ReactElement } from 'react'
 
 const { Navigator, Screen, Group } = createStackNavigator()
@@ -64,6 +65,11 @@ const AuthRoutes: FC = (): ReactElement => {
         <Screen name="WaitingApprovals" component={WaitingApprovalsScreen}
           options={{
             ...TransitionPresets.ScaleFromCenterAndroid
+          }} />
+
+        <Screen name="AccountVerification" component={AccountVerificationScreen}
+          options={{
+            ...TransitionPresets.FadeFromBottomAndroid
           }} />
 
       </Group>

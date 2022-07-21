@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "start": "react-native start",
-    "android": "react-native run-android",
+    "android": "react-native run-android --variant=developmentDebug",
+    "android:staging": "react-native run-android --variant=developmentRelease",
+    "android:prod": "react-native run-android --variant=productionRelease",
     "ios": "react-native run-ios --scheme TeleNeuMuDev --configuration Debug",
     "ios:staging": "react-native run-ios --scheme TeleNeuMuTest --configuration Staging",
     "ios:prod": "react-native run-ios --scheme TeleNeuMuProd --configuration Production",
@@ -51,6 +53,7 @@
     "react-native-calendar-events": "^2.2.0",
     "react-native-calendars": "^1.1282.0",
     "react-native-code-push": "^7.0.4",
+    "react-native-confetti-cannon": "^1.5.2",
     "react-native-datepicker": "^1.7.2",
     "react-native-device-info": "^8.4.8",
     "react-native-document-picker": "^8.1.0",

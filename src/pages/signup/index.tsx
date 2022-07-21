@@ -298,18 +298,18 @@ const SignUpScreen: FC = (): ReactElement => {
     return (
         <Host>
             <RegisterHeader
-                form={forms[params.type]}
+                form={forms[params?.type || 0]}
                 active={active}
                 onBack={onBack}
                 onNext={onNext}
                 onFinish={onDone}
-                numberScreens={steps[params.type].length}
+                numberScreens={steps[params?.type || 0].length}
             />
             <SafeAreaLayout level='1' style={styles.safeArea}>
                 <View style={styles.content}>
                     <Stepper
                         active={active}
-                        content={steps[params.type] ? steps[params.type] : []}
+                        content={steps[params?.type || 0] ? steps[params?.type || 0] : []}
                     />
                 </View>
                 <Portal>
@@ -332,7 +332,7 @@ const SignUpScreen: FC = (): ReactElement => {
                                     <Button
                                         accessoryLeft={isLoading ? LoadingIndicator : undefined}
                                         disabled={!checked}
-                                        onPress={forms[params.type] ? forms[params.type].handleSubmit(submit) : undefined}
+                                        onPress={forms[params?.type || 0] ? forms[params?.type || 0].handleSubmit(submit) : undefined}
                                         status='warning'>
                                         CADASTRAR
                                     </Button>

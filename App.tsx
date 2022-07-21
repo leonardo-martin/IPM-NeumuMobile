@@ -1,7 +1,7 @@
 import { toastConfig } from '@configs/toast'
 import { ThemeProvider } from '@contexts/theme'
 import { NavigationContainer } from '@react-navigation/native'
-import { IconRegistry } from '@ui-kitten/components'
+import { IconRegistry, Text } from '@ui-kitten/components'
 import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import React, { FC, ReactElement } from 'react'
 import { StatusBar } from 'react-native'
@@ -11,6 +11,7 @@ import Toast from 'react-native-toast-message'
 import { Provider as ReduxProvider } from 'react-redux'
 import Routes from 'routes'
 import store from 'store'
+import { linking } from './deep-linking'
 import { FontAwesomeIconsPack } from './font-awesome-icon'
 import { FontistoIconsPack } from './fontisto-icon'
 import { IoniconsIconsPack } from './ionicons-icon'
@@ -40,7 +41,9 @@ const App: FC = (): ReactElement => {
       <ThemeProvider>
         <SafeAreaProvider>
           <ReduxProvider store={store}>
-            <NavigationContainer>
+            <NavigationContainer
+              linking={linking}
+              fallback={<Text category='label'>Carregando...</Text>}>
               <StatusBar barStyle="dark-content" backgroundColor={'transparent'} translucent={true} />
               <Routes />
             </NavigationContainer>
