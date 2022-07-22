@@ -848,7 +848,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 243B7XXD8U;
-				DISPLAY_NAME = TeleNeuMuTest;
+				DISPLAY_NAME = "TeleNeuMu Test";
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GENERATE_PROFILING_CODE = NO;

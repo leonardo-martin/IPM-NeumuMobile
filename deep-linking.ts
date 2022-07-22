@@ -7,8 +7,9 @@ const config = {
 };
 
 export const linking = {
-    prefixes: ['teleneumuapp://', 'teleneumuappdev://'] as string[],
-    config: {
-        ...config
-    },
+    prefixes: [
+        'teleneumuapp://',
+        'teleneumuappdev://'
+    ],
+    config,
 };
