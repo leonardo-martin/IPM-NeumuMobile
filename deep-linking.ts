@@ -2,7 +2,7 @@ const config = {
     screens: {
         SignUp: 'signup/:type',
         SignIn: 'signin',
-        AccountVerification: 'email-verification/:token?'
+        AccountVerification: 'verification/:type?'
     },
 };
 

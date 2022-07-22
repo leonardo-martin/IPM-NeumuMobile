@@ -1,5 +1,6 @@
 import HeaderAuth from '@components/header/auth'
 import RNWebView from '@components/webView'
+import AccountVerificationScreen from '@pages/account/verification'
 import WaitingApprovalsScreen from '@pages/approvals-waiting'
 import ChangePasswordChoice from '@pages/changePassword'
 import PasswordChangeConfirmationScreen from '@pages/changePassword/extra/change-confirmation'
@@ -11,7 +12,6 @@ import SignUpScreen from '@pages/signup'
 import RegistrationConfirmation from '@pages/signup/confirmation'
 import { createStackNavigator, StackCardInterpolationProps, TransitionPresets } from '@react-navigation/stack'
 import { TransitionSpec } from '@react-navigation/stack/lib/typescript/src/types'
-import AccountVerificationScreen from 'pages/account/verified'
 import React, { FC, ReactElement } from 'react'
 
 const { Navigator, Screen, Group } = createStackNavigator()

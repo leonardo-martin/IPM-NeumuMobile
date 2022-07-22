@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 const SPACING = 20
 
-export const accountVerifiedStyle = StyleSheet.create({
+export const accountVerificationStyle = StyleSheet.create({
     safeArea: {
         flex: 1
     },
