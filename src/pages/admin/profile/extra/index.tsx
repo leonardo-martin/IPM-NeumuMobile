@@ -243,7 +243,7 @@ const EditProfileScreen: FC = (): ReactElement => {
               style={[styles.profileSetting, styles.section]}
               hint='Usuário'
               inputProps={{
-                value: `@${field.value}`,
+                value: field.value ? `@${field.value}` : '',
                 editable: false,
                 disabled: true,
                 textAlign: 'right',
