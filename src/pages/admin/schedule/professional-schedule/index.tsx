@@ -106,7 +106,7 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
     useFocusEffect(
         useCallback(() => {
             alert()
-            loadData()
+            setTimeBlockList([])
             opacity.value = 0
             if (listRef)
                 listRef.current?.scrollToIndex({

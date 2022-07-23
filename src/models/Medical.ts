@@ -42,7 +42,17 @@ export interface MedicalDoctorySummaryDto {
 export class MedicalDoctorDto {
     id!: number
     crm!: string
-    specialtyId!: number 
-    professionalTypeId!: number 
+    specialtyId!: number
+    professionalTypeId!: number
     visitAddress!: VisitAddressDTO
+}
+
+export class MedicalDoctorByFilters {
+    specialtyIdArray!: number[]    
+    city?: string | null
+    state?: string | null
+    name?: string | null
+    startTime?: Date | string | null
+    endTime?: Date | string | null
+    appointmentVirtual: boolean = false
 }

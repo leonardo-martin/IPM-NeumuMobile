@@ -25,6 +25,16 @@ export const filterScheduleStyle = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: 'background-basic-color-1'
   },
+  rangeDatePicker: {
+    backgroundColor: 'background-basic-color-1'
+  },
+  backdropDatepicker: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  caption: {
+    paddingTop: 15,
+    flexDirection: 'row-reverse'
+  },
   text: {
     color: 'text-basic-color',
     alignItems: 'flex-start',

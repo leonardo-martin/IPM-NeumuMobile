@@ -1,7 +1,10 @@
-import { MedicalDataAuthorizationDTO, MedicalDoctorDisplay, MedicalDoctorDto } from "@models/Medical"
+import { MedicalDataAuthorizationDTO, MedicalDoctorByFilters, MedicalDoctorDisplay, MedicalDoctorDto } from "@models/Medical"
 import { AxiosResponse } from "axios"
 import { api } from "./api.service"
 
+export const getDisplayMedicalDoctorByFilters = async (data: MedicalDoctorByFilters): Promise<AxiosResponse<MedicalDoctorDisplay[], any>> => {
+    return await api.post('medicaldoctor/get-display-by-filters', data)
+}
 
 export const getDisplayMedicalDoctorBySpecialtyArray = async (specialtyIdArray: number[]): Promise<AxiosResponse<MedicalDoctorDisplay[], any>> => {
     return await api.post('medicaldoctor/get-display-by-specialty-array', specialtyIdArray)

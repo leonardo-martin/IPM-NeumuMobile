@@ -57,16 +57,36 @@ const ScheduleSearchResultScreen: FC = (): ReactElement => {
                         opacity,
                         backgroundColor: info.index % 2 === 0 ? styles.background1.backgroundColor : styles.background2.backgroundColor
                     }]}>
-                    <Avatar
-                        source={require('../../../../assets/commons/doctor.png')}
-                        style={styles.avatar as StyleProp<ImageStyle>}
-                    />
-                    <View style={styles.viewItem}>
-                        <View style={styles.inlineText}>
-                            <Text style={styles.itemTitle}>{info.item.name}</Text>
-                            <Text style={styles.itemCRM}>N° {info.item.crm}</Text>
+                    <View style={{
+                        flexDirection: 'column'
+                    }}>
+                        <View style={{
+                            flex: 1,
+                            flexDirection: 'row-reverse',
+                            paddingBottom: 5,
+                            justifyContent: 'center'
+                        }}>
+                            <Text style={styles.itemAddress}>
+                                {info.item.city ?? ''}{" - "}
+                                {info.item.state ?? ''}
+                            </Text>
                         </View>
-                        <Text style={styles.itemDescription}>{info.item.specialty ?? ''}</Text>
+                        <View style={{
+                            flexDirection: 'row'
+                        }}>
+                            <Avatar
+                                source={require('../../../../assets/commons/doctor.png')}
+                                style={styles.avatar as StyleProp<ImageStyle>}
+                            />
+                            <View style={styles.viewItem}>
+                                <View style={styles.inlineText}>
+                                    <Text style={styles.itemTitle}>{info.item.name}</Text>
+                                    <Text style={styles.itemCRM}>N° {info.item.crm}</Text>
+                                </View>
+                                <Text style={styles.itemDescription}>{info.item.specialty ?? ''}</Text>
+                            </View>
+
+                        </View>
                     </View>
                 </Animated.View>
             </Pressable>
