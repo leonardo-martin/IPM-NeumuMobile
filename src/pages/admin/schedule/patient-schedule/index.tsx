@@ -113,7 +113,8 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
             const array = getArray(dateSelected)
             setDaysInMonth(array)
             setNumColumns(array.length)
-            opacity.value = 0
+            if (availableTimes.length === 0) opacity.value = 0
+            else opacity.value = 1
         }, [dateSelected])
     )
 
@@ -289,14 +290,15 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                     layout: { ...layout }
                 }
                 setDataSourceCords(dataSourceCords)
-                if (index === (numColumns - 1)) {
-                    if (dateTimeSelected && localeDateService.compareDatesSafe(currentDate, dateTimeSelected) === 0) {
-                        scrollToRef(scrollViewDaysInMonthRef, dataSourceCords.find(v => v.value === localeDateService.format(currentDate, 'DD'))?.layout.x, 0)
-                    } else {
+                if (dateTimeSelected) {
+                    if (localeDateService.compareDatesSafe(currentDate, dateTimeSelected) !== 0) {
                         const item = dataSourceCords.find(v => dateTimeSelected && v.value === localeDateService.format(dateTimeSelected, 'DD') && dateSelected.getMonth() === dateTimeSelected.getMonth())
                         if (item) scrollToRef(scrollViewDaysInMonthRef, item.layout.x, 0)
                         else scrollToRef(scrollViewDaysInMonthRef, dataSourceCords[0]?.layout.x, 0)
                     }
+                } else {
+                    if (index === 0)
+                        scrollToRef(scrollViewDaysInMonthRef, layout.x, 0)
                 }
             }}>
             {
