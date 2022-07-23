@@ -7,7 +7,7 @@ import { useModal } from '@hooks/useModal'
 import { AbrafeuOptInStatus } from '@models/Abrafeu'
 import { PatientDto } from '@models/Patient'
 import { UnderageStatus } from '@models/Underage'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { getStatusAbrafeuForm, optIn, optOut } from '@services/abrafreu.service'
 import { getPatient, updatePatient } from '@services/patient.service'
 import { getStatus } from '@services/underage.service'
@@ -32,6 +32,7 @@ import { mappingStyle } from './style'
 const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
 
     const [isSending, setIsSending] = useState<boolean>(false)
+    const navigation = useNavigation<any>()
     const [refreshing, setRefreshing] = useState<boolean>(false)
     const [isFetchingData, setIsFetchingData] = useState<boolean>(false)
     const [isOpenedModal, setIsOpenedModal] = useState<boolean>(false)
@@ -172,15 +173,23 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             [
                 {
                     text: 'OK',
-                    style: 'default',
+                    style: 'cancel',
                     onPress: () => setSelectedIndex(1)
+                },
+                {
+                    text: 'Meu Perfil',
+                    style: 'default',
+                    onPress: () => navigation.navigate('EditProfile')
                 }
             ]
         )
     }
 
     const checkIfPermission = () => {
-        if (profile?.address1 !== '' && profile?.city !== '' && profile?.state !== '' && profile?.postalCode !== '') {
+        if ((profile?.address1 !== '' && profile?.address1 !== null) &&
+            (profile?.city !== '' && profile?.city !== null) &&
+            (profile?.state !== '' && profile?.state !== null) &&
+            (profile?.postalCode !== '' && profile?.postalCode !== null)) {
             setIsCompleteAddress(true)
         } else {
             setIsCompleteAddress(false)
