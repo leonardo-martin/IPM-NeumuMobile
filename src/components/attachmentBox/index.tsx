@@ -57,14 +57,14 @@ const AttachmentBoxComponent: FC<AttachmentBoxProps> = ({ ...props }): ReactElem
                         <View style={styles.containerFile}>
                             <Text style={styles.textFile} category='s1'>{props.documentDto.documentFormat}</Text>
                             <TouchableOpacity onPress={props.handleDocumentDto}>
-                                <Icon name='close-outline' style={styles.iconRed} size={30} pack='ionicons' />
+                                <Icon name='trash-outline' style={styles.iconPrimary} size={20} pack='ionicons' />
                             </TouchableOpacity>
                         </View>
                     ) : props.file && (
                         <View style={styles.containerFile}>
                             <Text style={styles.textFile} category='s1'>{props.file[0].name}</Text>
                             <TouchableOpacity onPress={() => props.handleFile(undefined)}>
-                                <Icon name='close-outline' style={styles.iconRed} size={30} pack='ionicons' />
+                                <Icon name='trash-outline' style={styles.iconPrimary} size={20} pack='ionicons' />
                             </TouchableOpacity>
                         </View>
                     )

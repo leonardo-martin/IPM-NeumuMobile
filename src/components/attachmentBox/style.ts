@@ -26,8 +26,8 @@ export const attachBoxStyle = StyleSheet.create({
     textAlign: 'center',
     paddingVertical: 5 
   },
-  iconRed: {
-    color: 'color-danger-500'
+  iconPrimary: {
+    color: 'color-primary-500'
   },
   label: {
     color: 'text-hint-color',
