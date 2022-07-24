@@ -59,9 +59,20 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
     })
 
     const loadData = async () => {
-        // get all time blocks
-        const resp = await getAppointmentAvailabilityListSummaryByDoctorId(ids?.medicalDoctorId as number)
-        setTimeBlockList(resp.data)
+        try {
+            if (ids?.medicalDoctorId) {
+                // get all time blocks
+                const resp = await getAppointmentAvailabilityListSummaryByDoctorId(ids?.medicalDoctorId as number)
+                setTimeBlockList(resp.data)
+            } else {
+                throw 'Error'
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'danger',
+                text2: 'Erro ao obter os horários',
+            })
+        }
     }
 
     useEffect(() => {
@@ -102,11 +113,16 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
             ]
         )
     }
-
+    useFocusEffect(
+        useCallback(() => {
+            if (ids?.medicalDoctorId)
+                loadData()
+        }, [ids])
+    )
+    
     useFocusEffect(
         useCallback(() => {
             alert()
-            setTimeBlockList([])
             opacity.value = 0
             if (listRef)
                 listRef.current?.scrollToIndex({
