@@ -86,9 +86,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                   <Card style={styles.cardInline} onPress={goToSchedule}>
                     <View style={styles.cardDefault}>
                       <Icon style={styles.iconOrange} name="calendar-outline" size={50} pack='ionicons' />
-                      <Text category="h6" style={[styles.cardText, {
-                        marginHorizontal: -8, flex: 1
-                      }]}>
+                      <Text style={styles.cardText}>
                         Quero agendar uma consulta
                       </Text>
                     </View>
@@ -100,9 +98,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                   <Card style={styles.cardInline} onPress={goToSchedule}>
                     <View style={styles.cardDefault}>
                       <Icon style={styles.iconOrange} name="clock" size={50} pack='font-awesome' />
-                      <Text category="h6" style={[styles.cardText, {
-                        marginHorizontal: -8, flex: 1
-                      }]}>
+                      <Text style={styles.cardText}>
                         Meus Horários
                       </Text>
                     </View>
@@ -114,7 +110,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                   <View style={styles.cardDefault}>
                     <Icon style={styles.iconPrimary} name='prescription' size={40} pack='fontisto' />
                   </View>
-                  <Text category="h6" style={styles.cardText}>
+                  <Text style={styles.cardText}>
                     Meu perfil
                   </Text>
                 </Card>
@@ -128,7 +124,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                       size={40}
                       pack='font-awesome' />
                   </View>
-                  <Text category="h6" style={styles.cardText}>
+                  <Text style={styles.cardText}>
                     {sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? 'Minhas Consultas' : 'Agenda'}
                   </Text>
                 </Card>
@@ -145,7 +141,7 @@ const DashboardScreen: FC<DrawerContentComponentProps> = ({
                         pack='fontisto'
                       />
                     </View>
-                    <Text category="h6" style={styles.cardText}>
+                    <Text style={styles.cardText}>
                       Cadastrar
                     </Text>
                   </Card>

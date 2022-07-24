@@ -31,7 +31,7 @@ const ScheduleScreen: FC<DrawerContentComponentProps> = ({
                   onPress={() => goTo(0)}>
                   <View style={styles.cardDefault}>
                     <PhoneIcon width={40} height={40} fill={theme['color-warning-default']} />
-                    <Text category="h6" style={styles.cardText}>
+                    <Text style={styles.cardText}>
                       Quero uma consulta virtual (teleconsulta)
                     </Text>
                   </View>
@@ -43,7 +43,7 @@ const ScheduleScreen: FC<DrawerContentComponentProps> = ({
                   onPress={() => goTo(1)}>
                   <View style={styles.cardDefault}>
                     <HouseIcon width={40} height={40} fill={theme['color-warning-default']} />
-                    <Text category="h6" style={styles.cardText}>
+                    <Text style={styles.cardText}>
                       Quero uma consulta presencial
                     </Text>
                   </View>
