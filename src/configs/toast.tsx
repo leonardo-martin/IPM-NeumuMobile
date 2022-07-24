@@ -1,15 +1,39 @@
-import { useTheme } from '@ui-kitten/components'
+import { Icon, useTheme } from '@ui-kitten/components'
 import React from 'react'
-import { BaseToast, BaseToastProps, ErrorToast } from "react-native-toast-message"
+import { View } from 'react-native'
+import Toast, { BaseToast, BaseToastProps, ErrorToast, ToastConfig } from 'react-native-toast-message'
+import { toastStyle } from './style'
 
-export const toastConfig = {
+const _TEXT1_NUMBER_OF_LINES = 2
+const _TEXT2_NUMBER_OF_LINES = 3
+
+const renderTrailingIcon = () => {
+  const theme = useTheme()
+  return (
+    <View style={toastStyle.trailingContainer}>
+      <Icon name='close-outline' style={{
+        color: theme['color-basic-700']
+      }} size={20} onPress={() => Toast.hide()} />
+    </View>
+  )
+}
+
+export const toastConfig: ToastConfig | undefined = {
   success: (props: BaseToastProps) => {
     const theme = useTheme()
     return (
       <BaseToast
         {...props}
-        style={{ borderLeftColor: theme['border-success-color-1'] }}
+        style={{
+          borderLeftColor: theme['border-success-color-1'],
+          ...toastStyle.toast
+        }}
         text1='Sucesso!'
+        text1Style={toastStyle.text1Style}
+        text2Style={toastStyle.text2Style}
+        text1NumberOfLines={_TEXT1_NUMBER_OF_LINES}
+        text2NumberOfLines={_TEXT2_NUMBER_OF_LINES}
+        renderTrailingIcon={renderTrailingIcon}
       />
     )
   },
@@ -18,8 +42,16 @@ export const toastConfig = {
     return (
       <BaseToast
         {...props}
-        style={{ borderLeftColor: theme['border-primary-color-1'] }}
-        text1='Informação'
+        style={{
+          borderLeftColor: theme['border-primary-color-1'],
+          ...toastStyle.toast
+        }}
+        text1='Informativo'
+        text1Style={toastStyle.text1Style}
+        text2Style={toastStyle.text2Style}
+        text1NumberOfLines={_TEXT1_NUMBER_OF_LINES}
+        text2NumberOfLines={_TEXT2_NUMBER_OF_LINES}
+        renderTrailingIcon={renderTrailingIcon}
       />
     )
   },
@@ -28,8 +60,16 @@ export const toastConfig = {
     return (
       <ErrorToast
         {...props}
-        style={{ borderLeftColor: theme['border-warning-color-1'] }}
-        text1='Atenção'
+        style={{
+          borderLeftColor: theme['border-warning-color-1'],
+          ...toastStyle.toast
+        }}
+        text1='Importante'
+        text1Style={toastStyle.text1Style}
+        text2Style={toastStyle.text2Style}
+        text1NumberOfLines={_TEXT1_NUMBER_OF_LINES}
+        text2NumberOfLines={_TEXT2_NUMBER_OF_LINES}
+        renderTrailingIcon={renderTrailingIcon}
       />
     )
   },
@@ -38,8 +78,16 @@ export const toastConfig = {
     return (
       <ErrorToast
         {...props}
-        style={{ borderLeftColor: theme['border-danger-color-1'] }}
-        text1='Erro'
+        style={{
+          borderLeftColor: theme['border-danger-color-1'],
+          ...toastStyle.toast
+        }}
+        text1='Algo deu errado...'
+        text1Style={toastStyle.text1Style}
+        text2Style={toastStyle.text2Style}
+        text1NumberOfLines={_TEXT1_NUMBER_OF_LINES}
+        text2NumberOfLines={_TEXT2_NUMBER_OF_LINES}
+        renderTrailingIcon={renderTrailingIcon}
       />
     )
   }

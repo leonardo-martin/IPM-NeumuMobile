@@ -50,6 +50,7 @@ const App: FC = (): ReactElement => {
             <Toast
               config={toastConfig}
               position='top'
+              visibilityTime={5000}
             />
           </ReduxProvider>
         </SafeAreaProvider>
