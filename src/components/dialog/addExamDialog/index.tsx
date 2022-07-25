@@ -1,5 +1,6 @@
 import AttachmentBoxComponent from '@components/attachmentBox'
 import CustomErrorMessage from '@components/error'
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATE } from '@constants/date'
 import { useAppSelector } from '@hooks/redux'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
@@ -221,9 +222,6 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
         }
     }
 
-    const LoadingIndicator = () => (
-        <Spinner size='small' status='basic' />
-    )
     useEffect(() => {
         if (selectedType)
             form.setValue('examType', typesOfDocuments[Number(selectedType) - 1])
@@ -394,7 +392,7 @@ const AddExamDialog: FC<AddExamDialogProps> = forwardRef<Modal, React.PropsWithC
                             style={styles.button}
                             onPress={form.handleSubmit(submitForm)}
                             disabled={isLoading}
-                            accessoryLeft={isLoading ? LoadingIndicator : undefined}>
+                            accessoryLeft={isLoading ? () => <LoadingIndicatorComponent insideButton size='small' status='basic' /> : undefined}>
                             {isLoading ? '' : props.exam ? 'Editar' : 'Salvar'}
                         </Button>
                     </View>

@@ -1,6 +1,7 @@
 import LogoPedroMolina from '@assets/svg/logo.svg'
 import SignUpOptDialog from '@components/dialog/signUpOptDialog'
 import CustomErrorMessage from '@components/error'
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import SocialIconsComponent from '@components/social-icons'
 import TitleNeumu from '@components/titleNeumu'
@@ -12,7 +13,7 @@ import { useIsFocused, useNavigation } from '@react-navigation/native'
 import { AppInfoService } from '@services/app-info.service'
 import { AppStorage } from '@services/app-storage.service'
 import { authLogin } from '@services/auth.service'
-import { Button, CheckBox, Icon, IconProps, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import { Button, CheckBox, Icon, IconProps, Input, Modal, Text, useStyleSheet } from '@ui-kitten/components'
 import { matchMessage, openMailTo } from '@utils/common'
 import { cleanNumberMask, formatCpf } from '@utils/mask'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
@@ -128,10 +129,6 @@ const SignInScreen: FC = (): ReactElement => {
 
   const renderIconRightPassword = (props: IconProps) => (
     <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} onPress={!isLoading ? toggleSecureEntry : undefined} pack='eva' />
-  )
-
-  const LoadingIndicator = () => (
-    <Spinner size='small' status='basic' />
   )
 
   const register = (selected: number | undefined) => {
@@ -263,7 +260,7 @@ const SignInScreen: FC = (): ReactElement => {
               </View>
               <View style={styles.containerButtons}>
                 <Button
-                  accessoryLeft={isLoading ? LoadingIndicator : undefined}
+                  accessoryLeft={isLoading ? () => <LoadingIndicatorComponent insideButton size='small' status='basic' /> : undefined}
                   style={styles.button}
                   onPress={isLoading ? undefined : form.handleSubmit(handleSignIn)}
                   status="primary">

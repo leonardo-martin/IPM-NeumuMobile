@@ -1,6 +1,7 @@
 import UpdateAppDialog from '@components/dialog/updateApp'
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import { useModal } from '@hooks/useModal'
-import { Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import { Modal, Text, useStyleSheet } from '@ui-kitten/components'
 import React, { FC, ReactElement, useState } from 'react'
 import { Alert, TouchableOpacity } from 'react-native'
 import codePush, { DownloadProgress, RemotePackage } from "react-native-code-push"
@@ -115,15 +116,12 @@ const CheckForUpdatesComponent: FC = (): ReactElement => {
         }
     }
 
-    const LoadingIndicator = () => (
-        <Spinner size='tiny' status='basic' />
-    )
 
     return (
         <>
             <TouchableOpacity disabled={isCheckingForUpdate} style={styles.checkForUpdatesBtn} onPress={checkForUpdates}>
                 <Text style={styles.checkForUpdatesText}>Procurar por atualizações</Text>
-                {isCheckingForUpdate && LoadingIndicator()}
+                {isCheckingForUpdate && <LoadingIndicatorComponent insideButton size='tiny' status='basic' />}
             </TouchableOpacity>
 
             <UpdateAppDialog

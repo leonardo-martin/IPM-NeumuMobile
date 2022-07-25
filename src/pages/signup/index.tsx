@@ -8,9 +8,10 @@ import { UserDoctorData, UserPatientData } from '@models/User'
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { uploadTutorFile } from '@services/document.service'
 import { createPatientProfileCreator, createUser } from '@services/user.service'
-import { Button, CheckBox, Spinner, useStyleSheet } from '@ui-kitten/components'
+import { Button, CheckBox, useStyleSheet } from '@ui-kitten/components'
 import { extractFieldString } from '@utils/common'
 import { cleanNumberMask, formatCpf } from '@utils/mask'
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import React, { FC, ReactElement, useCallback, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Alert, BackHandler, Keyboard, Platform, View } from 'react-native'
@@ -276,10 +277,6 @@ const SignUpScreen: FC = (): ReactElement => {
         })
     }
 
-    const LoadingIndicator = () => (
-        <Spinner size='small' status='basic' />
-    )
-
     const patientSteps = [
         <PatientSignUpPart1Screen register={params} form={patientForm} onSubmit={onNext} />,
         <PatientSignUpEndScreen register={params} form={patientForm} onSubmit={onNext} />
@@ -330,7 +327,7 @@ const SignUpScreen: FC = (): ReactElement => {
                                 </CheckBox>
                                 <View style={styles.viewBtn}>
                                     <Button
-                                        accessoryLeft={isLoading ? LoadingIndicator : undefined}
+                                        accessoryLeft={isLoading ? () => <LoadingIndicatorComponent insideButton size='small' status='basic' /> : undefined}
                                         disabled={!checked}
                                         onPress={forms[params?.type || 0] ? forms[params?.type || 0].handleSubmit(submit) : undefined}
                                         status='warning'>

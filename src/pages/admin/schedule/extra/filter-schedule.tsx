@@ -1,5 +1,6 @@
 import AutoCompleteComponent from '@components/autoComplete'
 import CustomErrorMessage from '@components/error'
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _DATE_FROM_ISO_8601 } from '@constants/date'
 import { useDatepickerService } from '@hooks/useDatepickerService'
@@ -10,7 +11,7 @@ import { useFocusEffect, useRoute } from '@react-navigation/native'
 import { getCities, getStates } from '@services/common.service'
 import { getDisplayMedicalDoctorByFilters } from '@services/medical-doctor.service'
 import { getAll } from '@services/medical-specialty.service'
-import { AutocompleteItem, Button, CalendarRange, Icon, IconProps, Input, PopoverPlacements, RangeDatepicker, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import { AutocompleteItem, Button, CalendarRange, Icon, IconProps, Input, PopoverPlacements, RangeDatepicker, Text, useStyleSheet } from '@ui-kitten/components'
 import { filterBy, sortByStringField } from '@utils/common'
 import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -223,10 +224,6 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
     />
   )
 
-  const LoadingIndicator = () => (
-    <Spinner size='tiny' status='basic' />
-  )
-
   const onSubmit = async (data: FilterScheduleParams) => {
     setIsEmpty(false)
     setIsFetching(!isFetching)
@@ -429,7 +426,7 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
             disabled={!releasedToSearch}
             style={styles.button}
             onPress={form.handleSubmit(onSubmit)}
-            accessoryRight={isFetching ? LoadingIndicator : undefined}
+            accessoryRight={isFetching ? () => <LoadingIndicatorComponent insideButton size='tiny' status='basic' /> : undefined}
             status="primary">
             PESQUISAR
           </Button>

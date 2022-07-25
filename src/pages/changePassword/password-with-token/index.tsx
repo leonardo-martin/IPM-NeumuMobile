@@ -1,9 +1,10 @@
 import CustomErrorMessage from '@components/error'
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { UserAccRecoveryPasswd } from '@models/User'
 import { useNavigation } from '@react-navigation/native'
 import { changePass } from '@services/login.service'
-import { Button, Icon, IconProps, Input, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import { Button, Icon, IconProps, Input, Text, useStyleSheet } from '@ui-kitten/components'
 import { validatePasswd } from '@utils/validators'
 import React, { FC, ReactElement, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -61,10 +62,6 @@ const ChangePasswordWithToken: FC = (): ReactElement => {
 
     const renderIconRightRepeat = (props: IconProps) => (
         <Icon {...props} name={secureTextEntryRepeat ? 'eye-off' : 'eye'} onPress={toggleSecureEntryRepeat} pack='eva' />
-    )
-
-    const LoadingIndicator = () => (
-        <Spinner size='tiny' status='basic' />
     )
 
     return (
@@ -202,7 +199,7 @@ const ChangePasswordWithToken: FC = (): ReactElement => {
                             size='small'
                             style={styles.button}
                             onPress={form.handleSubmit(onSubmit)}
-                            accessoryRight={isLoading ? LoadingIndicator : undefined}
+                            accessoryRight={isLoading ? () => <LoadingIndicatorComponent insideButton size='tiny' status='basic' /> : undefined}
                             status="primary">
                             {eavProps => <Text {...eavProps}
                                 style={[eavProps?.style, styles.uppercase]}

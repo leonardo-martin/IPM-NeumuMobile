@@ -15,6 +15,7 @@ import { Button, Input, Radio, RadioGroup, Spinner, Text, useStyleSheet } from '
 import { EvaSize, EvaStatus } from '@ui-kitten/components/devsupport'
 import { getRelationPastExams } from '@utils/common'
 import { onlyNumbers } from '@utils/mask'
+import LoadingIndicatorComponent from 'components/loadingIndicator'
 import { compareAsc, subYears } from 'date-fns'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -303,10 +304,6 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
         }
     }
 
-    const LoadingIndicator = (size: EvaSize | undefined = 'tiny', status: EvaStatus | undefined = 'basic') => (
-        <Spinner size={size} status={status} />
-    )
-
     const alertCommon = () => {
         Alert.alert(
             'Importante',
@@ -333,13 +330,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             <SafeAreaLayout level='1' style={styles.safeArea}>
                 {isFetchingData ?
                     <>
-                        <View style={{
-                            flex: 1,
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}>
-                            {LoadingIndicator('giant', 'primary')}
-                        </View>
+                        <LoadingIndicatorComponent size='giant' />
                     </>
                     : (
                         <>
@@ -569,9 +560,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                     </Text>
                     <TouchableOpacity style={styles.contentButton} activeOpacity={0.75} onPress={form.handleSubmit(confirm)}>
                         {isSending ? (
-                            <View style={{ flex: 1, alignItems: 'center' }}>
-                                {LoadingIndicator('small', 'control')}
-                            </View>
+                            <LoadingIndicatorComponent insideButton size='small' status='control' />
                         ) : (
                             <Text style={styles.contentButtonText}>{'Confirmar'.toUpperCase()}</Text>
                         )}

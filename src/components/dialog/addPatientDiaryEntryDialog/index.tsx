@@ -1,11 +1,12 @@
 import CustomErrorMessage from '@components/error'
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import { useAppSelector } from '@hooks/redux'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { PatientDiaryEntryDto } from '@models/Patient'
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { postDiaryEntry } from '@services/patient.service'
-import { Button, Card, Icon, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import { Button, Card, Icon, Input, Modal, Text, useStyleSheet } from '@ui-kitten/components'
 import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { TouchableOpacity, View } from 'react-native'
@@ -96,10 +97,6 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
         navigation.navigate(routeName)
         handleVisibleModal()
     }
-
-    const LoadingIndicator = () => (
-        <Spinner size='small' status='basic' />
-    )
 
     return (
         <Modal
@@ -206,7 +203,7 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                             <Button status='success'
                                 onPress={form.handleSubmit(submitForm)}
                                 style={styles.button}
-                                accessoryLeft={isLoading ? LoadingIndicator : undefined}>
+                                accessoryLeft={isLoading ? () => <LoadingIndicatorComponent insideButton size='small' status='basic' /> : undefined}>
                                 {isLoading ? '' : props.patientDiaryEntry ? 'Editar' : 'Salvar'}
                             </Button>
                         </View>

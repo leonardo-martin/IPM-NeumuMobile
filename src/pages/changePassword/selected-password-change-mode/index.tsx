@@ -1,7 +1,8 @@
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { changePassReq } from '@services/login.service'
-import { Button, Input, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import { Button, Input, Text, useStyleSheet } from '@ui-kitten/components'
 import { cleanNumberMask, formatCpf, isEmailValid } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
@@ -63,11 +64,6 @@ const ChangePasswordRequest: FC = (): ReactElement => {
         }
     }, [isSubmitSuccessful, reset])
 
-
-    const LoadingIndicator = () => (
-        <Spinner size='small' status='basic' />
-    )
-
     return (
         <SafeAreaLayout level='1' style={styles.safeArea}>
             <SafeAreaView style={styles.content}>
@@ -109,7 +105,7 @@ const ChangePasswordRequest: FC = (): ReactElement => {
                     {errors.valueAs?.type === 'minLength' && <Text category='label' style={styles.text}>{errors.valueAs?.message}</Text>}
                     {errors.valueAs?.type === 'required' && <Text category='label' style={styles.text}>{errors.valueAs?.message}</Text>}
                     {errors.valueAs?.type === 'validate' && <Text category='label' style={styles.text}>{'Campo inválido'}</Text>}
-                    <Button status='primary' accessoryLeft={isLoading ? LoadingIndicator : undefined}
+                    <Button status='primary' accessoryLeft={isLoading ? () => <LoadingIndicatorComponent insideButton size='small' status='basic' /> : undefined}
                         disabled={isLoading}
                         style={styles.btn}
                         onPress={handleSubmit(handleRecoveryPasswd)}>
