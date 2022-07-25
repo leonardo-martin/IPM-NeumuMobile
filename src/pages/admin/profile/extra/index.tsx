@@ -308,9 +308,8 @@ const EditProfileScreen: FC = (): ReactElement => {
                 hint='Meu Nome'
                 inputProps={{
                   value: field.value,
-                  onBlur: field.onBlur,
-                  onChangeText: field.onChange,
-                  editable: true,
+                  editable: false,
+                  disabled: true,
                   textAlign: 'right',
                   keyboardType: 'default',
                   multiline: true,
