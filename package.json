@@ -1,6 +1,9 @@
 {
   "name": "teleneumu",
   "version": "0.0.1",
+  "author": "Atos AMS Team",
+  "description": "Conectar pessoas, negócios e tecnologia para ajudar a melhorar o mundo em que vivemos é o nosso propósito e com esse objetivo desenvolvemos o app TeleNeuMu para o Instituto Pedro Molina (IPM), referência na pesquisa científica de doenças neuromusculares.",
+  "license": "UNLICENSED",
   "private": true,
   "scripts": {
     "start": "react-native start",
