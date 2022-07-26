@@ -76,3 +76,6 @@ package-lock.json
 .env.production.local
 
 .bundle/
+
+# react-native-config codegen
+ios/tmp.xcconfig

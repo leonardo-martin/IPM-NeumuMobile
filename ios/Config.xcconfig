@@ -1,0 +1,11 @@
+//
+//  Config.xcconfig
+//  TeleNeuMu
+//
+//  Created by Thiago Santana on 26/07/22.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+#include? "tmp.xcconfig"
