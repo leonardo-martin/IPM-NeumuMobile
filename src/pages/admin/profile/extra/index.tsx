@@ -105,7 +105,7 @@ const EditProfileScreen: FC = (): ReactElement => {
 
   const editProfile = async (type: 1 | 2) => {
     const obj = form.getValues()
-
+    Toast.hide()
     let userDto = null
     switch (type) {
       case 1:
@@ -143,6 +143,13 @@ const EditProfileScreen: FC = (): ReactElement => {
 
         break
       case 2:
+        if (!obj.address2 || obj.address2 === '' || obj.address2 === '0') {
+          Toast.show({
+            type: 'info',
+            text2: obj.address2 === '0' ? 'Número inválido, digite outro' : 'É necessário inserir o número',
+          })
+          return
+        }
         userDto = {
           address1: obj.address1,
           address2: obj.address2,
@@ -535,6 +542,13 @@ const EditProfileScreen: FC = (): ReactElement => {
 
               <Controller
                 control={form.control}
+                rules={{
+                  required: true,
+                  minLength: {
+                    value: 1,
+                    message: `Mín. 1 caracteres`
+                  },
+                }}
                 render={({ field }) => (
                   <ProfileSetting
                     style={[styles.profileSetting]}
