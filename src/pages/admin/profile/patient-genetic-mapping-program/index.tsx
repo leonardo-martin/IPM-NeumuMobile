@@ -14,7 +14,7 @@ import { getStatus } from '@services/underage.service'
 import { Button, Input, Radio, RadioGroup, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { EvaSize, EvaStatus } from '@ui-kitten/components/devsupport'
 import { getRelationPastExams } from '@utils/common'
-import { onlyNumbers } from '@utils/mask'
+import { formatCpf, onlyNumbers } from '@utils/mask'
 import LoadingIndicatorComponent from 'components/loadingIndicator'
 import { compareAsc, subYears } from 'date-fns'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
@@ -398,7 +398,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                                         <View style={[styles.subContainer, { alignItems: 'flex-start' }]}>
                                                             <View>
                                                                 <Text style={styles.text}>
-                                                                    Eu, <Text style={[styles.text, { fontWeight: 'bold', textTransform: 'uppercase', textDecorationLine: 'underline' }]}>{profile?.name}</Text>, portador do CPF<Text style={[styles.text, { fontWeight: 'bold', textDecorationLine: 'underline' }]}>{" " + profile?.cpf + " "}</Text> concordo que o meu DNA (ou o DNA do meu filho) seja tornado anônimo e utilizado com o objetivo de pesquisa.
+                                                                    Eu, <Text style={[styles.text, { fontWeight: 'bold', textTransform: 'uppercase', textDecorationLine: 'underline' }]}>{profile?.name}</Text>, portador do CPF<Text style={[styles.text, { fontWeight: 'bold', textDecorationLine: 'underline' }]}>{" " + (formatCpf(profile?.cpf) || profile?.cpf) + " "}</Text> concordo que o meu DNA (ou o DNA do meu filho) seja tornado anônimo e utilizado com o objetivo de pesquisa.
                                                                 </Text>
                                                                 <Controller
                                                                     control={form.control}
