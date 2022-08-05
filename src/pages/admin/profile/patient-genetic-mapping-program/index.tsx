@@ -266,7 +266,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                     await optOut()
                     Toast.show({
                         type: 'info',
-                        text2: 'Que pena... Agradeçemos pelo apoio',
+                        text2: 'Que pena... Agradecemos pelo apoio',
                     })
                 }
 
