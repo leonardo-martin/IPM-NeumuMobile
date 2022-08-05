@@ -562,7 +562,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                     </Text>
                     <TouchableOpacity style={styles.contentButton} activeOpacity={0.75} onPress={form.handleSubmit(confirm)}>
                         {isSending ? (
-                            <LoadingIndicatorComponent insideButton size='small' status='control' />
+                            <LoadingIndicatorComponent size='small' status='control' />
                         ) : (
                             <Text style={styles.contentButtonText}>{'Confirmar'.toUpperCase()}</Text>
                         )}
