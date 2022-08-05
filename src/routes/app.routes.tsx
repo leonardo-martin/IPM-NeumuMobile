@@ -23,6 +23,7 @@ import EditProfileScreen from '@pages/admin/profile/extra'
 import PatientDiaryEntryScreen from '@pages/admin/profile/patient-diary-entry'
 import PatientExamsScreen from '@pages/admin/profile/patient-exams'
 import PatientGeneticMappingProgramScreen from '@pages/admin/profile/patient-genetic-mapping-program'
+import AbrafeuFormScreen from '@pages/admin/profile/patient-genetic-mapping-program/extra/abrafeu-form.component'
 import VisitAddressScreen from '@pages/admin/profile/visitAddress'
 import ScheduleScreen from '@pages/admin/schedule'
 import ConfirmationScheduleScreen from '@pages/admin/schedule/confirmation'
@@ -82,6 +83,7 @@ const AppRoutes: FC = (): ReactElement => {
         <Screen name="ProfessionalSchedule" component={ProfessionalScheduleScreen} />
 
         <Screen name="GeneticMappingProgram" component={PatientGeneticMappingProgramScreen} />
+
         <Screen name="PatientDiaryEntry" component={PatientDiaryEntryScreen} />
         <Screen name="PatientExams" component={PatientExamsScreen} />
         <Screen name="Profile" component={ProfileScreen} />
@@ -101,7 +103,8 @@ const AppRoutes: FC = (): ReactElement => {
         <Screen name="ShareInformationWithMedicalDoctor" component={ShareInformationWithMedicalDoctorScreen} />
         <Screen name="PatientDisplayAsDoctor" component={PatientDisplayAsDoctorScreen} />
         <Screen name='AboutDNM' component={AboutScreen} />
-        
+        <Screen name="AbrafeuForm" component={AbrafeuFormScreen} />
+
         <Screen
           name="Schedule"
           component={ScheduleScreen}

@@ -209,6 +209,8 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                     }
                 ]
             )
+        } else {
+            navigation.navigate('AbrafeuForm')
         }
     }
 
