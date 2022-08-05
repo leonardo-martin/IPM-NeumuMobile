@@ -66,6 +66,12 @@ const RNWebView: FC<RNWebViewProps> = forwardRef<WebView, React.PropsWithChildre
           }}
           scrollEnabled={!isAndroid}
           onNavigationStateChange={onNavigationStateChange}
+          sharedCookiesEnabled
+          thirdPartyCookiesEnabled
+          domStorageEnabled
+          javaScriptEnabled          
+          showsVerticalScrollIndicator
+          allowsBackForwardNavigationGestures
         />
         {loading && LoadingIndicatorView()}
       </SafeAreaLayout>
@@ -78,11 +84,7 @@ RNWebView.defaultProps = {
     html: html
   },
   originWhitelist: ['*'],
-  startInLoadingState: false,
-  allowsBackForwardNavigationGestures: true,
-  showsVerticalScrollIndicator: true,
-  domStorageEnabled: true,
-  javaScriptEnabled: true
+  startInLoadingState: false
 }
 
 export default RNWebView
