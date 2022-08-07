@@ -1,42 +1,56 @@
+import CustomErrorMessage from '@components/error'
 import LoadingIndicatorComponent from '@components/loadingIndicator'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
+import { EChoicesChangePassword, UserAccRecoveryPasswdRequest } from '@models/User'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { changePassReq } from '@services/login.service'
-import { Button, Input, Text, useStyleSheet } from '@ui-kitten/components'
-import { cleanNumberMask, formatCpf, isEmailValid } from '@utils/mask'
-import { validate } from 'gerador-validador-cpf'
+import { Button, Input, useStyleSheet } from '@ui-kitten/components'
+import { cleanNumberMask, formatCpf } from '@utils/mask'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { SafeAreaView, View } from 'react-native'
 import Toast from 'react-native-toast-message'
+import { ChangePasswordRequestParams, config } from '../data'
 import { changePasswdReqStyle } from './style'
 
-interface ChangePasswordRequestParams {
-    choice: 'CPF' | 'EMAIL'
-}
-
 interface ChangePasswdRequest {
-    valueAs: string
+    choice: string
 }
 
 const ChangePasswordRequest: FC = (): ReactElement => {
 
     const navigation = useNavigation<any>()
+    const form = useForm<ChangePasswdRequest>()
     const styles = useStyleSheet(changePasswdReqStyle)
     const route = useRoute()
     const params = route.params as ChangePasswordRequestParams
     const [isLoading, setIsLoading] = useState(false)
 
-    const { control, handleSubmit, reset, formState: { errors, isSubmitSuccessful } } = useForm<ChangePasswdRequest>()
+    useEffect(() => {
+        if (form.formState.isSubmitSuccessful) {
+            form.reset({})
+        }
+    }, [form.formState.isSubmitSuccessful])
 
-    const handleRecoveryPasswd = async (data: ChangePasswdRequest) => {
+    const submit = async (data: ChangePasswdRequest) => {
 
         setIsLoading(!isLoading)
         try {
-            const response = await changePassReq({
-                userCpf: (params.choice === 'CPF') ? cleanNumberMask(data.valueAs) : '',
-                userEmail: (params.choice === 'EMAIL') ? data.valueAs : ''
-            })
+            var inputValue: UserAccRecoveryPasswdRequest = {}
+            if (EChoicesChangePassword.CPF) {
+                inputValue = {
+                    userCpf: cleanNumberMask(data.choice)
+                }
+            } else if (EChoicesChangePassword.EMAIL) {
+                inputValue = {
+                    userEmail: data.choice
+                }
+            } else if (EChoicesChangePassword.RNM) {
+                inputValue = {
+                    userRnm: data.choice
+                }
+            }
+            const response = await changePassReq(inputValue)
 
             if (response.status !== 200 && response.status !== 201) {
                 Toast.show({
@@ -58,57 +72,38 @@ const ChangePasswordRequest: FC = (): ReactElement => {
         }
     }
 
-    useEffect(() => {
-        if (isSubmitSuccessful) {
-            reset({})
-        }
-    }, [isSubmitSuccessful, reset])
-
     return (
         <SafeAreaLayout level='1' style={styles.safeArea}>
             <SafeAreaView style={styles.content}>
                 <View style={styles.box}>
                     <Controller
-                        control={control}
-                        rules={{
-                            required: {
-                                value: true,
-                                message: 'Campo obrigatório'
-                            },
-                            minLength: {
-                                value: (params.choice === 'CPF' ? 14 : params.choice === 'EMAIL' ? 5 : 5),
-                                message: `Mín. ${(params.choice === 'CPF' ? 14 : params.choice === 'EMAIL' ? 5 : 5)} caracteres`
-                            },
-                            maxLength: {
-                                value: (params.choice === 'CPF' ? 14 : params.choice === 'EMAIL' ? 60 : 60),
-                                message: `Max. ${(params.choice === 'CPF' ? 14 : params.choice === 'EMAIL' ? 60 : 60)} caracteres`
-                            },
-                            validate: (e) => (params.choice === 'CPF' ? validate(e) : params.choice === 'EMAIL' ? isEmailValid(e) : undefined)
-                        }}
+                        control={form.control}
+                        rules={config[params.choice].rules || {}}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <Input
-                                label={(params.choice === 'CPF' ? 'CPF' : params.choice === 'EMAIL' ? 'Endereço de E-mail' : 'Insira o valor') + " *"}
+                                {...config[params.choice].input || undefined}
                                 style={styles.input}
-                                testID='emailOrCpf'
                                 onBlur={onBlur}
                                 onChangeText={onChange}
-                                value={params.choice === 'CPF' ? formatCpf(value) : params.choice === 'EMAIL' ? value.replace(/[^0-9A-Za-z]*/, "") : value}
-                                autoCapitalize='none'
-                                keyboardType={params.choice === 'CPF' ? 'number-pad' : params.choice === 'EMAIL' ? 'email-address' : 'default'}
-                                maxLength={params.choice === 'CPF' ? 14 : params.choice === 'EMAIL' ? 60 : 60}
-                                placeholder={params.choice === 'CPF' ? '999.999.999-99' : params.choice === 'EMAIL' ? 'example@example.com' : ''}
+                                value={params.choice === EChoicesChangePassword.CPF ?
+                                    formatCpf(value) :
+                                    params.choice === EChoicesChangePassword.EMAIL ?
+                                        value.replace(/[^0-9A-Za-z]*/, "")
+                                        : value}
                             />
                         )}
-                        name='valueAs'
+                        name='choice'
                         defaultValue=''
                     />
-                    {errors.valueAs?.type === 'minLength' && <Text category='label' style={styles.text}>{errors.valueAs?.message}</Text>}
-                    {errors.valueAs?.type === 'required' && <Text category='label' style={styles.text}>{errors.valueAs?.message}</Text>}
-                    {errors.valueAs?.type === 'validate' && <Text category='label' style={styles.text}>{'Campo inválido'}</Text>}
-                    <Button status='primary' accessoryLeft={isLoading ? () => <LoadingIndicatorComponent insideButton size='small' status='basic' /> : undefined}
+                    {form.formState.errors.choice?.type !== 'validate' && <CustomErrorMessage name='choice' errors={form.formState.errors} />}
+                    {form.formState.errors.choice?.type === 'validate' && <CustomErrorMessage name='choice' errors={form.formState.errors} customMessage='Campo inválido' />}
+                    <Button status='primary'
+                        accessoryLeft={isLoading ?
+                            () => <LoadingIndicatorComponent insideButton size='small' status='basic' />
+                            : undefined}
                         disabled={isLoading}
                         style={styles.btn}
-                        onPress={handleSubmit(handleRecoveryPasswd)}>
+                        onPress={form.handleSubmit(submit)}>
                         {"Enviar E-mail".toUpperCase()}
                     </Button>
                 </View>

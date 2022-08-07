@@ -176,9 +176,10 @@ class MedicalSpecialtyDto {
     others!: JSONObject | string | any
 }
 
-export class UserAccRecoveryPasswdRequest {
-    userEmail!: string
-    userCpf!: string
+export interface UserAccRecoveryPasswdRequest {
+    userEmail?: string
+    userCpf?: string
+    userRnm?: string
 }
 
 export class UserAccRecoveryPasswd {
@@ -192,4 +193,10 @@ export class UserRelatedIdsDto {
     patientId!: number
     medicalDoctorId!: number
     operatorId!: number
+}
+
+export enum EChoicesChangePassword {
+    CPF = 'CPF (Cadastro de Pessoa Física)',
+    RNM = 'RNM (Registro Nacional Migratório)',
+    EMAIL = 'Endereço de E-mail'
 }
