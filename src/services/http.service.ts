@@ -14,4 +14,12 @@ export class HttpService {
         await CookieManager.get(url, useWebKit)
     }
 
+    static removeCookie = async (url: string, cookieName: string, useWebKit?: boolean | undefined): Promise<void> => {
+        await CookieManager.clearByName(url, cookieName, useWebKit)
+    }
+
+    static removeAllCookies = async (useWebKit?: boolean | undefined): Promise<void> => {
+        await CookieManager.clearAll(useWebKit)
+    }
+
 }

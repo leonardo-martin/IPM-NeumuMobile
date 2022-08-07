@@ -10,6 +10,7 @@ import WebView from 'react-native-webview'
 import { RootState } from 'store'
 import { abrafeuFormStyle } from './abrafeu-form.style'
 
+const COOKIE_NAME = 'auth.token'
 const AbrafeuFormScreen: FC = (): ReactElement => {
 
     const styles = useStyleSheet(abrafeuFormStyle)
@@ -22,12 +23,16 @@ const AbrafeuFormScreen: FC = (): ReactElement => {
         useCallback(() => {
             if (payload?.accessToken) {
                 HttpService.setCookie(FRONT_END_URL, {
-                    name: 'auth.token',
+                    name: COOKIE_NAME,
                     value: `${payload?.accessToken}`,
                     path: '/',
                     expires: undefined
                 })
                 webView.current?.reload()
+            }
+
+            return () => {
+                HttpService.removeCookie(FRONT_END_URL, COOKIE_NAME)
             }
         }, [payload])
     )
