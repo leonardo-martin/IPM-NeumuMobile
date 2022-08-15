@@ -10,7 +10,7 @@ import { getGender, openMailTo } from '@utils/common'
 import { formatCpf, formatPhone, isEmailValid } from '@utils/mask'
 import { validateCNS, validatePasswd } from '@utils/validators'
 import { validate } from 'gerador-validador-cpf'
-import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import { Controller } from 'react-hook-form'
 import { Keyboard, Linking, TouchableOpacity, View } from 'react-native'
 
@@ -22,8 +22,11 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const styles = useStyleSheet(registerStyle)
   const [secureTextEntry, setSecureTextEntry] = useState(true)
+  const [secureTextEntryRepeat, setSecureTextEntryRepeat] = useState(true)
 
   const emailConfirm = form.watch("email")
+  const password = useRef<string | undefined>()
+  password.current = form.watch("password", "")
 
   useFocusEffect(
     useCallback(() => {
@@ -47,9 +50,14 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
   )
 
   const toggleSecureEntry = () => setSecureTextEntry(!secureTextEntry)
+  const toggleSecureEntryRepeat = () => setSecureTextEntryRepeat(!secureTextEntryRepeat)
 
   const renderIconRightPassword = (props: IconProps) => (
     <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} onPress={toggleSecureEntry} pack='eva' />
+  )
+
+  const renderIconRightRepeat = (props: IconProps) => (
+    <Icon {...props} name={secureTextEntryRepeat ? 'eye-off' : 'eye'} onPress={toggleSecureEntryRepeat} pack='eva' />
   )
 
   const openLink = (url: string) => Linking.openURL(url)
@@ -361,7 +369,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               secureTextEntry={secureTextEntry}
               returnKeyType="next"
               ref={ref}
-              onSubmitEditing={() => form.setFocus('phone')}
+              onSubmitEditing={() => form.setFocus('confirmPassword')}
               underlineColorAndroid="transparent"
               autoCapitalize="none"
               textContentType="password"
@@ -380,6 +388,50 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
         />
         {form.formState.errors.password?.type !== 'validate' && <CustomErrorMessage name='password' errors={form.formState.errors} />}
         {form.formState.errors.password?.type === 'validate' && <CustomErrorMessage name='password' errors={form.formState.errors} customMessage='Senha inválida' />}
+        <Controller
+          control={form.control}
+          rules={{
+            required: {
+              value: true,
+              message: 'Campo Obrigatório'
+            },
+            minLength: {
+              value: 8,
+              message: `Mín. 8 caracteres`
+            },
+            validate: {
+              valid: (e) => e ? validatePasswd(e) : undefined,
+              equal: (e) => e === password.current
+            }
+          }}
+          render={({ field: { onChange, onBlur, value, name, ref } }) => (
+            <Input
+              onFocus={() => (__DEV__) ? undefined : Clipboard.setString('')}
+              onSelectionChange={() => (__DEV__) ? undefined : Clipboard.setString('')}
+              size='small'
+              label="Confirmar Senha *"
+              style={styles.input}
+              keyboardType='default'
+              testID={name}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              maxLength={20}
+              accessoryRight={renderIconRightRepeat}
+              secureTextEntry={secureTextEntryRepeat}
+              returnKeyType="send"
+              ref={ref}
+              onSubmitEditing={() => form.setFocus('phone')}
+              underlineColorAndroid="transparent"
+              autoCapitalize="none"
+              textContentType="newPassword"
+            />
+          )}
+          name='confirmPassword'
+        />
+        {(form.formState.errors.confirmPassword?.type !== 'valid' && form.formState.errors.confirmPassword?.type !== 'equal') && <CustomErrorMessage name='confirmPassword' errors={form.formState.errors} />}
+        {(form.formState.errors.confirmPassword?.type === 'valid') && <CustomErrorMessage name='confirmPassword' errors={form.formState.errors} customMessage='Senha inválida' />}
+        {(form.formState.errors.confirmPassword?.type === 'equal') && <CustomErrorMessage name='confirmPassword' errors={form.formState.errors} customMessage='Senhas não conferem' />}
         <Controller
           control={form.control}
           rules={{

@@ -14,7 +14,7 @@ import { extractFieldString, getGender, openMailTo } from '@utils/common'
 import { formatCpf, formatPhone, isEmailValid, onlyNumbers } from '@utils/mask'
 import { validatePasswd } from '@utils/validators'
 import { validate } from 'gerador-validador-cpf'
-import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, BackHandler, Keyboard, TouchableOpacity, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -31,12 +31,16 @@ const NewUserScreen: FC = (): ReactElement => {
     const { localeDateService } = useDatepickerService()
     const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
     const [selectedSpecialty, setSelectedSpecialty] = useState<IndexPath | IndexPath[]>()
-    const emailConfirm = form.watch("email")
     const isFocused = useIsFocused()
     const [selectedIndex, setSelectedIndex] = useState<number>(-1)
     const [secureTextEntry, setSecureTextEntry] = useState(true)
+    const [secureTextEntryRepeat, setSecureTextEntryRepeat] = useState(true)
     const navigation = useNavigation<any>()
     const [bOtherDescription, setBOtherDescription] = useState(false)
+
+    const emailConfirm = form.watch("email")
+    const password = useRef<string | undefined>()
+    password.current = form.watch("password", "")
 
     const dispatch = useAppDispatch()
     const { specialties } = useAppSelector((state: RootState) => state.common)
@@ -119,12 +123,15 @@ const NewUserScreen: FC = (): ReactElement => {
         <Icon {...props} name='calendar-outline' pack='eva' />
     )
 
-    const toggleSecureEntry = () => {
-        setSecureTextEntry(!secureTextEntry)
-    }
+    const toggleSecureEntry = () => setSecureTextEntry(!secureTextEntry)
+    const toggleSecureEntryRepeat = () => setSecureTextEntryRepeat(!secureTextEntryRepeat)
 
     const renderIconRightPassword = (props: IconProps) => (
         <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} onPress={toggleSecureEntry} pack='eva' />
+    )
+
+    const renderIconRightRepeat = (props: IconProps) => (
+        <Icon {...props} name={secureTextEntryRepeat ? 'eye-off' : 'eye'} onPress={toggleSecureEntryRepeat} pack='eva' />
     )
 
     const onSubmit = async (data: UserDoctorData) => {
@@ -454,7 +461,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     secureTextEntry={secureTextEntry}
                                     returnKeyType="next"
                                     ref={ref}
-                                    onSubmitEditing={() => form.setFocus('crm')}
+                                    onSubmitEditing={() => form.setFocus('confirmPassword')}
                                     underlineColorAndroid="transparent"
                                     autoCapitalize="none"
                                     textContentType="password"
@@ -473,6 +480,51 @@ const NewUserScreen: FC = (): ReactElement => {
                         />
                         {form.formState.errors.password?.type !== 'validate' && <CustomErrorMessage name='password' errors={form.formState.errors} />}
                         {form.formState.errors.password?.type === 'validate' && <CustomErrorMessage name='password' errors={form.formState.errors} customMessage='Senha inválida' />}
+                        <Controller
+                            control={form.control}
+                            rules={{
+                                required: {
+                                    value: true,
+                                    message: 'Campo Obrigatório'
+                                },
+                                minLength: {
+                                    value: 8,
+                                    message: `Mín. 8 caracteres`
+                                },
+                                validate: {
+                                    valid: (e) => e ? validatePasswd(e) : undefined,
+                                    equal: (e) => e === password.current
+                                }
+                            }}
+                            render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                                <Input
+                                    onFocus={() => (__DEV__) ? undefined : Clipboard.setString('')}
+                                    onSelectionChange={() => (__DEV__) ? undefined : Clipboard.setString('')}
+                                    size='small'
+                                    label="Confirmar Senha *"
+                                    style={styles.input}
+                                    keyboardType='default'
+                                    testID={name}
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                    maxLength={20}
+                                    accessoryRight={renderIconRightRepeat}
+                                    secureTextEntry={secureTextEntryRepeat}
+                                    returnKeyType="send"
+                                    ref={ref}
+                                    onSubmitEditing={() => form.setFocus('crm')}
+                                    underlineColorAndroid="transparent"
+                                    autoCapitalize="none"
+                                    textContentType="newPassword"
+                                />
+                            )}
+                            name='confirmPassword'
+                        />
+                        {(form.formState.errors.confirmPassword?.type !== 'valid' && form.formState.errors.confirmPassword?.type !== 'equal') && <CustomErrorMessage name='confirmPassword' errors={form.formState.errors} />}
+                        {(form.formState.errors.confirmPassword?.type === 'valid') && <CustomErrorMessage name='confirmPassword' errors={form.formState.errors} customMessage='Senha inválida' />}
+                        {(form.formState.errors.confirmPassword?.type === 'equal') && <CustomErrorMessage name='confirmPassword' errors={form.formState.errors} customMessage='Senhas não conferem' />}
+
                         <Controller
                             control={form.control}
                             rules={{

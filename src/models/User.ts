@@ -81,6 +81,7 @@ export class UserData {
     phone2?: string
     username?: string
     password?: string
+    confirmPassword?: string
     city?: string
     state?: string
     dateOfBirth?: Date | string
@@ -108,6 +109,7 @@ export class UserPatientData extends UserData {
         phone2?: string,
         username?: string,
         password?: string,
+        confirmPassword?: string,
         city?: string,
         state?: string,
         dateOfBirth?: Date,
@@ -129,6 +131,7 @@ export class UserPatientData extends UserData {
         this.creator = creator
         this.abrafeuRegistrationOptIn = abrafeuRegistrationOptIn
         this.pastExams = pastExams
+        this.confirmPassword = confirmPassword
         Object.setPrototypeOf(this, UserPatientData.prototype)
     }
 }
@@ -147,6 +150,7 @@ export class UserDoctorData extends UserData {
         phone2?: string,
         username?: string,
         password?: string,
+        confirmPassword?: string,
         city?: string,
         state?: string,
         dateOfBirth?: Date,
@@ -164,6 +168,7 @@ export class UserDoctorData extends UserData {
         this.crm = crm
         this.specialty = specialty
         this.professionalTypeId = professionalTypeId
+        this.confirmPassword = confirmPassword
         Object.setPrototypeOf(this, UserDoctorData.prototype)
     }
 }
