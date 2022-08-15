@@ -8,12 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* TeleNeuMuTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* TeleNeuMuTests.m */; };
+		13A967DFAA9204AF721DC3E1 /* libPods-TeleNeuMu.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64A375EEA4A2DB3EC75000A4 /* libPods-TeleNeuMu.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		749E7816C446A9530BCDE1B0 /* libPods-TeleNeuMu.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEF43C39F2C4D9AEAFA65F96 /* libPods-TeleNeuMu.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		B28081A198B8E843E80ED319 /* libPods-TeleNeuMu-TeleNeuMuTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C15DABB00926A3410D6A5BA /* libPods-TeleNeuMu-TeleNeuMuTests.a */; };
 		C279C93127F8AB4A00A6A74A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = C279C93027F8AB4A00A6A74A /* AppDelegate.mm */; };
-		E0239B3156A8A25292509254 /* libPods-TeleNeuMu-TeleNeuMuTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B4EE761F9EA08395D6BDE34D /* libPods-TeleNeuMu-TeleNeuMuTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,18 +30,18 @@
 		00E356EE1AD99517003FC87E /* TeleNeuMuTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TeleNeuMuTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* TeleNeuMuTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TeleNeuMuTests.m; sourceTree = "<group>"; };
+		0623BB54634C3E10787C5F10 /* Pods-TeleNeuMu.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu.staging.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu/Pods-TeleNeuMu.staging.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* TeleNeuMu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TeleNeuMu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = TeleNeuMu/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TeleNeuMu/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = TeleNeuMu/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = TeleNeuMu/main.m; sourceTree = "<group>"; };
-		4E257222E0966431ACA33345 /* Pods-TeleNeuMu.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu.release.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu/Pods-TeleNeuMu.release.xcconfig"; sourceTree = "<group>"; };
+		58FF1BE81C9AB19718EC16E6 /* Pods-TeleNeuMu.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu.release.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu/Pods-TeleNeuMu.release.xcconfig"; sourceTree = "<group>"; };
+		64A375EEA4A2DB3EC75000A4 /* libPods-TeleNeuMu.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TeleNeuMu.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TeleNeuMu/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		8715511A33B66EAF9C2684DD /* Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig"; sourceTree = "<group>"; };
-		8A51E33AB6A16E3BCE1D376A /* Pods-TeleNeuMu.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu.debug.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu/Pods-TeleNeuMu.debug.xcconfig"; sourceTree = "<group>"; };
-		9BF15A7779109251C7D90D67 /* Pods-TeleNeuMu-TeleNeuMuTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu-TeleNeuMuTests.debug.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests.debug.xcconfig"; sourceTree = "<group>"; };
-		B4EE761F9EA08395D6BDE34D /* libPods-TeleNeuMu-TeleNeuMuTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TeleNeuMu-TeleNeuMuTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B5C20408C60B4DCA3B4128D5 /* Pods-TeleNeuMu-TeleNeuMuTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu-TeleNeuMuTests.staging.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests.staging.xcconfig"; sourceTree = "<group>"; };
+		930C3712EDCB02F1BF4E1FE0 /* Pods-TeleNeuMu.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu.debug.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu/Pods-TeleNeuMu.debug.xcconfig"; sourceTree = "<group>"; };
+		95B7004F4AA378D773FDCA1F /* Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig"; sourceTree = "<group>"; };
+		9C15DABB00926A3410D6A5BA /* libPods-TeleNeuMu-TeleNeuMuTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TeleNeuMu-TeleNeuMuTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2225CD026E9716800F6911B /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		C2225CD126E9716800F6911B /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Octicons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		C2225CD226E9716800F6911B /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialCommunityIcons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
@@ -61,9 +61,9 @@
 		C279C93027F8AB4A00A6A74A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = TeleNeuMu/AppDelegate.mm; sourceTree = "<group>"; };
 		C2897561283A7D22007CD05F /* TeleNeuMu.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = TeleNeuMu.entitlements; path = TeleNeuMu/TeleNeuMu.entitlements; sourceTree = "<group>"; };
 		C2C4FC46288FF5730077557F /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		DC18381FB19DFAFBC86A6B5B /* Pods-TeleNeuMu-TeleNeuMuTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu-TeleNeuMuTests.staging.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests.staging.xcconfig"; sourceTree = "<group>"; };
+		E34A4FD0E9F6D1B3C4FFC935 /* Pods-TeleNeuMu-TeleNeuMuTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu-TeleNeuMuTests.debug.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		ED4E08CDE5202246CE78D6E7 /* Pods-TeleNeuMu.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu.staging.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu/Pods-TeleNeuMu.staging.xcconfig"; sourceTree = "<group>"; };
-		FEF43C39F2C4D9AEAFA65F96 /* libPods-TeleNeuMu.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TeleNeuMu.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,7 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0239B3156A8A25292509254 /* libPods-TeleNeuMu-TeleNeuMuTests.a in Frameworks */,
+				B28081A198B8E843E80ED319 /* libPods-TeleNeuMu-TeleNeuMuTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,7 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				749E7816C446A9530BCDE1B0 /* libPods-TeleNeuMu.a in Frameworks */,
+				13A967DFAA9204AF721DC3E1 /* libPods-TeleNeuMu.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,12 +121,12 @@
 		1C417540B75DB80708655B0A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				8A51E33AB6A16E3BCE1D376A /* Pods-TeleNeuMu.debug.xcconfig */,
-				4E257222E0966431ACA33345 /* Pods-TeleNeuMu.release.xcconfig */,
-				ED4E08CDE5202246CE78D6E7 /* Pods-TeleNeuMu.staging.xcconfig */,
-				9BF15A7779109251C7D90D67 /* Pods-TeleNeuMu-TeleNeuMuTests.debug.xcconfig */,
-				8715511A33B66EAF9C2684DD /* Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig */,
-				B5C20408C60B4DCA3B4128D5 /* Pods-TeleNeuMu-TeleNeuMuTests.staging.xcconfig */,
+				930C3712EDCB02F1BF4E1FE0 /* Pods-TeleNeuMu.debug.xcconfig */,
+				58FF1BE81C9AB19718EC16E6 /* Pods-TeleNeuMu.release.xcconfig */,
+				0623BB54634C3E10787C5F10 /* Pods-TeleNeuMu.staging.xcconfig */,
+				E34A4FD0E9F6D1B3C4FFC935 /* Pods-TeleNeuMu-TeleNeuMuTests.debug.xcconfig */,
+				95B7004F4AA378D773FDCA1F /* Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig */,
+				DC18381FB19DFAFBC86A6B5B /* Pods-TeleNeuMu-TeleNeuMuTests.staging.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -135,8 +135,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				FEF43C39F2C4D9AEAFA65F96 /* libPods-TeleNeuMu.a */,
-				B4EE761F9EA08395D6BDE34D /* libPods-TeleNeuMu-TeleNeuMuTests.a */,
+				64A375EEA4A2DB3EC75000A4 /* libPods-TeleNeuMu.a */,
+				9C15DABB00926A3410D6A5BA /* libPods-TeleNeuMu-TeleNeuMuTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -211,12 +211,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "TeleNeuMuTests" */;
 			buildPhases = (
-				A96C7A69007F5D2B04442F9D /* [CP] Check Pods Manifest.lock */,
+				DCFEE9B3C70A2793980840E5 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				2CA44BA2597EBAA6FF6A123F /* [CP] Embed Pods Frameworks */,
-				214110E73E51411C1E6B660F /* [CP] Copy Pods Resources */,
+				7295CEA4EA9D8507021B1C66 /* [CP] Embed Pods Frameworks */,
+				19C340261CF7EFC9CA29E835 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -232,14 +232,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "TeleNeuMu" */;
 			buildPhases = (
-				E35C64A04BA9D8C176AA2EE8 /* [CP] Check Pods Manifest.lock */,
+				A972F0D0D78AFDAF86792986 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				634CE37FA7A77EFAA9B2FF69 /* [CP] Embed Pods Frameworks */,
-				C09F62F7CF78CA69DFDC6CA9 /* [CP] Copy Pods Resources */,
+				0E201A0BD4A39EF1AA9587B3 /* [CP] Embed Pods Frameworks */,
+				4BC099AD0BEB6A08C608CF70 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -322,41 +322,7 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\n. \"$SRCROOT/../node_modules/react-native/scripts/react-native-xcode.sh\"\n";
 		};
-		214110E73E51411C1E6B660F /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		2CA44BA2597EBAA6FF6A123F /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		634CE37FA7A77EFAA9B2FF69 /* [CP] Embed Pods Frameworks */ = {
+		0E201A0BD4A39EF1AA9587B3 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -373,29 +339,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TeleNeuMu/Pods-TeleNeuMu-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A96C7A69007F5D2B04442F9D /* [CP] Check Pods Manifest.lock */ = {
+		19C340261CF7EFC9CA29E835 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
+			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TeleNeuMu-TeleNeuMuTests-checkManifestLockResult.txt",
+				"${PODS_ROOT}/Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C09F62F7CF78CA69DFDC6CA9 /* [CP] Copy Pods Resources */ = {
+		4BC099AD0BEB6A08C608CF70 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -412,7 +373,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TeleNeuMu/Pods-TeleNeuMu-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E35C64A04BA9D8C176AA2EE8 /* [CP] Check Pods Manifest.lock */ = {
+		7295CEA4EA9D8507021B1C66 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A972F0D0D78AFDAF86792986 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -428,6 +406,28 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-TeleNeuMu-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DCFEE9B3C70A2793980840E5 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TeleNeuMu-TeleNeuMuTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -486,7 +486,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9BF15A7779109251C7D90D67 /* Pods-TeleNeuMu-TeleNeuMuTests.debug.xcconfig */;
+			baseConfigurationReference = E34A4FD0E9F6D1B3C4FFC935 /* Pods-TeleNeuMu-TeleNeuMuTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -497,7 +497,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = TeleNeuMuTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -518,7 +518,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8715511A33B66EAF9C2684DD /* Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig */;
+			baseConfigurationReference = 95B7004F4AA378D773FDCA1F /* Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -526,7 +526,7 @@
 				DEVELOPMENT_TEAM = 243B7XXD8U;
 				EXCLUDED_ARCHS = i386;
 				INFOPLIST_FILE = TeleNeuMuTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -547,7 +547,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8A51E33AB6A16E3BCE1D376A /* Pods-TeleNeuMu.debug.xcconfig */;
+			baseConfigurationReference = 930C3712EDCB02F1BF4E1FE0 /* Pods-TeleNeuMu.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -582,7 +582,7 @@
 				PRODUCT_NAME = TeleNeuMu;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				URI_SCHEME_BASE = teleneumuappdev;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -591,7 +591,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4E257222E0966431ACA33345 /* Pods-TeleNeuMu.release.xcconfig */;
+			baseConfigurationReference = 58FF1BE81C9AB19718EC16E6 /* Pods-TeleNeuMu.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -624,7 +624,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.teleneumu.TeleNeuMu;
 				PRODUCT_NAME = TeleNeuMu;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				URI_SCHEME_BASE = teleneumuapp;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -834,7 +834,7 @@
 		};
 		C2F6A1A628368AD30086E970 /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = ED4E08CDE5202246CE78D6E7 /* Pods-TeleNeuMu.staging.xcconfig */;
+			baseConfigurationReference = 0623BB54634C3E10787C5F10 /* Pods-TeleNeuMu.staging.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -867,7 +867,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.teleneumu.TeleNeuMu;
 				PRODUCT_NAME = TeleNeuMu;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				URI_SCHEME_BASE = teleneumuappdev;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -876,7 +876,7 @@
 		};
 		C2F6A1A728368AD30086E970 /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B5C20408C60B4DCA3B4128D5 /* Pods-TeleNeuMu-TeleNeuMuTests.staging.xcconfig */;
+			baseConfigurationReference = DC18381FB19DFAFBC86A6B5B /* Pods-TeleNeuMu-TeleNeuMuTests.staging.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -884,7 +884,7 @@
 				DEVELOPMENT_TEAM = 243B7XXD8U;
 				EXCLUDED_ARCHS = i386;
 				INFOPLIST_FILE = TeleNeuMuTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
