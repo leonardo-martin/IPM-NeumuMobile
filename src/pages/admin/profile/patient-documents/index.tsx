@@ -1,41 +1,37 @@
-import AddExamDialog from '@components/dialog/addExamDialog'
 import FilterByDateDialog from '@components/dialog/filterByDateDialog'
 import EmptyComponent from '@components/empty'
-import HeaderGenericWithTitleAndAddIcon from '@components/header/admin/generic-with-add-icon'
+import HeaderWithAddIcon from '@components/header/admin/generic-with-add-icon'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATE } from '@constants/date'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { useModal } from '@hooks/useModal'
 import { AscendingOrder } from '@models/Common'
-import { ExamDto, ExamImage } from '@models/Exam'
+import { ExamDto } from '@models/Exam'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { deleteExam, getPatientExamList } from '@services/exam.service'
 import { CalendarRange, Icon, IconProps, List, ListItem, Modal, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
 import { orderByDateRange, sortByDate } from '@utils/common'
 import React, { FC, ReactElement, RefObject, useCallback, useEffect, useState } from 'react'
-import { Animated as RNAnimated, ListRenderItemInfo, RefreshControl, TouchableOpacity, View } from 'react-native'
+import { Alert, Animated as RNAnimated, ListRenderItemInfo, RefreshControl, TouchableOpacity, View } from 'react-native'
 import { RectButton } from 'react-native-gesture-handler'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import Animated, { Layout, LightSpeedInLeft, LightSpeedOutRight } from 'react-native-reanimated'
 import Toast from 'react-native-toast-message'
 import { myExamsStyle } from './style'
 
-const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
+const PatientDocumentsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
 
     const theme = useTheme()
     const styles = useStyleSheet(myExamsStyle)
-    const { ref: refFilter } = useModal<Modal>()
-    const { ref: refAdd } = useModal<Modal>()
+    const navigation = useNavigation<any>()
+    const { ref } = useModal<Modal>()
 
     const [visibleModal, setVisibleModal] = useState<boolean>(false)
-    const [visibleAddModal, setVisibleAddModal] = useState<boolean>(false)
     const [refreshing, setRefreshing] = useState<boolean>(false)
     const [data, setData] = useState<Array<ExamDto>>([])
-    const [dataModal, setDataModal] = useState<ExamDto>()
     const [originalData, setOriginalData] = useState<Array<ExamDto>>([])
 
-    const [addedItem, setAddedItem] = useState<ExamDto & ExamImage | undefined>(undefined)
     const [range, setRange] = useState<CalendarRange<Date>>({})
     const [isFiltered, setIsFiltered] = useState<boolean>(false)
     const { localeDateService } = useDatepickerService()
@@ -69,13 +65,11 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
 
     useFocusEffect(
         useCallback(() => {
-            if (!addedItem) {
-                setIsFiltered(false)
-                setRefreshing(false)
-                setRange({})
-            }
+            setIsFiltered(false)
+            setRefreshing(false)
+            setRange({})
             getExamList()
-        }, [addedItem])
+        }, [])
     )
 
     const renderRightIcon = (_props: IconProps, exam: ExamDto) => (
@@ -84,7 +78,13 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
                 style={styles.textDate}
                 appearance='hint'
                 category='c1'>
-                {localeDateService.format(localeDateService.parse(exam.examDate as string, _DATE_FROM_ISO_8601), _DEFAULT_FORMAT_DATE)}
+                Última atualização
+            </Text>
+            <Text
+                style={styles.textDate}
+                appearance='hint'
+                category='c1'>
+                {localeDateService.format(localeDateService.parse(exam.examResultDate as string, _DATE_FROM_ISO_8601), _DEFAULT_FORMAT_DATE)}
             </Text>
         </View>
     )
@@ -94,11 +94,6 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
             <Icon {...props} color={theme['color-basic-1100']} name='reader-outline' pack='ionicons' />
         </View>
     )
-
-    const onViewItem = async (info: ListRenderItemInfo<ExamDto>) => {
-        setDataModal(info.item)
-        setVisibleAddModal(true)
-    }
 
     const onDeleteItem = async (info: ListRenderItemInfo<ExamDto>) => {
         try {
@@ -150,9 +145,20 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
             ref.current?.close()
 
             if (text.toUpperCase() === 'DELETAR') {
-                onDeleteItem(info)
+                Alert.alert(
+                    `Deletar "${info.item.examType}"`,
+                    `Tem certeza que deseja remover o documento "${info.item.examType}"?`,
+                    [
+                        { text: "Não", style: 'cancel', onPress: () => { } },
+                        {
+                            text: 'Sim',
+                            style: 'destructive',
+                            onPress: () => onDeleteItem(info)
+                        },
+                    ]
+                )
             } else if (text.toUpperCase() === 'EDITAR') {
-                onViewItem(info)
+                goToDocument(info.item)
             }
         }
         return (
@@ -187,12 +193,9 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
                         style={styles.containerItem}
                         title={info.item.examType}
                         description={(evaProps) => (
-                            info.item.data.examDescription?.length > 36 ?
-                                <Text {...evaProps}>
-                                    {info.item.data.examDescription.substring(0, 32)}...
-                                </Text>
-                                :
-                                <Text {...evaProps}>{info.item.data.examDescription}</Text>
+                            <>
+                                <Text {...evaProps}>Data: {localeDateService.format(localeDateService.parse(info.item.examDate as string, _DATE_FROM_ISO_8601), _DEFAULT_FORMAT_DATE)}</Text>
+                            </>
                         )}
                         accessoryRight={(e) => renderRightIcon(e, info.item)}
                         accessoryLeft={renderLeftIcon}
@@ -225,14 +228,28 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
         </View>
     )
 
+    const goToDocument = (data?: ExamDto) => {
+        if (data) {
+            navigation.navigate('CreatePatientDocuments', {
+                exam: data,
+                props: {
+                    editable: true
+                }
+            })
+        }
+        else navigation.navigate('CreatePatientDocuments', {
+            exam: undefined,
+            props: {
+                editable: true
+            }
+        })
+    }
+
     return (
         <>
-            <HeaderGenericWithTitleAndAddIcon
+            <HeaderWithAddIcon
                 title='Meus Documentos'
-                onVisible={() => {
-                    setDataModal(undefined)
-                    setVisibleAddModal(!visibleAddModal)
-                }}
+                onClick={() => goToDocument()}
             />
             <SafeAreaLayout level='1' style={styles.safeArea}>
                 <List
@@ -253,22 +270,16 @@ const PatientExamsScreen: FC<DrawerContentComponentProps> = (): ReactElement => 
                     ListEmptyComponent={<EmptyComponent message='Nenhum documento encontrado' />}
                 />
                 <FilterByDateDialog
-                    ref={refFilter}
+                    ref={ref}
                     onVisible={setVisibleModal}
                     isVisible={visibleModal}
                     handleRange={setRange}
                     onFilter={filterData}
                     range={range}
                 />
-                <AddExamDialog
-                    ref={refAdd}
-                    exam={dataModal}
-                    onRefresh={setAddedItem}
-                    onVisible={setVisibleAddModal}
-                    visible={visibleAddModal} />
             </SafeAreaLayout>
         </>
     )
 }
 
-export default PatientExamsScreen
+export default PatientDocumentsScreen

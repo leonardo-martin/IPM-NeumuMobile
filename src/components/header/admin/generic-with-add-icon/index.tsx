@@ -4,13 +4,13 @@ import { Layout, Text, TopNavigation, TopNavigationAction, useStyleSheet } from 
 import React, { FC, ReactElement } from 'react'
 import { headerStyle } from '../style'
 
-interface HeaderGenericWithTitleAndAddIconProps {
-    onVisible?: () => void
+interface HeaderWithAddIconProps {
+    onClick?: () => void
     title: string
     hideIcon?: boolean
 }
 
-const HeaderGenericWithTitleAndAddIcon: FC<HeaderGenericWithTitleAndAddIconProps> = ({ title = 'Title', hideIcon = false, ...props }): ReactElement => {
+const HeaderWithAddIcon: FC<HeaderWithAddIconProps> = ({ title = 'Title', hideIcon = false, ...props }): ReactElement => {
     const { goBack } = useNavigation<any>()
     const styles = useStyleSheet(headerStyle)
 
@@ -24,7 +24,7 @@ const HeaderGenericWithTitleAndAddIcon: FC<HeaderGenericWithTitleAndAddIconProps
     const renderRigthIcon = () => (
         <TopNavigationAction
             icon={PlusIcon}
-            onPress={props.onVisible}
+            onPress={props.onClick}
         />
     )
 
@@ -40,4 +40,4 @@ const HeaderGenericWithTitleAndAddIcon: FC<HeaderGenericWithTitleAndAddIconProps
     )
 }
 
-export default HeaderGenericWithTitleAndAddIcon
+export default HeaderWithAddIcon

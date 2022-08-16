@@ -1,17 +1,22 @@
 import { StyleSheet } from 'react-native'
 
 export const attachBoxStyle = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    paddingVertical: 15,
+    alignItems: 'center'
+  },
   text: {
     fontSize: 12,
     fontWeight: '600',
   },
   attachDoc: {
-    flexDirection: 'row',
+    padding: 25,
+    paddingHorizontal: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: 50,
     backgroundColor: 'background-basic-color-3',
-    marginBottom: 5,
     borderWidth: 1,
     borderColor: 'border-basic-color-5',
     borderRadius: 4
@@ -24,7 +29,7 @@ export const attachBoxStyle = StyleSheet.create({
     flexWrap: 'wrap',
     width: '70%',
     textAlign: 'center',
-    paddingVertical: 5 
+    paddingVertical: 5
   },
   iconPrimary: {
     color: 'color-primary-500'
@@ -39,7 +44,7 @@ export const attachBoxStyle = StyleSheet.create({
   },
   containerFile: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
   }
 })

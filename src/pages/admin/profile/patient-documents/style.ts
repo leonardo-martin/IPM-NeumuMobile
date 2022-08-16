@@ -37,8 +37,7 @@ export const myExamsStyle = StyleSheet.create({
     color: 'text-basic-color',
   },
   viewDate: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'column',
     paddingHorizontal: 15
   },
   textDate: {

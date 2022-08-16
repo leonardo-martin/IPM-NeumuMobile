@@ -62,6 +62,10 @@
 	<string>$(EXECUTABLE_NAME) gostaria de ter acesso ao calendário do dispositivo.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>$(EXECUTABLE_NAME) gostaria de ter acesso a câmera do dispositivo.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>$(EXECUTABLE_NAME) gostaria de ter acesso ao microfone do dispositivo.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>$(EXECUTABLE_NAME) gostaria de ter acesso a biblioteca do dispositivo.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>$(EXECUTABLE_NAME) gostaria de ter acesso a localização do dispositivo.</string>
 	<key>NSRemindersUsageDescription</key>

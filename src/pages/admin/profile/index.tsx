@@ -29,7 +29,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
   )
 
   const goToMyExams = () => {
-    navigation.navigate('PatientExams')
+    navigation.navigate('PatientDocuments')
   }
 
   const renderFooterComponent = () => (

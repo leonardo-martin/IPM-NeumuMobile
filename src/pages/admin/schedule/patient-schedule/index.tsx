@@ -12,6 +12,7 @@ import { VisitAddressDTO } from '@models/VisitAddress'
 import { useRoute } from '@react-navigation/core'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect } from '@react-navigation/native'
+import { AppInfoService } from '@services/app-info.service'
 import { createAppointment, getAppointmentAvailabilityListSummaryByDoctorId, getAppointmentAvailabilityWithBookedAppointments } from '@services/appointment.service'
 import { getVisitAddressListByDoctorId } from '@services/visit-address.service'
 import { Avatar, Button, Card, Icon, IconProps, List, Text, TranslationWidth, useStyleSheet, useTheme } from '@ui-kitten/components'
@@ -159,7 +160,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
             const response = await createAppointment(scheduleData)
             if (response.status === 201) {
                 navigation.navigate('ConfirmationSchedule', {
-                    title: 'TeleNeuMu | Consulta Presencial',
+                    title: `${AppInfoService.getAppName()} | Consulta Presencial`,
                     description: 'Esta é uma marcação de uma consulta presencial com o seu médico',
                     location: fullAddress,
                     startDate: localeDateService.parse(scheduleData?.startTime as string, _DATE_FROM_ISO_8601).getTime().toString(),

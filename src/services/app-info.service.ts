@@ -13,4 +13,8 @@ export class AppInfoService {
   static getModel = (): string => {
     return DeviceInfo.getModel()
   }
+
+  static getAppName = (): string => {
+    return DeviceInfo.getApplicationName()
+  }
 }

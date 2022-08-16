@@ -1,81 +1,118 @@
-import { getFileFromDevice } from '@services/document.service'
-import { Icon, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
-import { DocumentDto } from 'models/Document'
-import React, { Dispatch, FC, ReactElement } from 'react'
-import { TouchableOpacity, View } from 'react-native'
-import { DocumentPickerOptions, DocumentPickerResponse } from 'react-native-document-picker'
-import { SupportedPlatforms } from 'react-native-document-picker/lib/typescript/fileTypes'
+import { FileDto } from '@models/Document'
+import { getFileFromDevice, launchCameraFromDevice, launchImageLibraryFromDevice } from '@services/document.service'
+import { Icon, Text, useStyleSheet } from '@ui-kitten/components'
+import { generateHash } from '@utils/common'
+import React, { FC, ReactElement } from 'react'
+import { Platform, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { attachBoxStyle } from './style'
 
 interface AttachmentBoxProps {
-    file: DocumentPickerResponse[] | undefined
-    handleFile: Dispatch<React.SetStateAction<DocumentPickerResponse[] | undefined>>
-    label?: string
-    documentPickerOptions?: DocumentPickerOptions<SupportedPlatforms> | undefined
-    documentDto?: DocumentDto
-    handleDocumentDto?: () => void
-    loading?: boolean
-
+    setFile: React.Dispatch<React.SetStateAction<FileDto[] | undefined>>
+    setFileName: React.Dispatch<React.SetStateAction<string | undefined>>
+    fileName?: string
 }
 
 const AttachmentBoxComponent: FC<AttachmentBoxProps> = ({ ...props }): ReactElement => {
 
     const styles = useStyleSheet(attachBoxStyle)
 
-    const handleDocumentSelection = async () => {
+    const openFolder = async () => {
         try {
-            const response = await getFileFromDevice(props.documentPickerOptions)
-            props.handleFile(response)
+            const response = await getFileFromDevice()
+            if (response) {
+                props.setFile([{
+                    uri: response[0].uri,
+                    type: response[0].type,
+                    fileName: response[0].name,
+                    size: response[0].size
+                }])
+                props.setFileName(`D_${generateHash(16)}.${response[0].name?.split('.')[1] || ''}`)
+            }
+
         } catch (err: any) {
-            if (!err.toString().includes('cancelled.'))
-                Toast.show({
-                    type: 'info',
-                    text2: 'Operação cancelada',
-                })
+            console.error(err)
+        }
+    }
+
+    const openLibrary = async () => {
+        try {
+            const response = await launchImageLibraryFromDevice()
+            if (response.assets) {
+                props.setFile([{
+                    uri: response.assets[0].uri || '',
+                    type: response.assets[0].type || '',
+                    fileName: response.assets[0].fileName || '',
+                    size: response.assets[0].fileSize || null
+                }])
+                props.setFileName(`IMG_${generateHash(16)}.${response.assets[0].fileName?.split('.')[1] || ''}`)
+            }
+        } catch (err: any) {
+            console.error(err)
+            Toast.show({
+                type: 'danger',
+                text2: 'Ocorreu um erro ao abrir a biblioteca',
+            })
+        }
+    }
+
+    const openCamera = async () => {
+        try {
+            const response = await launchCameraFromDevice()
+            if (response.assets) {
+                props.setFile([{
+                    uri: response.assets[0].uri || '',
+                    type: response.assets[0].type || '',
+                    fileName: response.assets[0].fileName || '',
+                    size: response.assets[0].fileSize || null
+                }])
+                props.setFileName(`DCIM_${generateHash(16)}.${response.assets[0].fileName?.split('.')[1] || ''}`)
+            }
+        } catch (err: any) {
+            console.error(err)
+            Toast.show({
+                type: 'danger',
+                text2: 'Ocorreu um erro ao abrir a câmera',
+            })
         }
     }
 
     return (
         <>
-            <Text style={styles.label}>{props.label}</Text>
-            <TouchableOpacity
-                style={styles.attachDoc}
-                onPress={handleDocumentSelection}>
-                {!props.file && !props.documentDto ? (
-                    !props.loading ? (
-                        <>
-                            <Text style={styles.text} category='label' appearance='hint'>ARQUIVO</Text>
-                            <Icon name='attach-outline' style={styles.icon} size={20} pack='ionicons' />
-                        </>
-                    ) : (
-                        <Spinner size='giant' status='primary' />
-                    )
-                )
-                    :
-                    props.documentDto ? (
-                        <View style={styles.containerFile}>
-                            <Text style={styles.textFile} category='s1'>{props.documentDto.documentFormat}</Text>
-                            <TouchableOpacity onPress={props.handleDocumentDto}>
-                                <Icon name='trash-outline' style={styles.iconPrimary} size={20} pack='ionicons' />
+            <View style={styles.container}>
+                {props.fileName ? (
+                    <>
+                        <Text style={styles.textFile} category='s1'>{props.fileName}</Text>
+                        <TouchableOpacity onPress={() => {
+                             props.setFile(undefined)
+                             props.setFileName('')
+                        }}>
+                            <Icon name='trash-outline' style={styles.iconPrimary} size={20} pack='ionicons' />
+                        </TouchableOpacity>
+                    </>
+                ) : (
+                    <><TouchableOpacity
+                        onPress={openLibrary}
+                        style={styles.attachDoc}>
+                        <Icon name='images-outline' style={styles.icon} size={25} pack='ionicons' />
+                    </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={openCamera}
+                            style={styles.attachDoc}>
+                            <Icon name='camera-outline' style={styles.icon} size={25} pack='ionicons' />
+                        </TouchableOpacity>
+                        {Platform.OS === 'ios' && (
+                            <TouchableOpacity
+                                onPress={openFolder}
+                                style={styles.attachDoc}>
+                                <Icon name='folder-open-outline' style={styles.icon} size={25} pack='ionicons' />
                             </TouchableOpacity>
-                        </View>
-                    ) : props.file && (
-                        <View style={styles.containerFile}>
-                            <Text style={styles.textFile} category='s1'>{props.file[0].name}</Text>
-                            <TouchableOpacity onPress={() => props.handleFile(undefined)}>
-                                <Icon name='trash-outline' style={styles.iconPrimary} size={20} pack='ionicons' />
-                            </TouchableOpacity>
-                        </View>
-                    )
-                }
-            </TouchableOpacity>
+                        )}
+                    </>
+                )}
+            </View>
         </>
     )
-}
-
-AttachmentBoxComponent.defaultProps = {
-    label: 'Anexar Documento'
 }
 
 export default AttachmentBoxComponent

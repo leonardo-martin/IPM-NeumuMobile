@@ -1,6 +1,6 @@
 import AutoCompleteComponent from '@components/autoComplete'
 import CustomErrorMessage from '@components/error'
-import HeaderGenericWithTitleAndAddIcon from '@components/header/admin/generic-with-add-icon'
+import HeaderWithAddIcon from '@components/header/admin/generic-with-add-icon'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useAppSelector } from '@hooks/redux'
 import { City, UF } from '@models/Places'
@@ -316,7 +316,7 @@ const VisitAddressScreen: FC = (): ReactElement => {
 
     return (
         <>
-            <HeaderGenericWithTitleAndAddIcon
+            <HeaderWithAddIcon
                 title='Endereço Comercial'
                 // onVisible={question}
                 hideIcon

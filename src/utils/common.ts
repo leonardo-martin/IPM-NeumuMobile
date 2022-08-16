@@ -305,3 +305,15 @@ export const formatBytes = (bytes: number, decimals: number = 2): string => {
         parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
     )
 }
+
+export const generateHash = (psLength: number) => {
+    var chars = '0123456789'
+    var hash = ''
+
+    for (var i = 0; i <= psLength; i++) {
+        var randomNumber = Math.floor(Math.random() * chars.length)
+        hash += chars.substring(randomNumber, randomNumber + 1)
+    }
+
+    return hash
+}

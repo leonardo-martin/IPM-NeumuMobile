@@ -1,7 +1,7 @@
 import AddPatientDiaryEntryDialog from '@components/dialog/addPatientDiaryEntryDialog'
 import FilterByDateDialog from '@components/dialog/filterByDateDialog'
 import EmptyComponent from '@components/empty'
-import HeaderGenericWithTitleAndAddIcon from '@components/header/admin/generic-with-add-icon'
+import HeaderWithAddIcon from '@components/header/admin/generic-with-add-icon'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import Timeline from '@components/timeline'
 import { _DATE_FROM_ISO_8601 } from '@constants/date'
@@ -184,10 +184,10 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
 
     return (
         <>
-            <HeaderGenericWithTitleAndAddIcon
+            <HeaderWithAddIcon
                 title={params?.title ?? 'Meu Diário'}
                 hideIcon={params?.readonly}
-                onVisible={() => {
+                onClick={() => {
                     setDataModal(undefined)
                     setVisibleAddModal(!visibleAddModal)
                 }} />

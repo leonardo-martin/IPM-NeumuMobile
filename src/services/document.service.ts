@@ -4,6 +4,19 @@ import { AxiosResponse } from 'axios'
 import DocumentPicker, { DocumentPickerOptions, DocumentPickerResponse } from 'react-native-document-picker'
 import { SupportedPlatforms } from "react-native-document-picker/lib/typescript/fileTypes"
 import { api } from "./api.service"
+import { CameraOptions, ImagePickerResponse, launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { Platform } from 'react-native'
+import { requestCameraPermission } from './permission.service'
+
+const optionsImagePicker: CameraOptions = {
+    ...__DEV__ ? {
+        mediaType: 'mixed'
+    } : {
+        mediaType: 'photo',
+        saveToPhotos: true,
+
+    }
+}
 
 export const uploadUserFile = async (data: FormData): Promise<AxiosResponse<DocumentDto, any>> => {
     return await api.post('document/user/upload-file', data, {
@@ -39,10 +52,42 @@ export const uploadTutorFile = async (data: FormData, patientCpf: string, tutorC
 
 export const getFileFromDevice = async (_opts: DocumentPickerOptions<SupportedPlatforms> | undefined = {
     presentationStyle: 'fullScreen',
-    allowMultiSelection: false,
-    type: [DocumentPicker.types.pdf, DocumentPicker.types.images]
+    ...__DEV__ ? {
+        allowMultiSelection: true,
+        type: [DocumentPicker.types.allFiles]
+    } : {
+        allowMultiSelection: false,
+        type: [DocumentPicker.types.pdf, DocumentPicker.types.images],
+    },
+    transitionStyle: 'coverVertical'
+
 }): Promise<DocumentPickerResponse[]> => {
     return await DocumentPicker.pick(_opts)
+}
+
+export const launchCameraFromDevice = async (options: CameraOptions = optionsImagePicker): Promise<ImagePickerResponse> => {
+    let granted: boolean = (Platform.OS === 'android') ? await requestCameraPermission() : true
+
+    if (granted) {
+        const ret = await launchCamera(options)
+        if (ret.errorCode) throw ret
+        else return ret
+    } else {
+        throw 'Permission denied'
+    }
+}
+
+export const launchImageLibraryFromDevice = async (options: CameraOptions = optionsImagePicker): Promise<ImagePickerResponse> => {
+    let granted: boolean = (Platform.OS === 'android') ? await requestCameraPermission() : true
+
+    if (granted) {
+        const ret = await launchImageLibrary(options)
+        if (ret.errorCode) throw ret
+        else return ret
+    } else {
+        throw 'Permission denied'
+    }
+
 }
 
 export const fileToBlob = async (uri: string) => {
