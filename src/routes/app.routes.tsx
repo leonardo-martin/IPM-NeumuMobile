@@ -38,8 +38,10 @@ import PasswordRequestSuccessfullyScreen from '@pages/changePassword/extra/reque
 import ChangePasswordWithToken from '@pages/changePassword/password-with-token'
 import ChangePasswordRequest from '@pages/changePassword/selected-password-change-mode'
 import { createDrawerNavigator } from '@react-navigation/drawer'
+import { Button } from '@ui-kitten/components'
 import React, { FC, ReactElement } from 'react'
 import { LocaleConfig } from 'react-native-calendars'
+import TestingRoutes from './test.routes'
 
 const { Navigator, Screen, Group } = createDrawerNavigator()
 
@@ -162,6 +164,13 @@ const AppRoutes: FC = (): ReactElement => {
           name="ChatRoom"
           component={ChatRoomScreen}
         />
+      </Group>
+
+      {/* Rotas de Dev */}
+      <Group screenOptions={{
+        headerShown: false
+      }}>
+        <Screen name="AtosDevTest" component={TestingRoutes} />
       </Group>
     </Navigator>
   )

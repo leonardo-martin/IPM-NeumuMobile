@@ -13,6 +13,7 @@ import RegistrationConfirmation from '@pages/signup/confirmation'
 import { createStackNavigator, StackCardInterpolationProps, TransitionPresets } from '@react-navigation/stack'
 import { TransitionSpec } from '@react-navigation/stack/lib/typescript/src/types'
 import React, { FC, ReactElement } from 'react'
+import TestingRoutes from './test.routes'
 
 const { Navigator, Screen, Group } = createStackNavigator()
 
@@ -102,6 +103,12 @@ const AuthRoutes: FC = (): ReactElement => {
           }} />
       </Group>
 
+      {/* Rotas de Dev */}
+      <Group screenOptions={{
+        headerShown: false,
+      }}>
+        <Screen name="AtosDevTest" component={TestingRoutes} />
+      </Group>
     </Navigator>
   )
 }
