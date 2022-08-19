@@ -2,7 +2,8 @@ const config = {
     screens: {
         SignUp: 'signup/:type',
         SignIn: 'signin',
-        AccountVerification: 'verification/:type?'
+        AccountVerification: 'verification/:type?',
+        AtosDevTest: 'atosdevtest'
     },
 };
 

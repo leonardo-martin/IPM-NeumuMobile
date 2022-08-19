@@ -22,8 +22,8 @@ export const profileStyle = StyleSheet.create({
   avatar: {
     width: 130,
     height: 130,
-    borderWidth: 4,
-    borderColor: 'border-alternative-color-5',
+    borderWidth: 2,
+    borderColor: 'border-alternative-color-1',
     alignSelf: 'center'
   },
   profileName: {

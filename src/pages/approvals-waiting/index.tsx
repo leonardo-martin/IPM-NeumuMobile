@@ -1,6 +1,7 @@
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { ApprovalsMessageError } from '@models/Common'
 import { useNavigation, useRoute } from '@react-navigation/native'
+import { AppInfoService } from '@services/app-info.service'
 import { Button, Text, useStyleSheet } from '@ui-kitten/components'
 import { openMailTo } from '@utils/common'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
@@ -31,7 +32,7 @@ const WaitingApprovalsScreen: FC = (): ReactElement => {
                             <Text style={styles.text}>Entre em contato via e-mail para mais detalhes.</Text></>
                         :
                         <>
-                            <Text style={[styles.text, styles.title]}>Obrigado por fazer parte do TeleNeuMu!</Text>
+                            <Text style={[styles.text, styles.title]}>Obrigado por fazer parte do {AppInfoService.getAppName()}!</Text>
                             <Text style={styles.text}>Estamos validando algumas informações e em breve o seu acesso será liberado.</Text>
                         </>
                     }

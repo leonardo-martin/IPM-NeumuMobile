@@ -21,7 +21,8 @@ import MessagesScreen from '@pages/admin/messages'
 import ProfileScreen from '@pages/admin/profile'
 import EditProfileScreen from '@pages/admin/profile/extra'
 import PatientDiaryEntryScreen from '@pages/admin/profile/patient-diary-entry'
-import PatientExamsScreen from '@pages/admin/profile/patient-exams'
+import PatientDocumentsScreen from '@pages/admin/profile/patient-documents'
+import CreatePatientDocumentScreen from '@pages/admin/profile/patient-documents/extra/create-document.component'
 import PatientGeneticMappingProgramScreen from '@pages/admin/profile/patient-genetic-mapping-program'
 import AbrafeuFormScreen from '@pages/admin/profile/patient-genetic-mapping-program/extra/abrafeu-form.component'
 import VisitAddressScreen from '@pages/admin/profile/visitAddress'
@@ -37,8 +38,10 @@ import PasswordRequestSuccessfullyScreen from '@pages/changePassword/extra/reque
 import ChangePasswordWithToken from '@pages/changePassword/password-with-token'
 import ChangePasswordRequest from '@pages/changePassword/selected-password-change-mode'
 import { createDrawerNavigator } from '@react-navigation/drawer'
+import { Button } from '@ui-kitten/components'
 import React, { FC, ReactElement } from 'react'
 import { LocaleConfig } from 'react-native-calendars'
+import TestingRoutes from './test.routes'
 
 const { Navigator, Screen, Group } = createDrawerNavigator()
 
@@ -85,7 +88,9 @@ const AppRoutes: FC = (): ReactElement => {
         <Screen name="GeneticMappingProgram" component={PatientGeneticMappingProgramScreen} />
 
         <Screen name="PatientDiaryEntry" component={PatientDiaryEntryScreen} />
-        <Screen name="PatientExams" component={PatientExamsScreen} />
+
+        <Screen name="PatientDocuments" component={PatientDocumentsScreen} />
+
         <Screen name="Profile" component={ProfileScreen} />
         <Screen name="EditProfile" component={EditProfileScreen} />
         <Screen name="VisitAddress" component={VisitAddressScreen} />
@@ -104,6 +109,7 @@ const AppRoutes: FC = (): ReactElement => {
         <Screen name="PatientDisplayAsDoctor" component={PatientDisplayAsDoctorScreen} />
         <Screen name='AboutDNM' component={AboutScreen} />
         <Screen name="AbrafeuForm" component={AbrafeuFormScreen} />
+        <Screen name="CreatePatientDocuments" component={CreatePatientDocumentScreen} />
 
         <Screen
           name="Schedule"
@@ -158,6 +164,13 @@ const AppRoutes: FC = (): ReactElement => {
           name="ChatRoom"
           component={ChatRoomScreen}
         />
+      </Group>
+
+      {/* Rotas de Dev */}
+      <Group screenOptions={{
+        headerShown: false
+      }}>
+        <Screen name="AtosDevTest" component={TestingRoutes} />
       </Group>
     </Navigator>
   )

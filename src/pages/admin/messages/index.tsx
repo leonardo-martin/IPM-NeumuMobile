@@ -1,5 +1,5 @@
 import EmptyComponent from '@components/empty'
-import HeaderGenericWithTitleAndAddIcon from '@components/header/admin/generic-with-add-icon'
+import HeaderWithAddIcon from '@components/header/admin/generic-with-add-icon'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { ChatListEntryDto } from '@models/ChatMessage'
@@ -107,7 +107,7 @@ const MessagesScreen: FC<DrawerContentComponentProps> = ({
 
     return (
         <>
-            <HeaderGenericWithTitleAndAddIcon
+            <HeaderWithAddIcon
                 title='Mensagens'
                 hideIcon />
             <SafeAreaLayout style={styles.safeArea} level='1'>

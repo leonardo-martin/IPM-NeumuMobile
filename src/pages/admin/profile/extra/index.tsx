@@ -1,29 +1,33 @@
 import HeaderProfile from '@components/header/admin/profile'
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { PatientDisplay } from '@models/Patient'
 import { EUserRole } from '@models/UserRole'
 import { useFocusEffect } from '@react-navigation/native'
 import { getAddressByPostalCode } from '@services/common.service'
+import { launchImageLibraryFromDevice, readFileFromDevice, uploadUserFile, userDelete } from '@services/document.service'
 import { getDoctor } from '@services/medical-doctor.service'
+import { getOne } from '@services/medical-specialty.service'
 import { getPatientDisplay, updatePatient } from '@services/patient.service'
-import { getUserDetails, updateUser } from '@services/user.service'
-import { setProfile } from '@store/ducks/profile'
+import { getProfilePicture, getUserDetails, updateUser } from '@services/user.service'
+import { setProfile, setProfilePic } from '@store/ducks/profile'
 import { Button, Icon, IconProps, useStyleSheet } from '@ui-kitten/components'
+import { getDocumentType, getEntityType } from '@utils/entity'
 import { cleanNumberMask, formatCpf, formatPhone, formatPostalCode } from '@utils/mask'
 import { validateCNS } from '@utils/validators'
-import LoadingIndicatorComponent from 'components/loadingIndicator'
 import { compareAsc, subYears } from 'date-fns'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { ImageStyle, Keyboard, RefreshControl, ScrollView, StyleProp, View } from 'react-native'
+import { Alert, ImageStyle, Keyboard, Platform, RefreshControl, ScrollView, StyleProp, View } from 'react-native'
+import { Asset } from 'react-native-image-picker'
 import Toast from 'react-native-toast-message'
-import { getOne } from 'services/medical-specialty.service'
 import { RootState } from 'store'
 import BadgeProfile from './badge-profile'
 import ProfileAvatar from './profile-avatar'
 import ProfileSetting from './profile-setting'
 import { extraProfileStyle } from './style'
+import RNFS from 'react-native-fs'
 
 const EditProfileScreen: FC = (): ReactElement => {
 
@@ -33,7 +37,7 @@ const EditProfileScreen: FC = (): ReactElement => {
   const form = useForm()
   const dispatch = useAppDispatch()
   const { ids } = useAppSelector((state: RootState) => state.user)
-  const { profile: userDetails } = useAppSelector((state: RootState) => state.profile)
+  const { profile: userDetails, profilePic, profilePicId } = useAppSelector((state: RootState) => state.profile)
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const [underage, setUnderage] = useState<boolean>(true)
   const [patientDisplay, setPatientDisplay] = useState<PatientDisplay>()
@@ -85,8 +89,10 @@ const EditProfileScreen: FC = (): ReactElement => {
           }
         }
       }
-
       form.reset(obj)
+      if (sessionUser && !profilePicId) {
+        await loadProfilePic(sessionUser.userId)
+      }
     } catch (error) {
       Toast.show({
         type: 'danger',
@@ -96,11 +102,25 @@ const EditProfileScreen: FC = (): ReactElement => {
     setIsLoading(false)
   }
 
+  const loadProfilePic = useCallback(async (userId: number) => {
+    try {
+      if (!profilePicId)
+        await dispatch(await getProfilePicture(userId))
+    } catch (error) {
+      Toast.show({
+        type: 'danger',
+        text2: 'Erro carregar a foto de perfil',
+      })
+    }
+  }, [profilePic])
+
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true)
-      loadFields()
-    }, [userDetails])
+      if (sessionUser && userDetails) {
+        loadFields()
+      }
+    }, [userDetails, sessionUser])
   )
 
   const editProfile = async (type: 1 | 2) => {
@@ -184,7 +204,82 @@ const EditProfileScreen: FC = (): ReactElement => {
   )
 
   const handlePickAvatar = async () => {
-    console.log('liberado')
+    try {
+      const response = await launchImageLibraryFromDevice()
+      if (response.assets) {
+        Alert.alert(
+          'Deseja alterar sua foto de perfil?',
+          '',
+          [
+            {
+              text: 'Sim',
+              style: 'default',
+              onPress: () => changeProfilePic(response.assets)
+            },
+            {
+              text: 'Não',
+              style: 'cancel'
+            }
+          ]
+        )
+      }
+
+    } catch (err: any) {
+      console.error(err)
+      Toast.show({
+        type: 'danger',
+        text2: 'Ocorreu um erro ao abrir a biblioteca',
+      })
+    }
+  }
+
+  const changeProfilePic = async (file?: Asset[]) => {
+    const formData = new FormData()
+
+    if (!ids?.userId) {
+      Toast.show({
+        type: 'warning',
+        text2: 'Erro ao carregar dados do perfil. Faça login novamente',
+      })
+      return
+    }
+
+    if (file && file[0]) {
+      formData.append('fileFormat', file[0].fileName)
+      formData.append('file', {
+        uri: Platform.OS === 'android'
+          ? file[0].uri
+          : file[0].uri && file[0].uri.replace('file://', ''),
+        name: file[0].fileName,
+        type: file[0].type
+      })
+      formData.append('entityId', ids?.userId.toString())
+      formData.append('entityType', getEntityType('user'))
+      formData.append('documentType', getDocumentType('user'))
+
+      const response = await uploadUserFile(formData)
+      if (response && response.status === 201) {
+
+        if (file[0].uri) {
+          const base64 = await readFileFromDevice(file[0].uri)
+          if (base64)
+            dispatch(setProfilePic({ base64: base64, id: response.data.id }))
+        }
+        if (profilePicId) {
+          await userDelete(profilePicId)
+        }
+        Toast.show({
+          type: 'success',
+          text2: 'Foto de perfil de atualizada com sucesso!',
+        })
+
+      } else {
+        Toast.show({
+          type: 'danger',
+          text2: 'Erro ao atualizar foto de perfil',
+        })
+      }
+    }
   }
 
   const renderPhotoButton = (): ReactElement => (
@@ -228,6 +323,13 @@ const EditProfileScreen: FC = (): ReactElement => {
     if (refreshing) updateUserStore()
   }, [refreshing])
 
+  const refreshProfile = () => {
+    setRefreshing(true)
+    if (sessionUser && profilePic) {
+      loadProfilePic(sessionUser.userId)
+    }
+  }
+
   return (
     <>
       <HeaderProfile />
@@ -241,15 +343,23 @@ const EditProfileScreen: FC = (): ReactElement => {
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
-              onRefresh={() => setRefreshing(true)}
+              onRefresh={refreshProfile}
             />
           }
         >
-          <ProfileAvatar
-            style={styles.profileAvatar as StyleProp<ImageStyle>}
-            source={require('../../../../assets/profile/profile.png')}
-            editButton={renderPhotoButton}
-          />
+          {profilePic !== '' && profilePic ? (
+            <ProfileAvatar
+              style={styles.profileAvatar as StyleProp<ImageStyle>}
+              source={{ uri: `data:image/jpeg;base64,${profilePic}` }}
+              editButton={renderPhotoButton}
+            />
+          ) : (
+            <ProfileAvatar
+              style={styles.profileAvatar as StyleProp<ImageStyle>}
+              source={require('../../../../assets/profile/profile.png')}
+              editButton={renderPhotoButton}
+            />
+          )}
           <Controller
             control={form.control}
             render={({ field }) => (

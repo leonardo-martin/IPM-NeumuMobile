@@ -3,6 +3,7 @@ import { CalendarRange } from "@ui-kitten/components"
 import { AxiosResponse } from "axios"
 import RNCalendarEvents, { AuthorizationStatus, Calendar, CalendarEventWritable, Options } from "react-native-calendar-events"
 import { api } from "./api.service"
+import { AppInfoService } from "./app-info.service"
 
 export const listCalendars = async (): Promise<Calendar[]> => {
     let permissions
@@ -24,7 +25,7 @@ export const listCalendars = async (): Promise<Calendar[]> => {
     return calendars
 }
 
-export const addCalendarEvent = async (event: CalendarEventWritable, _calendar: Calendar, _title: string = 'TeleNeuMu', _options: Options = {}): Promise<string> => {
+export const addCalendarEvent = async (event: CalendarEventWritable, _calendar: Calendar, _title: string = AppInfoService.getAppName(), _options: Options = {}): Promise<string> => {
     let permissions: AuthorizationStatus
     let createdEventId: string = ''
     try {

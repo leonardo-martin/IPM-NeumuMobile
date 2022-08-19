@@ -4,11 +4,13 @@ import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { EUserRole } from '@models/UserRole'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { deleteUserSelf } from '@services/user.service'
+import { useFocusEffect } from '@react-navigation/native'
+import { deleteUserSelf, getProfilePicture } from '@services/user.service'
 import { logout } from '@store/ducks/auth'
 import { RootState } from '@store/index'
 import { Avatar, Button, Icon, IconProps, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
-import React, { FC, ReactElement, useState } from 'react'
+import LoadingIndicatorComponent from 'components/loadingIndicator'
+import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { Alert, ImageStyle, StyleProp, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { commonData, operatorBaseData, patientBaseData, specialistBaseData } from './data'
@@ -21,7 +23,9 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
   const dispatch = useAppDispatch()
   const [accountIsBeingDeleted, setAccountIsBeingDeleted] = useState(false)
   const { sessionUser } = useAppSelector((state: RootState) => state.auth)
-  const { profile } = useAppSelector((state: RootState) => state.profile)
+  const { ids } = useAppSelector((state: RootState) => state.user)
+  const { profile, profilePic, profilePicId } = useAppSelector((state: RootState) => state.profile)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const styles = useStyleSheet(profileStyle)
 
   const renderIconDocumentAttach = (props: IconProps) => (
@@ -29,7 +33,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
   )
 
   const goToMyExams = () => {
-    navigation.navigate('PatientExams')
+    navigation.navigate('PatientDocuments')
   }
 
   const renderFooterComponent = () => (
@@ -107,47 +111,91 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
     </View>
   )
 
+  const loadProfilePic = useCallback(async (userId: number) => {
+    try {
+      if (!profilePicId)
+        await dispatch(await getProfilePicture(userId))
+    } catch (error) {
+      Toast.show({
+        type: 'danger',
+        text2: 'Erro carregar a foto de perfil',
+      })
+    }
+    setIsLoading(false)
+
+    return () => {
+      setIsLoading(false)
+    }
+  }, [profilePic])
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true)
+      if (!profilePicId && ids) {
+        loadProfilePic(ids.userId)
+      } else {
+        setIsLoading(false)
+      }
+      return () => {
+        setIsLoading(false)
+      }
+    }, [ids, profilePicId])
+  )
+
   return (
     <>
-      <HeaderProfile />
-      {accountIsBeingDeleted && (
-        <View style={styles.backdropSpinner}>
-          <Spinner size='giant' />
-        </View>
-      )}
-      <SafeAreaLayout level='2' style={styles.safeArea}>
-        <ListComponent
-          itemStyle={styles.shadow}
-          data={sessionUser?.userRole.find(e => e.id === EUserRole.patient) ?
-            patientBaseData : sessionUser?.userRole.find(e => e.id === EUserRole.operator) ?
-              operatorBaseData : sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor || e.id === EUserRole.specialist) ?
-                specialistBaseData : commonData}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={() => (
-            <>
-              <View style={styles.contentContainer}>
-                <Avatar style={styles.avatar as StyleProp<ImageStyle>}
-                  shape='round'
-                  source={require('../../../assets/profile/profile.png')} />
-                <View style={styles.body}>
-                  <View style={styles.bodyContent}>
-                    <Text style={styles.profileName}>@{sessionUser ? sessionUser.user : ''}</Text>
-                    {profile?.address1 ? (
-                      <View style={styles.viewLocation}>
-                        <Icon style={styles.icon} name="location-outline" size={15} pack='ionicons' />
-                        <Text status='info'>{profile?.city + " - " + profile?.state}</Text>
-                      </View>
-                    ) : null}
-                    < Text style={styles.description}></Text>
-                  </View>
-                </View>
-              </View>
-            </>
+      {isLoading ? (
+        <LoadingIndicatorComponent size='giant' status='primary' />
+      ) : (
+        <>
+          <HeaderProfile />
+          {accountIsBeingDeleted && (
+            <View style={styles.backdropSpinner}>
+              <Spinner size='giant' />
+            </View>
           )}
-          ListFooterComponent={
-            sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? renderFooterComponent
-              : undefined} />
-      </SafeAreaLayout>
+          <SafeAreaLayout level='2' style={styles.safeArea}>
+            <ListComponent
+              itemStyle={styles.shadow}
+              data={sessionUser?.userRole.find(e => e.id === EUserRole.patient) ?
+                patientBaseData : sessionUser?.userRole.find(e => e.id === EUserRole.operator) ?
+                  operatorBaseData : sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor || e.id === EUserRole.specialist) ?
+                    specialistBaseData : commonData}
+              showsVerticalScrollIndicator={false}
+              ListHeaderComponent={() => (
+                <>
+                  <View style={styles.contentContainer}>
+                    {profilePic !== '' && profilePic ? (
+                      <Avatar style={styles.avatar as StyleProp<ImageStyle>}
+                        shape='round'
+                        source={{ uri: `data:image/jpeg;base64,${profilePic}` }} />
+                    ) : (
+                      <Avatar style={styles.avatar as StyleProp<ImageStyle>}
+                        shape='round'
+                        source={require('../../../assets/profile/profile.png')} />
+                    )}
+                    <View style={styles.body}>
+                      <View style={styles.bodyContent}>
+                        <Text style={styles.profileName}>@{sessionUser ? sessionUser.user : ''}</Text>
+                        {profile?.address1 ? (
+                          <View style={styles.viewLocation}>
+                            <Icon style={styles.icon} name="location-outline" size={15} pack='ionicons' />
+                            <Text status='info'>{profile?.city + " - " + profile?.state}</Text>
+                          </View>
+                        ) : null}
+                        < Text style={styles.description}></Text>
+                      </View>
+                    </View>
+                  </View>
+                </>
+              )}
+              ListFooterComponent={
+                sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? renderFooterComponent
+                  : undefined} />
+          </SafeAreaLayout>
+        </>
+      )}
+
     </>
   )
 }

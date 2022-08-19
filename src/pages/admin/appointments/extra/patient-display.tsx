@@ -1,17 +1,15 @@
 
-import AddExamDialog from '@components/dialog/addExamDialog'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATE } from '@constants/date'
 import { useDatepickerService } from '@hooks/useDatepickerService'
-import { useModal } from '@hooks/useModal'
 import { ExamDto } from '@models/Exam'
 import { PatientDisplay } from '@models/Patient'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { Icon, IconProps, Menu, MenuGroup, MenuItem, Modal, Text, useStyleSheet } from '@ui-kitten/components'
+import { Icon, IconProps, Menu, MenuGroup, MenuItem, Text, useStyleSheet } from '@ui-kitten/components'
 import { calcAge } from '@utils/common'
+import { formatPhone } from '@utils/mask'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { Platform } from 'react-native'
-import { formatPhone } from 'utils/mask'
 import { patientDisplayStyle } from './patient-display.style'
 
 const PatientDisplayAsDoctorScreen: FC = (): ReactElement => {
@@ -22,12 +20,11 @@ const PatientDisplayAsDoctorScreen: FC = (): ReactElement => {
     const route = useRoute()
     const [params, setParams] = useState<PatientDisplay>()
 
-    const { ref } = useModal<Modal>()
-    const [visibleAddModal, setVisibleAddModal] = useState<boolean>(false)
     const [exam, setExam] = useState<ExamDto>()
 
     useEffect(() => {
         setParams(route.params as PatientDisplay)
+        setExam(undefined)
     }, [route.params])
 
     const renderRightIcon = (props: IconProps) => (
@@ -39,14 +36,14 @@ const PatientDisplayAsDoctorScreen: FC = (): ReactElement => {
     }
 
     useEffect(() => {
-        if (exam)
-            setVisibleAddModal(true)
+        if (exam && params) {
+            navigate('CreatePatientDocuments', {
+                ...exam,
+                readonly: true,
+                owningUserId: params.userDto.id
+            })
+        }
     }, [exam])
-
-    useEffect(() => {
-        if (!visibleAddModal)
-            setExam(undefined)
-    }, [visibleAddModal])
 
 
     const calcAgeToString = (date: Date) => {
@@ -107,15 +104,6 @@ const PatientDisplayAsDoctorScreen: FC = (): ReactElement => {
                                 )}
                             </MenuGroup>
                         </Menu>
-
-                        <AddExamDialog
-                            ref={ref}
-                            exam={exam}
-                            onVisible={setVisibleAddModal}
-                            visible={visibleAddModal}
-                            owningUserId={params.userDto.id}
-                            readonly
-                        />
                     </>
                 )}
             </SafeAreaLayout>
