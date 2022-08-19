@@ -4,35 +4,43 @@ export const attachBoxStyle = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    paddingVertical: 15,
-    alignItems: 'center'
+    paddingVertical: 15
   },
   text: {
     fontSize: 12,
     fontWeight: '600',
   },
-  attachDoc: {
-    padding: 25,
-    paddingHorizontal: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+  button: {
     backgroundColor: 'background-basic-color-3',
-    borderWidth: 1,
     borderColor: 'border-basic-color-5',
+    borderWidth: .5,
+    borderRadius: 4,
+  },
+  buttonDownload: {
+    backgroundColor: 'color-primary-500',
+    borderColor: 'border-basic-color-5',
+    borderWidth: .5,
+    borderRadius: 4,
+  },
+  buttonRemove: {
+    backgroundColor: 'color-danger-500',
+    borderColor: 'border-danger-color-2',
+    borderWidth: .5,
     borderRadius: 4
   },
   icon: {
     color: 'text-hint-color'
   },
-  textFile: {
-    color: 'text-basic-color',
-    flexWrap: 'wrap',
-    width: '70%',
-    textAlign: 'center',
-    paddingVertical: 5
+  textControl: {
+    color: 'text-control-color',
   },
-  iconPrimary: {
-    color: 'color-primary-500'
+  iconControl: {
+    color: 'color-control-default'
+  },
+  containerButton: {
+    alignItems: 'center',
+    padding: 25,
+    minWidth: 100
   },
   label: {
     color: 'text-hint-color',

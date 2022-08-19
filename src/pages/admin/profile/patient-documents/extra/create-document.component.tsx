@@ -335,7 +335,9 @@ const CreatePatientDocumentScreen: FC<DrawerContentComponentProps> = (): ReactEl
                                 <AttachmentBoxComponent
                                     setFile={setFile}
                                     fileName={fileName}
+                                    documentId={params?.exam.documentId}
                                     setFileName={setFileName}
+                                    disabled={isLoading}
                                 />
                                 <CustomErrorMessage name='examImage' errors={form.formState.errors} />
                                 <View style={styles.containerButton}>

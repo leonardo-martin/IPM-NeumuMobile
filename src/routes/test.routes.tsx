@@ -1,10 +1,10 @@
+import { useAppSelector } from '@hooks/redux'
 import { CommonActions, useFocusEffect, useNavigation } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import { useAppSelector } from 'hooks/redux'
 import React, { FC, ReactElement, useCallback } from 'react'
 import { BackHandler, Button } from 'react-native'
 import { RootState } from 'store'
-import AtosDevTestScreen from 'test/atos'
+import AtosDevTestScreen from '__test__/atos'
 
 const { Navigator, Screen } = createStackNavigator()
 

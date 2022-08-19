@@ -1,11 +1,13 @@
 import { Buffer } from '@models/Common'
 import { DocumentDataDto, DocumentDto } from '@models/Document'
+import { Base64 } from '@utils/base64'
 import { AxiosResponse } from 'axios'
+import { Platform } from 'react-native'
 import DocumentPicker, { DocumentPickerOptions, DocumentPickerResponse } from 'react-native-document-picker'
 import { SupportedPlatforms } from "react-native-document-picker/lib/typescript/fileTypes"
+import RNFS from 'react-native-fs'
+import { CameraOptions, ImagePickerResponse, launchCamera, launchImageLibrary } from 'react-native-image-picker'
 import { api } from "./api.service"
-import { CameraOptions, ImagePickerResponse, launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { Platform } from 'react-native'
 import { requestCameraPermission } from './permission.service'
 
 const optionsImagePicker: CameraOptions = {
@@ -124,4 +126,33 @@ export const userDelete = async (documentId: string | number): Promise<AxiosResp
     const params = new URLSearchParams()
     params.append('documentId', documentId.toString())
     return await api.get('document/user/delete?' + params)
+}
+
+/**
+ * 
+ * @param arrayBuffer File Buffer
+ * @param fileName File name along with its extension
+ * @returns 
+ */
+export const saveFileToDevice = async (arrayBuffer: ArrayBuffer, fileName: string): Promise<{
+    recorded: boolean, filePath: string | null
+}> => {
+
+    const directory = Platform.select({
+        ios: RNFS.DocumentDirectoryPath,
+        android: RNFS.DownloadDirectoryPath,
+    });
+
+    const FILE_PATH = `${directory}/${fileName}`
+    try {
+        await RNFS.writeFile(FILE_PATH, Base64.arrayBufferToBase64(arrayBuffer), 'base64')
+        return { recorded: true, filePath: FILE_PATH }
+    } catch (error) {
+        console.error(error)
+        return { recorded: false, filePath: null }
+    }
+}
+
+export const readFileFromDevice = async (filePath: string) => {
+    return await RNFS.readFile(filePath, 'base64')
 }
