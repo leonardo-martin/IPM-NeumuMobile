@@ -11,7 +11,7 @@ import { RootState } from '@store/index'
 import { Avatar, Button, Icon, IconProps, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import LoadingIndicatorComponent from 'components/loadingIndicator'
 import React, { FC, ReactElement, useCallback, useState } from 'react'
-import { Alert, ImageStyle, StyleProp, TouchableOpacity, View } from 'react-native'
+import { Alert, ImageBackground, ImageStyle, StyleProp, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { commonData, operatorBaseData, patientBaseData, specialistBaseData } from './data'
 import { profileStyle } from './style'
@@ -166,14 +166,17 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
                 <>
                   <View style={styles.contentContainer}>
                     {profilePic !== '' && profilePic ? (
-                      <Avatar style={styles.avatar as StyleProp<ImageStyle>}
-                        shape='round'
+                      <Avatar
+                        style={styles.avatar as StyleProp<ImageStyle>}
+                        resizeMode='contain'
                         source={{ uri: `data:image/jpeg;base64,${profilePic}` }} />
                     ) : (
-                      <Avatar style={styles.avatar as StyleProp<ImageStyle>}
-                        shape='round'
+                      <Avatar
+                        style={styles.avatar as StyleProp<ImageStyle>}
+                        resizeMode='contain'
                         source={require('../../../assets/profile/profile.png')} />
                     )}
+                    {/* </View> */}
                     <View style={styles.body}>
                       <View style={styles.bodyContent}>
                         <Text style={styles.profileName}>@{sessionUser ? sessionUser.user : ''}</Text>
@@ -194,7 +197,8 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
                   : undefined} />
           </SafeAreaLayout>
         </>
-      )}
+      )
+      }
 
     </>
   )

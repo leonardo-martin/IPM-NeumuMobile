@@ -27,7 +27,6 @@ import BadgeProfile from './badge-profile'
 import ProfileAvatar from './profile-avatar'
 import ProfileSetting from './profile-setting'
 import { extraProfileStyle } from './style'
-import RNFS from 'react-native-fs'
 
 const EditProfileScreen: FC = (): ReactElement => {
 
@@ -350,12 +349,14 @@ const EditProfileScreen: FC = (): ReactElement => {
           {profilePic !== '' && profilePic ? (
             <ProfileAvatar
               style={styles.profileAvatar as StyleProp<ImageStyle>}
+              resizeMode='contain'
               source={{ uri: `data:image/jpeg;base64,${profilePic}` }}
               editButton={renderPhotoButton}
             />
           ) : (
             <ProfileAvatar
               style={styles.profileAvatar as StyleProp<ImageStyle>}
+              resizeMode='contain'
               source={require('../../../../assets/profile/profile.png')}
               editButton={renderPhotoButton}
             />

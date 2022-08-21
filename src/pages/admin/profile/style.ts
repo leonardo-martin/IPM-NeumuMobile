@@ -22,9 +22,9 @@ export const profileStyle = StyleSheet.create({
   avatar: {
     width: 130,
     height: 130,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: 'border-alternative-color-1',
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   profileName: {
     fontSize: 22,
