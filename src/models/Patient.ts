@@ -8,6 +8,7 @@ import { UserDto } from "./User"
 export class PatientDiaryEntryDto {
     patientId!: number | undefined
     date!: Date | string
+    updatedAt!: Date | string
     data!: TimelineTimeItem
 }
 

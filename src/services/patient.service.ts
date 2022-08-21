@@ -7,6 +7,10 @@ export const postDiaryEntry = async (data: PatientDiaryEntryDto): Promise<AxiosR
     return await api.post('patient-diary-entry', data)
 }
 
+export const updateDiaryEntry = async (data: PatientDiaryEntryDto): Promise<AxiosResponse<PatientDiaryEntryDto, any>> => {
+    return await api.put('patient-diary-entry', data)
+}
+
 export const getDiaryEntry = async (patientId: string, date: Date): Promise<AxiosResponse<PatientDiaryEntryDto, any>> => {
     const params = new URLSearchParams()
     params.append('patientId', patientId)
