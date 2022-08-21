@@ -37,6 +37,7 @@ const ChangePasswordWithToken: FC = (): ReactElement => {
                 Toast.show({
                     type: 'warning',
                     text2: messageToast,
+                    autoHide: false
                 })
             } else {
                 setIsLoading(false)
@@ -47,6 +48,7 @@ const ChangePasswordWithToken: FC = (): ReactElement => {
             Toast.show({
                 type: 'warning',
                 text2: 'Erro desconhecido. Contate o administrador',
+                visibilityTime: 7000
             })
         } finally {
             setIsLoading(false)
@@ -99,7 +101,6 @@ const ChangePasswordWithToken: FC = (): ReactElement => {
                                 ref={ref}
                                 onSubmitEditing={() => form.setFocus('password')}
                                 underlineColorAndroid="transparent"
-                                autoCapitalize="characters"
                                 maxLength={MAX_TOKEN_LENGTH}
                             />
                         )}
