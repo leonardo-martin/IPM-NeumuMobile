@@ -129,17 +129,15 @@ const CreatePatientDocumentScreen: FC<DrawerContentComponentProps> = (): ReactEl
         }
     }
 
-    const loadFile = async () => {
+    const loadFile = useCallback(async () => {
         try {
             if (params && params.exam?.id) {
-                // TODO - buscar o documento e fazer o download
-                // por enquanto só vai exibir o nome do anexo...
                 if (sessionUser?.userRole.find(e => e.id === EUserRole.patient)) {
                     const response = await userGetDocument({
-                        entityId: params.exam.patientId,
+                        entityId: params.exam?.patientId,
                         entityType: getEntityType('exam'),
                         documentType: getDocumentType('exam'),
-                        documentId: params.exam.documentId
+                        documentId: params.exam?.documentId
                     })
                     if (response.status === 201) {
                         setDocumentDto(response.data[0] ?? undefined)
@@ -148,10 +146,10 @@ const CreatePatientDocumentScreen: FC<DrawerContentComponentProps> = (): ReactEl
                 } else if (sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor)) {
                     const response = await doctorGetDocumentData({
                         owningUserId: params.props?.owningUserId,
-                        entityId: params.exam.patientId,
+                        entityId: params.exam?.patientId,
                         entityType: getEntityType('exam'),
                         documentType: getDocumentType('exam'),
-                        documentId: params.exam.documentId
+                        documentId: params.exam?.documentId
                     })
                     if (response.status === 201) {
                         setDocumentDto(response.data[0] ?? undefined)
@@ -165,7 +163,7 @@ const CreatePatientDocumentScreen: FC<DrawerContentComponentProps> = (): ReactEl
                 text2: 'Erro ao baixar documento.',
             })
         }
-    }
+    }, [params])
 
     useFocusEffect(
         useCallback(() => {
@@ -198,7 +196,7 @@ const CreatePatientDocumentScreen: FC<DrawerContentComponentProps> = (): ReactEl
             setIsLoadingDocument(false)
         }
 
-    }, [params])
+    }, [params, loadFile])
 
     useEffect(() => {
         if (selectedType)
@@ -335,7 +333,7 @@ const CreatePatientDocumentScreen: FC<DrawerContentComponentProps> = (): ReactEl
                                 <AttachmentBoxComponent
                                     setFile={setFile}
                                     fileName={fileName}
-                                    documentId={params?.exam.documentId}
+                                    documentId={params?.exam?.documentId}
                                     setFileName={setFileName}
                                     disabled={isLoading}
                                 />
