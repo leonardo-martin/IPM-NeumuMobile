@@ -3,7 +3,7 @@ import RegisterHeader from '@components/header/register'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
-import { UserDoctorData } from '@models/User'
+import { ETypeOfDocument, UserDoctorData } from '@models/User'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native'
 import { getSpecialties } from '@services/specialties.service'
@@ -11,7 +11,7 @@ import { createUser } from '@services/user.service'
 import { setSpecialties } from '@store/ducks/common'
 import { Datepicker, Icon, IconProps, IndexPath, Input, PopoverPlacements, Radio, RadioGroup, Select, SelectItem, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { extractFieldString, getGender, openMailTo } from '@utils/common'
-import { formatCpf, formatPhone, isEmailValid, onlyNumbers } from '@utils/mask'
+import { formatCpf, formatPhone, formatRNM, isEmailValid, onlyNumbers } from '@utils/mask'
 import { validatePasswd } from '@utils/validators'
 import { validate } from 'gerador-validador-cpf'
 import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
@@ -20,12 +20,14 @@ import { Alert, BackHandler, Keyboard, TouchableOpacity, View } from 'react-nati
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
+import { typeOfPersonalDocuments } from 'utils/constants'
 import { managementStyle } from './new-user.style'
 
 const NewUserScreen: FC = (): ReactElement => {
 
     const styles = useStyleSheet(managementStyle)
     const form = useForm<UserDoctorData>()
+    const [selectedTypeOfDocument, setSelectedTypeOfDocument] = useState<IndexPath | IndexPath[]>()
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isLoadingPostalCode, setIsLoadingPostalCode] = useState<boolean>(false)
     const { localeDateService } = useDatepickerService()
@@ -41,6 +43,7 @@ const NewUserScreen: FC = (): ReactElement => {
     const emailConfirm = form.watch("email")
     const password = useRef<string | undefined>()
     password.current = form.watch("password", "")
+    const typeOfDocument = form.watch("typeOfDocument")
 
     const dispatch = useAppDispatch()
     const { specialties } = useAppSelector((state: RootState) => state.common)
@@ -180,6 +183,21 @@ const NewUserScreen: FC = (): ReactElement => {
         }
     }
 
+    useEffect(() => {
+        if (selectedTypeOfDocument && typeOfPersonalDocuments) {
+            const type = typeOfPersonalDocuments[Number(selectedTypeOfDocument) - 1]
+            if (type) {
+                form.setValue('cpf', undefined)
+                form.setValue('rne', undefined)
+                form.setValue('typeOfDocument', type.label)
+            }
+        } else {
+            form.setValue('cpf', undefined)
+            form.setValue('rne', undefined)
+            form.setValue('typeOfDocument', '')
+        }
+    }, [selectedTypeOfDocument, typeOfPersonalDocuments])
+
     return (
         <>
             <RegisterHeader
@@ -248,37 +266,106 @@ const NewUserScreen: FC = (): ReactElement => {
                                 required: {
                                     value: true,
                                     message: 'Campo obrigatório'
-                                },
-                                minLength: {
-                                    value: 14,
-                                    message: `Mín. 14 caracteres`
-                                },
-                                validate: (e) => e ? validate(e) : undefined
+                                }
                             }}
-                            render={({ field: { onChange, onBlur, value, name, ref } }) => (
-                                <Input
+                            render={({ field: { onBlur, value, name, ref } }) => (
+                                <Select
                                     size='small'
-                                    label="CPF *"
+                                    label="Documento *"
                                     style={styles.input}
-                                    keyboardType='number-pad'
+                                    placeholder='Selecione'
                                     testID={name}
                                     onBlur={onBlur}
-                                    onChangeText={onChange}
-                                    value={formatCpf(value)}
-                                    underlineColorAndroid="transparent"
-                                    autoCapitalize='none'
-                                    maxLength={14}
                                     ref={ref}
-                                    returnKeyType="next"
-                                    onSubmitEditing={() => form.setFocus('dateOfBirth')}
-                                />
+                                    selectedIndex={selectedTypeOfDocument}
+                                    onSelect={setSelectedTypeOfDocument}
+                                    value={value}
+                                >
+                                    {typeOfPersonalDocuments && typeOfPersonalDocuments.map((item: any, index: number) => (
+                                        <SelectItem key={item.value} title={item.label} />
+                                    ))}
+                                </Select>
                             )}
-                            name='cpf'
+                            name='typeOfDocument'
                             defaultValue=''
                         />
-                        {form.formState.errors.cpf?.type !== 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} />}
-                        {form.formState.errors.cpf?.type === 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} customMessage='CPF inválido' />}
-                        <Controller
+                        <CustomErrorMessage name='typeOfDocument' errors={form.formState.errors} />
+
+                        {typeOfDocument === ETypeOfDocument.CPF && (
+                            <>
+                                <Controller
+                                    control={form.control}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: 'Campo obrigatório'
+                                        },
+                                        minLength: {
+                                            value: 14,
+                                            message: `Mín. 14 caracteres`
+                                        },
+                                        validate: (e) => e ? validate(e) : undefined
+                                    }}
+                                    render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                                        <Input
+                                            size='small'
+                                            label="CPF *"
+                                            style={styles.input}
+                                            keyboardType='number-pad'
+                                            testID={name}
+                                            onBlur={onBlur}
+                                            onChangeText={onChange}
+                                            value={formatCpf(value)}
+                                            underlineColorAndroid="transparent"
+                                            autoCapitalize='none'
+                                            maxLength={14}
+                                            ref={ref}
+                                            returnKeyType="next"
+                                            onSubmitEditing={() => form.setFocus('dateOfBirth')}
+                                        />
+                                    )}
+                                    name='cpf'
+                                    defaultValue=''
+                                />
+                                {form.formState.errors.cpf?.type !== 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} />}
+                                {form.formState.errors.cpf?.type === 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} customMessage='CPF inválido' />}
+                            </>
+                        )}
+
+                        {typeOfDocument === ETypeOfDocument.RNM && (
+                            <>
+                                <Controller
+                                    control={form.control}
+                                    rules={{
+                                        required: {
+                                            value: true,
+                                            message: 'Campo obrigatório'
+                                        },
+                                    }}
+                                    render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                                        <Input
+                                            size='small'
+                                            label="RNM *"
+                                            style={styles.input}
+                                            keyboardType='default'
+                                            testID={name}
+                                            onBlur={onBlur}
+                                            onChangeText={onChange}
+                                            value={formatRNM(value)}
+                                            underlineColorAndroid="transparent"
+                                            autoCapitalize='characters'
+                                            ref={ref}
+                                            maxLength={40}
+                                            returnKeyType="next"
+                                            onSubmitEditing={() => form.setFocus('dateOfBirth')}
+                                        />
+                                    )}
+                                    name='rne'
+                                    defaultValue=''
+                                />
+                                <CustomErrorMessage name='rne' errors={form.formState.errors} />
+                            </>
+                        )} <Controller
                             control={form.control}
                             rules={{
                                 required: {

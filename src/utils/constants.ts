@@ -11,3 +11,18 @@ export const TYPES_DOCUMENTS: string[] = [
     'LAUDO',
     'OUTROS',
 ]
+
+export const typeOfPersonalDocuments = [
+    {
+        value: 0,
+        label: 'CPF'
+    },
+    // {
+    //     value: 1,
+    //     label: 'RG'
+    // },
+    {
+        value: 2,
+        label: 'RNM'
+    }
+]

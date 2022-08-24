@@ -1,5 +1,11 @@
 import { _REGEX_VALID_EMAIL, _REGEX_VALID_FULLNAME, _REGEX_VALID_NUMBERS } from "./constants"
 
+export const formatRNM = (value: string | undefined) => {
+    if (value !== undefined && typeof value === 'string')
+        return value.toUpperCase()
+    else return ''
+}
+
 export const formatCpf = (value: string | undefined) => {
     if (value !== undefined && typeof value === 'string')
         return value

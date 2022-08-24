@@ -18,7 +18,9 @@ export class UserDto {
     id!: number
     name!: string
     email!: string
+    typeOfDocument!: any
     cpf!: string
+    rne!: string
     city!: string | null
     state!: string | null;
     phone1!: string;
@@ -38,6 +40,8 @@ export class UserData {
 
     constructor(name?: string,
         cpf?: string,
+        rne?: string,
+        typeOfDocument?: any,
         email?: string,
         emailConfirmation?: string,
         phone?: string,
@@ -71,9 +75,13 @@ export class UserData {
         this.addressComplement = addressComplement
         this.country = country
         this.sex = sex
+        this.typeOfDocument = typeOfDocument
+        this.rne = rne
     }
 
     name?: string
+    typeOfDocument?: any
+    rne?: string
     cpf?: string
     email?: string
     emailConfirmation?: string
@@ -103,6 +111,8 @@ export class UserPatientData extends UserData {
 
     constructor(name?: string,
         cpf?: string,
+        rne?: string,
+        typeOfDocument?: any,
         email?: string,
         emailConfirmation?: string,
         phone?: string,
@@ -124,7 +134,7 @@ export class UserPatientData extends UserData {
         abrafeuRegistrationOptIn?: string,
         pastExams?: ExamDNA) {
 
-        super(name, cpf, email, emailConfirmation, phone, phone2, username,
+        super(name, cpf, rne, typeOfDocument, email, emailConfirmation, phone, phone2, username,
             password, city, state, dateOfBirth, postalCode, address1, address2, addressComplement, country, sex)
         this.mothersName = mothersName
         this.susNumber = susNumber
@@ -144,6 +154,8 @@ export class UserDoctorData extends UserData {
 
     constructor(name?: string,
         cpf?: string,
+        rne?: string,
+        typeOfDocument?: any,
         email?: string,
         emailConfirmation?: string,
         phone?: string,
@@ -163,7 +175,7 @@ export class UserDoctorData extends UserData {
         crm?: string, specialty?: MedicalSpecialtyDto,
         professionalTypeId?: string) {
 
-        super(name, cpf, email, emailConfirmation, phone, phone2, username,
+        super(name, cpf, rne, typeOfDocument, email, emailConfirmation, phone, phone2, username,
             password, city, state, dateOfBirth, postalCode, address1, address2, addressComplement, country, sex)
         this.crm = crm
         this.specialty = specialty
@@ -204,4 +216,16 @@ export enum EChoicesChangePassword {
     CPF = 'CPF (Cadastro de Pessoa Física)',
     RNM = 'RNM (Registro Nacional Migratório)',
     EMAIL = 'Endereço de E-mail'
+}
+
+export interface VerifyUniqueUserKeysDto {
+    cpf?: string
+    rne?: string
+    email?: string
+}
+
+export enum ETypeOfDocument {
+    CPF = 'CPF',
+    RG = 'RG',
+    RNM = 'RNM'
 }

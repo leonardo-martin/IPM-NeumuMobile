@@ -110,13 +110,13 @@ const SignUpScreen: FC = (): ReactElement => {
         let allowedToCreate: boolean = true
 
         try {
-
-            data.cpf = cleanNumberMask(data.cpf)
+            if (data.cpf)
+                data.cpf = cleanNumberMask(data.cpf)
             data.phone = cleanNumberMask(data.phone)
             data.phone2 = cleanNumberMask(data.phone2)
 
-            // defined that the username is your CPF
-            data.username = data.cpf
+            // defined that the username is your document
+            data.username = data.cpf ?? data.rne
 
             if (data.emailConfirmation)
                 delete data.emailConfirmation
@@ -271,6 +271,7 @@ const SignUpScreen: FC = (): ReactElement => {
             Toast.show({
                 type: 'danger',
                 text2: messageError,
+                autoHide: false,
             })
         else navigation.navigate('RegistrationConfirmation', {
             type: params.type

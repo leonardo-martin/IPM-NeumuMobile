@@ -15,7 +15,6 @@ import { AppStorage } from '@services/app-storage.service'
 import { authLogin } from '@services/auth.service'
 import { Button, CheckBox, Icon, IconProps, Input, Modal, Text, useStyleSheet } from '@ui-kitten/components'
 import { matchMessage, openMailTo } from '@utils/common'
-import { cleanNumberMask, formatCpf } from '@utils/mask'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Keyboard, Platform, StatusBar, View } from 'react-native'
@@ -74,10 +73,10 @@ const SignInScreen: FC = (): ReactElement => {
   const handleSignIn = async (data: LoginDto) => {
     Keyboard.dismiss()
     setIsLoading(!isLoading)
+    Toast.hide()
     try {
       const response = await dispatch(authLogin({
         ...data,
-        username: cleanNumberMask(data.username),
       }, checked))
       if (response) {
         setIsLoading(false)
@@ -105,6 +104,8 @@ const SignInScreen: FC = (): ReactElement => {
           Toast.show({
             type: 'danger',
             text2: messageToast,
+            autoHide: false,
+            position: 'bottom'
           })
         }
 
@@ -114,6 +115,8 @@ const SignInScreen: FC = (): ReactElement => {
       Toast.show({
         type: 'danger',
         text2: 'Ocorreu um erro inesperado. Entre em contato com o administrador',
+        visibilityTime: 8000,
+        position: 'bottom'
       })
     }
   }
@@ -146,8 +149,6 @@ const SignInScreen: FC = (): ReactElement => {
   useEffect(() => {
     if (isFocused) form.clearErrors()
   }, [isFocused])
-
-
 
   return (
     <>
@@ -182,15 +183,14 @@ const SignInScreen: FC = (): ReactElement => {
                   <Input
                     size='small'
                     style={styles.input}
-                    label="CPF"
-                    keyboardType='number-pad'
+                    label="Registro / Documento"
+                    keyboardType='default'
                     testID={name}
                     onBlur={onBlur}
                     onChangeText={onChange}
-                    value={formatCpf(value)}
+                    value={value}
                     returnKeyType="next"
                     ref={ref}
-                    maxLength={14}
                     onSubmitEditing={() => form.setFocus('password')}
                     autoCapitalize="none"
                     textContentType="username"

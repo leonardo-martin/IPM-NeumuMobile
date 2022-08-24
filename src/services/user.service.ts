@@ -1,5 +1,5 @@
 import { PatientProfileCreatorDto } from '@models/PatientProfileCreator'
-import { UserData, UserDto, UserPatientData, UserRelatedIdsDto } from '@models/User'
+import { UserData, UserDto, UserPatientData, UserRelatedIdsDto, VerifyUniqueUserKeysDto } from '@models/User'
 import { setProfilePic } from '@store/ducks/profile'
 import { Base64 } from '@utils/base64'
 import { getDocumentType, getEntityType } from '@utils/entity'
@@ -72,4 +72,8 @@ export const getProfilePicture = (userId: number) => async (dispatch: AppDispatc
     } catch (error) {
         throw error
     }
+}
+
+export const verifyUniqueData = async (data: VerifyUniqueUserKeysDto) => {
+    return await api.post('user/verify-unique-data', data)
 }
