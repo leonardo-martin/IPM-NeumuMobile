@@ -186,15 +186,11 @@ const NewUserScreen: FC = (): ReactElement => {
     useEffect(() => {
         if (selectedTypeOfDocument && typeOfPersonalDocuments) {
             const type = typeOfPersonalDocuments[Number(selectedTypeOfDocument) - 1]
-            if (type) {
+            if (type && type.label !== form.getValues('typeOfDocument')) {
                 form.setValue('cpf', undefined)
                 form.setValue('rne', undefined)
                 form.setValue('typeOfDocument', type.label)
             }
-        } else {
-            form.setValue('cpf', undefined)
-            form.setValue('rne', undefined)
-            form.setValue('typeOfDocument', '')
         }
     }, [selectedTypeOfDocument, typeOfPersonalDocuments])
 

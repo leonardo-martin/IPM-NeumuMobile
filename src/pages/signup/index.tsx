@@ -134,8 +134,9 @@ const SignUpScreen: FC = (): ReactElement => {
                     }
                 }
 
-                if (newData.creator?.data['emailConfirmation'])
-                    delete newData.creator?.data['emailConfirmation']
+                if (newData.creator?.data['typeOfDocument']) delete newData.creator?.data['typeOfDocument']
+
+                if (newData.creator?.data['emailConfirmation']) delete newData.creator?.data['emailConfirmation']
 
                 if (newData.creator && newData.creator.data && newData.creator?.data['cpf'])
                     newData.creator.data['cpf'] = cleanNumberMask(newData.creator.data['cpf'])
@@ -146,13 +147,9 @@ const SignUpScreen: FC = (): ReactElement => {
                 if (newData.creator && newData.creator.data && newData.creator?.data['phone2'])
                     newData.creator.data['phone2'] = cleanNumberMask(newData.creator.data['phone2'])
 
-                if (newData.abrafeuRegistrationOptIn === 'false') {
-                    delete newData.pastExams
-                }
+                if (newData.abrafeuRegistrationOptIn === 'false') delete newData.pastExams
 
-                if (newData.susNumber === '' || !newData.susNumber) {
-                    delete newData.susNumber
-                }
+                if (newData.susNumber === '' || !newData.susNumber) delete newData.susNumber
 
                 try {
                     if (newData.creator?.patientProfileCreatorTypeId === PatientProfileCreatorTypeEnum.Other) {
@@ -166,13 +163,9 @@ const SignUpScreen: FC = (): ReactElement => {
                                 title: string
                             } = JSON.parse(JSON.stringify(newData.creator.data['kinship']))
                             newData.creator.data['kinship'] = kinship.title
-                        } else {
-                            delete newData.creator.data['kinship']
-                        }
+                        } else delete newData.creator.data['kinship']
 
-                        if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Profissional de Saúde') {
-                            delete newData.creator.data['specialty']
-                        }
+                        if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Profissional de Saúde') delete newData.creator.data['specialty']
 
                         if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Tutor Legal') {
                             delete newData.creator.data['guardian']
@@ -239,11 +232,8 @@ const SignUpScreen: FC = (): ReactElement => {
                 newData.professionalTypeId = "1"
                 if (newData.specialty) newData.specialty.professionalTypeId = "1"
 
-                if (newData.specialty?.others && newData.specialty.others !== '') {
-                    newData.specialty.description = newData.specialty?.others
-                } else {
-                    delete newData.specialty?.others
-                }
+                if (newData.specialty?.others && newData.specialty.others !== '') newData.specialty.description = newData.specialty?.others
+                else delete newData.specialty?.others
 
                 const response = await createUser(newData, 'doctor')
                 if (response.status !== 201) {

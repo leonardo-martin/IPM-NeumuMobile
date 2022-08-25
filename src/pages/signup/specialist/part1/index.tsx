@@ -70,6 +70,9 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
           }
         }
       }
+      const doc = form.getValues('typeOfDocument')
+      if (doc)
+        setSelectedTypeOfDocument(new IndexPath(typeOfPersonalDocuments.indexOf(typeOfPersonalDocuments.find(e => e.label === doc) || {} as { value: number; label: string; })))
     }, [specialties])
   )
 
@@ -118,15 +121,12 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
   useEffect(() => {
     if (selectedTypeOfDocument && typeOfPersonalDocuments) {
       const type = typeOfPersonalDocuments[Number(selectedTypeOfDocument) - 1]
-      if (type) {
+      if (type && type.label !== form.getValues('typeOfDocument')) {
+        console.log('limpou')
         form.setValue('cpf', undefined)
         form.setValue('rne', undefined)
         form.setValue('typeOfDocument', type.label)
       }
-    } else {
-      form.setValue('cpf', undefined)
-      form.setValue('rne', undefined)
-      form.setValue('typeOfDocument', '')
     }
   }, [selectedTypeOfDocument, typeOfPersonalDocuments])
 

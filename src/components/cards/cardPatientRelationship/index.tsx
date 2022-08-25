@@ -10,13 +10,15 @@ import { getSpecialties } from '@services/specialties.service'
 import { setSpecialties } from '@store/ducks/common'
 import { Datepicker, IndexPath, Input, PopoverPlacements, Select, SelectItem } from '@ui-kitten/components'
 import { sortByStringField } from '@utils/common'
-import { formatCpf, formatPhone, isEmailValid, onlyNumbers } from '@utils/mask'
+import { formatCpf, formatPhone, formatRNM, isEmailValid, onlyNumbers } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
+import { ETypeOfDocument } from 'models/User'
 import React, { Dispatch, FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 import { Keyboard, StyleSheet } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import { RootState } from 'store'
+import { typeOfPersonalDocuments } from 'utils/constants'
 import { kinList } from './data'
 import { CalendarIcon } from './icons'
 
@@ -33,9 +35,11 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
     const { localeDateService } = useDatepickerService()
     const sortedKinList: SelectItemData[] = kinList.sort((a, b) => sortByStringField(a, b, 'title'))
     const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
+    const [selectedTypeOfDocument, setSelectedTypeOfDocument] = useState<IndexPath | IndexPath[]>()
 
     const emailConfirm = form.watch("creator.data.email")
     const relationship = form.watch("creator.data.creatorRelationship")
+    const typeOfDocument = form.watch("creator.data.typeOfDocument")
 
     useEffect(() => {
         if (selectedIndex)
@@ -98,6 +102,10 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
             const specialty = form.getValues('creator.data.specialty.description')
             if (specialty)
                 setSelectedSpecialty(new IndexPath(specialties.indexOf(specialties.find(e => e.description === specialty) || {} as SpecialtiesDTO)))
+            const doc = form.getValues('creator.data.typeOfDocument')
+            if (doc)
+                setSelectedTypeOfDocument(new IndexPath(typeOfPersonalDocuments.indexOf(typeOfPersonalDocuments.find(e => e.label === doc) || {} as { value: number; label: string; })))
+
         }, [])
     )
 
@@ -107,6 +115,17 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
             form.clearErrors('creator.data.specialty.description')
         } else form.setValue('creator.data.specialty.description', '')
     }, [selectedSpecialty])
+
+    useEffect(() => {
+        if (selectedTypeOfDocument && typeOfPersonalDocuments) {
+            const type = typeOfPersonalDocuments[Number(selectedTypeOfDocument) - 1]
+            if (type && type.label !== form.getValues('creator.data.typeOfDocument')) {
+                form.setValue('creator.data.cpf', undefined)
+                form.setValue('creator.data.rne', undefined)
+                form.setValue('creator.data.typeOfDocument', type.label)
+            }
+        }
+    }, [selectedTypeOfDocument, typeOfPersonalDocuments])
 
     return (
         <>
@@ -145,49 +164,121 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 defaultValue=''
             />
             <CustomErrorMessage name='creator.data.name' errors={form.formState.errors} />
+
             <Controller
                 control={form.control}
                 rules={{
                     required: {
                         value: true,
                         message: 'Campo obrigatório'
-                    },
-                    minLength: {
-                        value: 14,
-                        message: `Mín. 14 caracteres`
-                    },
-                    validate: {
-                        valid: (e) => e ? validate(e) : undefined,
-                        equal: (e) => e ? verifyCpf(e) : undefined
                     }
                 }}
-                render={({ field: { onChange, onBlur, value, name, ref } }) => (
-                    <Input
+                render={({ field: { onBlur, value, name, ref } }) => (
+                    <Select
                         size='small'
-                        label="CPF *"
+                        label="Documento *"
                         style={styles?.input}
-                        keyboardType='number-pad'
+                        placeholder='Selecione'
                         testID={name}
                         onBlur={onBlur}
-                        onChangeText={(value) => {
-                            onChange(value)
-                            verifyCpf(value)
-                        }}
-                        value={formatCpf(value)}
-                        underlineColorAndroid="transparent"
-                        autoCapitalize='none'
-                        maxLength={14}
                         ref={ref}
-                        returnKeyType="next"
-                        onSubmitEditing={() => form.setFocus('creator.data.dateOfBirth')}
-                    />
+                        selectedIndex={selectedTypeOfDocument}
+                        onSelect={setSelectedTypeOfDocument}
+                        value={value}
+                    >
+                        {typeOfPersonalDocuments && typeOfPersonalDocuments.map((item: any, index: number) => (
+                            <SelectItem key={item.value} title={item.label} />
+                        ))}
+                    </Select>
                 )}
-                name='creator.data.cpf'
+                name='creator.data.typeOfDocument'
                 defaultValue=''
             />
-            {(form.formState.errors.creator?.data?.cpf?.type !== 'valid' && form.formState.errors.creator?.data?.cpf?.type !== 'equal') && <CustomErrorMessage name='creator.data.cpf' errors={form.formState.errors} />}
-            {(form.formState.errors.creator?.data?.cpf?.type === 'valid') && <CustomErrorMessage name='creator.data.cpf' errors={form.formState.errors} customMessage='CPF inválido' />}
-            {(form.formState.errors.creator?.data?.cpf?.type === 'equal') && <CustomErrorMessage name='creator.data.cpf' errors={form.formState.errors} customMessage='CPF não pode ser igual ao do paciente' />}
+            <CustomErrorMessage name='creator.data.typeOfDocument' errors={form.formState.errors} />
+
+            {typeOfDocument === ETypeOfDocument.CPF && (
+                <>
+                    <Controller
+                        control={form.control}
+                        rules={{
+                            required: {
+                                value: true,
+                                message: 'Campo obrigatório'
+                            },
+                            minLength: {
+                                value: 14,
+                                message: `Mín. 14 caracteres`
+                            },
+                            validate: {
+                                valid: (e) => e ? validate(e) : undefined,
+                                equal: (e) => e ? verifyCpf(e) : undefined
+                            }
+                        }}
+                        render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                            <Input
+                                size='small'
+                                label="CPF *"
+                                style={styles?.input}
+                                keyboardType='number-pad'
+                                testID={name}
+                                onBlur={onBlur}
+                                onChangeText={(value) => {
+                                    onChange(value)
+                                    verifyCpf(value)
+                                }}
+                                value={formatCpf(value)}
+                                underlineColorAndroid="transparent"
+                                autoCapitalize='none'
+                                maxLength={14}
+                                ref={ref}
+                                returnKeyType="next"
+                                onSubmitEditing={() => form.setFocus('creator.data.dateOfBirth')}
+                            />
+                        )}
+                        name='creator.data.cpf'
+                        defaultValue=''
+                    />
+                    {(form.formState.errors.creator?.data?.cpf?.type !== 'valid' && form.formState.errors.creator?.data?.cpf?.type !== 'equal') && <CustomErrorMessage name='creator.data.cpf' errors={form.formState.errors} />}
+                    {(form.formState.errors.creator?.data?.cpf?.type === 'valid') && <CustomErrorMessage name='creator.data.cpf' errors={form.formState.errors} customMessage='CPF inválido' />}
+                    {(form.formState.errors.creator?.data?.cpf?.type === 'equal') && <CustomErrorMessage name='creator.data.cpf' errors={form.formState.errors} customMessage='CPF não pode ser igual ao do paciente' />}
+
+                </>
+            )}
+
+            {typeOfDocument === ETypeOfDocument.RNM && (
+                <>
+                    <Controller
+                        control={form.control}
+                        rules={{
+                            required: {
+                                value: true,
+                                message: 'Campo obrigatório'
+                            },
+                        }}
+                        render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                            <Input
+                                size='small'
+                                label="RNM *"
+                                style={styles?.input}
+                                keyboardType='default'
+                                testID={name}
+                                onBlur={onBlur}
+                                onChangeText={onChange}
+                                value={formatRNM(value)}
+                                underlineColorAndroid="transparent"
+                                autoCapitalize='characters'
+                                ref={ref}
+                                maxLength={40}
+                                returnKeyType="next"
+                                onSubmitEditing={() => form.setFocus('creator.data.dateOfBirth')}
+                            />
+                        )}
+                        name='creator.data.rne'
+                        defaultValue=''
+                    />
+                    <CustomErrorMessage name='creator.data.rne' errors={form.formState.errors} />
+                </>
+            )}
             <Controller
                 control={form.control}
                 rules={{

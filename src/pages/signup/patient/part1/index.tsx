@@ -37,12 +37,27 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
     useCallback(() => {
       const sex = form.getValues('sex')
       if (sex) setSelectedIndex(sex === 'male' ? 0 : sex === 'female' ? 1 : 2)
+      const doc = form.getValues('typeOfDocument')
+      if (doc)
+        setSelectedTypeOfDocument(new IndexPath(typeOfPersonalDocuments.indexOf(typeOfPersonalDocuments.find(e => e.label === doc) || {} as { value: number; label: string; })))
     }, [])
   )
 
   useEffect(() => {
     setSecureTextEntry(true)
   }, [isFocused])
+
+  useEffect(() => {
+    if (selectedTypeOfDocument && typeOfPersonalDocuments) {
+      const type = typeOfPersonalDocuments[Number(selectedTypeOfDocument) - 1]
+      if (type && type.label !== form.getValues('typeOfDocument')) {
+        console.log('limpou')
+        form.setValue('cpf', undefined)
+        form.setValue('rne', undefined)
+        form.setValue('typeOfDocument', type.label)
+      }
+    }
+  }, [selectedTypeOfDocument, typeOfPersonalDocuments])
 
   const handleGender = (index: number) => {
     setSelectedIndex(index)
@@ -82,21 +97,6 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
       </View>
     </React.Fragment>
   )
-
-  useEffect(() => {
-    if (selectedTypeOfDocument && typeOfPersonalDocuments) {
-      const type = typeOfPersonalDocuments[Number(selectedTypeOfDocument) - 1]
-      if (type) {
-        form.setValue('cpf', undefined)
-        form.setValue('rne', undefined)
-        form.setValue('typeOfDocument', type.label)
-      }
-    } else {
-      form.setValue('cpf', undefined)
-      form.setValue('rne', undefined)
-      form.setValue('typeOfDocument', '')
-    }
-  }, [selectedTypeOfDocument, typeOfPersonalDocuments])
 
   return (
     <>
