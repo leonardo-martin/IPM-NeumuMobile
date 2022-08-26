@@ -1,5 +1,6 @@
 import HeaderProfile from '@components/header/admin/profile'
 import ListComponent from '@components/list'
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { EUserRole } from '@models/UserRole'
@@ -9,9 +10,8 @@ import { deleteUserSelf, getProfilePicture } from '@services/user.service'
 import { logout } from '@store/ducks/auth'
 import { RootState } from '@store/index'
 import { Avatar, Button, Icon, IconProps, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
-import LoadingIndicatorComponent from 'components/loadingIndicator'
 import React, { FC, ReactElement, useCallback, useState } from 'react'
-import { Alert, ImageBackground, ImageStyle, StyleProp, TouchableOpacity, View } from 'react-native'
+import { Alert, ImageStyle, StyleProp, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { commonData, operatorBaseData, patientBaseData, specialistBaseData } from './data'
 import { profileStyle } from './style'
@@ -176,7 +176,6 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
                         resizeMode='contain'
                         source={require('../../../assets/profile/profile.png')} />
                     )}
-                    {/* </View> */}
                     <View style={styles.body}>
                       <View style={styles.bodyContent}>
                         <Text style={styles.profileName}>@{sessionUser ? sessionUser.user : ''}</Text>
@@ -193,7 +192,7 @@ const ProfileScreen: FC<DrawerContentComponentProps> = ({
                 </>
               )}
               ListFooterComponent={
-                sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? renderFooterComponent
+                sessionUser?.userRole.find(e => e.id === EUserRole.patient || e.id === EUserRole.medicalDoctor || e.id === EUserRole.specialist) ? renderFooterComponent
                   : undefined} />
           </SafeAreaLayout>
         </>

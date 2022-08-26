@@ -76,4 +76,10 @@ export const getProfilePicture = (userId: number) => async (dispatch: AppDispatc
 
 export const verifyUniqueData = async (data: VerifyUniqueUserKeysDto) => {
     return await api.post('user/verify-unique-data', data)
+        .catch(error => {
+            if (error.response) {
+                return error.response
+            }
+            throw error
+        })
 }

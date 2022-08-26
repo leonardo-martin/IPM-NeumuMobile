@@ -12,8 +12,8 @@ import { setSpecialties } from '@store/ducks/common'
 import { Datepicker, Icon, IconProps, IndexPath, Input, PopoverPlacements, Radio, RadioGroup, Select, SelectItem, Text, useStyleSheet } from '@ui-kitten/components'
 import { getGender, openMailTo } from '@utils/common'
 import { typeOfPersonalDocuments } from '@utils/constants'
-import { formatCpf, formatRNM, isEmailValid, onlyNumbers } from '@utils/mask'
-import { validatePasswd } from '@utils/validators'
+import { cleanNumberMask, formatCpf, formatRNM, isEmailValid, onlyNumbers } from '@utils/mask'
+import { validatePasswd, validateUniqueData } from '@utils/validators'
 import { validate } from 'gerador-validador-cpf'
 import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import { Controller } from 'react-hook-form'
@@ -122,7 +122,6 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
     if (selectedTypeOfDocument && typeOfPersonalDocuments) {
       const type = typeOfPersonalDocuments[Number(selectedTypeOfDocument) - 1]
       if (type && type.label !== form.getValues('typeOfDocument')) {
-        console.log('limpou')
         form.setValue('cpf', undefined)
         form.setValue('rne', undefined)
         form.setValue('typeOfDocument', type.label)
@@ -212,7 +211,10 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
                   value: 14,
                   message: `Mín. 14 caracteres`
                 },
-                validate: (e) => e ? validate(e) : undefined
+                validate: {
+                  valid: (e) => e ? validate(e) : undefined,
+                  unique: (e) => e ? validateUniqueData({ cpf: cleanNumberMask(e) }) : undefined
+                }
               }}
               render={({ field: { onChange, onBlur, value, name, ref } }) => (
                 <Input
@@ -235,8 +237,9 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
               name='cpf'
               defaultValue=''
             />
-            {form.formState.errors.cpf?.type !== 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} />}
-            {form.formState.errors.cpf?.type === 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} customMessage='CPF inválido' />}
+            {form.formState.errors.cpf?.type !== 'valid' && form.formState.errors.cpf?.type !== 'unique' && <CustomErrorMessage name='cpf' errors={form.formState.errors} />}
+            {form.formState.errors.cpf?.type === 'valid' && <CustomErrorMessage name='cpf' errors={form.formState.errors} customMessage={'CPF inválido'} />}
+            {form.formState.errors.cpf?.type === 'unique' && <CustomErrorMessage name='cpf' errors={form.formState.errors} customMessage={'CPF já cadastrado'} />}
           </>
         )}
 
@@ -249,6 +252,9 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
                   value: true,
                   message: 'Campo obrigatório'
                 },
+                validate: {
+                  unique: (e) => e ? validateUniqueData({ rne: e }) : undefined
+                }
               }}
               render={({ field: { onChange, onBlur, value, name, ref } }) => (
                 <Input
@@ -271,7 +277,8 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
               name='rne'
               defaultValue=''
             />
-            <CustomErrorMessage name='rne' errors={form.formState.errors} />
+            {form.formState.errors.rne?.type !== 'unique' && <CustomErrorMessage name='rne' errors={form.formState.errors} />}
+            {form.formState.errors.rne?.type === 'unique' && <CustomErrorMessage name='rne' errors={form.formState.errors} customMessage={'RNM já cadastrado'} />}
           </>
         )}
 
@@ -351,7 +358,10 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
               value: 5,
               message: `Mín. 5 caracteres`
             },
-            validate: (e) => e ? isEmailValid(e) : undefined
+            validate: {
+              valid: (e) => e ? isEmailValid(e) : undefined,
+              unique: (e) => e ? validateUniqueData({ email: e }) : undefined
+            }
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
@@ -385,8 +395,9 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
           name='email'
           defaultValue=''
         />
-        {form.formState.errors.email?.type !== 'validate' && <CustomErrorMessage name='email' errors={form.formState.errors} />}
-        {form.formState.errors.email?.type === 'validate' && <CustomErrorMessage name='email' errors={form.formState.errors} customMessage='E-mail inválido' />}
+        {form.formState.errors.email?.type !== 'valid' && form.formState.errors.email?.type !== 'unique' && <CustomErrorMessage name='email' errors={form.formState.errors} />}
+        {form.formState.errors.email?.type === 'valid' && <CustomErrorMessage name='email' errors={form.formState.errors} customMessage={'E-mail inválido'} />}
+        {form.formState.errors.email?.type === 'unique' && <CustomErrorMessage name='email' errors={form.formState.errors} customMessage={'E-mail já cadastrado'} />}
         <Controller
           control={form.control}
           rules={{

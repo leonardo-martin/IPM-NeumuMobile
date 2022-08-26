@@ -9,8 +9,8 @@ import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { Datepicker, Icon, IconProps, IndexPath, Input, PopoverPlacements, Radio, RadioGroup, Select, SelectItem, Text, useStyleSheet } from '@ui-kitten/components'
 import { getGender, openMailTo } from '@utils/common'
 import { typeOfPersonalDocuments } from '@utils/constants'
-import { formatCpf, formatPhone, formatRNM, isEmailValid } from '@utils/mask'
-import { validateCNS, validatePasswd } from '@utils/validators'
+import { cleanNumberMask, formatCpf, formatPhone, formatRNM, isEmailValid } from '@utils/mask'
+import { validateCNS, validatePasswd, validateUniqueData } from '@utils/validators'
 import { validate } from 'gerador-validador-cpf'
 import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import { Controller } from 'react-hook-form'
@@ -51,7 +51,6 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
     if (selectedTypeOfDocument && typeOfPersonalDocuments) {
       const type = typeOfPersonalDocuments[Number(selectedTypeOfDocument) - 1]
       if (type && type.label !== form.getValues('typeOfDocument')) {
-        console.log('limpou')
         form.setValue('cpf', undefined)
         form.setValue('rne', undefined)
         form.setValue('typeOfDocument', type.label)
@@ -215,7 +214,10 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
                   value: 14,
                   message: `Mín. 14 caracteres`
                 },
-                validate: (e) => e ? validate(e) : undefined
+                validate: {
+                  valid: (e) => e ? validate(e) : undefined,
+                  unique: (e) => e ? validateUniqueData({ cpf: cleanNumberMask(e) }) : undefined
+                }
               }}
               render={({ field: { onChange, onBlur, value, name, ref } }) => (
                 <Input
@@ -238,8 +240,9 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               name='cpf'
               defaultValue=''
             />
-            {form.formState.errors.cpf?.type !== 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} />}
-            {form.formState.errors.cpf?.type === 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} customMessage='CPF inválido' />}
+            {form.formState.errors.cpf?.type !== 'valid' && form.formState.errors.cpf?.type !== 'unique' && <CustomErrorMessage name='cpf' errors={form.formState.errors} />}
+            {form.formState.errors.cpf?.type === 'valid' && <CustomErrorMessage name='cpf' errors={form.formState.errors} customMessage={'CPF inválido'} />}
+            {form.formState.errors.cpf?.type === 'unique' && <CustomErrorMessage name='cpf' errors={form.formState.errors} customMessage={'CPF já cadastrado'} />}
           </>
         )}
 
@@ -252,6 +255,9 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
                   value: true,
                   message: 'Campo obrigatório'
                 },
+                validate: {
+                  unique: (e) => e ? validateUniqueData({ rne: e }) : undefined
+                }
               }}
               render={({ field: { onChange, onBlur, value, name, ref } }) => (
                 <Input
@@ -274,7 +280,8 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               name='rne'
               defaultValue=''
             />
-            <CustomErrorMessage name='rne' errors={form.formState.errors} />
+            {form.formState.errors.rne?.type !== 'unique' && <CustomErrorMessage name='rne' errors={form.formState.errors} />}
+            {form.formState.errors.rne?.type === 'unique' && <CustomErrorMessage name='rne' errors={form.formState.errors} customMessage={'RNM já cadastrado'} />}
           </>
         )}
 
@@ -354,7 +361,10 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               value: 5,
               message: `Mín. 5 caracteres`
             },
-            validate: (e) => e ? isEmailValid(e) : undefined
+            validate: {
+              valid: (e) => e ? isEmailValid(e) : undefined,
+              unique: (e) => e ? validateUniqueData({ email: e }) : undefined
+            }
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
@@ -388,8 +398,9 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           name='email'
           defaultValue=''
         />
-        {form.formState.errors.email?.type !== 'validate' && <CustomErrorMessage name='email' errors={form.formState.errors} />}
-        {form.formState.errors.email?.type === 'validate' && <CustomErrorMessage name='email' errors={form.formState.errors} customMessage='E-mail inválido' />}
+        {form.formState.errors.email?.type !== 'valid' && form.formState.errors.email?.type !== 'unique' && <CustomErrorMessage name='email' errors={form.formState.errors} />}
+        {form.formState.errors.email?.type === 'valid' && <CustomErrorMessage name='email' errors={form.formState.errors} customMessage={'E-mail inválido'} />}
+        {form.formState.errors.email?.type === 'unique' && <CustomErrorMessage name='email' errors={form.formState.errors} customMessage={'E-mail já cadastrado'} />}
         <Controller
           control={form.control}
           rules={{
@@ -596,7 +607,10 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               value: 14,
               message: `Mín. 14 caracteres`
             },
-            validate: (e) => e !== null && e !== "" ? validateCNS(e) : true
+            validate: {
+              valid: (e) => e !== null && e !== "" ? validateCNS(e) : true,
+              unique: (e) => e !== null && e !== "" ? validateUniqueData({ susNumber: e }) : true
+            }
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
@@ -619,8 +633,9 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           name='susNumber'
           defaultValue=''
         />
-        {form.formState.errors.susNumber?.type !== 'validate' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} />}
-        {form.formState.errors.susNumber?.type === 'validate' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} customMessage='Número de cartão inválido' />}
+        {form.formState.errors.susNumber?.type !== 'valid' && form.formState.errors.susNumber?.type !== 'unique' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} />}
+        {form.formState.errors.susNumber?.type === 'valid' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} customMessage={'Cartão SUS inválido'} />}
+        {form.formState.errors.susNumber?.type === 'unique' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} customMessage={'Cartão SUS já cadastrado'} />}
       </View>
     </>
   )

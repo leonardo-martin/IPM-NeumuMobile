@@ -222,6 +222,7 @@ export interface VerifyUniqueUserKeysDto {
     cpf?: string
     rne?: string
     email?: string
+    susNumber?: string
 }
 
 export enum ETypeOfDocument {
