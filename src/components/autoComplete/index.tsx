@@ -1,8 +1,7 @@
-import React, { FC, ForwardedRef, forwardRef, ReactElement } from 'react'
-import { Autocomplete, AutocompleteProps } from '@ui-kitten/components'
-import { City, Country, UF } from '@models/Places'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
-import { JSONObject } from 'models/Common'
+import { JSONObject } from '@models/Common'
+import { Autocomplete, AutocompleteProps } from '@ui-kitten/components'
+import React, { FC, ForwardedRef, forwardRef, ReactElement } from 'react'
 
 interface AutoCompleteProps extends AutocompleteProps {
     ref?: ForwardedRef<Autocomplete>

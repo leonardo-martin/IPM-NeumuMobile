@@ -1,6 +1,9 @@
 import CustomErrorMessage from '@components/error'
+import CountryPicker from '@components/picker/CountryPicker'
+import { COUNTRY } from '@constants/common'
 import { CONECTESUS_URI } from '@constants/uri'
 import { useDatepickerService } from '@hooks/useDatepickerService'
+import { useModal } from '@hooks/useModal'
 import { PatientSignUpProps } from '@models/SignUpProps'
 import { ETypeOfDocument } from '@models/User'
 import { registerStyle } from '@pages/signup/style'
@@ -9,17 +12,21 @@ import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { Datepicker, Icon, IconProps, IndexPath, Input, PopoverPlacements, Radio, RadioGroup, Select, SelectItem, Text, useStyleSheet } from '@ui-kitten/components'
 import { getGender, openMailTo } from '@utils/common'
 import { typeOfPersonalDocuments } from '@utils/constants'
-import { cleanNumberMask, formatCpf, formatPhone, formatRNM, isEmailValid } from '@utils/mask'
+import { cleanNumberMask, formatCpf, formatRNM, isEmailValid } from '@utils/mask'
 import { validateCNS, validatePasswd, validateUniqueData } from '@utils/validators'
 import { validate } from 'gerador-validador-cpf'
 import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import { Controller } from 'react-hook-form'
-import { Keyboard, Linking, TouchableOpacity, View } from 'react-native'
+import { Keyboard, Linking, Pressable, TouchableOpacity, View } from 'react-native'
+import { Modalize } from 'react-native-modalize'
+import { Portal } from 'react-native-portalize'
 
 const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): ReactElement => {
 
   const { localeDateService } = useDatepickerService()
   const isFocused = useIsFocused()
+  const { ref: modalizeRef } = useModal<Modalize>()
+  const [countryCode, setCountryCode] = useState<string>(COUNTRY.DIAL_CODE)
 
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const styles = useStyleSheet(registerStyle)
@@ -97,8 +104,27 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
     </React.Fragment>
   )
 
+  const openCountryPicker = () => modalizeRef.current?.open()
+
+  const CountrySelectBox = () => (
+    <Pressable onPress={openCountryPicker} style={{
+      flexDirection: 'row',
+      alignItems: 'center',
+    }}>
+      <Text category='c1'>{countryCode}</Text>
+      <Icon name='chevron-down-outline' size={10} />
+    </Pressable>
+  )
+
+  useEffect(() => {
+    form.setValue('countryCode', countryCode)
+  }, [countryCode])
+
   return (
     <>
+      <Portal>
+        <CountryPicker ref={modalizeRef} setValue={setCountryCode} />
+      </Portal>
       <View style={styles.box}>
         <Controller
           control={form.control}
@@ -556,13 +582,14 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               testID={name}
               onBlur={onBlur}
               onChangeText={onChange}
-              value={formatPhone(value)}
+              value={value}
               maxLength={15}
               ref={ref}
               returnKeyType="done"
               onSubmitEditing={() => form.setFocus('phone2')}
               underlineColorAndroid="transparent"
               textContentType="telephoneNumber"
+              accessoryLeft={CountrySelectBox}
             />
           )}
           name='phone'
@@ -587,13 +614,14 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               testID={name}
               onBlur={onBlur}
               onChangeText={onChange}
-              value={formatPhone(value)}
+              value={value}
               maxLength={15}
               ref={ref}
               returnKeyType="next"
               onSubmitEditing={() => form.setFocus('susNumber')}
               underlineColorAndroid="transparent"
               textContentType="telephoneNumber"
+              accessoryLeft={CountrySelectBox}
             />
           )}
           name='phone2'

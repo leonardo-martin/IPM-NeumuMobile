@@ -73,6 +73,9 @@
       "@routes/*": [
         "routes/*"
       ],
+      "@schemas/*": [
+        "schemas/*"
+      ],
       "@services/*": [
         "services/*"
       ],

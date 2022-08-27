@@ -50,6 +50,7 @@
                     "@models": "./src/models",
                     "@pages": "./src/pages",
                     "@routes": "./src/routes",
+                    "@schemas": "./src/schemas",
                     "@services": "./src/services",
                     "@store": "./src/store",
                     "@types": "./src/types",

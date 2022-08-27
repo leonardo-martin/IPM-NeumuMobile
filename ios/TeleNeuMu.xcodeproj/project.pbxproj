@@ -13,6 +13,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		B28081A198B8E843E80ED319 /* libPods-TeleNeuMu-TeleNeuMuTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C15DABB00926A3410D6A5BA /* libPods-TeleNeuMu-TeleNeuMuTests.a */; };
+		C221996628BA63C600182435 /* teleneumu.realm in Resources */ = {isa = PBXBuildFile; fileRef = C221996528BA63C200182435 /* teleneumu.realm */; };
 		C279C93127F8AB4A00A6A74A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = C279C93027F8AB4A00A6A74A /* AppDelegate.mm */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +43,7 @@
 		930C3712EDCB02F1BF4E1FE0 /* Pods-TeleNeuMu.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu.debug.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu/Pods-TeleNeuMu.debug.xcconfig"; sourceTree = "<group>"; };
 		95B7004F4AA378D773FDCA1F /* Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig"; sourceTree = "<group>"; };
 		9C15DABB00926A3410D6A5BA /* libPods-TeleNeuMu-TeleNeuMuTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TeleNeuMu-TeleNeuMuTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C221996528BA63C200182435 /* teleneumu.realm */ = {isa = PBXFileReference; lastKnownFileType = file; name = teleneumu.realm; path = ../db/teleneumu.realm; sourceTree = "<group>"; };
 		C2225CD026E9716800F6911B /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		C2225CD126E9716800F6911B /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Octicons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		C2225CD226E9716800F6911B /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialCommunityIcons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 		13B07FAE1A68108700A75B9A /* TeleNeuMu */ = {
 			isa = PBXGroup;
 			children = (
+				C221996528BA63C200182435 /* teleneumu.realm */,
 				C2897561283A7D22007CD05F /* TeleNeuMu.entitlements */,
 				C2225CCF26E970C100F6911B /* Fonts */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -300,6 +303,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C221996628BA63C600182435 /* teleneumu.realm in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);

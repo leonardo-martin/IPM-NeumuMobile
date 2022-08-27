@@ -1,4 +1,5 @@
 import { toastConfig } from '@configs/toast'
+import RealmContext from '@contexts/realm'
 import { ThemeProvider } from '@contexts/theme'
 import { NavigationContainer } from '@react-navigation/native'
 import { IconRegistry, Text } from '@ui-kitten/components'
@@ -35,8 +36,12 @@ const codePushOptions: CodePushOptions = {
 
 const App: FC = (): ReactElement => {
 
+  Realm.copyBundledRealmFiles()
+  const { RealmProvider } = RealmContext
+
   return (
     <React.Fragment>
+
       <IconRegistry icons={[IoniconsIconsPack, EvaIconsPack, FontAwesomeIconsPack, FontistoIconsPack]} />
       <ThemeProvider>
         <SafeAreaProvider>
@@ -45,7 +50,9 @@ const App: FC = (): ReactElement => {
               linking={linking}
               fallback={<Text category='label'>Carregando...</Text>}>
               <StatusBar barStyle="dark-content" backgroundColor={'transparent'} translucent={true} />
-              <Routes />
+              <RealmProvider>
+                <Routes />
+              </RealmProvider>
             </NavigationContainer>
             <Toast
               config={toastConfig}

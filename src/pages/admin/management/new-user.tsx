@@ -1,8 +1,10 @@
 import CustomErrorMessage from '@components/error'
 import RegisterHeader from '@components/header/register'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
+import { COUNTRY } from '@constants/common'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
+import { useModal } from '@hooks/useModal'
 import { ETypeOfDocument, UserDoctorData } from '@models/User'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native'
@@ -11,22 +13,27 @@ import { createUser } from '@services/user.service'
 import { setSpecialties } from '@store/ducks/common'
 import { Datepicker, Icon, IconProps, IndexPath, Input, PopoverPlacements, Radio, RadioGroup, Select, SelectItem, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { extractFieldString, getGender, openMailTo } from '@utils/common'
-import { cleanNumberMask, formatCpf, formatPhone, formatRNM, isEmailValid, onlyNumbers } from '@utils/mask'
+import { typeOfPersonalDocuments } from '@utils/constants'
+import { cleanNumberMask, formatCpf, formatRNM, isEmailValid, onlyNumbers } from '@utils/mask'
 import { validatePasswd, validateUniqueData } from '@utils/validators'
 import { validate } from 'gerador-validador-cpf'
 import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Alert, BackHandler, Keyboard, TouchableOpacity, View } from 'react-native'
+import { Alert, BackHandler, Keyboard, Pressable, TouchableOpacity, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { Modalize } from 'react-native-modalize'
 import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
-import { typeOfPersonalDocuments } from 'utils/constants'
 import { managementStyle } from './new-user.style'
 
 const NewUserScreen: FC = (): ReactElement => {
 
     const styles = useStyleSheet(managementStyle)
     const form = useForm<UserDoctorData>()
+    const { ref: modalizeRef } = useModal<Modalize>()
+    const [countryCode, setCountryCode] = useState<string>(COUNTRY.DIAL_CODE)
+    const openCountryPicker = () => modalizeRef.current?.open()
+
     const [selectedTypeOfDocument, setSelectedTypeOfDocument] = useState<IndexPath | IndexPath[]>()
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isLoadingPostalCode, setIsLoadingPostalCode] = useState<boolean>(false)
@@ -44,6 +51,20 @@ const NewUserScreen: FC = (): ReactElement => {
     const password = useRef<string | undefined>()
     password.current = form.watch("password", "")
     const typeOfDocument = form.watch("typeOfDocument")
+
+    const CountrySelectBox = () => (
+        <Pressable onPress={openCountryPicker} style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+        }}>
+            <Text category='c1'>{countryCode}</Text>
+            <Icon name='chevron-down-outline' size={10} />
+        </Pressable>
+    )
+
+    useEffect(() => {
+        form.setValue('countryCode', countryCode)
+    }, [countryCode])
 
     const dispatch = useAppDispatch()
     const { specialties } = useAppSelector((state: RootState) => state.common)
@@ -750,7 +771,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     testID={name}
                                     onBlur={onBlur}
                                     onChangeText={onChange}
-                                    value={formatPhone(value)}
+                                    value={value}
                                     maxLength={15}
                                     ref={ref}
                                     returnKeyType="next"
@@ -758,6 +779,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     underlineColorAndroid="transparent"
                                     disabled={isLoadingPostalCode}
                                     textContentType="telephoneNumber"
+                                    accessoryLeft={CountrySelectBox}
                                 />
                             )}
                             name='phone'
@@ -782,7 +804,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     testID={name}
                                     onBlur={onBlur}
                                     onChangeText={onChange}
-                                    value={formatPhone(value)}
+                                    value={value}
                                     maxLength={15}
                                     ref={ref}
                                     returnKeyType="send"
@@ -790,6 +812,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     underlineColorAndroid="transparent"
                                     disabled={isLoadingPostalCode}
                                     textContentType="telephoneNumber"
+                                    accessoryLeft={CountrySelectBox}
                                 />
                             )}
                             name='phone2'

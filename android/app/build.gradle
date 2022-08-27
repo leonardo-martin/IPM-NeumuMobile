@@ -151,6 +151,12 @@ android {
         pickFirst '**/*.so'
     }
 
+    sourceSets {
+        main {
+            assets.srcDirs = ["$rootDir/../db/", 'src/main/assets/']
+        }
+    }
+
     defaultConfig {
         applicationId 'net.atos.teleneumu'
         minSdkVersion rootProject.ext.minSdkVersion

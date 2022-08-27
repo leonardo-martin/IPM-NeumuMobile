@@ -19,6 +19,7 @@ export class UserDto {
     name!: string
     email!: string
     typeOfDocument!: any
+    countryCode!: string
     cpf!: string
     rne!: string
     city!: string | null
@@ -42,6 +43,7 @@ export class UserData {
         cpf?: string,
         rne?: string,
         typeOfDocument?: any,
+        countryCode?: string,
         email?: string,
         emailConfirmation?: string,
         phone?: string,
@@ -76,11 +78,13 @@ export class UserData {
         this.country = country
         this.sex = sex
         this.typeOfDocument = typeOfDocument
+        this.countryCode = countryCode
         this.rne = rne
     }
 
     name?: string
     typeOfDocument?: any
+    countryCode?: string
     rne?: string
     cpf?: string
     email?: string
@@ -113,6 +117,7 @@ export class UserPatientData extends UserData {
         cpf?: string,
         rne?: string,
         typeOfDocument?: any,
+        countryCode?: string,
         email?: string,
         emailConfirmation?: string,
         phone?: string,
@@ -134,7 +139,7 @@ export class UserPatientData extends UserData {
         abrafeuRegistrationOptIn?: string,
         pastExams?: ExamDNA) {
 
-        super(name, cpf, rne, typeOfDocument, email, emailConfirmation, phone, phone2, username,
+        super(name, cpf, rne, typeOfDocument, countryCode, email, emailConfirmation, phone, phone2, username,
             password, city, state, dateOfBirth, postalCode, address1, address2, addressComplement, country, sex)
         this.mothersName = mothersName
         this.susNumber = susNumber
@@ -156,6 +161,7 @@ export class UserDoctorData extends UserData {
         cpf?: string,
         rne?: string,
         typeOfDocument?: any,
+        countryCode?: string,
         email?: string,
         emailConfirmation?: string,
         phone?: string,
@@ -175,7 +181,7 @@ export class UserDoctorData extends UserData {
         crm?: string, specialty?: MedicalSpecialtyDto,
         professionalTypeId?: string) {
 
-        super(name, cpf, rne, typeOfDocument, email, emailConfirmation, phone, phone2, username,
+        super(name, cpf, rne, typeOfDocument, countryCode, email, emailConfirmation, phone, phone2, username,
             password, city, state, dateOfBirth, postalCode, address1, address2, addressComplement, country, sex)
         this.crm = crm
         this.specialty = specialty
