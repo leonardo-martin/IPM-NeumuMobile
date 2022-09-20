@@ -758,8 +758,8 @@ const NewUserScreen: FC = (): ReactElement => {
                                     message: 'Campo obrigatório'
                                 },
                                 minLength: {
-                                    value: 13,
-                                    message: `Mín. 13 caracteres`
+                                    value: 8,
+                                    message: `Mín. 8 caracteres`
                                 },
                             }}
                             render={({ field: { onChange, onBlur, value, name, ref } }) => (
@@ -791,8 +791,8 @@ const NewUserScreen: FC = (): ReactElement => {
                             rules={{
                                 required: false,
                                 minLength: {
-                                    value: 13,
-                                    message: `Mín. 13 caracteres`
+                                    value: 8,
+                                    message: `Mín. 8 caracteres`
                                 },
                             }}
                             render={({ field: { onChange, onBlur, value, name, ref } }) => (

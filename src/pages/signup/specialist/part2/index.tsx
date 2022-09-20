@@ -46,8 +46,8 @@ const DoctorSignUpPart2Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               message: 'Campo obrigatório'
             },
             minLength: {
-              value: 13,
-              message: `Mín. 13 caracteres`
+              value: 8,
+              message: `Mín. 8 caracteres`
             },
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
@@ -78,8 +78,8 @@ const DoctorSignUpPart2Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
           rules={{
             required: false,
             minLength: {
-              value: 13,
-              message: `Mín. 13 caracteres`
+              value: 8,
+              message: `Mín. 8 caracteres`
             },
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (

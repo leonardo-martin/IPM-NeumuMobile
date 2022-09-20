@@ -569,8 +569,8 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               message: 'Campo obrigatório'
             },
             minLength: {
-              value: 13,
-              message: `Mín. 13 caracteres`
+              value: 8,
+              message: `Mín. 8 caracteres`
             },
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
@@ -601,8 +601,8 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           rules={{
             required: false,
             minLength: {
-              value: 13,
-              message: `Mín. 13 caracteres`
+              value: 8,
+              message: `Mín. 8 caracteres`
             },
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (

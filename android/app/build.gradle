@@ -146,10 +146,13 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
-
     packagingOptions {
-        pickFirst '**/*.so'
+        jniLibs {
+            pickFirsts += ['**/*.so']
+            pickFirsts += ['**/*.so']
+        }
     }
+
 
     sourceSets {
         main {

@@ -403,8 +403,8 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         message: 'Campo obrigatório'
                     },
                     minLength: {
-                        value: 13,
-                        message: `Mín. 13 caracteres`
+                        value: 8,
+                        message: `Mín. 8 caracteres`
                     },
                 }}
                 render={({ field: { onChange, onBlur, value, name, ref } }) => (
@@ -416,7 +416,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         testID={name}
                         onBlur={onBlur}
                         onChangeText={onChange}
-                        value={formatPhone(value)}
+                        value={value}
                         maxLength={15}
                         ref={ref}
                         returnKeyType="done"
@@ -434,8 +434,8 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 rules={{
                     required: false,
                     minLength: {
-                        value: 13,
-                        message: `Mín. 13 caracteres`
+                        value: 8,
+                        message: `Mín. 8 caracteres`
                     },
                 }}
                 render={({ field: { onChange, onBlur, value, name, ref } }) => (
@@ -447,7 +447,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         testID={name}
                         onBlur={onBlur}
                         onChangeText={onChange}
-                        value={formatPhone(value)}
+                        value={value}
                         maxLength={15}
                         ref={ref}
                         returnKeyType="send"
