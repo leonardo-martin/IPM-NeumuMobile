@@ -14,7 +14,7 @@ import { getProfilePicture, getUserDetails, updateUser } from '@services/user.se
 import { setProfile, setProfilePic } from '@store/ducks/profile'
 import { Button, Icon, IconProps, useStyleSheet } from '@ui-kitten/components'
 import { getDocumentType, getEntityType } from '@utils/entity'
-import { cleanNumberMask, formatCpf, formatPhone, formatPostalCode } from '@utils/mask'
+import { cleanNumberMask, formatCpf, formatPostalCode } from '@utils/mask'
 import { validateCNS } from '@utils/validators'
 import { compareAsc, subYears } from 'date-fns'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
@@ -493,8 +493,8 @@ const EditProfileScreen: FC = (): ReactElement => {
             control={form.control}
             rules={{
               minLength: {
-                value: 13,
-                message: `Mín. 13 caracteres`
+                value: 8,
+                message: `Mín. 8 caracteres`
               },
             }}
             render={({ field }) => (
@@ -502,7 +502,7 @@ const EditProfileScreen: FC = (): ReactElement => {
                 style={styles.profileSetting}
                 hint='Telefone 1'
                 inputProps={{
-                  value: formatPhone(field.value),
+                  value: field.value,
                   onBlur: field.onBlur,
                   onChangeText: field.onChange,
                   keyboardType: 'number-pad',
@@ -522,8 +522,8 @@ const EditProfileScreen: FC = (): ReactElement => {
             control={form.control}
             rules={{
               minLength: {
-                value: 13,
-                message: `Mín. 13 caracteres`
+                value: 8,
+                message: `Mín. 8 caracteres`
               },
             }}
             render={({ field }) => (
@@ -531,7 +531,7 @@ const EditProfileScreen: FC = (): ReactElement => {
                 style={styles.profileSetting}
                 hint='Telefone 2'
                 inputProps={{
-                  value: formatPhone(field.value),
+                  value: field.value,
                   onBlur: field.onBlur,
                   onChangeText: field.onChange,
                   keyboardType: 'number-pad',
@@ -612,7 +612,7 @@ const EditProfileScreen: FC = (): ReactElement => {
                       textAlign: 'right',
                       multiline: true,
                       scrollEnabled: true,
-                      maxLength: 8,
+                      maxLength: 9,
                       textContentType: "postalCode",
                       returnKeyType: "default",
                       onEndEditing: () => loadDataFromPostalCode(field.value),
