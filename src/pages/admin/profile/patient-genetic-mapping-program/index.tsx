@@ -400,7 +400,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                                         <View style={[styles.subContainer, { alignItems: 'flex-start' }]}>
                                                             <View>
                                                                 <Text style={styles.text}>
-                                                                    Eu, <Text style={[styles.text, { fontWeight: 'bold', textTransform: 'uppercase', textDecorationLine: 'underline' }]}>{profile?.name}</Text>, portador do CPF<Text style={[styles.text, { fontWeight: 'bold', textDecorationLine: 'underline' }]}>{" " + (formatCpf(profile?.cpf) || profile?.cpf) + " "}</Text> concordo que o meu DNA (ou o DNA do meu filho) seja tornado anônimo e utilizado com o objetivo de pesquisa.
+                                                                    Eu, <Text style={[styles.text, { fontWeight: 'bold', textTransform: 'uppercase', textDecorationLine: 'underline' }]}>{profile?.name}</Text>, portador do {!!profile?.cpf ? 'CPF' : 'RNM'} <Text style={[styles.text, { fontWeight: 'bold', textDecorationLine: 'underline' }]}>{" " + (!!profile?.cpf ? (formatCpf(profile?.cpf) || profile?.cpf) : profile?.rne) + " "}</Text> concordo que o meu DNA (ou o DNA do meu filho) seja tornado anônimo e utilizado com o objetivo de pesquisa.
                                                                 </Text>
                                                                 <Controller
                                                                     control={form.control}
