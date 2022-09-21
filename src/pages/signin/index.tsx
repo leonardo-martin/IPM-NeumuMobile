@@ -66,7 +66,7 @@ const SignInScreen: FC = (): ReactElement => {
   }
 
   useEffect(() => {
-    getStoredUsernameAndPassword()
+    if (Platform.OS === 'android') getStoredUsernameAndPassword()
     return () => { setChecked(false) }
   }, [])
 
@@ -239,13 +239,19 @@ const SignInScreen: FC = (): ReactElement => {
                 defaultValue=""
               />
               <CustomErrorMessage name='password' errors={form.formState.errors} />
-              <View style={styles.containerCheckbox}>
-                <CheckBox
-                  disabled={isLoading}
-                  status='primary'
-                  checked={checked} onChange={onCheckedChange}>
-                  {evaProps => <Text style={[evaProps?.style, styles.checkboxText]}>Lembrar acesso</Text>}
-                </CheckBox>
+              <View style={[styles.containerCheckbox, {
+                ...Platform.OS === 'ios' && {
+                  justifyContent: 'flex-end'
+                }
+              }]}>
+                {Platform.OS === 'android' && (
+                  <CheckBox
+                    disabled={isLoading}
+                    status='primary'
+                    checked={checked} onChange={onCheckedChange}>
+                    {evaProps => <Text style={[evaProps?.style, styles.checkboxText]}>Lembrar acesso</Text>}
+                  </CheckBox>
+                )}
 
                 <View style={styles.containerRecoveryPassword}>
                   <TouchableOpacity disabled={isLoading} onPress={recoveryPasswd}>
@@ -285,7 +291,7 @@ const SignInScreen: FC = (): ReactElement => {
           </View>
         </SafeAreaLayout>
         <SafeAreaLayout insets='bottom'>
-          <SocialIconsComponent /> 
+          <SocialIconsComponent />
           <TouchableOpacity
             onPress={isLoading ? undefined : openMailTo}>
             <View style={styles.containerContact}>
