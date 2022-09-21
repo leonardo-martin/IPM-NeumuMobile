@@ -50,7 +50,9 @@ const NewUserScreen: FC = (): ReactElement => {
     const emailConfirm = form.watch("email")
     const password = useRef<string | undefined>()
     password.current = form.watch("password", "")
-    const typeOfDocument = form.watch("typeOfDocument")
+
+    const typeOfDocument = useRef<string | undefined>()
+    typeOfDocument.current = form.watch("typeOfDocument")
 
     const CountrySelectBox = () => (
         <Pressable onPress={openCountryPicker} style={{
@@ -308,7 +310,7 @@ const NewUserScreen: FC = (): ReactElement => {
                         />
                         <CustomErrorMessage name='typeOfDocument' errors={form.formState.errors} />
 
-                        {typeOfDocument === ETypeOfDocument.CPF && (
+                        {typeOfDocument.current === ETypeOfDocument.CPF && (
                             <>
                                 <Controller
                                     control={form.control}
@@ -353,7 +355,7 @@ const NewUserScreen: FC = (): ReactElement => {
                             </>
                         )}
 
-                        {typeOfDocument === ETypeOfDocument.RNM && (
+                        {typeOfDocument.current === ETypeOfDocument.RNM && (
                             <>
                                 <Controller
                                     control={form.control}
@@ -382,7 +384,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                             onChangeText={onChange}
                                             value={formatRNM(value)}
                                             underlineColorAndroid="transparent"
-                                            autoCapitalize='characters'
+                                            autoCapitalize='words'
                                             ref={ref}
                                             maxLength={9}
                                             returnKeyType="next"
@@ -395,7 +397,8 @@ const NewUserScreen: FC = (): ReactElement => {
                                 {form.formState.errors.rne?.type !== 'unique' && <CustomErrorMessage name='rne' errors={form.formState.errors} />}
                                 {form.formState.errors.rne?.type === 'unique' && <CustomErrorMessage name='rne' errors={form.formState.errors} customMessage={'RNM já cadastrado'} />}
                             </>
-                        )} <Controller
+                        )}
+                        <Controller
                             control={form.control}
                             rules={{
                                 required: {
