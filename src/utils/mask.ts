@@ -1,8 +1,13 @@
 import { _REGEX_VALID_EMAIL, _REGEX_VALID_FULLNAME, _REGEX_VALID_NUMBERS } from "./constants"
 
 export const formatRNM = (value: string | undefined) => {
-    if (value !== undefined && typeof value === 'string')
-        return value.toUpperCase()
+    if (value !== undefined && typeof value === 'string') {
+        if (value.length <= 1)
+            value = value.replace(/^[0-9]+$/g, '')
+        else
+            value = value[0] + onlyNumbers(value.substring(1, value.length)).replace(/(\d)(\d{1})$/, "$1-$2")
+        return value
+    }
     else return ''
 }
 

@@ -254,11 +254,16 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                                 value: true,
                                 message: 'Campo obrigatório'
                             },
+                            minLength: {
+                                value: 9,
+                                message: `Mín. 9 caracteres`
+                            },
                         }}
                         render={({ field: { onChange, onBlur, value, name, ref } }) => (
                             <Input
                                 size='small'
                                 label="RNM *"
+                                placeholder='A123456-7'
                                 style={styles?.input}
                                 keyboardType='default'
                                 testID={name}
@@ -268,7 +273,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                                 underlineColorAndroid="transparent"
                                 autoCapitalize='characters'
                                 ref={ref}
-                                maxLength={40}
+                                maxLength={9}
                                 returnKeyType="next"
                                 onSubmitEditing={() => form.setFocus('creator.data.dateOfBirth')}
                             />

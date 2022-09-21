@@ -281,6 +281,10 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
                   value: true,
                   message: 'Campo obrigatório'
                 },
+                minLength: {
+                  value: 9,
+                  message: `Mín. 9 caracteres`
+                },
                 validate: {
                   unique: (e) => e ? validateUniqueData({ rne: e }) : undefined
                 }
@@ -289,6 +293,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
                 <Input
                   size='small'
                   label="RNM *"
+                  placeholder='A123456-7'
                   style={styles.input}
                   keyboardType='default'
                   testID={name}
@@ -298,7 +303,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
                   underlineColorAndroid="transparent"
                   autoCapitalize='characters'
                   ref={ref}
-                  maxLength={40}
+                  maxLength={9}
                   returnKeyType="next"
                   onSubmitEditing={() => form.setFocus('dateOfBirth')}
                 />

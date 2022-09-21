@@ -252,6 +252,10 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
                   value: true,
                   message: 'Campo obrigatório'
                 },
+                minLength: {
+                  value: 9,
+                  message: `Mín. 9 caracteres`
+                },
                 validate: {
                   unique: (e) => e ? validateUniqueData({ rne: e }) : undefined
                 }
@@ -260,6 +264,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
                 <Input
                   size='small'
                   label="RNM *"
+                  placeholder='A123456-7'
                   style={styles.input}
                   keyboardType='default'
                   testID={name}
@@ -269,7 +274,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
                   underlineColorAndroid="transparent"
                   autoCapitalize='characters'
                   ref={ref}
-                  maxLength={40}
+                  maxLength={9}
                   returnKeyType="next"
                   onSubmitEditing={() => form.setFocus('dateOfBirth')}
                 />
