@@ -6,7 +6,7 @@ export const formatRNM = (value: string | undefined) => {
             value = value.replace(/^[0-9]+$/g, '')
         else
             value = value[0] + onlyNumbers(value.substring(1, value.length)).replace(/(\d)(\d{1})$/, "$1-$2")
-        return value
+        return value.toUpperCase()
     }
     else return ''
 }
