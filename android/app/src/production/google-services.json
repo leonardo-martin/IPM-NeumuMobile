@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "538144874193",
+    "project_id": "teleneumu",
+    "storage_bucket": "teleneumu.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:538144874193:android:81548f790fc1298491eff0",
+        "android_client_info": {
+          "package_name": "com.teleneumu.TeleNeuMu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "538144874193-bpjolbq9dg844diet4071cehfqetp4k3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmhK-QocH-YVOHp8bKH9c8azPLU5ko4oE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "538144874193-bpjolbq9dg844diet4071cehfqetp4k3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

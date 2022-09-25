@@ -13,8 +13,11 @@
 		1A28E57CF454A8B1216A6408 /* libPods-TeleNeuMu-TeleNeuMuTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F7D9AE09F1947997BA3FCD /* libPods-TeleNeuMu-TeleNeuMuTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A223D755A5F8CB7CE768B7F7 /* libPods-TeleNeuMu.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 402B98A2B870420A6B15FF11 /* libPods-TeleNeuMu.a */; };
+		C1915FD6FB2A1DB800041843 /* libPods-OneSignalNotificationServiceExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46B2CFBA9B924BCF4BB873C2 /* libPods-OneSignalNotificationServiceExtension.a */; };
 		C221996628BA63C600182435 /* teleneumu.realm in Resources */ = {isa = PBXBuildFile; fileRef = C221996528BA63C200182435 /* teleneumu.realm */; };
 		C279C93127F8AB4A00A6A74A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = C279C93027F8AB4A00A6A74A /* AppDelegate.mm */; };
+		C29ECC6928E0909C000306A0 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29ECC6828E0909C000306A0 /* NotificationService.swift */; };
+		C29ECC6D28E0909C000306A0 /* OneSignalNotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C29ECC6628E0909C000306A0 /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,7 +28,28 @@
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = TeleNeuMu;
 		};
+		C29ECC6B28E0909C000306A0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C29ECC6528E0909C000306A0;
+			remoteInfo = OneSignalNotificationServiceExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C29ECC5028E08AD2000306A0 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				C29ECC6D28E0909C000306A0 /* OneSignalNotificationServiceExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		00E356EE1AD99517003FC87E /* TeleNeuMuTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TeleNeuMuTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -36,14 +60,20 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = TeleNeuMu/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = TeleNeuMu/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = TeleNeuMu/main.m; sourceTree = "<group>"; };
+		25B166137D855BA53E203BF7 /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		344F284A52CFCF2669D9DC58 /* Pods-TeleNeuMu.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu.debug.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu/Pods-TeleNeuMu.debug.xcconfig"; sourceTree = "<group>"; };
+		35E514B21BCFE7601299CD8E /* libPods-TeleNeuMuNotificationServiceExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TeleNeuMuNotificationServiceExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		402B98A2B870420A6B15FF11 /* libPods-TeleNeuMu.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TeleNeuMu.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		40B00F2D5FF000867BE22203 /* Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig"; sourceTree = "<group>"; };
 		42F4D1FAD768E07FE9662BC6 /* Pods-TeleNeuMu.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu.staging.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu/Pods-TeleNeuMu.staging.xcconfig"; sourceTree = "<group>"; };
+		46B2CFBA9B924BCF4BB873C2 /* libPods-OneSignalNotificationServiceExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OneSignalNotificationServiceExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		57D976497F6244FF0BA14113 /* Pods-TeleNeuMuNotificationServiceExtension.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMuNotificationServiceExtension.staging.xcconfig"; path = "Target Support Files/Pods-TeleNeuMuNotificationServiceExtension/Pods-TeleNeuMuNotificationServiceExtension.staging.xcconfig"; sourceTree = "<group>"; };
+		6907F985B4BA2425620D7C45 /* Pods-TeleNeuMuNotificationServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMuNotificationServiceExtension.release.xcconfig"; path = "Target Support Files/Pods-TeleNeuMuNotificationServiceExtension/Pods-TeleNeuMuNotificationServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
 		806B9E98165071A3AC5694CE /* Pods-TeleNeuMu-TeleNeuMuTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu-TeleNeuMuTests.debug.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TeleNeuMu/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		84F7D9AE09F1947997BA3FCD /* libPods-TeleNeuMu-TeleNeuMuTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TeleNeuMu-TeleNeuMuTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AD84730D88F7C64E2DF20C7 /* Pods-TeleNeuMu.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu.release.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu/Pods-TeleNeuMu.release.xcconfig"; sourceTree = "<group>"; };
+		9B14B1586FE2B7BF4F27E4B8 /* Pods-OneSignalNotificationServiceExtension.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.staging.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.staging.xcconfig"; sourceTree = "<group>"; };
 		C221996528BA63C200182435 /* teleneumu.realm */ = {isa = PBXFileReference; lastKnownFileType = file; name = teleneumu.realm; path = ../db/teleneumu.realm; sourceTree = "<group>"; };
 		C2225CD026E9716800F6911B /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		C2225CD126E9716800F6911B /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Octicons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
@@ -61,10 +91,18 @@
 		C2225CDD26E9716900F6911B /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		C2225CDE26E9716900F6911B /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Solid.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		C2225CDF26E9716900F6911B /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Regular.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
+		C23C0AA128E0C730005ED0B4 /* OneSignalNotificationServiceExtension-debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "OneSignalNotificationServiceExtension-debug.entitlements"; sourceTree = "<group>"; };
+		C25E004528E0C40E000E7E2B /* TeleNeuMu-Release.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = "TeleNeuMu-Release.entitlements"; path = "TeleNeuMu/TeleNeuMu-Release.entitlements"; sourceTree = "<group>"; };
+		C25E004628E0C40E000E7E2B /* TeleNeuMu-debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = "TeleNeuMu-debug.entitlements"; path = "TeleNeuMu/TeleNeuMu-debug.entitlements"; sourceTree = "<group>"; };
+		C25E004828E0C69F000E7E2B /* OneSignalNotificationServiceExtension-Release.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = "OneSignalNotificationServiceExtension-Release.entitlements"; sourceTree = "<group>"; };
 		C279C93027F8AB4A00A6A74A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = TeleNeuMu/AppDelegate.mm; sourceTree = "<group>"; };
-		C2897561283A7D22007CD05F /* TeleNeuMu.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = TeleNeuMu.entitlements; path = TeleNeuMu/TeleNeuMu.entitlements; sourceTree = "<group>"; };
 		C29BA52E28DA46D600F5FC2F /* hermes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = hermes.xcframework; path = "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework"; sourceTree = "<group>"; };
+		C29ECC6628E0909C000306A0 /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		C29ECC6828E0909C000306A0 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		C29ECC6A28E0909C000306A0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2C4FC46288FF5730077557F /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		CAC0CC9DB25D0D83DA9F8046 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.release.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
+		CB741E1FE6C636EA344F98CB /* Pods-TeleNeuMuNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMuNotificationServiceExtension.debug.xcconfig"; path = "Target Support Files/Pods-TeleNeuMuNotificationServiceExtension/Pods-TeleNeuMuNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		DAAF0477D732A9F62D09D2DC /* Pods-TeleNeuMu-TeleNeuMuTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TeleNeuMu-TeleNeuMuTests.staging.xcconfig"; path = "Target Support Files/Pods-TeleNeuMu-TeleNeuMuTests/Pods-TeleNeuMu-TeleNeuMuTests.staging.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -83,6 +121,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				A223D755A5F8CB7CE768B7F7 /* libPods-TeleNeuMu.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C29ECC6328E0909C000306A0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1915FD6FB2A1DB800041843 /* libPods-OneSignalNotificationServiceExtension.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,8 +155,9 @@
 		13B07FAE1A68108700A75B9A /* TeleNeuMu */ = {
 			isa = PBXGroup;
 			children = (
+				C25E004628E0C40E000E7E2B /* TeleNeuMu-debug.entitlements */,
+				C25E004528E0C40E000E7E2B /* TeleNeuMu-Release.entitlements */,
 				C221996528BA63C200182435 /* teleneumu.realm */,
-				C2897561283A7D22007CD05F /* TeleNeuMu.entitlements */,
 				C2225CCF26E970C100F6911B /* Fonts */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				C279C93027F8AB4A00A6A74A /* AppDelegate.mm */,
@@ -131,6 +178,12 @@
 				806B9E98165071A3AC5694CE /* Pods-TeleNeuMu-TeleNeuMuTests.debug.xcconfig */,
 				40B00F2D5FF000867BE22203 /* Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig */,
 				DAAF0477D732A9F62D09D2DC /* Pods-TeleNeuMu-TeleNeuMuTests.staging.xcconfig */,
+				25B166137D855BA53E203BF7 /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */,
+				CAC0CC9DB25D0D83DA9F8046 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */,
+				9B14B1586FE2B7BF4F27E4B8 /* Pods-OneSignalNotificationServiceExtension.staging.xcconfig */,
+				CB741E1FE6C636EA344F98CB /* Pods-TeleNeuMuNotificationServiceExtension.debug.xcconfig */,
+				6907F985B4BA2425620D7C45 /* Pods-TeleNeuMuNotificationServiceExtension.release.xcconfig */,
+				57D976497F6244FF0BA14113 /* Pods-TeleNeuMuNotificationServiceExtension.staging.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -142,6 +195,8 @@
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				402B98A2B870420A6B15FF11 /* libPods-TeleNeuMu.a */,
 				84F7D9AE09F1947997BA3FCD /* libPods-TeleNeuMu-TeleNeuMuTests.a */,
+				46B2CFBA9B924BCF4BB873C2 /* libPods-OneSignalNotificationServiceExtension.a */,
+				35E514B21BCFE7601299CD8E /* libPods-TeleNeuMuNotificationServiceExtension.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -167,6 +222,7 @@
 				13B07FAE1A68108700A75B9A /* TeleNeuMu */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* TeleNeuMuTests */,
+				C29ECC6728E0909C000306A0 /* OneSignalNotificationServiceExtension */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				1C417540B75DB80708655B0A /* Pods */,
@@ -182,6 +238,7 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* TeleNeuMu.app */,
 				00E356EE1AD99517003FC87E /* TeleNeuMuTests.xctest */,
+				C29ECC6628E0909C000306A0 /* OneSignalNotificationServiceExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -207,6 +264,17 @@
 				C2225CDC26E9716900F6911B /* Zocial.ttf */,
 			);
 			path = Fonts;
+			sourceTree = "<group>";
+		};
+		C29ECC6728E0909C000306A0 /* OneSignalNotificationServiceExtension */ = {
+			isa = PBXGroup;
+			children = (
+				C23C0AA128E0C730005ED0B4 /* OneSignalNotificationServiceExtension-debug.entitlements */,
+				C25E004828E0C69F000E7E2B /* OneSignalNotificationServiceExtension-Release.entitlements */,
+				C29ECC6828E0909C000306A0 /* NotificationService.swift */,
+				C29ECC6A28E0909C000306A0 /* Info.plist */,
+			);
+			path = OneSignalNotificationServiceExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -245,15 +313,35 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				80D67774AFBDAE19821DC1E8 /* [CP] Embed Pods Frameworks */,
 				91D513AFB31D8F528B0A5919 /* [CP] Copy Pods Resources */,
+				C29ECC5028E08AD2000306A0 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				C29ECC6C28E0909C000306A0 /* PBXTargetDependency */,
 			);
 			name = TeleNeuMu;
 			productName = TeleNeuMu;
 			productReference = 13B07F961A680F5B00A75B9A /* TeleNeuMu.app */;
 			productType = "com.apple.product-type.application";
+		};
+		C29ECC6528E0909C000306A0 /* OneSignalNotificationServiceExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C29ECC6E28E0909C000306A0 /* Build configuration list for PBXNativeTarget "OneSignalNotificationServiceExtension" */;
+			buildPhases = (
+				2D5162124ADD1A536F0DE3BB /* [CP] Check Pods Manifest.lock */,
+				C29ECC6228E0909C000306A0 /* Sources */,
+				C29ECC6328E0909C000306A0 /* Frameworks */,
+				C29ECC6428E0909C000306A0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OneSignalNotificationServiceExtension;
+			productName = OneSignalNotificationServiceExtension;
+			productReference = C29ECC6628E0909C000306A0 /* OneSignalNotificationServiceExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -262,6 +350,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = NO;
+				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1250;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
@@ -271,6 +360,9 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1120;
+					};
+					C29ECC6528E0909C000306A0 = {
+						CreatedOnToolsVersion = 14.0;
 					};
 				};
 			};
@@ -289,6 +381,7 @@
 			targets = (
 				13B07F861A680F5B00A75B9A /* TeleNeuMu */,
 				00E356ED1AD99517003FC87E /* TeleNeuMuTests */,
+				C29ECC6528E0909C000306A0 /* OneSignalNotificationServiceExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -311,6 +404,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C29ECC6428E0909C000306A0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -327,6 +427,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\n. \"$SRCROOT/../node_modules/react-native/scripts/react-native-xcode.sh\"\n";
+		};
+		2D5162124ADD1A536F0DE3BB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-OneSignalNotificationServiceExtension-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 		3B3981B34B13D742EAA9685C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -479,6 +601,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C29ECC6228E0909C000306A0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C29ECC6928E0909C000306A0 /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -486,6 +616,11 @@
 			isa = PBXTargetDependency;
 			target = 13B07F861A680F5B00A75B9A /* TeleNeuMu */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
+		};
+		C29ECC6C28E0909C000306A0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C29ECC6528E0909C000306A0 /* OneSignalNotificationServiceExtension */;
+			targetProxy = C29ECC6B28E0909C000306A0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -557,10 +692,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 344F284A52CFCF2669D9DC58 /* Pods-TeleNeuMu.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGNING_ALLOWED = NO;
-				CODE_SIGN_ENTITLEMENTS = TeleNeuMu/TeleNeuMu.entitlements;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_ENTITLEMENTS = "TeleNeuMu/TeleNeuMu-debug.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -602,10 +738,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8AD84730D88F7C64E2DF20C7 /* Pods-TeleNeuMu.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGNING_ALLOWED = NO;
-				CODE_SIGN_ENTITLEMENTS = TeleNeuMu/TeleNeuMu.entitlements;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_ENTITLEMENTS = "TeleNeuMu/TeleNeuMu-Release.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -779,6 +916,138 @@
 			};
 			name = Release;
 		};
+		C29ECC6F28E0909C000306A0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 25B166137D855BA53E203BF7 /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = "OneSignalNotificationServiceExtension/OneSignalNotificationServiceExtension-debug.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 246JC9J4RZ;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = OneSignalNotificationServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				OTHER_CPLUSPLUSFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = net.atos.teleneumu.OneSignalNotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C29ECC7028E0909C000306A0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CAC0CC9DB25D0D83DA9F8046 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = "OneSignalNotificationServiceExtension/OneSignalNotificationServiceExtension-Release.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 243B7XXD8U;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = OneSignalNotificationServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.teleneumu.TeleNeuMu.OneSignalNotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		C29ECC7128E0909C000306A0 /* Staging */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9B14B1586FE2B7BF4F27E4B8 /* Pods-OneSignalNotificationServiceExtension.staging.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = "OneSignalNotificationServiceExtension/OneSignalNotificationServiceExtension-Release.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 243B7XXD8U;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = OneSignalNotificationServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.teleneumu.TeleNeuMu.OneSignalNotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Staging;
+		};
 		C2F6A1A528368AD30086E970 /* Staging */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C2C4FC46288FF5730077557F /* Config.xcconfig */;
@@ -846,10 +1115,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 42F4D1FAD768E07FE9662BC6 /* Pods-TeleNeuMu.staging.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGNING_ALLOWED = NO;
-				CODE_SIGN_ENTITLEMENTS = TeleNeuMu/TeleNeuMu.entitlements;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_ENTITLEMENTS = "TeleNeuMu/TeleNeuMu-Release.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -944,6 +1214,16 @@
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
 				C2F6A1A528368AD30086E970 /* Staging */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C29ECC6E28E0909C000306A0 /* Build configuration list for PBXNativeTarget "OneSignalNotificationServiceExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C29ECC6F28E0909C000306A0 /* Debug */,
+				C29ECC7028E0909C000306A0 /* Release */,
+				C29ECC7128E0909C000306A0 /* Staging */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

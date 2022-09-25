@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "start": "react-native start --reset-cache",
-    "android": "cd android && ./gradlew clean && cd .. && react-native run-android --variant=developmentDebug",
+    "android": "react-native run-android --variant=developmentDebug",
     "android:staging": "cd android && ./gradlew clean && cd .. && react-native run-android --variant=developmentRelease",
     "android:prod": "cd android && ./gradlew clean && cd .. && react-native run-android --variant=productionRelease",
     "build-android-staging": "cd android && ./gradlew clean bundleDevelopmentRelease assembleDevelopmentRelease && cd ..",
@@ -73,6 +73,7 @@
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-keychain": "^8.1.1",
     "react-native-modalize": "^2.1.1",
+    "react-native-onesignal": "^4.4.1",
     "react-native-pager-view": "^5.4.9",
     "react-native-portalize": "^1.0.7",
     "react-native-reanimated": "^2.10.0",
