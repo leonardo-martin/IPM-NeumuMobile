@@ -1,5 +1,4 @@
 import HeaderAuth from '@components/header/auth'
-import RNWebView from '@components/webView'
 import AccountVerificationScreen from '@pages/account/verification'
 import WaitingApprovalsScreen from '@pages/approvals-waiting'
 import ChangePasswordChoice from '@pages/changePassword'
@@ -58,11 +57,6 @@ const AuthRoutes: FC = (): ReactElement => {
           options={{
             ...TransitionPresets.ModalSlideFromBottomIOS
           }} />
-        <Screen name="WebViewScreen" component={RNWebView} options={{
-          gestureDirection: "horizontal",
-          gestureEnabled: true,
-        }} />
-
         <Screen name="WaitingApprovals" component={WaitingApprovalsScreen}
           options={{
             ...TransitionPresets.ScaleFromCenterAndroid

@@ -7,7 +7,6 @@ import { useDatepickerService } from '@hooks/useDatepickerService'
 import { useModal } from '@hooks/useModal'
 import { AscendingOrder } from '@models/Common'
 import { ExamDto } from '@models/Exam'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { deleteExam, getPatientExamList } from '@services/exam.service'
 import { CalendarRange, Icon, IconProps, List, ListItem, Modal, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
@@ -20,7 +19,7 @@ import Animated, { Layout, LightSpeedInLeft, LightSpeedOutRight } from 'react-na
 import Toast from 'react-native-toast-message'
 import { myExamsStyle } from './style'
 
-const PatientDocumentsScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
+const PatientDocumentsScreen: FC = (): ReactElement => {
 
     const theme = useTheme()
     const styles = useStyleSheet(myExamsStyle)

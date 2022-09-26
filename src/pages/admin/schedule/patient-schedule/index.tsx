@@ -10,8 +10,7 @@ import { CreateAppointment } from '@models/Appointment'
 import { MedicalDoctorDisplay } from '@models/Medical'
 import { VisitAddressDTO } from '@models/VisitAddress'
 import { useRoute } from '@react-navigation/core'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { AppInfoService } from '@services/app-info.service'
 import { createAppointment, getAppointmentAvailabilityListSummaryByDoctorId, getAppointmentAvailabilityWithBookedAppointments } from '@services/appointment.service'
 import { getVisitAddressListByDoctorId } from '@services/visit-address.service'
@@ -34,11 +33,10 @@ interface Data {
     layout: LayoutRectangle
 }
 
-const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
-    navigation
-}): ReactElement => {
+const PresentialScheduleScreen: FC = (): ReactElement => {
 
     const { localeDateService } = useDatepickerService()
+    const navigation = useNavigation<any>()
     const { ids } = useAppSelector((state: RootState) => state.user)
     const times = getTimesByInterval(15, 405, 18)
     const theme = useTheme()

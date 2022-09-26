@@ -5,8 +5,7 @@ import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useModal } from '@hooks/useModal'
 import { EUserRole } from '@models/UserRole'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { getUserDetails, getUserRelatedIds } from '@services/user.service'
 import { setProfile } from '@store/ducks/profile'
 import { setUser } from '@store/ducks/user'
@@ -19,10 +18,9 @@ import { Modalize } from 'react-native-modalize'
 import { Host, Portal } from 'react-native-portalize'
 import { dashboardStyle } from './style'
 
-const DashboardScreen: FC<DrawerContentComponentProps> = ({
-  navigation
-}): ReactElement => {
+const DashboardScreen: FC = (): ReactElement => {
   const dispatch = useAppDispatch()
+  const navigation = useNavigation<any>()
 
   const loadUser = async () => {
     const res = await getUserDetails()

@@ -3,8 +3,7 @@ import HeaderWithAddIcon from '@components/header/admin/generic-with-add-icon'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { ChatListEntryDto } from '@models/ChatMessage'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { getChatList } from '@services/chat-message.service'
 import { setChatList } from '@store/ducks/chat'
 import { Divider, Icon, IconProps, Input, List, Spinner, useStyleSheet } from '@ui-kitten/components'
@@ -15,9 +14,8 @@ import { RootState } from 'store'
 import MessageItem from './extra/message-item'
 import { messagesStyle } from './style'
 
-const MessagesScreen: FC<DrawerContentComponentProps> = ({
-    navigation
-}): ReactElement => {
+const MessagesScreen: FC = (): ReactElement => {
+    const navigation = useNavigation<any>()
     const styles = useStyleSheet(messagesStyle)
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [messagesList, setMessagesList] = useState<ChatListEntryDto[]>([])

@@ -1,6 +1,5 @@
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { MedicalDoctorDisplay } from '@models/Medical'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
 import { AppInfoService } from '@services/app-info.service'
 import { patientGetAuthorizationRequests, patientGrantAuthorization } from '@services/medical-data-auth.service'
@@ -12,7 +11,7 @@ import Toast from 'react-native-toast-message'
 import { PhoneCallIcon, ShareIcon } from './extra/icons'
 import { doctorProfileStyle } from './style'
 
-const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
+const DoctorProfileScreen: FC = (): ReactElement => {
 
   const styles = useStyleSheet(doctorProfileStyle)
   const route = useRoute()

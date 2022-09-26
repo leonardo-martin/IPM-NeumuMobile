@@ -1,17 +1,16 @@
-import React, { FC, ReactElement } from 'react'
+import HouseIcon from '@assets/svg/house.svg'
+import PhoneIcon from '@assets/svg/phone.svg'
+import { SafeAreaLayout } from '@components/safeAreaLayout'
+import { useNavigation } from '@react-navigation/native'
 import { Card, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
+import React, { FC, ReactElement } from 'react'
 import { ScrollView, View } from 'react-native'
 import { scheduleStyle } from './style'
-import PhoneIcon from '@assets/svg/phone.svg'
-import HouseIcon from '@assets/svg/house.svg'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { SafeAreaLayout } from '@components/safeAreaLayout'
 
-const ScheduleScreen: FC<DrawerContentComponentProps> = ({
-  navigation
-}): ReactElement => {
+const ScheduleScreen: FC = (): ReactElement => {
 
   const styles = useStyleSheet(scheduleStyle)
+  const navigation = useNavigation<any>()
   const theme = useTheme()
 
   const goTo = (type: number) => navigation.jumpTo('FilterSchedule', { type })

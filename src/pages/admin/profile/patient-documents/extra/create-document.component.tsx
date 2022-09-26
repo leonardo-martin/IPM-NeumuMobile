@@ -8,7 +8,6 @@ import { useDatepickerService } from '@hooks/useDatepickerService'
 import { DocumentDto, FileDto } from '@models/Document'
 import { ExamDto } from '@models/Exam'
 import { EUserRole } from '@models/UserRole'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { doctorGetDocumentData, uploadUserFile, userDelete, userGetDocument } from '@services/document.service'
 import { updateExam, uploadExam } from '@services/exam.service'
@@ -32,7 +31,7 @@ const CalendarIcon = (props: IconProps) => (
     <Icon {...props} name='calendar-outline' pack='eva' />
 )
 
-const CreatePatientDocumentScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
+const CreatePatientDocumentScreen: FC = (): ReactElement => {
 
     const { ids } = useAppSelector((state: RootState) => state.user)
     const { sessionUser } = useAppSelector((state: RootState) => state.auth)

@@ -6,8 +6,7 @@ import { _DATE_FROM_ISO_8601 } from '@constants/date'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { MedicalDoctorDisplay, MedicalSpecialtyDto } from '@models/Medical'
 import { City, UF } from '@models/Places'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { useFocusEffect, useRoute } from '@react-navigation/native'
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { getCities, getStates } from '@services/common.service'
 import { getDisplayMedicalDoctorByFilters } from '@services/medical-doctor.service'
 import { getAll } from '@services/medical-specialty.service'
@@ -30,10 +29,9 @@ type FilterProps = {
   type: 0 | 1
 }
 
-const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
-  navigation
-}): ReactElement => {
+const FilterScheduleScreen: FC = (): ReactElement => {
 
+  const navigation = useNavigation<any>()
   const [range, setRange] = useState<CalendarRange<Date>>({})
   const rangeDatepickerRef = useRef<RangeDatepicker>(null)
   const { localeDateService } = useDatepickerService()

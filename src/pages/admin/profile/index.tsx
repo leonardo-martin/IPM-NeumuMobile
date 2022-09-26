@@ -4,8 +4,7 @@ import LoadingIndicatorComponent from '@components/loadingIndicator'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { EUserRole } from '@models/UserRole'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { deleteUserSelf, getProfilePicture } from '@services/user.service'
 import { logout } from '@store/ducks/auth'
 import { RootState } from '@store/index'
@@ -16,11 +15,10 @@ import Toast from 'react-native-toast-message'
 import { commonData, operatorBaseData, patientBaseData, specialistBaseData } from './data'
 import { profileStyle } from './style'
 
-const ProfileScreen: FC<DrawerContentComponentProps> = ({
-  navigation
-}): ReactElement => {
+const ProfileScreen: FC = (): ReactElement => {
 
   const dispatch = useAppDispatch()
+  const navigation = useNavigation<any>()
   const [accountIsBeingDeleted, setAccountIsBeingDeleted] = useState(false)
   const { sessionUser } = useAppSelector((state: RootState) => state.auth)
   const { ids } = useAppSelector((state: RootState) => state.user)
