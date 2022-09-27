@@ -17,4 +17,9 @@ export class AppInfoService {
   static getAppName = (): string => {
     return DeviceInfo.getApplicationName()
   }
+
+  static isEmulator = async (): Promise<boolean> => {
+    return await DeviceInfo.isEmulator()
+  }
+
 }

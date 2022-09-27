@@ -1,4 +1,5 @@
 import { toastConfig } from '@configs/toast'
+import { NOTIFICATION } from '@constants/common'
 import RealmContext from '@contexts/realm'
 import { ThemeProvider } from '@contexts/theme'
 import { NavigationContainer } from '@react-navigation/native'
@@ -7,6 +8,7 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import React, { FC, ReactElement } from 'react'
 import { StatusBar } from 'react-native'
 import codePush, { CodePushOptions } from "react-native-code-push"
+import OneSignal from 'react-native-onesignal'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
 import { Provider as ReduxProvider } from 'react-redux'
@@ -16,8 +18,8 @@ import { linking } from './deep-linking'
 import { FontAwesomeIconsPack } from './font-awesome-icon'
 import { FontistoIconsPack } from './fontisto-icon'
 import { IoniconsIconsPack } from './ionicons-icon'
-import OneSignal from 'react-native-onesignal';
-import { NOTIFICATION } from 'constants/common'
+
+OneSignal.setAppId(NOTIFICATION.ONESIGNAL_APP_ID)
 
 const codePushOptions: CodePushOptions = {
   checkFrequency: __DEV__ ? codePush.CheckFrequency.MANUAL : codePush.CheckFrequency.ON_APP_START,
@@ -35,28 +37,6 @@ const codePushOptions: CodePushOptions = {
     maxRetryAttempts: 3,
   }
 }
-
-OneSignal.setAppId(NOTIFICATION.ONESIGNAL_APP_ID);
-
-// promptForPushNotificationsWithUserResponse will show the native iOS or Android notification permission prompt.
-// We recommend removing the following code and instead using an In-App Message to prompt for notification permission (See step 8)
-OneSignal.promptForPushNotificationsWithUserResponse();
-
-//Method for handling notifications received while app in foreground
-OneSignal.setNotificationWillShowInForegroundHandler(notificationReceivedEvent => {
-  console.log("OneSignal: notification will show in foreground:", notificationReceivedEvent);
-  let notification = notificationReceivedEvent.getNotification();
-  console.log("notification: ", notification);
-  const data = notification.additionalData
-  console.log("additionalData: ", data);
-  // Complete with null means don't show a notification.
-  notificationReceivedEvent.complete(notification);
-});
-
-//Method for handling notifications opened
-OneSignal.setNotificationOpenedHandler(notification => {
-  console.log("OneSignal: notification opened:", notification);
-});
 
 const App: FC = (): ReactElement => {
 

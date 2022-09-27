@@ -1,10 +1,13 @@
 import { SafeAreaLayout } from '@components/safeAreaLayout';
 import { useAppSelector } from '@hooks/redux';
 import { saveFileToDevice, userGetDocument, userGetDocumentFile } from '@services/document.service';
+import { LogService } from '@services/log.service';
 import { Button } from '@ui-kitten/components';
 import { getDocumentType, getEntityType } from '@utils/entity';
 import React, { FC, ReactElement } from 'react';
 import { RootState } from 'store';
+
+const logService: LogService = new LogService()
 
 const AtosDevTestScreen: FC = (): ReactElement => {
 
@@ -22,7 +25,7 @@ const AtosDevTestScreen: FC = (): ReactElement => {
             const response = await userGetDocumentFile(responseT.data[0].id)
 
             const ret = await saveFileToDevice(response.data.data, responseT.data[0].documentFormat)
-            console.log("aqui", JSON.stringify(ret, null, 2))
+            logService.loga(ret)
         }
 
     }
