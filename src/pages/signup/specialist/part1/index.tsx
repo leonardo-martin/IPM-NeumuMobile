@@ -161,6 +161,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
               underlineColorAndroid="transparent"
               autoCapitalize="words"
               textContentType="name"
+              placeholder='Digite seu Nome Completo'
             />
           )}
           name='name'
@@ -232,6 +233,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
                   ref={ref}
                   returnKeyType="next"
                   onSubmitEditing={() => form.setFocus('dateOfBirth')}
+                  placeholder='Digite seu CPF (somente números)'
                 />
               )}
               name='cpf'
@@ -264,7 +266,6 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
                 <Input
                   size='small'
                   label="RNM *"
-                  placeholder='A123456-7'
                   style={styles.input}
                   keyboardType='default'
                   testID={name}
@@ -277,6 +278,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
                   maxLength={9}
                   returnKeyType="next"
                   onSubmitEditing={() => form.setFocus('dateOfBirth')}
+                  placeholder='Digite seu RNM (letras e números)'
                 />
               )}
               name='rne'
@@ -314,6 +316,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
               boundingMonth={false}
               onPress={() => Keyboard.dismiss()}
               caption='* Necessário ser maior de 18 anos'
+              placeholder='DD/MM/AAAA'
             />
           )}
           name='dateOfBirth'
@@ -385,6 +388,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
               returnKeyType="next"
               onSubmitEditing={() => form.setFocus('emailConfirmation')}
               textContentType="emailAddress"
+              placeholder='Digite seu e-mail'
               caption={(evaProps) => (
                 <>
                   <View style={{ flexDirection: 'row' }}>
@@ -438,6 +442,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
               returnKeyType="next"
               onSubmitEditing={() => form.setFocus('password')}
               textContentType="emailAddress"
+              placeholder='Digite seu e-mail novamente'
             />
           )}
           name='emailConfirmation'
@@ -478,6 +483,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
               underlineColorAndroid="transparent"
               autoCapitalize="none"
               textContentType="password"
+              placeholder="Digite a senha conforme regras abaixo"
               caption={(evaProps) => (
                 <>
                   <Text {...evaProps}>* 8 caracteres no mínimo</Text>
@@ -530,6 +536,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
               underlineColorAndroid="transparent"
               autoCapitalize="none"
               textContentType="newPassword"
+              placeholder="Digite NOVAMENTE a Senha para confirmação"
             />
           )}
           name='confirmPassword'
@@ -555,7 +562,6 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
               label="Número de Registro *"
               style={styles.input}
               keyboardType='number-pad'
-              placeholder=''
               testID={name}
               onBlur={onBlur}
               onChangeText={onChange}
@@ -564,6 +570,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
               maxLength={6}
               underlineColorAndroid="transparent"
               onSubmitEditing={() => form.setFocus('specialty.description')}
+              placeholder="Digite o número do seu REGISTRO (somente números)"
             />
           )}
           name='crm'
@@ -583,7 +590,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
               size='small'
               label="Especialidade *"
               style={styles.input}
-              placeholder='Selecione'
+              placeholder='Clique AQUI para selecionar uma Especialidade'
               testID={name}
               onBlur={onBlur}
               ref={ref}
@@ -630,6 +637,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
                   returnKeyType="next"
                   underlineColorAndroid="transparent"
                   autoCapitalize="words"
+                  placeholder="Digite AQUI uma Especialidade, caso tenha selecionado OUTRO(A)"
                   caption={(evaProps) => (
                     <>
                       <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>

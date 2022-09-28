@@ -167,6 +167,7 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                                     returnKeyType="next"
                                     underlineColorAndroid="transparent"
                                     onSubmitEditing={() => form.setFocus('data.description')}
+                                    placeholder='Digite o Título'
                                 />
                             )}
                             name='data.title'
@@ -202,6 +203,7 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                                     returnKeyType="done"
                                     underlineColorAndroid="transparent"
                                     blurOnSubmit={true}
+                                    placeholder='Digite AQUI suas observações'
                                 />
                             )}
                             name='data.description'

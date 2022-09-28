@@ -293,13 +293,13 @@ const FilterScheduleScreen: FC = (): ReactElement => {
               style={styles.input}
               data={specialty}
               label="Especialidade *"
-              placeholder=''
               onSelect={onSelectSpecialty}
               onChangeText={onChangeTextSpecialty}
               renderOption={renderOptionSpecialty}
               accessoryRight={(props) => renderRightIcon(props, value, 'specialty')}
               value={value}
               autoCapitalize='sentences'
+              placeholder='Clique AQUI para selecionar uma Especialidade'
             />
           )}
           name='specialty.description'
@@ -330,6 +330,7 @@ const FilterScheduleScreen: FC = (): ReactElement => {
               underlineColorAndroid="transparent"
               autoCapitalize="words"
               textContentType="name"
+              placeholder='Digite o Nome do Especialista'
             />
           )}
           name='name'
@@ -358,6 +359,7 @@ const FilterScheduleScreen: FC = (): ReactElement => {
                   returnKeyType="next"
                   onSubmitEditing={() => onSubmitEditing('city')}
                   style={styles.input}
+                  placeholder='Digite seu Estado'
                 />
               )}
               name='state'
@@ -384,6 +386,7 @@ const FilterScheduleScreen: FC = (): ReactElement => {
                   onSubmitEditing={() => onSubmitEditing('specialty')}
                   style={styles.input}
                   disabled={isDisabledCity}
+                  placeholder='Digite sua Cidade'
                 />
               )}
               name='city'
@@ -407,6 +410,7 @@ const FilterScheduleScreen: FC = (): ReactElement => {
           backdropStyle={styles.backdropDatepicker}
           boundingMonth={false}
           onPress={() => Keyboard.dismiss()}
+          placeholder='DD/MM/AAAA'
           caption={(props) => (
             range && (range.startDate || range.endDate) ? (
               <View style={styles.caption}>

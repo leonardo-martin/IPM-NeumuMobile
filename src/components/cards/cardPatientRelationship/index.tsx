@@ -4,21 +4,22 @@ import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { PatientSignUpProps } from '@models/SignUpProps'
 import { SpecialtiesDTO } from '@models/Specialties'
+import { ETypeOfDocument } from '@models/User'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { useFocusEffect } from '@react-navigation/native'
 import { getSpecialties } from '@services/specialties.service'
 import { setSpecialties } from '@store/ducks/common'
 import { Datepicker, IndexPath, Input, PopoverPlacements, Select, SelectItem } from '@ui-kitten/components'
 import { sortByStringField } from '@utils/common'
-import { formatCpf, formatPhone, formatRNM, isEmailValid, onlyNumbers } from '@utils/mask'
+import { typeOfPersonalDocuments } from '@utils/constants'
+import { formatCpf, formatRNM, isEmailValid, onlyNumbers } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
-import { ETypeOfDocument } from 'models/User'
+import { ERelationship } from 'models/PatientProfileCreator'
 import React, { Dispatch, FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
 import { Keyboard, StyleSheet } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
 import { RootState } from 'store'
-import { typeOfPersonalDocuments } from 'utils/constants'
 import { kinList } from './data'
 import { CalendarIcon } from './icons'
 
@@ -158,6 +159,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         underlineColorAndroid="transparent"
                         autoCapitalize="words"
                         textContentType="name"
+                        placeholder={`Digite o Nome do seu ${ERelationship[relationship]}`}
                     />
                 )}
                 name='creator.data.name'
@@ -233,6 +235,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                                 ref={ref}
                                 returnKeyType="next"
                                 onSubmitEditing={() => form.setFocus('creator.data.dateOfBirth')}
+                                placeholder={`Digite o CPF do seu ${ERelationship[relationship]} (somente números)`}
                             />
                         )}
                         name='creator.data.cpf'
@@ -263,7 +266,6 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                             <Input
                                 size='small'
                                 label="RNM *"
-                                placeholder='A123456-7'
                                 style={styles?.input}
                                 keyboardType='default'
                                 testID={name}
@@ -276,6 +278,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                                 maxLength={9}
                                 returnKeyType="next"
                                 onSubmitEditing={() => form.setFocus('creator.data.dateOfBirth')}
+                                placeholder={`Digite o RNM do seu ${ERelationship[relationship]} (letras e números)`}
                             />
                         )}
                         name='creator.data.rne'
@@ -296,7 +299,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                     <Datepicker
                         size='small'
                         label='Data de Nascimento *'
-                        date={value ? value : dateForOver}
+                        date={value}
                         onSelect={onChange}
                         accessoryRight={CalendarIcon}
                         onBlur={onBlur}
@@ -311,6 +314,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         style={styles?.input}
                         onPress={() => Keyboard.dismiss()}
                         caption='* Necessário ser maior de 18 anos'
+                        placeholder='DD/MM/AAAA'
                     />
                 )}
                 name='creator.data.dateOfBirth'
@@ -349,6 +353,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         returnKeyType="next"
                         onSubmitEditing={() => form.setFocus('creator.data.emailConfirmation')}
                         textContentType="emailAddress"
+                        placeholder={`Digite o e-mail do seu ${ERelationship[relationship]}`}
                     />
                 )}
                 name='creator.data.email'
@@ -392,6 +397,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         returnKeyType="next"
                         onSubmitEditing={() => form.setFocus('creator.data.phone')}
                         textContentType="emailAddress"
+                        placeholder={`Digite o e-mail do seu ${ERelationship[relationship]} NOVAMENTE`}
                     />
                 )}
                 name='creator.data.emailConfirmation'
@@ -428,6 +434,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         onSubmitEditing={() => form.setFocus('creator.data.phone2')}
                         underlineColorAndroid="transparent"
                         textContentType="telephoneNumber"
+                        placeholder={`Digite o telefone do seu ${ERelationship[relationship]} (DDD+número)`}
                     />
                 )}
                 name='creator.data.phone'
@@ -459,6 +466,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         onSubmitEditing={() => form.setFocus('creator.data.company')}
                         underlineColorAndroid="transparent"
                         textContentType="telephoneNumber"
+                        placeholder={`Digite o telefone do seu ${ERelationship[relationship]} (DDD+número)`}
                     />
                 )}
                 name='creator.data.phone2'
@@ -475,7 +483,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 </View>
             )} */}
 
-            {relationship === 2 && (
+            {relationship === ERelationship.Familiar && (
                 <>
                     <Controller
                         control={form.control}
@@ -487,7 +495,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         }}
                         render={({ field: { name, ref, value, onChange } }) => (
                             <SelectComponent
-                                placeholder='Selecione'
+                                placeholder='Clique AQUI para selecionar opção de parentesco'
                                 size='small'
                                 testID={name}
                                 value={value}
@@ -509,7 +517,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                 </>
             )}
 
-            {relationship === 4 && (
+            {relationship === ERelationship['Profissional de Saúde'] && (
                 <>
                     <Controller
                         control={form.control}
@@ -529,7 +537,6 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                                 label="Número de Registro *"
                                 style={styles?.input}
                                 keyboardType='number-pad'
-                                placeholder=''
                                 testID={name}
                                 onBlur={onBlur}
                                 onChangeText={onChange}
@@ -538,6 +545,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                                 maxLength={6}
                                 underlineColorAndroid="transparent"
                                 onSubmitEditing={() => form.setFocus('creator.data.specialty.description')}
+                                placeholder={`Digite o número de REGISTRO do seu ${ERelationship[relationship]} (somente números)`}
                             />
                         )}
                         name='creator.data.specialty.crm'

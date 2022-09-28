@@ -195,6 +195,7 @@ const SignInScreen: FC = (): ReactElement => {
                     autoCapitalize="none"
                     textContentType="username"
                     editable={!isLoading}
+                    placeholder="Digite aqui seu Documento"
                   />
                 )}
                 name="username"
@@ -233,6 +234,7 @@ const SignInScreen: FC = (): ReactElement => {
                     autoCapitalize="none"
                     textContentType="password"
                     editable={!isLoading}
+                    placeholder="Digite sua Senha"
                   />
                 )}
                 name="password"

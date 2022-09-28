@@ -468,7 +468,6 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                                                         label="Número de Registro do Médico Responsável *"
                                                                         style={styles.input}
                                                                         keyboardType='number-pad'
-                                                                        placeholder=''
                                                                         testID={name}
                                                                         onBlur={onBlur}
                                                                         onChangeText={onChange}
@@ -476,6 +475,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                                                         ref={ref}
                                                                         maxLength={6}
                                                                         underlineColorAndroid="transparent"
+                                                                        placeholder="Digite o número de REGISTRO do Médico Responsável (somente números)"
                                                                     />
                                                                 )}
                                                                 name='pastExams.doctor.crm'

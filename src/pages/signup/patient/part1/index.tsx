@@ -155,6 +155,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               underlineColorAndroid="transparent"
               autoCapitalize="words"
               textContentType="name"
+              placeholder='Digite seu Nome Completo'
             />
           )}
           name='name'
@@ -189,6 +190,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               returnKeyType="next"
               onSubmitEditing={() => form.setFocus('typeOfDocument')}
               autoCapitalize="words"
+              placeholder='Digite o Nome completo de sua Mãe'
             />
           )}
           name='mothersName'
@@ -261,6 +263,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
                   ref={ref}
                   returnKeyType="next"
                   onSubmitEditing={() => form.setFocus('dateOfBirth')}
+                  placeholder='Digite seu CPF (somente números)'
                 />
               )}
               name='cpf'
@@ -293,7 +296,6 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
                 <Input
                   size='small'
                   label="RNM *"
-                  placeholder='A123456-7'
                   style={styles.input}
                   keyboardType='default'
                   testID={name}
@@ -306,6 +308,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
                   maxLength={9}
                   returnKeyType="next"
                   onSubmitEditing={() => form.setFocus('dateOfBirth')}
+                  placeholder='Digite seu RNM (letras e números)'
                 />
               )}
               name='rne'
@@ -343,6 +346,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               boundingMonth={false}
               onPress={() => Keyboard.dismiss()}
               caption='* Em caso de menor de idade, necessário um responsável'
+              placeholder='DD/MM/AAAA'
             />
           )}
           name='dateOfBirth'
@@ -414,6 +418,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               returnKeyType="next"
               onSubmitEditing={() => form.setFocus('emailConfirmation')}
               textContentType="emailAddress"
+              placeholder='Digite seu e-mail'
               caption={(evaProps) => (
                 <>
                   <View style={{ flexDirection: 'row' }}>
@@ -467,6 +472,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               returnKeyType="next"
               onSubmitEditing={() => form.setFocus('password')}
               textContentType="emailAddress"
+              placeholder='Digite seu e-mail novamente'
             />
           )}
           name='emailConfirmation'
@@ -507,6 +513,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               underlineColorAndroid="transparent"
               autoCapitalize="none"
               textContentType="password"
+              placeholder="Digite a senha conforme regras abaixo"
               caption={(evaProps) => (
                 <>
                   <Text {...evaProps}>* 8 caracteres no mínimo</Text>
@@ -559,6 +566,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               underlineColorAndroid="transparent"
               autoCapitalize="none"
               textContentType="newPassword"
+              placeholder="Digite NOVAMENTE a Senha para confirmação"
             />
           )}
           name='confirmPassword'
@@ -595,6 +603,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               underlineColorAndroid="transparent"
               textContentType="telephoneNumber"
               accessoryLeft={CountrySelectBox}
+              placeholder="Digite seu telefone (DDD+número)"
             />
           )}
           name='phone'
@@ -627,6 +636,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               underlineColorAndroid="transparent"
               textContentType="telephoneNumber"
               accessoryLeft={CountrySelectBox}
+              placeholder="Digite seu telefone (DDD+número)"
             />
           )}
           name='phone2'
@@ -661,6 +671,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               returnKeyType="send"
               onSubmitEditing={form.handleSubmit(onSubmit)}
               caption='Opcional'
+              placeholder="Digite o número do Cartão Nacional de Saúde (somente números)"
             />
           )}
           name='susNumber'

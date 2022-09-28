@@ -32,7 +32,7 @@ export const config: Config = {
             label: choices[0],
             keyboardType: 'number-pad',
             maxLength: 14,
-            placeholder: '000.000.000-00'
+            placeholder: 'Digite seu CPF (somente números)',
         },
         rules: {
             required: {
@@ -48,14 +48,14 @@ export const config: Config = {
                 message: `Max. 14 caracteres`
             },
             validate: (e) => e ? validateCPF(e) : undefined
-        }
+        },
     },
     [`${choices[1]}`]: {
         input: {
             autoCapitalize: 'characters',
             label: choices[1],
             maxLength: 30,
-            placeholder: 'X123456-Y'
+            placeholder: 'Digite seu RNM (letras e números)',
         },
         rules: {
             required: {
@@ -78,7 +78,7 @@ export const config: Config = {
             label: choices[2],
             keyboardType: 'email-address',
             maxLength: 60,
-            placeholder: 'usuario@teleneumu.com'
+            placeholder: 'Digite seu e-mail',
         },
         rules: {
             required: {

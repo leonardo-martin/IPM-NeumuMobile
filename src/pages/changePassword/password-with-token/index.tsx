@@ -139,6 +139,7 @@ const ChangePasswordWithToken: FC = (): ReactElement => {
                                 underlineColorAndroid="transparent"
                                 autoCapitalize="none"
                                 textContentType="password"
+                                placeholder="Digite uma Nova senha conforme regras abaixo"
                                 caption={(evaProps) => (
                                     <>
                                         <Text {...evaProps}>* 8 caracteres no mínimo</Text>
@@ -188,6 +189,7 @@ const ChangePasswordWithToken: FC = (): ReactElement => {
                                 underlineColorAndroid="transparent"
                                 autoCapitalize="none"
                                 textContentType="newPassword"
+                                placeholder="Digite NOVAMENTE a Senha para confirmação"
                             />
                         )}
                         name='newPassword'

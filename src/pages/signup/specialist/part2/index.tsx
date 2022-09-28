@@ -67,6 +67,7 @@ const DoctorSignUpPart2Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               underlineColorAndroid="transparent"
               textContentType="telephoneNumber"
               accessoryLeft={CountrySelectBox}
+              placeholder="Digite seu telefone (DDD+número)"
             />
           )}
           name='phone'
@@ -99,6 +100,7 @@ const DoctorSignUpPart2Screen: FC<DoctorSignUpProps> = ({ form, onSubmit }): Rea
               underlineColorAndroid="transparent"
               textContentType="telephoneNumber"
               accessoryLeft={CountrySelectBox}
+              placeholder="Digite seu telefone (DDD+número)"
             />
           )}
           name='phone2'

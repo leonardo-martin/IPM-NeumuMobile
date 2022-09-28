@@ -273,6 +273,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     underlineColorAndroid="transparent"
                                     autoCapitalize="words"
                                     textContentType="name"
+                                    placeholder='Digite o Nome Completo'
                                 />
                             )}
                             name='name'
@@ -344,6 +345,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                             ref={ref}
                                             returnKeyType="next"
                                             onSubmitEditing={() => form.setFocus('dateOfBirth')}
+                                            placeholder='Digite o CPF (somente números)'
                                         />
                                     )}
                                     name='cpf'
@@ -376,7 +378,6 @@ const NewUserScreen: FC = (): ReactElement => {
                                         <Input
                                             size='small'
                                             label="RNM *"
-                                            placeholder='A123456-7'
                                             style={styles.input}
                                             keyboardType='default'
                                             testID={name}
@@ -389,6 +390,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                             maxLength={9}
                                             returnKeyType="next"
                                             onSubmitEditing={() => form.setFocus('dateOfBirth')}
+                                            placeholder='Digite o RNM (letras e números)'
                                         />
                                     )}
                                     name='rne'
@@ -410,7 +412,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                 <Datepicker
                                     size='small'
                                     label='Data de Nascimento *'
-                                    date={value ? value : dateForOver}
+                                    date={value}
                                     onSelect={onChange}
                                     accessoryRight={CalendarIcon}
                                     onBlur={onBlur}
@@ -425,6 +427,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     boundingMonth={false}
                                     onPress={() => Keyboard.dismiss()}
                                     caption='* Necessário ser maior de 18 anos'
+                                    placeholder='DD/MM/AAAA'
                                 />
                             )}
                             name='dateOfBirth'
@@ -496,6 +499,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     returnKeyType="next"
                                     onSubmitEditing={() => form.setFocus('emailConfirmation')}
                                     textContentType="emailAddress"
+                                    placeholder='Digite o e-mail'
                                     caption={(evaProps) => (
                                         <>
                                             <View style={{ flexDirection: 'row' }}>
@@ -549,6 +553,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     returnKeyType="next"
                                     onSubmitEditing={() => form.setFocus('password')}
                                     textContentType="emailAddress"
+                                    placeholder='Digite o e-mail novamente'
                                 />
                             )}
                             name='emailConfirmation'
@@ -589,6 +594,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     underlineColorAndroid="transparent"
                                     autoCapitalize="none"
                                     textContentType="password"
+                                    placeholder="Digite a senha conforme regras abaixo"
                                     caption={(evaProps) => (
                                         <>
                                             <Text {...evaProps}>* 8 caracteres no mínimo</Text>
@@ -641,6 +647,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     underlineColorAndroid="transparent"
                                     autoCapitalize="none"
                                     textContentType="newPassword"
+                                    placeholder="Digite NOVAMENTE a Senha para confirmação"
                                 />
                             )}
                             name='confirmPassword'
@@ -666,7 +673,6 @@ const NewUserScreen: FC = (): ReactElement => {
                                     label="Número de Registro *"
                                     style={styles.input}
                                     keyboardType='number-pad'
-                                    placeholder=''
                                     testID={name}
                                     onBlur={onBlur}
                                     onChangeText={onChange}
@@ -675,6 +681,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     maxLength={6}
                                     underlineColorAndroid="transparent"
                                     onSubmitEditing={() => form.setFocus('specialty.description')}
+                                    placeholder="Digite o número de REGISTRO (somente números)"
                                 />
                             )}
                             name='crm'
@@ -694,7 +701,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     size='small'
                                     label="Especialidade *"
                                     style={styles.input}
-                                    placeholder='Selecione'
+                                    placeholder='Clique AQUI para selecionar uma Especialidade'
                                     testID={name}
                                     onBlur={onBlur}
                                     ref={ref}
@@ -740,6 +747,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                             maxLength={60}
                                             returnKeyType="next"
                                             underlineColorAndroid="transparent"
+                                            placeholder="Digite AQUI uma Especialidade, caso tenha selecionado OUTRO(A)"
                                             autoCapitalize="words"
                                             caption={(evaProps) => (
                                                 <>
@@ -788,6 +796,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     disabled={isLoadingPostalCode}
                                     textContentType="telephoneNumber"
                                     accessoryLeft={CountrySelectBox}
+                                    placeholder="Digite seu telefone (DDD+número)"
                                 />
                             )}
                             name='phone'
@@ -821,6 +830,7 @@ const NewUserScreen: FC = (): ReactElement => {
                                     disabled={isLoadingPostalCode}
                                     textContentType="telephoneNumber"
                                     accessoryLeft={CountrySelectBox}
+                                    placeholder="Digite seu telefone (DDD+número)"
                                 />
                             )}
                             name='phone2'

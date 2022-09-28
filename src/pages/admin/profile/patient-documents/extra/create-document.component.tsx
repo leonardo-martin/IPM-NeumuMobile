@@ -262,6 +262,7 @@ const CreatePatientDocumentScreen: FC = (): ReactElement => {
                                             backdropStyle={styles.backdropDatepicker}
                                             boundingMonth={false}
                                             onPress={() => Keyboard.dismiss()}
+                                            placeholder='DD/MM/AAAA'
                                         />
                                     )}
                                     name='examDate'
@@ -280,7 +281,7 @@ const CreatePatientDocumentScreen: FC = (): ReactElement => {
                                             size='small'
                                             label="Tipo de Documento *"
                                             style={styles.input}
-                                            placeholder='Selecione'
+                                            placeholder='Clique AQUI para selecionar o Tipo de Documento'
                                             testID={name}
                                             onBlur={onBlur}
                                             ref={ref}
@@ -322,6 +323,7 @@ const CreatePatientDocumentScreen: FC = (): ReactElement => {
                                             textStyle={{ minHeight: 90, textAlignVertical: 'top' }}
                                             scrollEnabled
                                             blurOnSubmit={true}
+                                            placeholder='Digite suas observações sobre o item acima'
                                         />
                                     )}
                                     name='data.examDescription'

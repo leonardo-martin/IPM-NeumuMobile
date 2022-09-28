@@ -18,4 +18,12 @@ export enum PatientProfileCreatorTypeEnum {
     PatientSelf = "1"
 }
 
+export enum ERelationship {
+    Amigo,
+    Cuidador,
+    Familiar,
+    "Tutor Legal",
+    "Profissional de Saúde"
+}
+
 export type RelationshipPatient = "Amigo" | "Cuidador" | "Familiar" | "Tutor Legal" | "Profissional de Saúde"
