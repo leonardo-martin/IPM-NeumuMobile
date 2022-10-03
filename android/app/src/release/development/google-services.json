@@ -33,6 +33,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:538144874193:android:1dac347056cc10d291eff0",
+        "android_client_info": {
+          "package_name": "net.atos.teleneumu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "538144874193-bpjolbq9dg844diet4071cehfqetp4k3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmhK-QocH-YVOHp8bKH9c8azPLU5ko4oE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "538144874193-bpjolbq9dg844diet4071cehfqetp4k3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

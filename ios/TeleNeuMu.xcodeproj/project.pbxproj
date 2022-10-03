@@ -700,7 +700,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 246JC9J4RZ;
 				DISPLAY_NAME = "TeleNeuMu Dev";
 				ENABLE_BITCODE = NO;
@@ -709,6 +709,7 @@
 				GENERATE_PROFILING_CODE = NO;
 				INFOPLIST_FILE = TeleNeuMu/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(DISPLAY_NAME)";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -746,7 +747,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 243B7XXD8U;
 				DISPLAY_NAME = TeleNeuMu;
 				EXCLUDED_ARCHS = "";
@@ -754,6 +755,7 @@
 				GENERATE_PROFILING_CODE = NO;
 				INFOPLIST_FILE = TeleNeuMu/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(DISPLAY_NAME)";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1123,7 +1125,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 243B7XXD8U;
 				DISPLAY_NAME = "TeleNeuMu Test";
 				EXCLUDED_ARCHS = "";
@@ -1131,6 +1133,7 @@
 				GENERATE_PROFILING_CODE = NO;
 				INFOPLIST_FILE = TeleNeuMu/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(DISPLAY_NAME)";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
