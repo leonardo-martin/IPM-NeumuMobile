@@ -14,7 +14,7 @@ import { getProfilePicture, getUserDetails, updateUser } from '@services/user.se
 import { setProfile, setProfilePic } from '@store/ducks/profile'
 import { Button, Icon, IconProps, useStyleSheet } from '@ui-kitten/components'
 import { getDocumentType, getEntityType } from '@utils/entity'
-import { cleanNumberMask, formatCpf, formatPostalCode } from '@utils/mask'
+import { cleanNumberMask, formatCpf, formatPostalCode, formatRNM } from '@utils/mask'
 import { validateCNS } from '@utils/validators'
 import { compareAsc, subYears } from 'date-fns'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
@@ -370,25 +370,47 @@ const EditProfileScreen: FC = (): ReactElement => {
             )}
             name='username'
           />
-          <Controller
-            control={form.control}
-            render={({ field }) => (
-              <ProfileSetting
-                style={styles.profileSetting}
-                hint='CPF'
-                inputProps={{
-                  value: formatCpf(field.value),
-                  editable: false,
-                  disabled: true,
-                  textAlign: 'right',
-                  multiline: true,
-                  scrollEnabled: true,
-                  keyboardType: 'number-pad',
-                }}
-              />
-            )}
-            name='cpf'
-          />
+          {form.getValues('cpf') ? (
+            <Controller
+              control={form.control}
+              render={({ field }) => (
+                <ProfileSetting
+                  style={styles.profileSetting}
+                  hint='CPF'
+                  inputProps={{
+                    value: formatCpf(field.value),
+                    editable: false,
+                    disabled: true,
+                    textAlign: 'right',
+                    multiline: true,
+                    scrollEnabled: true,
+                    keyboardType: 'number-pad',
+                  }}
+                />
+              )}
+              name='cpf'
+            />
+          ) : (
+            <Controller
+              control={form.control}
+              render={({ field }) => (
+                <ProfileSetting
+                  style={styles.profileSetting}
+                  hint='RNM'
+                  inputProps={{
+                    value: formatRNM(field.value),
+                    editable: false,
+                    disabled: true,
+                    textAlign: 'right',
+                    multiline: true,
+                    scrollEnabled: true,
+                    keyboardType: 'number-pad',
+                  }}
+                />
+              )}
+              name='rne'
+            />
+          )}
           <Controller
             control={form.control}
             render={({ field }) => (
