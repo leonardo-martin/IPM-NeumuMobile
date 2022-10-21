@@ -122,73 +122,64 @@ const EditProfileScreen: FC = (): ReactElement => {
     }, [userDetails, sessionUser])
   )
 
-  const editProfile = async (type: 1 | 2) => {
+  const editProfile = async () => {
     const obj = form.getValues()
     Toast.hide()
-    let userDto = null
-    switch (type) {
-      case 1:
-        userDto = {
-          name: obj.name,
-          phone1: obj.phone1,
-          phone2: obj.phone2,
-        }
-
-        if (sessionUser?.userRole.find(e => e.id === EUserRole.patient)) {
-          if (obj.susNumber !== '' && obj.susNumber) {
-            if (!validateCNS(obj.susNumber)) {
-              Toast.show({
-                type: 'warning',
-                text2: 'Cartão Nacional de Saúde inválido',
-              })
-              return
-            }
-          } else {
-            if (patientDisplay?.patientDto.susNumber && !obj.susNumber) {
-              Toast.show({
-                type: 'info',
-                text2: 'Cartão Nacional de Saúde ausente',
-              })
-              return
-            }
-          }
-          if (patientDisplay) {
-            await updatePatient({
-              ...patientDisplay.patientDto,
-              susNumber: obj.susNumber === '' || !obj.susNumber ? null : obj.susNumber,
-            })
-          }
-        }
-
-        break
-      case 2:
-        if (!obj.address2 || obj.address2 === '' || obj.address2 === '0') {
+    Keyboard.dismiss()
+    if (sessionUser?.userRole.find(e => e.id === EUserRole.patient)) {
+      if (obj.susNumber !== '' && obj.susNumber) {
+        if (!validateCNS(obj.susNumber)) {
           Toast.show({
-            type: 'info',
-            text2: obj.address2 === '0' ? 'Número inválido, digite outro' : 'É necessário inserir o número',
+            type: 'warning',
+            text2: 'Cartão Nacional de Saúde inválido',
           })
           return
         }
-        userDto = {
-          address1: obj.address1,
-          address2: obj.address2,
-          state: obj.state,
-          city: obj.city,
-          postalCode: cleanNumberMask(obj.postalCode) ?? obj.postalCode,
-          addressComplement: obj.addressComplement,
-          country: obj.country
+      } else {
+        if (patientDisplay?.patientDto.susNumber && !obj.susNumber) {
+          Toast.show({
+            type: 'info',
+            text2: 'Cartão Nacional de Saúde ausente',
+          })
+          return
         }
-        break
-      default:
-        break
+      }
+    }
+
+    if (!obj.address2 || obj.address2 === '' || obj.address2 === '0') {
+      Toast.show({
+        type: 'info',
+        text2: obj.address2 === '0' ? 'Número inválido, digite outro' : 'É necessário inserir o número',
+      })
+      return
+    }
+
+    setIsLoading(true)
+    let userDto = {
+      address1: obj.address1,
+      address2: obj.address2,
+      state: obj.state,
+      city: obj.city,
+      postalCode: cleanNumberMask(obj.postalCode) ?? obj.postalCode,
+      addressComplement: obj.addressComplement,
+      country: obj.country,
+      phone1: cleanNumberMask(obj.phone1) ?? obj.phone1,
+      phone2: cleanNumberMask(obj.phone2) ?? obj.phone2,
     }
 
     try {
 
+      if (patientDisplay) {
+        await updatePatient({
+          ...patientDisplay.patientDto,
+          susNumber: obj.susNumber === '' || !obj.susNumber ? null : obj.susNumber,
+        })
+      }
       await updateUser(userDto)
       updateUserStore()
       loadFields()
     } catch (error) {
+      setIsLoading(false)
       Toast.show({
         type: 'danger',
         text2: 'Erro ao atualizar o perfil. Tente novamente mais tarde',
@@ -331,7 +322,7 @@ const EditProfileScreen: FC = (): ReactElement => {
 
   return (
     <>
-      <HeaderProfile />
+      <HeaderProfile showSaveButton disableSaveButton={isLoading} actionSaveButton={editProfile} />
       {isLoading ? (
         <LoadingIndicatorComponent size='giant' status='primary' />
       ) : (
@@ -576,16 +567,6 @@ const EditProfileScreen: FC = (): ReactElement => {
               defaultValue=''
             />
           )}
-          <View style={styles.editViewButton}>
-            <Button
-              size='small'
-              status='primary'
-              appearance='ghost'
-              onPress={() => editProfile(1)}>
-              SALVAR
-            </Button>
-          </View>
-
 
           {/* ############################ */}
           {sessionUser?.userRole.find(e => e.id === EUserRole.patient) && (
@@ -783,15 +764,6 @@ const EditProfileScreen: FC = (): ReactElement => {
                 )}
                 name='country'
               />
-              <View style={styles.editViewButton}>
-                <Button
-                  size='small'
-                  status='primary'
-                  appearance='ghost'
-                  onPress={() => editProfile(2)}>
-                  SALVAR
-                </Button>
-              </View>
             </>
           )}
 

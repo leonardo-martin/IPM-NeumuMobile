@@ -4,6 +4,7 @@ export class PatientProfileCreatorDto {
     createdPatientProfileId!: string | number
     patientProfileCreatorTypeId!: PatientProfileCreatorTypeEnum | number | undefined
     data!: JSONObject | string | any
+    responsibleEmail?: string;
 }
 
 export class PatientProfileCreatorPatientRelatedDto extends PatientProfileCreatorDto {

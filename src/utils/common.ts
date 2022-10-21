@@ -22,6 +22,8 @@ export const matchMessage = (message: any) => {
             return 3
         } else if (JSON.stringify(message).match('User email has not been verified')) {
             return 2
+        } else if (JSON.stringify(message).match('Under age user must be verified by responsible')) {
+            return 3
         }
     return 0
 }

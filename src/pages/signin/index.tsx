@@ -94,7 +94,8 @@ const SignInScreen: FC = (): ReactElement => {
               messageToast = 'E-mail não verificado'
             else if (matchId === 1)
               messageToast = 'Usuário e/ou senha incorretos'
-
+            else if (matchId === 3)
+              messageToast = 'Pendente a liberação pelo responsável'
           }
         } else {
           messageToast = 'Usuário e/ou senha incorretos'

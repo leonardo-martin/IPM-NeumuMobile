@@ -161,8 +161,11 @@ const SignUpScreen: FC = (): ReactElement => {
                                 title: string
                             } = JSON.parse(JSON.stringify(newData.creator.data['kinship']))
                             newData.creator.data['kinship'] = kinship.title
-                        } else delete newData.creator.data['kinship']
-
+                        } else {
+                            delete newData.creator?.responsibleEmail
+                            delete newData.creator.data['kinship']
+                        }
+                        
                         if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Profissional de Saúde') delete newData.creator.data['specialty']
 
                         if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Tutor Legal') {
@@ -198,6 +201,8 @@ const SignUpScreen: FC = (): ReactElement => {
                             //     messageError = 'Erro ao enviar a documentação'
                             // }
                         }
+                    } else {
+                        delete newData.creator?.responsibleEmail
                     }
                 } catch (error) {
                     allowedToCreate = false

@@ -38,7 +38,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
     const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
     const [selectedTypeOfDocument, setSelectedTypeOfDocument] = useState<IndexPath | IndexPath[]>()
 
-    const emailConfirm = form.watch("creator.data.email")
+    const emailConfirm = form.watch("creator.responsibleEmail")
     const relationship = form.watch("creator.data.creatorRelationship")
     const typeOfDocument = form.watch("creator.data.typeOfDocument")
 
@@ -356,12 +356,12 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         placeholder={`Digite o e-mail do seu ${ERelationship[relationship]}`}
                     />
                 )}
-                name='creator.data.email'
+                name='creator.responsibleEmail'
                 defaultValue=''
             />
-            {(form.formState.errors.creator?.data?.email?.type !== 'valid' && form.formState.errors.creator?.data?.email?.type !== 'equal') && <CustomErrorMessage name='creator.data.email' errors={form.formState.errors} />}
-            {(form.formState.errors.creator?.data?.email?.type === 'valid') && <CustomErrorMessage name='creator.data.email' errors={form.formState.errors} customMessage='E-mail inválido' />}
-            {(form.formState.errors.creator?.data?.email?.type === 'equal') && <CustomErrorMessage name='creator.data.email' errors={form.formState.errors} customMessage='E-mail não pode ser igual ao do paciente' />}
+            {(form.formState.errors.creator?.responsibleEmail?.type !== 'valid' && form.formState.errors.creator?.responsibleEmail?.type !== 'equal') && <CustomErrorMessage name='creator.responsibleEmail' errors={form.formState.errors} />}
+            {(form.formState.errors.creator?.responsibleEmail?.type === 'valid') && <CustomErrorMessage name='creator.responsibleEmail' errors={form.formState.errors} customMessage='E-mail inválido' />}
+            {(form.formState.errors.creator?.responsibleEmail?.type === 'equal') && <CustomErrorMessage name='creator.responsibleEmail' errors={form.formState.errors} customMessage='E-mail não pode ser igual ao do paciente' />}
             <Controller
                 control={form.control}
                 rules={{

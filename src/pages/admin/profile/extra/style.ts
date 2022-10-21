@@ -31,12 +31,6 @@ export const extraProfileStyle = StyleSheet.create({
   section: {
     marginTop: 24,
   },
-  editViewButton: {
-    alignItems: 'flex-end',
-    paddingTop: 10,
-    paddingEnd: 20,
-    paddingBottom: 0
-  },
   avatar: {
     alignSelf: 'center',
     borderWidth: 2,
