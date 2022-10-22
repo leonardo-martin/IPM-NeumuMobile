@@ -1,5 +1,6 @@
 import CustomErrorMessage from '@components/error'
 import CountryPicker from '@components/picker/CountryPicker'
+import PartnerPicker from '@components/picker/PartnerPicker'
 import { COUNTRY } from '@constants/common'
 import { CONECTESUS_URI } from '@constants/uri'
 import { useDatepickerService } from '@hooks/useDatepickerService'
@@ -26,7 +27,9 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
   const { localeDateService } = useDatepickerService()
   const isFocused = useIsFocused()
   const { ref: modalizeRef } = useModal<Modalize>()
+  const { ref: partnerModalizeRef } = useModal<Modalize>()
   const [countryCode, setCountryCode] = useState<string>(COUNTRY.DIAL_CODE)
+  const [partner, setPartner] = useState<string>('')
 
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const styles = useStyleSheet(registerStyle)
@@ -38,7 +41,11 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
   const password = useRef<string | undefined>()
   password.current = form.watch("password", "")
 
-  const typeOfDocument = form.watch("typeOfDocument")
+  const typeOfDocument = useRef<string | undefined>()
+  typeOfDocument.current = form.watch("typeOfDocument")
+
+  const openCountryPicker = () => modalizeRef.current?.open()
+  const openPartnerPicker = () => partnerModalizeRef.current?.open()
 
   useFocusEffect(
     useCallback(() => {
@@ -47,6 +54,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
       const doc = form.getValues('typeOfDocument')
       if (doc)
         setSelectedTypeOfDocument(new IndexPath(typeOfPersonalDocuments.indexOf(typeOfPersonalDocuments.find(e => e.label === doc) || {} as { value: number; label: string; })))
+      setPartner(form.getValues('partner') ?? '')
     }, [])
   )
 
@@ -104,8 +112,6 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
     </React.Fragment>
   )
 
-  const openCountryPicker = () => modalizeRef.current?.open()
-
   const CountrySelectBox = () => (
     <Pressable onPress={openCountryPicker} style={{
       flexDirection: 'row',
@@ -120,12 +126,29 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
     form.setValue('countryCode', countryCode)
   }, [countryCode])
 
+  useEffect(() => {
+    form.setValue('partner', partner)
+  }, [partner])
+
   return (
     <>
       <Portal>
         <CountryPicker ref={modalizeRef} setValue={setCountryCode} />
+        <PartnerPicker ref={partnerModalizeRef} setValue={setPartner} />
       </Portal>
       <View style={styles.box}>
+        <View style={styles.partnerContainer}>
+          <View style={styles.partnerTextContainer}>
+            <Text style={styles.partnerTitle}>Selecione uma associação que conhece ou possui alguma relação:{" "}</Text>
+            <TouchableOpacity
+              style={styles.partnerBtn}
+              onPress={openPartnerPicker}>
+              <Text category={"c1"} status='control'>SELECIONAR</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={[styles.partnerText, { ...partner !== '' && { paddingVertical: 5 } }]}>{partner}</Text>
+
+        </View>
         <Controller
           control={form.control}
           rules={{
@@ -229,7 +252,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
         />
         <CustomErrorMessage name='typeOfDocument' errors={form.formState.errors} />
 
-        {typeOfDocument === ETypeOfDocument.CPF && (
+        {typeOfDocument.current === ETypeOfDocument.CPF && (
           <>
             <Controller
               control={form.control}
@@ -275,7 +298,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           </>
         )}
 
-        {typeOfDocument === ETypeOfDocument.RNM && (
+        {typeOfDocument.current === ETypeOfDocument.RNM && (
           <>
             <Controller
               control={form.control}

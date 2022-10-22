@@ -107,6 +107,7 @@ export class UserData {
 
 export class UserPatientData extends UserData {
 
+    partner?: string
     mothersName?: string
     susNumber?: string
     creator?: PatientProfileCreatorDto
@@ -137,7 +138,8 @@ export class UserPatientData extends UserData {
         mothersName?: string, susNumber?: string,
         creator?: PatientProfileCreatorDto,
         abrafeuRegistrationOptIn?: string,
-        pastExams?: ExamDNA) {
+        pastExams?: ExamDNA,
+        partner?: string) {
 
         super(name, cpf, rne, typeOfDocument, countryCode, email, emailConfirmation, phone, phone2, username,
             password, city, state, dateOfBirth, postalCode, address1, address2, addressComplement, country, sex)
@@ -147,6 +149,7 @@ export class UserPatientData extends UserData {
         this.abrafeuRegistrationOptIn = abrafeuRegistrationOptIn
         this.pastExams = pastExams
         this.confirmPassword = confirmPassword
+        this.partner = partner
         Object.setPrototypeOf(this, UserPatientData.prototype)
     }
 }
