@@ -25,6 +25,16 @@ export const matchMessage = (message: any) => {
         } else if (JSON.stringify(message).match('Under age user must be verified by responsible')) {
             return 3
         }
+        // Delete account error
+        else if (JSON.stringify(message).match('All projects must be cancelled before deleting the account.')) {
+            return 5
+        } else if (JSON.stringify(message).match('All consults must be cancelled before deleting the account.')) {
+            return 6
+        } else if (JSON.stringify(message).match('Special user not found')) {
+            return 7
+        } else if (JSON.stringify(message).match('User not found')) {
+            return 8
+        }
     return 0
 }
 

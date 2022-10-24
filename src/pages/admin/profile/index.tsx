@@ -9,6 +9,8 @@ import { deleteUserSelf, getProfilePicture } from '@services/user.service'
 import { logout } from '@store/ducks/auth'
 import { RootState } from '@store/index'
 import { Avatar, Button, Icon, IconProps, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import { matchMessage } from '@utils/common'
+import { AxiosError } from 'axios'
 import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { Alert, ImageStyle, StyleProp, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'
@@ -90,10 +92,33 @@ const ProfileScreen: FC = (): ReactElement => {
         })
       }
     } catch (error) {
-      Toast.show({
-        type: 'danger',
-        text2: 'Erro ao deletar a conta. Entre em contato com o administrador',
-      })
+      if (error instanceof AxiosError) {
+        const message = error.response?.data?.message
+        if (message) {
+          const matchId = matchMessage(message)
+
+          let errorMessage = 'Erro ao deletar a conta. Erro inesperado'
+          if (matchId === 5) errorMessage = 'Para apagar a conta, você precisa sair dos programas nos quais foi inscrito'
+          else if (matchId === 6) errorMessage = 'Para apagar a conta, você precisa cancelar todas suas consultas não confirmadas'
+          else if (matchId === 7) errorMessage = 'Usuário especial não encontrado'
+          else if (matchId === 8) errorMessage = 'Usuário não encontrado'
+
+          Toast.show({
+            type: 'warning',
+            text2: errorMessage
+          })
+        } else {
+          Toast.show({
+            type: 'danger',
+            text2: 'Erro ao deletar a conta. Tente novamente mais tarde',
+          })
+        }
+      } else {
+        Toast.show({
+          type: 'danger',
+          text2: 'Erro ao deletar a conta. Entre em contato com o administrador',
+        })
+      }
     } finally {
       setAccountIsBeingDeleted(false)
     }
