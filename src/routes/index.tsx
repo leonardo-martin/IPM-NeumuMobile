@@ -68,7 +68,7 @@ const Routes: FC = (): ReactElement => {
 
     useFocusEffect(
         useCallback(() => {
-            if (Platform.OS === 'android' && !isAuthenticated && __DEV__) {
+            if (Platform.OS === 'android' && !isAuthenticated && !__DEV__) {
                 validationAppInStore()
             } else {
                 if (!isAuthenticated)
