@@ -4,6 +4,7 @@ import { AppDispatch } from '@store/index'
 import { cleanNumberMask } from '@utils/mask'
 import { AxiosResponse } from 'axios'
 import { validate as validateCPF } from 'gerador-validador-cpf'
+import { VersionTestDto } from 'models/VersionTest'
 import Keychain from 'react-native-keychain'
 import { api } from './api.service'
 import { AppStorage } from './app-storage.service'
@@ -39,4 +40,11 @@ export const authLogin = (auth: LoginDto, _rememberAcess?: boolean) => (dispatch
             throw error
         })
 
+}
+
+export const getVersionTest = (version: string): Promise<AxiosResponse<VersionTestDto>> => {
+    const params = new URLSearchParams()
+    params.append('version', version)
+
+    return api.post('auth/get-version-test?' + params)
 }
