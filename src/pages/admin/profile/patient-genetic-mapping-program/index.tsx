@@ -1,5 +1,6 @@
 import CustomErrorMessage from '@components/error'
 import HeaderAdmin from '@components/header/admin'
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import ModalizeFixed from '@components/modalize'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useAppSelector } from '@hooks/redux'
@@ -11,11 +12,9 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { getStatusAbrafeuForm, optIn, optOut } from '@services/abrafreu.service'
 import { getPatient, updatePatient } from '@services/patient.service'
 import { getStatus } from '@services/underage.service'
-import { Button, Input, Radio, RadioGroup, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
-import { EvaSize, EvaStatus } from '@ui-kitten/components/devsupport'
+import { Button, Input, Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
 import { getRelationPastExams } from '@utils/common'
 import { formatCpf, onlyNumbers } from '@utils/mask'
-import LoadingIndicatorComponent from 'components/loadingIndicator'
 import { compareAsc, subYears } from 'date-fns'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -71,17 +70,24 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
         try {
             const response = await getPatient()
             setPatient(response.data)
-            const optIn = response.data?.abrafeuRegistrationOptIn === 'true' ? 0 : 1
-            form.setValue('abrafeuRegistrationOptIn', response.data?.abrafeuRegistrationOptIn === 'true' ? 'true' : 'false')
+            if (response.data?.abrafeuRegistrationOptIn) {
+                const optIn = response.data?.abrafeuRegistrationOptIn === 'true' ? 0 : 1
+                form.setValue('abrafeuRegistrationOptIn', response.data?.abrafeuRegistrationOptIn === 'true' ? 'true' : 'false')
 
-            if (optIn === 0 && response.data.pastExams?.exam) {
-                setSelectedIndexExamDNA(response.data.pastExams.exam.id as number)
-                form.setValue('pastExams.exam.id', response.data.pastExams.exam.id)
-                form.setValue('pastExams.exam.description', response.data.pastExams.exam.description)
-                form.setValue('pastExams.doctor.crm', response.data.pastExams.doctor?.crm)
+                if (optIn === 0 && response.data.pastExams?.exam) {
+                    setSelectedIndexExamDNA(response.data.pastExams.exam.id as number)
+                    form.setValue('pastExams.exam.id', response.data.pastExams.exam.id)
+                    form.setValue('pastExams.exam.description', response.data.pastExams.exam.description)
+                    form.setValue('pastExams.doctor.crm', response.data.pastExams.doctor?.crm)
+                }
+                setSelectedIndex(optIn)
+                setSelectTmp(optIn)
+            } else {
+                setSelectedIndexExamDNA(-1)
+                setSelectedIndex(undefined)
+                setSelectTmp(undefined)
             }
-            setSelectedIndex(optIn)
-            setSelectTmp(optIn)
+
             setUnidentifiedError(false)
         } catch (error) {
             setSelectedIndex(undefined)
@@ -118,7 +124,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
         }
     }
 
-    const handleParticipateProgram = (index: number) => {
+    const handleParticipateProgram = useCallback((index: number) => {
         setSelectedIndex(index)
         if (index === 0 && underage && !accept) {
             if (statusPermission === UnderageStatus.GRANTED) {
@@ -152,6 +158,53 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                 modalRequiredAddress()
             else
                 alertCommon()
+        } else if (index === 1 && !selectTmp) {
+            Alert.alert(
+                'Atenção!',
+                'Caso não aceite participar do programa, irá ficar de fora do mapeamento genético. Está certo disso?',
+                [
+                    {
+                        text: 'Voltar',
+                        style: 'cancel',
+                        onPress: () => {
+                            setSelectedIndex(undefined)
+                            setSelectedIndexExamDNA(-1)
+                        }
+                    },
+                    {
+                        text: 'Sim',
+                        style: 'destructive',
+                        onPress: async () => {
+                            const data = { ...form.getValues() }
+                            delete data.pastExams
+                            try {
+                                const response = await updatePatient({
+                                    ...data
+                                })
+                                if (response.status === 201 || response.status === 200) {
+                                    setPatient(response.data)
+
+                                    Toast.show({
+                                        type: 'success',
+                                        text2: 'Perfil atualizado com sucesso',
+                                    })
+                                } else {
+                                    Toast.show({
+                                        type: 'warning',
+                                        text2: 'Não foi possível atualizar o perfil',
+                                    })
+                                }
+
+                            } catch (error) {
+                                Toast.show({
+                                    type: 'danger',
+                                    text2: 'Erro inesperado',
+                                })
+                            }
+                        }
+                    }
+                ]
+            )
         }
 
         form.clearErrors()
@@ -165,7 +218,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             setIsOpenedModal(true)
             ref.current?.open()
         }
-    }
+    }, [selectTmp])
 
     const modalRequiredAddress = () => {
         Alert.alert(
