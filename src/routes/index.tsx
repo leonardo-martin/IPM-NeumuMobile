@@ -1,4 +1,4 @@
-import { ONBOARDING } from '@constants/storage'
+import { ONBOARDING, STORAGE } from '@constants/storage'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useFocusEffect } from '@react-navigation/native'
 import AppRoutes from '@routes/app.routes'
@@ -33,9 +33,10 @@ const Routes: FC = (): ReactElement => {
                 await dispatch(authLogin({
                     username: data.username ?? '',
                     password: data.password ?? ''
-                }, false))
+                }, true))
 
                 logService.loga('Login realizado com sucesso')
+                await AppStorage.setItem(STORAGE.TESTE_USER, 'true')
                 AppStorage.setItem(ONBOARDING, 'true').then(() => {
                     setOnboarded(true)
                     setIsLoading(false)

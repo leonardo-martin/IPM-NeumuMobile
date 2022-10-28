@@ -220,7 +220,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
         }
     }, [selectTmp, underage])
 
-    const modalRequiredAddress = () => {
+    const modalRequiredAddress = useCallback(() => {
         Alert.alert(
             'Atenção!',
             'Necessário preencher o endereço no perfil para participar do programa',
@@ -228,7 +228,12 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                 {
                     text: 'OK',
                     style: 'cancel',
-                    onPress: () => setSelectedIndex(1)
+                    onPress: () => {
+                        if (selectTmp === undefined)
+                            setSelectedIndex(-1)
+                        else
+                            setSelectedIndex(1)
+                    }
                 },
                 {
                     text: 'Meu Perfil',
@@ -237,7 +242,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                 }
             ]
         )
-    }
+    }, [selectTmp])
 
     const checkIfPermission = () => {
         if ((profile?.address1 !== '' && profile?.address1 !== null) &&
@@ -268,17 +273,22 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
     }
 
     const getUnderageStatus = async () => {
-        const response = await getStatus()
-        if (response.status === 200) {
-            setStatusPermission(response.data)
-            verifyStatusForm()
-        } else {
+        try {
+            const response = await getStatus()
+            if (response.status === 200) {
+                setStatusPermission(response.data)
+                verifyStatusForm()
+            } else {
+                setStatusPermission(UnderageStatus.NOT_REQUESTED)
+            }
+            if (response.data === UnderageStatus.PENDING) {
+                setIsFetchingData(false)
+            } else
+                getData()
+        } catch (error) {
             setStatusPermission(UnderageStatus.NOT_REQUESTED)
-        }
-        if (response.data === UnderageStatus.PENDING) {
             setIsFetchingData(false)
-        } else
-            getData()
+        }
     }
 
     const confirm = async (data: PatientDto) => {

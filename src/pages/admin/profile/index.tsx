@@ -11,9 +11,11 @@ import { RootState } from '@store/index'
 import { Avatar, Button, Icon, IconProps, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
 import { matchMessage } from '@utils/common'
 import { AxiosError } from 'axios'
+import { STORAGE } from 'constants/storage'
 import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { Alert, ImageStyle, StyleProp, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'
+import { AppStorage } from 'services/app-storage.service'
 import { commonData, operatorBaseData, patientBaseData, specialistBaseData } from './data'
 import { profileStyle } from './style'
 
@@ -26,6 +28,7 @@ const ProfileScreen: FC = (): ReactElement => {
   const { ids } = useAppSelector((state: RootState) => state.user)
   const { profile, profilePic, profilePicId } = useAppSelector((state: RootState) => state.profile)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [deleteDisabled, setDeleteDisabled] = useState<boolean>(false)
   const styles = useStyleSheet(profileStyle)
 
   const renderIconDocumentAttach = (props: IconProps) => (
@@ -44,7 +47,7 @@ const ProfileScreen: FC = (): ReactElement => {
           appearance='filled'
           status='success'
           accessoryLeft={renderIconDocumentAttach}>Meus Documentos</Button>
-        {deleteAccountConfirm()}
+        {!deleteDisabled && deleteAccountConfirm()}
       </View>
     </>
   )
@@ -151,8 +154,17 @@ const ProfileScreen: FC = (): ReactElement => {
     }
   }, [profilePic])
 
+  const verifyIfUserTestIsLogged = async () => {
+    const res = await AppStorage.getItem(STORAGE.TESTE_USER)
+    if (res)
+      setDeleteDisabled(true)
+    else
+      setDeleteDisabled(false)
+  }
+
   useFocusEffect(
     useCallback(() => {
+      verifyIfUserTestIsLogged()
       setIsLoading(true)
       if (!profilePicId && ids) {
         loadProfilePic(ids.userId)
