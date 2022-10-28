@@ -218,7 +218,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             setIsOpenedModal(true)
             ref.current?.open()
         }
-    }, [selectTmp])
+    }, [selectTmp, underage])
 
     const modalRequiredAddress = () => {
         Alert.alert(
