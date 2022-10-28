@@ -3,8 +3,9 @@ import { getFileFromDevice, launchCameraFromDevice, launchImageLibraryFromDevice
 import { Icon, Text, useStyleSheet } from '@ui-kitten/components'
 import { generateHash } from '@utils/common'
 import React, { FC, ReactElement } from 'react'
-import { Alert, Platform, TouchableOpacity, View } from 'react-native'
+import { Alert, Platform, TouchableOpacity, View, PermissionsAndroid } from 'react-native'
 import Toast from 'react-native-toast-message'
+import { AppInfoService } from 'services/app-info.service'
 import { attachBoxStyle } from './style'
 
 interface AttachmentBoxProps {
@@ -80,22 +81,40 @@ const AttachmentBoxComponent: FC<AttachmentBoxProps> = ({ ...props }): ReactElem
         }
     }
 
-    const download = () => {
-        Alert.alert(
-            'Deseja efetuar o download do arquivo?',
-            'O arquivo será baixando em background e avisaremos quando estiver concluído',
-            [
+    const download = async () => {
+        let bOk = false
+        if (Platform.OS === 'android') {
+            const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
                 {
-                    text: 'Sim',
-                    style: 'default',
-                    onPress: () => downloadFile()
-                },
-                {
-                    text: 'Não',
-                    style: 'cancel'
-                }
-            ]
-        )
+                    title: AppInfoService.getAppName() + " desejar acessar o armazenamento.",
+                    message: "Deseja permitir que o aplicativo acesse o armazenamento?",
+                    buttonNegative: "Cancelar",
+                    buttonPositive: "Sim"
+                })
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                bOk = true
+            }
+        } else {
+            bOk = true
+        }
+
+        if (bOk) {
+            Alert.alert(
+                'Deseja efetuar o download do arquivo?',
+                'O arquivo será baixando em background e avisaremos quando estiver concluído',
+                [
+                    {
+                        text: 'Sim',
+                        style: 'default',
+                        onPress: () => downloadFile()
+                    },
+                    {
+                        text: 'Não',
+                        style: 'cancel'
+                    }
+                ]
+            )
+        }
     }
 
     const downloadFile = async () => {
