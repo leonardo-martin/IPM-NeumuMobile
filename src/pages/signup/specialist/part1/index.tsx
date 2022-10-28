@@ -157,7 +157,7 @@ const DoctorSignUpPart1Screen: FC<DoctorSignUpProps> = ({ form }): ReactElement 
               ref={ref}
               maxLength={60}
               returnKeyType="next"
-              onSubmitEditing={() => form.setFocus('cpf')}
+              onSubmitEditing={() => form.setFocus('typeOfDocument')}
               underlineColorAndroid="transparent"
               autoCapitalize="words"
               textContentType="name"
