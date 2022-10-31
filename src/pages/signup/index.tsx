@@ -161,8 +161,7 @@ const SignUpScreen: FC = (): ReactElement => {
                                 title: string
                             } = JSON.parse(JSON.stringify(newData.creator.data['kinship']))
                             newData.creator.data['kinship'] = kinship.title
-                        } else {
-                            delete newData.creator?.responsibleEmail
+                        } else {                         
                             delete newData.creator.data['kinship']
                         }
                         
