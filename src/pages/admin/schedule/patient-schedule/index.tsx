@@ -38,7 +38,7 @@ const PresentialScheduleScreen: FC = (): ReactElement => {
     const { localeDateService } = useDatepickerService()
     const navigation = useNavigation<any>()
     const { ids } = useAppSelector((state: RootState) => state.user)
-    const times = getTimesByInterval(15, 405, 18)
+    const times = getTimesByInterval(15, 345, 18)
     const theme = useTheme()
     const opacity = useSharedValue(0)
     const styles = useStyleSheet(doctorScheduleStyle)

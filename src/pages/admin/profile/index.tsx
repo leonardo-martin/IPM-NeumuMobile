@@ -192,10 +192,13 @@ const ProfileScreen: FC = (): ReactElement => {
           <SafeAreaLayout level='2' style={styles.safeArea}>
             <ListComponent
               itemStyle={styles.shadow}
-              data={sessionUser?.userRole.find(e => e.id === EUserRole.patient) ?
+              data={(sessionUser?.userRole.find(e => e.id === EUserRole.patient) ?
                 patientBaseData : sessionUser?.userRole.find(e => e.id === EUserRole.operator) ?
                   operatorBaseData : sessionUser?.userRole.find(e => e.id === EUserRole.medicalDoctor || e.id === EUserRole.specialist) ?
-                    specialistBaseData : commonData}
+                    specialistBaseData : commonData).filter(d => {
+                      if (deleteDisabled && d.route === 'ChangePasswordChoice') return false
+                      return true
+                    })}
               showsVerticalScrollIndicator={false}
               ListHeaderComponent={() => (
                 <>
