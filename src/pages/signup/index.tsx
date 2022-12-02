@@ -3,11 +3,11 @@ import RegisterHeader from '@components/header/register'
 import LoadingIndicatorComponent from '@components/loadingIndicator'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import Stepper from '@components/stepper'
-import { PatientProfileCreatorDto, PatientProfileCreatorTypeEnum, RelationshipPatient } from '@models/PatientProfileCreator'
+import { PatientProfileCreatorTypeEnum, RelationshipPatient } from '@models/PatientProfileCreator'
 import { RegisterParams } from '@models/SignUpProps'
 import { UserDoctorData, UserPatientData } from '@models/User'
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
-import { createPatientProfileCreator, createUser } from '@services/user.service'
+import { createUser } from '@services/user.service'
 import { Button, CheckBox, useStyleSheet } from '@ui-kitten/components'
 import { extractFieldString } from '@utils/common'
 import { cleanNumberMask } from '@utils/mask'
@@ -123,56 +123,55 @@ const SignUpScreen: FC = (): ReactElement => {
                 let newData = data as UserPatientData
                 newData = {
                     ...newData,
-                    'creator': {
-                        ...newData.creator as PatientProfileCreatorDto,
-                        data: {
-                            ...newData.creator?.data,
-                            'examType': 'clinical'
-                        }
-                    }
+                    data: {
+                        ...newData?.data,
+                        'examType': 'clinical'
+                    },
+                    patientProfileCreatorTypeId: Number(newData.patientProfileCreatorTypeId)
+
                 }
 
-                if (newData.creator?.data['typeOfDocument']) delete newData.creator?.data['typeOfDocument']
+                if (newData?.data['typeOfDocument']) delete newData.data['typeOfDocument']
 
-                if (newData.creator?.data['emailConfirmation']) delete newData.creator?.data['emailConfirmation']
+                if (newData?.data['emailConfirmation']) delete newData.data['emailConfirmation']
 
-                if (newData.creator && newData.creator.data && newData.creator?.data['cpf'])
-                    newData.creator.data['cpf'] = cleanNumberMask(newData.creator.data['cpf'])
+                if (newData && newData.data && newData.data['cpf'])
+                    newData.data['cpf'] = cleanNumberMask(newData.data['cpf'])
 
-                if (newData.creator && newData.creator.data && newData.creator?.data['phone'])
-                    newData.creator.data['phone'] = cleanNumberMask(newData.creator.data['phone'])
+                if (newData && newData.data && newData.data['phone'])
+                    newData.data['phone'] = cleanNumberMask(newData.data['phone'])
 
-                if (newData.creator && newData.creator.data && newData.creator?.data['phone2'])
-                    newData.creator.data['phone2'] = cleanNumberMask(newData.creator.data['phone2'])
+                if (newData && newData.data && newData.data['phone2'])
+                    newData.data['phone2'] = cleanNumberMask(newData.data['phone2'])
 
                 if (newData.abrafeuRegistrationOptIn === 'false') delete newData.pastExams
 
                 if (newData.susNumber === '' || !newData.susNumber) delete newData.susNumber
 
                 try {
-                    if (newData.creator?.patientProfileCreatorTypeId === PatientProfileCreatorTypeEnum.Other) {
+                    if (newData?.patientProfileCreatorTypeId === PatientProfileCreatorTypeEnum.Other) {
 
-                        const id = newData.creator.data['creatorRelationship']
-                        newData.creator.data['creatorRelationship'] = creatorRelationship.find((_, index) => index === id)
+                        const id = newData.data['creatorRelationship']
+                        newData.data['creatorRelationship'] = creatorRelationship.find((_, index) => index === id)
 
-                        if (newData.creator.data['creatorRelationship'] as RelationshipPatient === 'Familiar') {
+                        if (newData.data['creatorRelationship'] as RelationshipPatient === 'Familiar') {
                             const kinship: {
                                 id: number,
                                 title: string
-                            } = JSON.parse(JSON.stringify(newData.creator.data['kinship']))
-                            newData.creator.data['kinship'] = kinship.title
-                        } else {                         
-                            delete newData.creator.data['kinship']
+                            } = JSON.parse(JSON.stringify(newData.data['kinship']))
+                            newData.data['kinship'] = kinship.title
+                        } else {
+                            delete newData.data['kinship']
                         }
-                        
-                        if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Profissional de Saúde') delete newData.creator.data['specialty']
 
-                        if (newData.creator.data['creatorRelationship'] as RelationshipPatient !== 'Tutor Legal') {
-                            delete newData.creator.data['guardian']
+                        if (newData.data['creatorRelationship'] as RelationshipPatient !== 'Profissional de Saúde') delete newData.data['specialty']
+
+                        if (newData.data['creatorRelationship'] as RelationshipPatient !== 'Tutor Legal') {
+                            delete newData.data['guardian']
                         } else {
                             // allowedToCreate = false
                             // try {
-                            //     const file = newData.creator.data['guardian'].attachment as DocumentPickerResponse
+                            //     const file = newData.data['guardian'].attachment as DocumentPickerResponse
                             //     const formData = new FormData()
                             //     formData.append('fileFormat', file.name)
                             //     formData.append('file', {
@@ -183,11 +182,11 @@ const SignUpScreen: FC = (): ReactElement => {
                             //         type: file.type
                             //     })
 
-                            //     const response = await uploadTutorFile(formData, newData.cpf as string, newData.creator.data['cpf'])
+                            //     const response = await uploadTutorFile(formData, newData.cpf as string, newData.data['cpf'])
 
                             //     if (response.status === 201) {
                             //         allowedToCreate = true
-                            //         newData.creator.data['guardian'].attachment.uri = '[hidden]'
+                            //         newData.data['guardian'].attachment.uri = '[hidden]'
                             //     } else {
                             //         const message: string = response.data.message.message ?? ""
                             //         if (message.includes('Patient profile already exists')) {
@@ -201,7 +200,7 @@ const SignUpScreen: FC = (): ReactElement => {
                             // }
                         }
                     } else {
-                        delete newData.creator?.responsibleEmail
+                        delete newData?.responsibleEmail
                     }
                 } catch (error) {
                     allowedToCreate = false
@@ -220,7 +219,7 @@ const SignUpScreen: FC = (): ReactElement => {
                         } else {
                             messageError = 'Ocorreu um erro. Tente novamente mais tarde.'
                         }
-                    } else await createPatientProfileCreator(Number(response.data.patientId), newData.creator)
+                    }
 
                     setIsLoading(false)
                     setSending(false)

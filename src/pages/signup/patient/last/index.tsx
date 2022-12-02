@@ -39,7 +39,7 @@ const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): Rea
       if (result === 1) {
         setIsLegalAge(true)
 
-        const opRelation = form.getValues('creator.patientProfileCreatorTypeId')
+        const opRelation = form.getValues('patientProfileCreatorTypeId')
         if (opRelation) {
           setSelectedIndexRelationPatient(opRelation === '0' ? profileCreator.length - 1 : Number(opRelation) - 1)
           opRelation === '0' ?
@@ -50,10 +50,10 @@ const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): Rea
         setIsLegalAge(false)
         setSelectedIndexRelationPatient(profileCreator.length - 1)
         setPatientProfileCreator('0' as PatientProfileCreatorTypeEnum)
-        form.setValue('creator.patientProfileCreatorTypeId', '0' as PatientProfileCreatorTypeEnum)
+        form.setValue('patientProfileCreatorTypeId', '0' as PatientProfileCreatorTypeEnum)
       }
 
-      const idRelationship = form.getValues('creator.data.creatorRelationship')
+      const idRelationship = form.getValues('data.creatorRelationship')
       if (idRelationship)
         setRelationship(creatorRelationship.find((_, i) => i === idRelationship))
       else if (!idRelationship && !isLegalAge && result !== 1) setIsVisible(true)
@@ -70,14 +70,15 @@ const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): Rea
 
   const handleRadioSelected = (index: number) => {
     if (index !== selectedIndexRelationPatient) {
-      form.resetField('creator')
+      form.resetField('data')
+      form.resetField('responsibleEmail')
       setRelationship(undefined)
     }
     setSelectedIndexRelationPatient(index)
     const id = getRelationPatient(index)
     id ? setPatientProfileCreator(id as PatientProfileCreatorTypeEnum) : null
-    form.setValue("creator.patientProfileCreatorTypeId", id as PatientProfileCreatorTypeEnum)
-    form.clearErrors("creator.patientProfileCreatorTypeId")
+    form.setValue("patientProfileCreatorTypeId", id as PatientProfileCreatorTypeEnum)
+    form.clearErrors("patientProfileCreatorTypeId")
 
     if (id === PatientProfileCreatorTypeEnum.Other && !relationship) setIsVisible(true)
 
@@ -126,9 +127,9 @@ const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): Rea
               })}
             </RadioGroup>
           )}
-          name='creator.patientProfileCreatorTypeId'
+          name='patientProfileCreatorTypeId'
         />
-        <CustomErrorMessage name='creator.patientProfileCreatorTypeId' errors={form.formState.errors} />
+        <CustomErrorMessage name='patientProfileCreatorTypeId' errors={form.formState.errors} />
       </View>
       {patientProfileCreator === PatientProfileCreatorTypeEnum.Other && relationship ?
         <>
@@ -187,7 +188,7 @@ const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): Rea
                   onChange(index)
                   setRelationship(creatorRelationship.find((_, i) => i === index))
                   setIsVisible(false)
-                  form.clearErrors('creator.data')
+                  form.clearErrors('data')
                 }}
               >
                 {creatorRelationship.map((item, i) => (
@@ -195,7 +196,7 @@ const PatientSignUpEndScreen: FC<PatientSignUpProps> = ({ form, onSubmit }): Rea
                 ))}
               </RadioGroup>
             )}
-            name='creator.data.creatorRelationship'
+            name='data.creatorRelationship'
           />
         </Card>
       </Modal>

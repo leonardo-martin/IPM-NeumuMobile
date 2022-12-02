@@ -1,7 +1,8 @@
 import { JSONObject } from "./Common"
 import { ExamDNA } from "./Patient"
-import { PatientProfileCreatorDto } from "./PatientProfileCreator"
+import { PatientProfileCreatorDto, PatientProfileCreatorTypeEnum } from "./PatientProfileCreator"
 import { UserRole } from "./UserRole"
+import { VisitAddress } from "./VisitAddress"
 
 export interface AuthenticationPayload {
     accessToken: string
@@ -110,7 +111,17 @@ export class UserPatientData extends UserData {
     partner?: string
     mothersName?: string
     susNumber?: string
-    creator?: PatientProfileCreatorDto
+    createdPatientProfileId?: string | number
+    patientProfileCreatorTypeId?:
+        | PatientProfileCreatorTypeEnum
+        | number
+        | undefined
+    data?: JSONObject | string | any
+    underAgePatientProfileId?: number
+    responsibleEmailKey?: string
+    responsibleEmail?: string
+    responsibleEmailSent?: boolean
+    responsibleEmailOk?: boolean
     abrafeuRegistrationOptIn?: string
     pastExams?: ExamDNA
 
@@ -136,16 +147,30 @@ export class UserPatientData extends UserData {
         country?: string,
         sex?: string,
         mothersName?: string, susNumber?: string,
-        creator?: PatientProfileCreatorDto,
         abrafeuRegistrationOptIn?: string,
         pastExams?: ExamDNA,
+        createdPatientProfileId?: string | number,
+        patientProfileCreatorTypeId?: PatientProfileCreatorTypeEnum | number,
+        data?: JSONObject | string | any,
+        underAgePatientProfileId?: number,
+        responsibleEmailKey?: string,
+        responsibleEmail?: string,
+        responsibleEmailSent?: boolean,
+        responsibleEmailOk?: boolean,
         partner?: string) {
 
         super(name, cpf, rne, typeOfDocument, countryCode, email, emailConfirmation, phone, phone2, username,
             password, city, state, dateOfBirth, postalCode, address1, address2, addressComplement, country, sex)
         this.mothersName = mothersName
         this.susNumber = susNumber
-        this.creator = creator
+        this.createdPatientProfileId = createdPatientProfileId
+        this.patientProfileCreatorTypeId = patientProfileCreatorTypeId
+        this.data = data
+        this.underAgePatientProfileId = underAgePatientProfileId
+        this.responsibleEmailKey = responsibleEmailKey
+        this.responsibleEmail = responsibleEmail
+        this.responsibleEmailSent = responsibleEmailSent
+        this.responsibleEmailOk = responsibleEmailOk
         this.abrafeuRegistrationOptIn = abrafeuRegistrationOptIn
         this.pastExams = pastExams
         this.confirmPassword = confirmPassword
@@ -159,6 +184,7 @@ export class UserDoctorData extends UserData {
     crm?: string
     specialty?: MedicalSpecialtyDto
     professionalTypeId?: string
+    visitAddress?: VisitAddress[]
 
     constructor(name?: string,
         cpf?: string,
@@ -182,7 +208,8 @@ export class UserDoctorData extends UserData {
         country?: string,
         sex?: string,
         crm?: string, specialty?: MedicalSpecialtyDto,
-        professionalTypeId?: string) {
+        professionalTypeId?: string,
+        visitAddress?: VisitAddress[]) {
 
         super(name, cpf, rne, typeOfDocument, countryCode, email, emailConfirmation, phone, phone2, username,
             password, city, state, dateOfBirth, postalCode, address1, address2, addressComplement, country, sex)
@@ -190,6 +217,7 @@ export class UserDoctorData extends UserData {
         this.specialty = specialty
         this.professionalTypeId = professionalTypeId
         this.confirmPassword = confirmPassword
+        this.visitAddress = visitAddress
         Object.setPrototypeOf(this, UserDoctorData.prototype)
     }
 }
