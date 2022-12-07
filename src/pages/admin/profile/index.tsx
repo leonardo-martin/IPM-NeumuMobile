@@ -15,7 +15,7 @@ import { STORAGE } from 'constants/storage'
 import React, { FC, ReactElement, useCallback, useState } from 'react'
 import { Alert, ImageStyle, StyleProp, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'
-import { AppStorage } from 'services/app-storage.service'
+import { AppStorageService } from 'services/app-storage.service'
 import { commonData, operatorBaseData, patientBaseData, specialistBaseData } from './data'
 import { profileStyle } from './style'
 
@@ -105,6 +105,7 @@ const ProfileScreen: FC = (): ReactElement => {
           else if (matchId === 6) errorMessage = 'Para apagar a conta, você precisa cancelar todas suas consultas não confirmadas'
           else if (matchId === 7) errorMessage = 'Usuário especial não encontrado'
           else if (matchId === 8) errorMessage = 'Usuário não encontrado'
+          else if (matchId === 9) errorMessage = 'Dados inconsistentes. Entre em contato com o administrador'
 
           Toast.show({
             type: 'warning',
@@ -155,7 +156,7 @@ const ProfileScreen: FC = (): ReactElement => {
   }, [profilePic])
 
   const verifyIfUserTestIsLogged = async () => {
-    const res = await AppStorage.getItem(STORAGE.TESTE_USER)
+    const res = await AppStorageService.getItem(STORAGE.TESTE_USER)
     if (res)
       setDeleteDisabled(true)
     else

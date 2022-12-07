@@ -15,7 +15,7 @@ interface CardAddressProps {
     styles?: StyleSheet.NamedStyles<any>
     handleFetchingData: Dispatch<React.SetStateAction<boolean>>
     isFetching?: boolean
-    textFieldPrefix?: '' | 'creator.data.'
+    textFieldPrefix?: '' | 'data.'
 }
 
 const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
@@ -289,8 +289,8 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                 name={`${textFieldPrefix}postalCode` as const}
                 defaultValue=''
             />
-            {textFieldPrefix === 'creator.data.' ?
-                <CustomErrorMessage name='creator.data.postalCode' errors={form.formState.errors} /> :
+            {textFieldPrefix === 'data.' ?
+                <CustomErrorMessage name='data.postalCode' errors={form.formState.errors} /> :
                 textFieldPrefix === '' ?
                     <CustomErrorMessage name='postalCode' errors={form.formState.errors} />
                     : null
@@ -328,8 +328,8 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                 name={`${textFieldPrefix}address1` as const}
                 defaultValue=''
             />
-            {textFieldPrefix === 'creator.data.' ?
-                <CustomErrorMessage name='creator.data.address1' errors={form.formState.errors} /> :
+            {textFieldPrefix === 'data.' ?
+                <CustomErrorMessage name='data.address1' errors={form.formState.errors} /> :
                 textFieldPrefix === '' ?
                     <CustomErrorMessage name='address1' errors={form.formState.errors} />
                     : null
@@ -369,8 +369,8 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                 name={`${textFieldPrefix}address2` as const}
                 defaultValue=''
             />
-            {textFieldPrefix === 'creator.data.' ?
-                <CustomErrorMessage name='creator.data.address2' errors={form.formState.errors} /> :
+            {textFieldPrefix === 'data.' ?
+                <CustomErrorMessage name='data.address2' errors={form.formState.errors} /> :
                 textFieldPrefix === '' ?
                     <CustomErrorMessage name='address2' errors={form.formState.errors} />
                     : null
@@ -405,8 +405,8 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                 name={`${textFieldPrefix}addressComplement` as const}
                 defaultValue=''
             />
-            {textFieldPrefix === 'creator.data.' ?
-                <CustomErrorMessage name='creator.data.addressComplement' errors={form.formState.errors} /> :
+            {textFieldPrefix === 'data.' ?
+                <CustomErrorMessage name='data.addressComplement' errors={form.formState.errors} /> :
                 textFieldPrefix === '' ?
                     <CustomErrorMessage name='addressComplement' errors={form.formState.errors} />
                     : null
@@ -442,8 +442,8 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                 name={`${textFieldPrefix}country` as const}
                 defaultValue=''
             />
-            {textFieldPrefix === 'creator.data.' ?
-                <CustomErrorMessage name='creator.data.country' errors={form.formState.errors} /> :
+            {textFieldPrefix === 'data.' ?
+                <CustomErrorMessage name='data.country' errors={form.formState.errors} /> :
                 textFieldPrefix === '' ?
                     <CustomErrorMessage name='country' errors={form.formState.errors} />
                     : null
@@ -484,8 +484,8 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                         defaultValue=''
                     />
 
-                    {textFieldPrefix === 'creator.data.' ?
-                        <CustomErrorMessage name='creator.data.state' errors={form.formState.errors} /> :
+                    {textFieldPrefix === 'data.' ?
+                        <CustomErrorMessage name='data.state' errors={form.formState.errors} /> :
                         textFieldPrefix === '' ?
                             <CustomErrorMessage name='state' errors={form.formState.errors} />
                             : null
@@ -522,8 +522,8 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                         name={`${textFieldPrefix}city` as const}
                         defaultValue=''
                     />
-                    {textFieldPrefix === 'creator.data.' ?
-                        <CustomErrorMessage name='creator.data.city' errors={form.formState.errors} /> :
+                    {textFieldPrefix === 'data.' ?
+                        <CustomErrorMessage name='data.city' errors={form.formState.errors} /> :
                         textFieldPrefix === '' ?
                             <CustomErrorMessage name='city' errors={form.formState.errors} />
                             : null
@@ -565,8 +565,8 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                         name={`${textFieldPrefix}state` as const}
                         defaultValue=''
                     />
-                    {textFieldPrefix === 'creator.data.' ?
-                        <CustomErrorMessage name='creator.data.state' errors={form.formState.errors} /> :
+                    {textFieldPrefix === 'data.' ?
+                        <CustomErrorMessage name='data.state' errors={form.formState.errors} /> :
                         textFieldPrefix === '' ?
                             <CustomErrorMessage name='state' errors={form.formState.errors} />
                             : null
@@ -604,8 +604,8 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
                         name={`${textFieldPrefix}city` as const}
                         defaultValue=''
                     />
-                    {textFieldPrefix === 'creator.data.' ?
-                        <CustomErrorMessage name='creator.data.city' errors={form.formState.errors} /> :
+                    {textFieldPrefix === 'data.' ?
+                        <CustomErrorMessage name='data.city' errors={form.formState.errors} /> :
                         textFieldPrefix === '' ?
                             <CustomErrorMessage name='city' errors={form.formState.errors} />
                             : null

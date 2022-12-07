@@ -5,7 +5,7 @@ import AppRoutes from '@routes/app.routes'
 import AuthRoutes from '@routes/auth.routes'
 import OnboardingRoutes from '@routes/onboarding.routes'
 import { AppInfoService } from '@services/app-info.service'
-import { AppStorage } from '@services/app-storage.service'
+import { AppStorageService } from '@services/app-storage.service'
 import { authLogin, getVersionTest } from '@services/auth.service'
 import { LogService } from '@services/log.service'
 import { RootState } from '@store/index'
@@ -36,8 +36,8 @@ const Routes: FC = (): ReactElement => {
                 }, true))
 
                 logService.loga('Login realizado com sucesso')
-                await AppStorage.setItem(STORAGE.TESTE_USER, 'true')
-                AppStorage.setItem(ONBOARDING, 'true').then(() => {
+                await AppStorageService.setItem(STORAGE.TESTE_USER, 'true')
+                AppStorageService.setItem(ONBOARDING, 'true').then(() => {
                     setOnboarded(true)
                     setIsLoading(false)
                 })
@@ -56,7 +56,7 @@ const Routes: FC = (): ReactElement => {
 
     const checkOnboarding = async () => {
         try {
-            const value = await AppStorage.getItem(ONBOARDING)
+            const value = await AppStorageService.getItem(ONBOARDING)
             if (value) {
                 setOnboarded(true)
             }
