@@ -34,6 +34,8 @@ export const matchMessage = (message: any) => {
             return 7
         } else if (JSON.stringify(message).match('User not found')) {
             return 8
+        } else if (JSON.stringify(message).match('Error when trying to storage user data or delete user')) {
+            return 9
         }
     return 0
 }

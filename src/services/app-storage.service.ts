@@ -2,7 +2,7 @@ import { THEME_KEY } from '@constants/storage'
 import { Theme } from '@models/Theme'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export class AppStorage {
+export class AppStorageService {
 
     static clear = async (): Promise<void> => {
         await AsyncStorage.clear()

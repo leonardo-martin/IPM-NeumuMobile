@@ -7,7 +7,7 @@ import { EUserRole } from '@models/UserRole'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect } from '@react-navigation/native'
 import { AppInfoService } from '@services/app-info.service'
-import { AppStorage } from '@services/app-storage.service'
+import { AppStorageService } from '@services/app-storage.service'
 import { logout } from '@store/ducks/auth'
 import { RootState } from '@store/index'
 import { Avatar, Divider, Drawer, DrawerGroup, DrawerItem, Icon, IconProps, IndexPath, Text, useTheme } from '@ui-kitten/components'
@@ -38,7 +38,7 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
   )
 
   const verifyIfUserTestIsLogged = async () => {
-    const res = await AppStorage.getItem(STORAGE.TESTE_USER)
+    const res = await AppStorageService.getItem(STORAGE.TESTE_USER)
     if (res)
       setExitDisabled(true)
     else

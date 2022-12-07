@@ -11,7 +11,7 @@ import { ApprovalsMessageError } from '@models/Common'
 import { LoginDto } from '@models/User'
 import { useIsFocused, useNavigation } from '@react-navigation/native'
 import { AppInfoService } from '@services/app-info.service'
-import { AppStorage } from '@services/app-storage.service'
+import { AppStorageService } from '@services/app-storage.service'
 import { authLogin } from '@services/auth.service'
 import { Button, CheckBox, Icon, IconProps, Input, Modal, Text, useStyleSheet } from '@ui-kitten/components'
 import { matchMessage, openMailTo } from '@utils/common'
@@ -45,7 +45,7 @@ const SignInScreen: FC = (): ReactElement => {
   const form = useForm<LoginDto>()
 
   const getStoredUsernameAndPassword = async () => {
-    const isRemember = await AppStorage.getItem('REMEMBER_ACCESS')
+    const isRemember = await AppStorageService.getItem('REMEMBER_ACCESS')
     if (isRemember === 'true') {
 
       try {
