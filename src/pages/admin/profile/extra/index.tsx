@@ -16,10 +16,11 @@ import { Button, Icon, IconProps, useStyleSheet } from '@ui-kitten/components'
 import { getDocumentType, getEntityType } from '@utils/entity'
 import { cleanNumberMask, formatCpf, formatPostalCode, formatRNM } from '@utils/mask'
 import { validateCNS } from '@utils/validators'
+import { AxiosError } from 'axios'
 import { compareAsc, subYears } from 'date-fns'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Alert, ImageStyle, Keyboard, Platform, RefreshControl, ScrollView, StyleProp, View } from 'react-native'
+import { Alert, ImageStyle, Keyboard, Platform, RefreshControl, ScrollView, StyleProp } from 'react-native'
 import { Asset } from 'react-native-image-picker'
 import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
@@ -53,8 +54,10 @@ const EditProfileScreen: FC = (): ReactElement => {
     try {
       if (sessionUser?.userRole.find(e => e.id === EUserRole.patient)) {
         let result = compareAsc(subYears(new Date(), 18), userDetails?.dateOfBirth as string)
+        let bUnderage = false
         if (result !== 1) {
           setUnderage(true)
+          bUnderage = true
         } else {
           setUnderage(false)
         }
@@ -66,7 +69,7 @@ const EditProfileScreen: FC = (): ReactElement => {
             mothersName: response.data.patientDto.mothersName,
             susNumber: response.data.patientDto.susNumber,
             sex: response.data.patientDto.sex ?? undefined,
-            ...underage && patientDisplay?.patientProfileCreatorDto.patientProfileCreatorTypeId !== 1 && {
+            ...bUnderage && patientDisplay?.patientProfileCreatorDto.patientProfileCreatorTypeId !== 1 && {
               responsiblePersonEmail: response.data.responsiblePersonEmail ?? JSON.parse(response.data.patientProfileCreatorDto.data as string).email,
               responsiblePersonName: JSON.parse(response.data.patientProfileCreatorDto.data as string).name
             }
@@ -93,10 +96,18 @@ const EditProfileScreen: FC = (): ReactElement => {
         await loadProfilePic(sessionUser.userId)
       }
     } catch (error) {
-      Toast.show({
-        type: 'danger',
-        text2: 'Erro ao carregar o perfil',
-      })
+
+      if (error instanceof AxiosError) {
+        Toast.show({
+          type: 'danger',
+          text2: 'Erro ao carregar dados do perfil',
+        })
+      } else {
+        Toast.show({
+          type: 'danger',
+          text2: 'Erro ao carregar o perfil',
+        })
+      }
     }
     setIsLoading(false)
   }
@@ -214,12 +225,18 @@ const EditProfileScreen: FC = (): ReactElement => {
         )
       }
 
-    } catch (err: any) {
-      console.error(err)
-      Toast.show({
-        type: 'danger',
-        text2: 'Ocorreu um erro ao abrir a biblioteca',
-      })
+    } catch (error: any) {
+      if (error instanceof AxiosError) {
+        Toast.show({
+          type: 'danger',
+          text2: 'Ocorreu um erro ao abrir a biblioteca',
+        })
+      } else {
+        Toast.show({
+          type: 'danger',
+          text2: 'Erro ao abrir a biblioteca de fotos',
+        })
+      }
     }
   }
 
