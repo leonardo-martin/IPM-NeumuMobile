@@ -158,5 +158,37 @@ export const registerStyle = StyleSheet.create({
     contactLink: {
         color: 'color-primary-default',
         fontWeight: '600'
+    },
+    partnerContainer: {
+        paddingHorizontal: 20,
+        paddingTop: 5,
+        alignItems: 'center',
+    },
+    partnerTitle: {
+        color: 'text-hint-color',
+        fontFamily: "System",
+        fontSize: 12,
+        fontWeight: "800",
+        marginBottom: 5,
+        textAlign: "left"
+    },
+    partnerText: {
+        fontSize: 18,
+        fontWeight: '600'
+    },
+    partnerBtn: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'color-primary-500',
+        borderColor: 'border-basic-color-5',
+        borderWidth: .5,
+        borderRadius: 4,
+        padding: 5
+    },
+    partnerTextContainer: {
+        flexDirection: 'row',
+        paddingHorizontal: 15,
+        paddingVertical: 5,
+        justifyContent: 'space-between'
     }
 })

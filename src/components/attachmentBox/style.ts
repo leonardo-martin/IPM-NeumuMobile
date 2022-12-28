@@ -1,33 +1,46 @@
 import { StyleSheet } from 'react-native'
 
 export const attachBoxStyle = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    paddingVertical: 15
+  },
   text: {
     fontSize: 12,
     fontWeight: '600',
   },
-  attachDoc: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: 50,
+  button: {
     backgroundColor: 'background-basic-color-3',
-    marginBottom: 5,
-    borderWidth: 1,
     borderColor: 'border-basic-color-5',
+    borderWidth: .5,
+    borderRadius: 4,
+  },
+  buttonDownload: {
+    backgroundColor: 'color-primary-500',
+    borderColor: 'border-basic-color-5',
+    borderWidth: .5,
+    borderRadius: 4,
+  },
+  buttonRemove: {
+    backgroundColor: 'color-danger-500',
+    borderColor: 'border-danger-color-2',
+    borderWidth: .5,
     borderRadius: 4
   },
   icon: {
     color: 'text-hint-color'
   },
-  textFile: {
-    color: 'text-basic-color',
-    flexWrap: 'wrap',
-    width: '70%',
-    textAlign: 'center',
-    paddingVertical: 5 
+  textControl: {
+    color: 'text-control-color',
   },
-  iconRed: {
-    color: 'color-danger-500'
+  iconControl: {
+    color: 'color-control-default'
+  },
+  containerButton: {
+    alignItems: 'center',
+    padding: 25,
+    minWidth: 100
   },
   label: {
     color: 'text-hint-color',
@@ -39,7 +52,7 @@ export const attachBoxStyle = StyleSheet.create({
   },
   containerFile: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
   }
 })

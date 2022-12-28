@@ -25,10 +25,10 @@ export const scheduleStyle = StyleSheet.create({
     alignItems: 'center',
   },
   cardText: {
-    fontStyle: 'normal',
-    fontWeight: 'normal',
     lineHeight: 26,
+    flexShrink: 1,
     flexWrap: 'wrap',
+    fontSize: 18,
     paddingHorizontal: 30,
   },
   card: {
@@ -37,7 +37,7 @@ export const scheduleStyle = StyleSheet.create({
     borderWidth: 1,
     borderStyle: 'solid',
     borderRadius: 15,
-    height: 100,
+    minHeight: 100,
   },
   text: {
     textAlign: 'center',

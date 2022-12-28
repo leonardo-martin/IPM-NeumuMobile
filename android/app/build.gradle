@@ -1,4 +1,14 @@
-apply plugin: 'com.android.application'
+plugins {
+  id 'com.android.application'
+  // Add the Google services Gradle plugin
+  id 'com.google.gms.google-services'
+}
+project.ext.envConfigFiles = [
+    development: ".env.development",
+    production: ".env.production",
+]
+
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 import com.android.build.OutputFile
 
@@ -139,13 +149,26 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+    packagingOptions {
+        jniLibs {
+            pickFirsts += ['**/*.so']
+            pickFirsts += ['**/*.so']
+        }
+    }
+
+
+    sourceSets {
+        main {
+            assets.srcDirs = ["$rootDir/../db/", 'src/main/assets/']
+        }
+    }
 
     defaultConfig {
-        applicationId 'com.teleneumu'
+        applicationId 'net.atos.teleneumu'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 9
-        versionName '1.3.9'
+        versionCode 18
+        versionName '1.5.28'
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
 
         if (isNewArchitectureEnabled()) {
@@ -158,18 +181,13 @@ android {
                         "GENERATED_SRC_DIR=$buildDir/generated/source",
                         "PROJECT_BUILD_DIR=$buildDir",
                         "REACT_ANDROID_DIR=$rootDir/../node_modules/react-native/ReactAndroid",
-                        "REACT_ANDROID_BUILD_DIR=$rootDir/../node_modules/react-native/ReactAndroid/build"
+                        "REACT_ANDROID_BUILD_DIR=$rootDir/../node_modules/react-native/ReactAndroid/build",
+                        "NODE_MODULES_DIR=$rootDir/../node_modules"
                     cFlags "-Wall", "-Werror", "-fexceptions", "-frtti", "-DWITH_INSPECTOR=1"
                     cppFlags "-std=c++17"
                     // Make sure this target name is the same you specify inside the
                     // src/main/jni/Android.mk file for the `LOCAL_MODULE` variable.
                     targets "awesometsproject_appmodules"
-
-                    // Fix for windows limit on number of character in file paths and in command lines
-                    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                        arguments "NDK_OUT=${rootProject.projectDir.getParent()}\\.cxx",
-                            "NDK_APP_SHORT_COMMANDS=true"
-                    }
                 }
             }
             if (!enableSeparateBuildPerCPUArchitecture) {
@@ -178,6 +196,8 @@ android {
                 }
             }
         }
+        manifestPlaceholders = [schemeDeepLinking: "teleneumuappdev"]
+
     }
 
     if (isNewArchitectureEnabled()) {
@@ -226,7 +246,7 @@ android {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
             universalApk false  // If true, also generate a universal APK
-           include (*reactNativeArchitectures())
+            include (*reactNativeArchitectures())
         }
     }
     signingConfigs {
@@ -249,21 +269,39 @@ android {
             signingConfig signingConfigs.debug
             resValue "string", "CodePushDeploymentKey", '""'
         }
-        releaseStaging {
-            resValue "string", "CodePushDeploymentKey", '"DJ88mOVVktCdZUmAwDOfFQMLnfZluOpNgE4vi"'
-
-            // Note: It is a good idea to provide matchingFallbacks for the new buildType you create to prevent build issues
-            // Add the following line if not already there
-            matchingFallbacks = ['release']
-        }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            // signingConfig signingConfigs.release // (Comment this line (App Center). Uncomment only if you are releasing to playstore.)
+            signingConfig signingConfigs.release // (Comment this line (App Center). Uncomment only if you are releasing to playstore.)
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
 
-            resValue "string", "CodePushDeploymentKey", '"vs3aIHhQBCzQU9TzwFMFDai_CU-StQ13QhYxU"'
+    flavorDimensions 'br.com.teleneumu'
+
+    productFlavors {
+        development {   
+            dimension 'br.com.teleneumu'
+            applicationId 'net.atos.teleneumu'
+            signingConfig signingConfigs.release
+            manifestPlaceholders = [ 
+                schemeDeepLinking: "teleneumuappdev"
+            ]
+            resValue "string", "CodePushDeploymentKey", '"DJ88mOVVktCdZUmAwDOfFQMLnfZluOpNgE4vi"'
+            resValue "string", "app_name", '"' + "${project.rootProject.name}" + ' Test"'   
+            resValue "string", "build_config_package", defaultConfig.applicationId
+        }
+        production {  
+            dimension 'br.com.teleneumu'
+            applicationId 'com.teleneumu'
+            signingConfig signingConfigs.release
+            manifestPlaceholders = [ 
+                schemeDeepLinking: "teleneumuapp"
+            ]
+            resValue "string", "CodePushDeploymentKey", '"vs3aIHhQBCzQU9TzwFMFDai_CU"'
+            resValue "string", "app_name", '"' + "${project.rootProject.name}" + '"'
+            resValue "string", "build_config_package", defaultConfig.applicationId
         }
     }
 
@@ -279,6 +317,10 @@ android {
                 output.versionCodeOverride =
                         defaultConfig.versionCode * 1000 + versionCodes.get(abi)
             }
+            def newName = output.outputFile.name            
+            newName = newName.replace("app-", "${project.rootProject.name}-")
+            newName = newName.replace("-release", "-release-" + defaultConfig.versionName)
+            output.outputFileName = newName
         }
     }
 }
@@ -303,14 +345,18 @@ dependencies {
     }
 
     if (enableHermes) {
-        def hermesPath = '../../node_modules/hermes-engine/android/'
-        debugImplementation files(hermesPath + 'hermes-debug.aar')
-        releaseImplementation files(hermesPath + 'hermes-release.aar')
+        //noinspection GradleDynamicVersion
+        implementation("com.facebook.react:hermes-engine:+") { // From node_modules
+            exclude group:'com.facebook.fbjni'
+        }
     } else {
         implementation jscFlavor
     }
 
     implementation project(':react-native-vector-icons')
+    implementation project(':react-native-fs')
+
+    implementation platform('com.google.firebase:firebase-bom:30.4.1')
 }
 
 // Run this once to be able to run the application with BUCK
@@ -322,6 +368,7 @@ task copyDownloadableDepsToLibs(type: Copy) {
 
 task printProperties {
     doFirst {
+        println "APP_NAME           = " + "${project.rootProject.name}"
         println '############# gradle.properties #############'
         println 'storeFile          = ' + (rootProject.file('app/release.keystore') != null ? rootProject.file('app/release.keystore') : file(project.property('APPCENTER_KEYSTORE_FILE')))
         println 'storePassword      = ' + (System.getProperty('APPCENTER_KEYSTORE_PASSWORD') != null ? System.getProperty('APPCENTER_KEYSTORE_PASSWORD') : project.property('APPCENTER_KEYSTORE_PASSWORD'))
@@ -329,6 +376,14 @@ task printProperties {
         println 'keyPassword        = ' + (System.getProperty('APPCENTER_KEY_PASSWORD') != null ? System.getProperty('APPCENTER_KEY_PASSWORD') : project.property('APPCENTER_KEY_PASSWORD'))
         println '############# gradle.properties #############'
     }
+}
+
+task wrapper(type: Wrapper){
+    gradleVersion = '7.4.2'
+}
+
+task prepareKotlinBuildScriptModel {
+
 }
 
 def isNewArchitectureEnabled() {

@@ -1,13 +1,10 @@
+import { SafeAreaLayout } from '@components/safeAreaLayout'
+import { Text, useStyleSheet } from '@ui-kitten/components'
 import React, { FC, ReactElement } from 'react'
 import { ScrollView, View } from 'react-native'
-import { Text, useStyleSheet } from '@ui-kitten/components'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { helpStyle } from './style'
-import { SafeAreaLayout } from '@components/safeAreaLayout'
 
-const HelpScreen: FC<DrawerContentComponentProps> = ({
-  navigation
-}): ReactElement => {
+const HelpScreen: FC = (): ReactElement => {
 
   const styles = useStyleSheet(helpStyle)
   return (

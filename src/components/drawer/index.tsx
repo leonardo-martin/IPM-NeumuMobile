@@ -1,15 +1,18 @@
 import HouseIcon from '@assets/svg/house.svg'
 import PhoneIcon from '@assets/svg/phone.svg'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
+import { STORAGE } from '@constants/storage'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { EUserRole } from '@models/UserRole'
 import { DrawerContentComponentProps } from '@react-navigation/drawer'
+import { useFocusEffect } from '@react-navigation/native'
 import { AppInfoService } from '@services/app-info.service'
+import { AppStorageService } from '@services/app-storage.service'
 import { logout } from '@store/ducks/auth'
 import { RootState } from '@store/index'
 import { Avatar, Divider, Drawer, DrawerGroup, DrawerItem, Icon, IconProps, IndexPath, Text, useTheme } from '@ui-kitten/components'
 import { toInitials } from '@utils/common'
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useCallback, useState } from 'react'
 import { ImageBackground, View } from 'react-native'
 import { drawerStyle } from './style'
 
@@ -19,6 +22,7 @@ const iconSizeDefault = 20
 const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
 
   const dispatch = useAppDispatch()
+  const [exitDisabled, setExitDisabled] = useState<boolean>(false)
   const { sessionUser } = useAppSelector((state: RootState) => state.auth)
   const { profile } = useAppSelector((state: RootState) => state.profile)
 
@@ -31,6 +35,20 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
 
   const CalendarIcon = (props: IconProps) => (
     <Icon {...props} name='calendar-outline' size={iconSizeDefault} pack='ionicons' />
+  )
+
+  const verifyIfUserTestIsLogged = async () => {
+    const res = await AppStorageService.getItem(STORAGE.TESTE_USER)
+    if (res)
+      setExitDisabled(true)
+    else
+      setExitDisabled(false)
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      verifyIfUserTestIsLogged()
+    }, [])
   )
 
   const renderHeader = (): ReactElement => (
@@ -139,14 +157,16 @@ const DrawerContent = (props: DrawerContentComponentProps): ReactElement => {
             <Icon {...props} name="help-circle-outline" size={iconSizeDefault} pack='ionicons' />
           )}
         /> */}
-        <DrawerItem
-          style={drawerStyle.drawerItem}
-          title='Sair'
-          onPress={() => dispatch(logout())}
-          accessoryLeft={(props: IconProps) => (
-            <Icon {...props} name='log-out-outline' size={iconSizeDefault} pack='ionicons' />
-          )}
-        />
+        {!exitDisabled ? (
+          <DrawerItem
+            style={drawerStyle.drawerItem}
+            title='Sair'
+            onPress={() => dispatch(logout())}
+            accessoryLeft={(props: IconProps) => (
+              <Icon {...props} name='log-out-outline' size={iconSizeDefault} pack='ionicons' />
+            )}
+          />
+        ) : <></>}
       </Drawer>
     </View >
   )

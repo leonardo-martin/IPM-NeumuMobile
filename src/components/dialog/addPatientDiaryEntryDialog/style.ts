@@ -45,6 +45,11 @@ export const modalStyle = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 15
   },
+  textSubtitle: {
+    fontSize: 10,
+    fontWeight: '400',
+    paddingBottom: 15,
+  }
 })
 
 

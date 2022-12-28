@@ -1,6 +1,6 @@
 import { Divider, Input, InputProps, Layout, LayoutProps, Text } from '@ui-kitten/components'
-import React, { FC, ReactElement } from 'react'
-import { StyleSheet, View } from 'react-native'
+import React, { FC, ReactElement, useRef } from 'react'
+import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native'
 
 export interface ProfileSettingProps extends LayoutProps {
   hint: string
@@ -10,24 +10,31 @@ export interface ProfileSettingProps extends LayoutProps {
 const ProfileSetting: FC<ProfileSettingProps> = ({ style,
   hint, inputProps, ...layoutProps }): ReactElement => {
 
+  const inputRef = useRef<Input>(null)
+  const onFocus = () => inputRef.current?.focus()
+
   return (
     <React.Fragment>
       <Layout
         level='1'
         {...layoutProps}
         style={[styles.container, style]}>
-        <View style={styles.view}>
-          <Text
-            appearance='hint'
-            category='label'>
-            {hint}
-          </Text>
-          <Input
-            {...inputProps}
-            size='small' style={styles.input}
-            textStyle={styles.textStyle}
-          />
-        </View>
+        <TouchableWithoutFeedback onPressIn={onFocus}>
+          <View style={styles.view} >
+            <Text
+              style={styles.label}
+              appearance='hint'>
+              {hint}
+            </Text>
+            <Input
+              {...inputProps}
+              ref={inputRef}
+              size='small'
+              style={styles.input}
+              textStyle={styles.textStyle}
+            />
+          </View>
+        </TouchableWithoutFeedback>
       </Layout>
       <Divider />
     </React.Fragment>
@@ -53,9 +60,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     width: '50%'
   },
+  label: {
+    fontSize: 14
+  },
   textStyle: {
     minHeight: 30,
     textAlignVertical: 'center',
-    fontSize: 12
+    fontSize: 16,
+    fontWeight: '600'
   }
 })

@@ -1,27 +1,34 @@
+import { STORAGE } from '@constants/storage'
 import { AuthenticationPayload, LoginDto } from '@models/User'
+import { VersionTestDto } from '@models/VersionTest'
 import { login } from '@store/ducks/auth'
 import { AppDispatch } from '@store/index'
+import { cleanNumberMask } from '@utils/mask'
 import { AxiosResponse } from 'axios'
+import { validate as validateCPF } from 'gerador-validador-cpf'
 import Keychain from 'react-native-keychain'
 import { api } from './api.service'
-import { AppStorage } from './app-storage.service'
+import { AppStorageService } from './app-storage.service'
 
 const _optionsKeychain: Keychain.Options = {
     service: 'sec_login', storage: Keychain.STORAGE_TYPE.RSA
 }
 
-export const authLogin = (authentication: LoginDto, _rememberAcess?: boolean) => (dispatch: AppDispatch): Promise<any> => {
-    return api.post('auth', authentication)
+export const authLogin = (auth: LoginDto, _rememberAcess?: boolean) => (dispatch: AppDispatch): Promise<any> => {
+    return api.post('auth', {
+        ...auth,
+        username: validateCPF(auth.username) ? cleanNumberMask(auth.username) : auth.username
+    })
         .then(async (res: AxiosResponse<AuthenticationPayload>) => {
             if (res.data.accessToken) {
 
-                if (_rememberAcess) {
-                    await Keychain.setGenericPassword(authentication.username, authentication.password, _optionsKeychain)
-                    await AppStorage.setItem('REMEMBER_ACCESS', 'true')
+                await AppStorageService.removeItem(STORAGE.TESTE_USER)
+                await Keychain.resetGenericPassword(_optionsKeychain)
+                await AppStorageService.removeItem('REMEMBER_ACCESS')
 
-                } else {
-                    await Keychain.resetGenericPassword(_optionsKeychain)
-                    await AppStorage.removeItem('REMEMBER_ACCESS')
+                if (_rememberAcess) {
+                    await Keychain.setGenericPassword(auth.username, auth.password, _optionsKeychain)
+                    await AppStorageService.setItem('REMEMBER_ACCESS', 'true')
                 }
 
                 api.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`
@@ -35,4 +42,11 @@ export const authLogin = (authentication: LoginDto, _rememberAcess?: boolean) =>
             throw error
         })
 
+}
+
+export const getVersionTest = (version: string): Promise<AxiosResponse<VersionTestDto>> => {
+    const params = new URLSearchParams()
+    params.append('version', version)
+
+    return api.post('auth/get-version-test?' + params)
 }

@@ -2,7 +2,7 @@ import { ApplicationProvider } from '@ui-kitten/components'
 import React, { FC, createContext, useState, useContext, useEffect } from 'react'
 import * as eva from '@eva-design/eva'
 import { customTheme } from '../../custom-theme'
-import { AppStorage } from '@services/app-storage.service'
+import { AppStorageService } from '@services/app-storage.service'
 import { Theme } from '@models/Theme'
 
 interface ThemeContextType {
@@ -20,8 +20,8 @@ const ThemeProvider: FC<{
 
     useEffect(() => {
         (async () => {
-            const themeStorage = await AppStorage.getTheme()
-            if (!themeStorage) AppStorage.setTheme(theme)
+            const themeStorage = await AppStorageService.getTheme()
+            if (!themeStorage) AppStorageService.setTheme(theme)
             else setTheme(themeStorage)
         })()
     }, [])
@@ -29,7 +29,7 @@ const ThemeProvider: FC<{
     const toggleTheme = async () => {
         const nextTheme = theme === 'light' ? 'dark' : 'light'
         setTheme(nextTheme)
-        AppStorage.setTheme(nextTheme)
+        AppStorageService.setTheme(nextTheme)
     }
 
     return (

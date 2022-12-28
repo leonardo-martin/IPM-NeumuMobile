@@ -2,7 +2,7 @@ import React, { createRef, FC, ReactElement, useRef, useState, useCallback } fro
 import { Animated, Dimensions, FlatList, LayoutChangeEvent, TouchableOpacity, View } from 'react-native'
 import { Text, useStyleSheet } from '@ui-kitten/components'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
-import { AppStorage } from '@services/app-storage.service'
+import { AppStorageService } from '@services/app-storage.service'
 import OnboardingItem from './extra/onboarding-item'
 import { ONBOARDING } from '@constants/storage'
 import { onboardingStyles } from './style'
@@ -32,7 +32,7 @@ const Onboarding: FC<OnboardingProps> = ({ setOnboarded }): ReactElement => {
     }
 
     const skipOnboarding = async () => {
-        await AppStorage.setItem(ONBOARDING, JSON.stringify(true))
+        await AppStorageService.setItem(ONBOARDING, JSON.stringify(true))
         setOnboarded(true)
     }
 

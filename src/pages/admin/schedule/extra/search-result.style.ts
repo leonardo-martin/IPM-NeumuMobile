@@ -26,7 +26,7 @@ export const searchResultStyle = StyleSheet.create({
   viewItem: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'space-evenly'
+    justifyContent: 'center'
   },
   inlineText: {
     flexDirection: 'row',
@@ -34,7 +34,6 @@ export const searchResultStyle = StyleSheet.create({
     justifyContent: 'space-between'
   },
   item: {
-    flexDirection: 'row',
     padding: SPACING,
     marginBottom: SPACING,
     backgroundColor: 'background-basic-color-1',
@@ -52,11 +51,18 @@ export const searchResultStyle = StyleSheet.create({
   },
   itemDescription: {
     fontSize: 12,
-    opacity: .7
+    opacity: .7,
   },
   itemCRM: {
     fontSize: 10,
-    color: 'text-hint-color'
+    color: 'text-hint-color',
+    fontWeight: '700'
+  },
+  itemAddress: {
+    fontSize: 8,
+    color: 'text-hint-color',
+    textTransform: 'uppercase',
+    fontWeight: '500'
   },
   contentContainerList: {
     padding: SPACING,

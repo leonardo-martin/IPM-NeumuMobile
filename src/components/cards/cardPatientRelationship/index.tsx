@@ -1,34 +1,27 @@
-import AttachmentBoxComponent from '@components/attachmentBox'
 import CustomErrorMessage from '@components/error'
 import SelectComponent, { SelectItemData } from '@components/select'
+import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useDatepickerService } from '@hooks/useDatepickerService'
+import { ERelationship } from '@models/PatientProfileCreator'
 import { PatientSignUpProps } from '@models/SignUpProps'
+import { SpecialtiesDTO } from '@models/Specialties'
+import { ETypeOfDocument } from '@models/User'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { useFocusEffect } from '@react-navigation/native'
-import { Datepicker, IndexPath, Input, PopoverPlacements, Select, SelectItem, Text } from '@ui-kitten/components'
+import { getSpecialties } from '@services/specialties.service'
+import { setSpecialties } from '@store/ducks/common'
+import { Datepicker, IndexPath, Input, PopoverPlacements, Select, SelectItem } from '@ui-kitten/components'
 import { sortByStringField } from '@utils/common'
-import { formatCpf, formatPhone, isEmailValid, onlyNumbers } from '@utils/mask'
+import { typeOfPersonalDocuments } from '@utils/constants'
+import { formatCpf, formatRNM, isEmailValid, onlyNumbers } from '@utils/mask'
 import { validate } from 'gerador-validador-cpf'
 import React, { Dispatch, FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller } from 'react-hook-form'
-import { Keyboard, StyleSheet, View } from 'react-native'
+import { Keyboard, StyleSheet } from 'react-native'
 import { DocumentPickerResponse } from 'react-native-document-picker'
-import specialties from 'utils/specialties'
+import { RootState } from 'store'
+import { kinList } from './data'
 import { CalendarIcon } from './icons'
-
-const kinList: SelectItemData[] = [
-    { id: '0', title: 'Irmão / Irmã' },
-    { id: '1', title: 'Pai' },
-    { id: '2', title: 'Mãe' },
-    { id: '3', title: 'Primo / Prima' },
-    { id: '4', title: 'Tio / Tia' },
-    { id: '5', title: 'Sobrinho / Sobrinha' },
-    { id: '6', title: 'Filho / Filha' },
-    { id: '7', title: 'Bisavô / Bisavó' },
-    { id: '8', title: 'Outros' },
-    { id: '9', title: 'Cônjuge' },
-    { id: '9', title: 'Avô / Avó' },
-]
 
 interface CardPatientRelationshipProps extends PatientSignUpProps {
     styles?: StyleSheet.NamedStyles<any>
@@ -43,14 +36,16 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
     const { localeDateService } = useDatepickerService()
     const sortedKinList: SelectItemData[] = kinList.sort((a, b) => sortByStringField(a, b, 'title'))
     const dateForOver = localeDateService.addYear(localeDateService.today(), -18)
+    const [selectedTypeOfDocument, setSelectedTypeOfDocument] = useState<IndexPath | IndexPath[]>()
 
-    const emailConfirm = form.watch("creator.data.email")
-    const relationship = form.watch("creator.data.creatorRelationship")
+    const emailConfirm = form.watch("responsibleEmail")
+    const relationship = form.watch("data.creatorRelationship")
+    const typeOfDocument = form.watch("data.typeOfDocument")
 
     useEffect(() => {
         if (selectedIndex)
-            form.setValue('creator.data.kinship', sortedKinList.find((_, i) => new IndexPath(i).row === (selectedIndex as IndexPath).row))
-        else form.setValue('creator.data.kinship', '')
+            form.setValue('data.kinship', sortedKinList.find((_, i) => new IndexPath(i).row === (selectedIndex as IndexPath).row))
+        else form.setValue('data.kinship', '')
     }, [selectedIndex])
 
     const verifyCpf = (value: string) => {
@@ -72,7 +67,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
     // useFocusEffect(
     //     useCallback(() => {
     //         if (relationship === 3)
-    //             form.register('creator.data.guardian.attachment', {
+    //             form.register('data.guardian.attachment', {
     //                 required: {
     //                     value: true,
     //                     message: 'Necessário documentação'
@@ -81,25 +76,57 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
     //             })
 
     //         return () => {
-    //             form.unregister('creator.data.guardian.attachment')
+    //             form.unregister('data.guardian.attachment')
     //         }
 
     //     }, [relationship])
     // )
 
+    const dispatch = useAppDispatch()
+    const { specialties } = useAppSelector((state: RootState) => state.common)
+
+    const loadSpecialties = async () => {
+        if (specialties.length === 0) {
+            const res = await getSpecialties()
+            dispatch(setSpecialties(res.data))
+        }
+    }
+
     useFocusEffect(
         useCallback(() => {
-            const specialty = form.getValues('creator.data.specialty.description')
-            if (specialty) setSelectedSpecialty(new IndexPath(specialties.indexOf(specialty)))
+            loadSpecialties()
+        }, [])
+    )
+
+    useFocusEffect(
+        useCallback(() => {
+            const specialty = form.getValues('data.specialty.description')
+            if (specialty)
+                setSelectedSpecialty(new IndexPath(specialties.indexOf(specialties.find(e => e.description === specialty) || {} as SpecialtiesDTO)))
+            const doc = form.getValues('data.typeOfDocument')
+            if (doc)
+                setSelectedTypeOfDocument(new IndexPath(typeOfPersonalDocuments.indexOf(typeOfPersonalDocuments.find(e => e.label === doc) || {} as { value: number; label: string; })))
+
         }, [])
     )
 
     useEffect(() => {
         if (selectedSpecialty) {
-            form.setValue('creator.data.specialty.description', specialties[Number(selectedSpecialty) - 1])
-            form.clearErrors('creator.data.specialty.description')
-        } else form.setValue('creator.data.specialty.description', '')
+            form.setValue('data.specialty.description', specialties[Number(selectedSpecialty) - 1].description || '')
+            form.clearErrors('data.specialty.description')
+        } else form.setValue('data.specialty.description', '')
     }, [selectedSpecialty])
+
+    useEffect(() => {
+        if (selectedTypeOfDocument && typeOfPersonalDocuments) {
+            const type = typeOfPersonalDocuments[Number(selectedTypeOfDocument) - 1]
+            if (type && type.label !== form.getValues('data.typeOfDocument')) {
+                form.setValue('data.cpf', undefined)
+                form.setValue('data.rne', undefined)
+                form.setValue('data.typeOfDocument', type.label)
+            }
+        }
+    }, [selectedTypeOfDocument, typeOfPersonalDocuments])
 
     return (
         <>
@@ -128,59 +155,138 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         ref={ref}
                         maxLength={60}
                         returnKeyType="next"
-                        onSubmitEditing={() => form.setFocus('creator.data.mothersName')}
+                        onSubmitEditing={() => form.setFocus('data.mothersName')}
                         underlineColorAndroid="transparent"
                         autoCapitalize="words"
                         textContentType="name"
+                        placeholder={`Digite o Nome do seu ${ERelationship[relationship]}`}
                     />
                 )}
-                name='creator.data.name'
+                name='data.name'
                 defaultValue=''
             />
-            <CustomErrorMessage name='creator.data.name' errors={form.formState.errors} />
+            <CustomErrorMessage name='data.name' errors={form.formState.errors} />
+
             <Controller
                 control={form.control}
                 rules={{
                     required: {
                         value: true,
                         message: 'Campo obrigatório'
-                    },
-                    minLength: {
-                        value: 14,
-                        message: `Mín. 14 caracteres`
-                    },
-                    validate: {
-                        valid: (e) => e ? validate(e) : undefined,
-                        equal: (e) => e ? verifyCpf(e) : undefined
                     }
                 }}
-                render={({ field: { onChange, onBlur, value, name, ref } }) => (
-                    <Input
+                render={({ field: { onBlur, value, name, ref } }) => (
+                    <Select
                         size='small'
-                        label="CPF *"
+                        label="Documento *"
                         style={styles?.input}
-                        keyboardType='number-pad'
+                        placeholder='Selecione'
                         testID={name}
                         onBlur={onBlur}
-                        onChangeText={(value) => {
-                            onChange(value)
-                            verifyCpf(value)
-                        }}
-                        value={formatCpf(value)}
-                        underlineColorAndroid="transparent"
-                        autoCapitalize='none'
-                        maxLength={14}
                         ref={ref}
-                        returnKeyType="next"
-                        onSubmitEditing={() => form.setFocus('creator.data.dateOfBirth')}
-                    />
+                        selectedIndex={selectedTypeOfDocument}
+                        onSelect={setSelectedTypeOfDocument}
+                        value={value}
+                    >
+                        {typeOfPersonalDocuments && typeOfPersonalDocuments.map((item: any, index: number) => (
+                            <SelectItem key={item.value} title={item.label} />
+                        ))}
+                    </Select>
                 )}
-                name='creator.data.cpf'
+                name='data.typeOfDocument'
                 defaultValue=''
             />
-            {(form.formState.errors.creator?.data?.cpf?.type !== 'valid' && form.formState.errors.creator?.data?.cpf?.type !== 'equal') && <CustomErrorMessage name='creator.data.cpf' errors={form.formState.errors} />}
-            {(form.formState.errors.creator?.data?.cpf?.type === 'valid') && <CustomErrorMessage name='creator.data.cpf' errors={form.formState.errors} customMessage='CPF inválido' />}
-            {(form.formState.errors.creator?.data?.cpf?.type === 'equal') && <CustomErrorMessage name='creator.data.cpf' errors={form.formState.errors} customMessage='CPF não pode ser igual ao do paciente' />}
+            <CustomErrorMessage name='data.typeOfDocument' errors={form.formState.errors} />
+
+            {typeOfDocument === ETypeOfDocument.CPF && (
+                <>
+                    <Controller
+                        control={form.control}
+                        rules={{
+                            required: {
+                                value: true,
+                                message: 'Campo obrigatório'
+                            },
+                            minLength: {
+                                value: 14,
+                                message: `Mín. 14 caracteres`
+                            },
+                            validate: {
+                                valid: (e) => e ? validate(e) : undefined,
+                                equal: (e) => e ? verifyCpf(e) : undefined
+                            }
+                        }}
+                        render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                            <Input
+                                size='small'
+                                label="CPF *"
+                                style={styles?.input}
+                                keyboardType='number-pad'
+                                testID={name}
+                                onBlur={onBlur}
+                                onChangeText={(value) => {
+                                    onChange(value)
+                                    verifyCpf(value)
+                                }}
+                                value={formatCpf(value)}
+                                underlineColorAndroid="transparent"
+                                autoCapitalize='none'
+                                maxLength={14}
+                                ref={ref}
+                                returnKeyType="next"
+                                onSubmitEditing={() => form.setFocus('data.dateOfBirth')}
+                                placeholder={`Digite o CPF do seu ${ERelationship[relationship]} (somente números)`}
+                            />
+                        )}
+                        name='data.cpf'
+                        defaultValue=''
+                    />
+                    {(form.formState.errors.data?.cpf?.type !== 'valid' && form.formState.errors.data?.cpf?.type !== 'equal') && <CustomErrorMessage name='data.cpf' errors={form.formState.errors} />}
+                    {(form.formState.errors.data?.cpf?.type === 'valid') && <CustomErrorMessage name='data.cpf' errors={form.formState.errors} customMessage='CPF inválido' />}
+                    {(form.formState.errors.data?.cpf?.type === 'equal') && <CustomErrorMessage name='data.cpf' errors={form.formState.errors} customMessage='CPF não pode ser igual ao do paciente' />}
+
+                </>
+            )}
+
+            {typeOfDocument === ETypeOfDocument.RNM && (
+                <>
+                    <Controller
+                        control={form.control}
+                        rules={{
+                            required: {
+                                value: true,
+                                message: 'Campo obrigatório'
+                            },
+                            minLength: {
+                                value: 9,
+                                message: `Mín. 9 caracteres`
+                            },
+                        }}
+                        render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                            <Input
+                                size='small'
+                                label="RNM *"
+                                style={styles?.input}
+                                keyboardType='default'
+                                testID={name}
+                                onBlur={onBlur}
+                                onChangeText={onChange}
+                                value={formatRNM(value)}
+                                underlineColorAndroid="transparent"
+                                autoCapitalize='words'
+                                ref={ref}
+                                maxLength={9}
+                                returnKeyType="next"
+                                onSubmitEditing={() => form.setFocus('data.dateOfBirth')}
+                                placeholder={`Digite o RNM do seu ${ERelationship[relationship]} (letras e números)`}
+                            />
+                        )}
+                        name='data.rne'
+                        defaultValue=''
+                    />
+                    <CustomErrorMessage name='data.rne' errors={form.formState.errors} />
+                </>
+            )}
             <Controller
                 control={form.control}
                 rules={{
@@ -193,7 +299,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                     <Datepicker
                         size='small'
                         label='Data de Nascimento *'
-                        date={value ? value : dateForOver}
+                        date={value}
                         onSelect={onChange}
                         accessoryRight={CalendarIcon}
                         onBlur={onBlur}
@@ -208,11 +314,12 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         style={styles?.input}
                         onPress={() => Keyboard.dismiss()}
                         caption='* Necessário ser maior de 18 anos'
+                        placeholder='DD/MM/AAAA'
                     />
                 )}
-                name='creator.data.dateOfBirth'
+                name='data.dateOfBirth'
             />
-            <CustomErrorMessage name='creator.data.dateOfBirth' errors={form.formState.errors} />
+            <CustomErrorMessage name='data.dateOfBirth' errors={form.formState.errors} />
             <Controller
                 control={form.control}
                 rules={{
@@ -244,16 +351,17 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         maxLength={60}
                         ref={ref}
                         returnKeyType="next"
-                        onSubmitEditing={() => form.setFocus('creator.data.emailConfirmation')}
+                        onSubmitEditing={() => form.setFocus('data.emailConfirmation')}
                         textContentType="emailAddress"
+                        placeholder={`Digite o e-mail do seu ${ERelationship[relationship]}`}
                     />
                 )}
-                name='creator.data.email'
+                name='responsibleEmail'
                 defaultValue=''
             />
-            {(form.formState.errors.creator?.data?.email?.type !== 'valid' && form.formState.errors.creator?.data?.email?.type !== 'equal') && <CustomErrorMessage name='creator.data.email' errors={form.formState.errors} />}
-            {(form.formState.errors.creator?.data?.email?.type === 'valid') && <CustomErrorMessage name='creator.data.email' errors={form.formState.errors} customMessage='E-mail inválido' />}
-            {(form.formState.errors.creator?.data?.email?.type === 'equal') && <CustomErrorMessage name='creator.data.email' errors={form.formState.errors} customMessage='E-mail não pode ser igual ao do paciente' />}
+            {(form.formState.errors.responsibleEmail?.type !== 'valid' && form.formState.errors.responsibleEmail?.type !== 'equal') && <CustomErrorMessage name='responsibleEmail' errors={form.formState.errors} />}
+            {(form.formState.errors.responsibleEmail?.type === 'valid') && <CustomErrorMessage name='responsibleEmail' errors={form.formState.errors} customMessage='E-mail inválido' />}
+            {(form.formState.errors.responsibleEmail?.type === 'equal') && <CustomErrorMessage name='responsibleEmail' errors={form.formState.errors} customMessage='E-mail não pode ser igual ao do paciente' />}
             <Controller
                 control={form.control}
                 rules={{
@@ -287,16 +395,17 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         maxLength={60}
                         ref={ref}
                         returnKeyType="next"
-                        onSubmitEditing={() => form.setFocus('creator.data.phone')}
+                        onSubmitEditing={() => form.setFocus('data.phone')}
                         textContentType="emailAddress"
+                        placeholder={`Digite o e-mail do seu ${ERelationship[relationship]} NOVAMENTE`}
                     />
                 )}
-                name='creator.data.emailConfirmation'
+                name='data.emailConfirmation'
                 defaultValue=''
             />
-            {form.formState.errors.creator?.data?.emailConfirmation?.type !== 'valid' && form.formState.errors.creator?.data?.emailConfirmation?.type !== 'equal' && <CustomErrorMessage name='creator.data.emailConfirmation' errors={form.formState.errors} />}
-            {form.formState.errors.creator?.data?.emailConfirmation?.type === 'valid' && <CustomErrorMessage name='creator.data.emailConfirmation' errors={form.formState.errors} customMessage={'E-mail inválido'} />}
-            {form.formState.errors.creator?.data?.emailConfirmation?.type === 'equal' && <CustomErrorMessage name='creator.data.emailConfirmation' errors={form.formState.errors} customMessage={'E-mails não conferem'} />}
+            {form.formState.errors.data?.emailConfirmation?.type !== 'valid' && form.formState.errors.data?.emailConfirmation?.type !== 'equal' && <CustomErrorMessage name='data.emailConfirmation' errors={form.formState.errors} />}
+            {form.formState.errors.data?.emailConfirmation?.type === 'valid' && <CustomErrorMessage name='data.emailConfirmation' errors={form.formState.errors} customMessage={'E-mail inválido'} />}
+            {form.formState.errors.data?.emailConfirmation?.type === 'equal' && <CustomErrorMessage name='data.emailConfirmation' errors={form.formState.errors} customMessage={'E-mails não conferem'} />}
             <Controller
                 control={form.control}
                 rules={{
@@ -305,8 +414,8 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         message: 'Campo obrigatório'
                     },
                     minLength: {
-                        value: 13,
-                        message: `Mín. 13 caracteres`
+                        value: 8,
+                        message: `Mín. 8 caracteres`
                     },
                 }}
                 render={({ field: { onChange, onBlur, value, name, ref } }) => (
@@ -318,26 +427,27 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         testID={name}
                         onBlur={onBlur}
                         onChangeText={onChange}
-                        value={formatPhone(value)}
+                        value={value}
                         maxLength={15}
                         ref={ref}
                         returnKeyType="done"
-                        onSubmitEditing={() => form.setFocus('creator.data.phone2')}
+                        onSubmitEditing={() => form.setFocus('data.phone2')}
                         underlineColorAndroid="transparent"
                         textContentType="telephoneNumber"
+                        placeholder={`Digite o telefone do seu ${ERelationship[relationship]} (DDD+número)`}
                     />
                 )}
-                name='creator.data.phone'
+                name='data.phone'
                 defaultValue=''
             />
-            <CustomErrorMessage name='creator.data.phone' errors={form.formState.errors} />
+            <CustomErrorMessage name='data.phone' errors={form.formState.errors} />
             <Controller
                 control={form.control}
                 rules={{
                     required: false,
                     minLength: {
-                        value: 13,
-                        message: `Mín. 13 caracteres`
+                        value: 8,
+                        message: `Mín. 8 caracteres`
                     },
                 }}
                 render={({ field: { onChange, onBlur, value, name, ref } }) => (
@@ -349,30 +459,31 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         testID={name}
                         onBlur={onBlur}
                         onChangeText={onChange}
-                        value={formatPhone(value)}
+                        value={value}
                         maxLength={15}
                         ref={ref}
                         returnKeyType="send"
-                        onSubmitEditing={() => form.setFocus('creator.data.company')}
+                        onSubmitEditing={() => form.setFocus('data.company')}
                         underlineColorAndroid="transparent"
                         textContentType="telephoneNumber"
+                        placeholder={`Digite o telefone do seu ${ERelationship[relationship]} (DDD+número)`}
                     />
                 )}
-                name='creator.data.phone2'
+                name='data.phone2'
                 defaultValue=''
             />
-            <CustomErrorMessage name='creator.data.phone2' errors={form.formState.errors} />
+            <CustomErrorMessage name='data.phone2' errors={form.formState.errors} />
             {/* {relationship === 3 && (
                 <View style={{ paddingVertical: 10 }}>
                     <AttachmentBoxComponent
                         handleFile={props.setFile}
                         file={props.file}
                         label='Anexar Documentação *' />
-                    <CustomErrorMessage name='creator.data.guardian.attachment' errors={form.formState.errors} />
+                    <CustomErrorMessage name='data.guardian.attachment' errors={form.formState.errors} />
                 </View>
             )} */}
 
-            {relationship === 2 && (
+            {relationship === ERelationship.Familiar && (
                 <>
                     <Controller
                         control={form.control}
@@ -384,7 +495,7 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                         }}
                         render={({ field: { name, ref, value, onChange } }) => (
                             <SelectComponent
-                                placeholder='Selecione'
+                                placeholder='Clique AQUI para selecionar opção de parentesco'
                                 size='small'
                                 testID={name}
                                 value={value}
@@ -400,13 +511,13 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                                 style={styles?.input}
                             />
                         )}
-                        name='creator.data.kinship'
+                        name='data.kinship'
                     />
-                    <CustomErrorMessage name='creator.data.kinship' errors={form.formState.errors} />
+                    <CustomErrorMessage name='data.kinship' errors={form.formState.errors} />
                 </>
             )}
 
-            {relationship === 4 && (
+            {relationship === ERelationship['Profissional de Saúde'] && (
                 <>
                     <Controller
                         control={form.control}
@@ -426,7 +537,6 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                                 label="Número de Registro *"
                                 style={styles?.input}
                                 keyboardType='number-pad'
-                                placeholder=''
                                 testID={name}
                                 onBlur={onBlur}
                                 onChangeText={onChange}
@@ -434,13 +544,14 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                                 ref={ref}
                                 maxLength={6}
                                 underlineColorAndroid="transparent"
-                                onSubmitEditing={() => form.setFocus('creator.data.specialty.description')}
+                                onSubmitEditing={() => form.setFocus('data.specialty.description')}
+                                placeholder={`Digite o número de REGISTRO do seu ${ERelationship[relationship]} (somente números)`}
                             />
                         )}
-                        name='creator.data.specialty.crm'
+                        name='data.specialty.crm'
                         defaultValue=''
                     />
-                    <CustomErrorMessage name='creator.data.specialty.crm' errors={form.formState.errors} />
+                    <CustomErrorMessage name='data.specialty.crm' errors={form.formState.errors} />
                     <Controller
                         control={form.control}
                         rules={{
@@ -463,14 +574,14 @@ const CardPatientRelationshipComponent: FC<CardPatientRelationshipProps> = ({ fo
                                 value={value}
                             >
                                 {specialties.map((item, index) => (
-                                    <SelectItem key={item + index} title={item} />
+                                    <SelectItem key={item.id} title={item.description} />
                                 ))}
                             </Select>
                         )}
-                        name='creator.data.specialty.description'
+                        name='data.specialty.description'
                         defaultValue=''
                     />
-                    <CustomErrorMessage name='creator.data.specialty.description' errors={form.formState.errors} />
+                    <CustomErrorMessage name='data.specialty.description' errors={form.formState.errors} />
                 </>
             )}
         </>

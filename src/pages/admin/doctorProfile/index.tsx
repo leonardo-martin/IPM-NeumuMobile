@@ -1,7 +1,7 @@
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { MedicalDoctorDisplay } from '@models/Medical'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
+import { AppInfoService } from '@services/app-info.service'
 import { patientGetAuthorizationRequests, patientGrantAuthorization } from '@services/medical-data-auth.service'
 import { Button, CheckBox, Divider, Text, useStyleSheet } from '@ui-kitten/components'
 import { formatPhone } from '@utils/mask'
@@ -11,7 +11,7 @@ import Toast from 'react-native-toast-message'
 import { PhoneCallIcon, ShareIcon } from './extra/icons'
 import { doctorProfileStyle } from './style'
 
-const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement => {
+const DoctorProfileScreen: FC = (): ReactElement => {
 
   const styles = useStyleSheet(doctorProfileStyle)
   const route = useRoute()
@@ -83,7 +83,7 @@ const DoctorProfileScreen: FC<DrawerContentComponentProps> = (): ReactElement =>
   const onShare = async () => {
     try {
       await Share.share({
-        title: `TeleNeuMu - ${profile?.name} (Profissional da Saúde)`,
+        title: `${AppInfoService.getAppName()} - ${profile?.name} (Profissional da Saúde)`,
         message: `Olá, eu sou ${profile?.name}, minha especialidade é ${profile?.specialty}. Telefone para contato: ${formatPhone(profile?.phone1)}`
       })
     } catch (error: any) {

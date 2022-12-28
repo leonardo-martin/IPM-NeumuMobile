@@ -1,7 +1,7 @@
 import AddPatientDiaryEntryDialog from '@components/dialog/addPatientDiaryEntryDialog'
 import FilterByDateDialog from '@components/dialog/filterByDateDialog'
 import EmptyComponent from '@components/empty'
-import HeaderGenericWithTitleAndAddIcon from '@components/header/admin/generic-with-add-icon'
+import HeaderWithAddIcon from '@components/header/admin/generic-with-add-icon'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import Timeline from '@components/timeline'
 import { _DATE_FROM_ISO_8601 } from '@constants/date'
@@ -17,7 +17,7 @@ import { deleteDiaryEntry, getDiaryEntryByRange } from '@services/patient.servic
 import { CalendarRange, Icon, Modal, Text, useStyleSheet } from '@ui-kitten/components'
 import { groupByDateTime } from '@utils/common'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
-import { RefreshControl, TouchableOpacity, View } from 'react-native'
+import { Alert, RefreshControl, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
 import { notesStyle } from './style'
@@ -98,8 +98,26 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
         }, [addedItem, params])
     )
 
-    const onDeleteItem = async (date: string, item: TimelineTimeItem) => {
+    const onDeleteItemConfirm = async (date: string, item: TimelineTimeItem) => {
 
+        Alert.alert(
+            'Deseja deletar a nota?',
+            'Após confirmar, esta ação não pode ser desfeita.',
+            [
+                {
+                    text: 'Sim',
+                    style: 'default',
+                    onPress: () => deleteItem(date, item)
+                },
+                {
+                    text: 'Não',
+                    style: 'cancel'
+                }
+            ]
+        )
+    }
+
+    const deleteItem = async (date: string, item: TimelineTimeItem) => {
         try {
             const obj: PatientDiaryEntryDto = {
                 patientId: ids?.patientId as number,
@@ -107,6 +125,7 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
                 data: {
                     ...item
                 },
+                updatedAt: ''
             }
             setDataModal(obj)
 
@@ -136,12 +155,14 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
     }
 
     const onViewItem = (date: string, item: TimelineTimeItem) => {
+        const arr = originalData.find(d => new Date(d.date).toISOString() === new Date(date).toISOString())
         const obj: PatientDiaryEntryDto = {
-            patientId: ids?.patientId as number,
+            patientId: Number(arr?.patientId) || Number(ids?.patientId),
             date: date ? localeDateService.parse(date, _DATE_FROM_ISO_8601) : localeDateService.today(),
             data: {
                 ...item
-            }
+            },
+            updatedAt: typeof arr?.updatedAt === 'string' ? localeDateService.parse(arr?.updatedAt, _DATE_FROM_ISO_8601) : ''
         }
         setDataModal(obj)
         setVisibleAddModal(true)
@@ -184,10 +205,10 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
 
     return (
         <>
-            <HeaderGenericWithTitleAndAddIcon
+            <HeaderWithAddIcon
                 title={params?.title ?? 'Meu Diário'}
                 hideIcon={params?.readonly}
-                onVisible={() => {
+                onClick={() => {
                     setDataModal(undefined)
                     setVisibleAddModal(!visibleAddModal)
                 }} />
@@ -195,7 +216,7 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
                 <Timeline
                     data={data}
                     ListHeaderComponent={headerListComponent}
-                    onDelete={onDeleteItem}
+                    onDelete={onDeleteItemConfirm}
                     onChange={onViewItem}
                     isFiltered={isFiltered}
                     orderBy={AscendingOrder.DESC}

@@ -1,18 +1,20 @@
 import AutoCompleteComponent from '@components/autoComplete'
 import CustomErrorMessage from '@components/error'
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
+import { _DATE_FROM_ISO_8601 } from '@constants/date'
+import { useDatepickerService } from '@hooks/useDatepickerService'
 import { MedicalDoctorDisplay, MedicalSpecialtyDto } from '@models/Medical'
 import { City, UF } from '@models/Places'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { useFocusEffect, useRoute } from '@react-navigation/native'
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { getCities, getStates } from '@services/common.service'
-import { getDisplayMedicalDoctorBySpecialtyArray } from '@services/medical-doctor.service'
+import { getDisplayMedicalDoctorByFilters } from '@services/medical-doctor.service'
 import { getAll } from '@services/medical-specialty.service'
-import { AutocompleteItem, Button, Icon, IconProps, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
-import { filterBy } from '@utils/common'
-import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
+import { AutocompleteItem, Button, CalendarRange, Icon, IconProps, Input, PopoverPlacements, RangeDatepicker, Text, useStyleSheet } from '@ui-kitten/components'
+import { filterBy, sortByStringField } from '@utils/common'
+import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Keyboard, View } from 'react-native'
+import { Keyboard, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { filterScheduleStyle } from './filter-schedule.style'
 
@@ -20,16 +22,19 @@ interface FilterScheduleParams {
   city?: string
   state?: string
   specialty?: MedicalSpecialtyDto
+  name?: string
 }
 
 type FilterProps = {
   type: 0 | 1
 }
 
-const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
-  navigation
-}): ReactElement => {
+const FilterScheduleScreen: FC = (): ReactElement => {
 
+  const navigation = useNavigation<any>()
+  const [range, setRange] = useState<CalendarRange<Date>>({})
+  const rangeDatepickerRef = useRef<RangeDatepicker>(null)
+  const { localeDateService } = useDatepickerService()
   const form = useForm<FilterScheduleParams>()
   const styles = useStyleSheet(filterScheduleStyle)
   const [releasedToSearch, setReleasedToSearch] = useState<boolean>(false)
@@ -48,6 +53,8 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
   useFocusEffect(
     useCallback(() => {
       form.reset({})
+      setRange({})
+      setIsEmpty(false)
       setReleasedToSearch(false)
       clearInputs()
       fetchData()
@@ -56,8 +63,8 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
 
   const fetchData = async () => {
     const response = await getAll()
-    setSpecialty(response.data)
-    setSpecialtyTemp(response.data)
+    setSpecialty(response.data.sort((a, b) => sortByStringField(a, b, 'description')) ?? response.data)
+    setSpecialtyTemp(response.data.sort((a, b) => sortByStringField(a, b, 'description')) ?? response.data)
   }
 
   useEffect(() => {
@@ -141,14 +148,13 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
     const list = specialtyTemp.filter(item => filterBy(item, query, 'description'))
     setSpecialty(list)
     if (list.length > 0) {
-      setReleasedToSearch(true)
-    } else {
       setReleasedToSearch(false)
     }
   }
 
   const onSelectSpecialty = (index: number) => {
     form.setValue('specialty', specialty[index])
+    setReleasedToSearch(true)
   }
 
 
@@ -216,10 +222,6 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
     />
   )
 
-  const LoadingIndicator = () => (
-    <Spinner size='tiny' status='basic' />
-  )
-
   const onSubmit = async (data: FilterScheduleParams) => {
     setIsEmpty(false)
     setIsFetching(!isFetching)
@@ -228,13 +230,37 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
     let result: MedicalDoctorDisplay[] = []
     try {
       const specialtyIdArray: number[] = [data.specialty?.id as number]
-      const response = await getDisplayMedicalDoctorBySpecialtyArray(specialtyIdArray)
+      const response = await getDisplayMedicalDoctorByFilters({
+        specialtyIdArray,
+        appointmentVirtual: params?.type === 0,
+        ...params?.type === 1 && {
+          ...data.city !== '' && {
+            city: data.city
+          },
+          ...data.state !== '' && {
+            state: data.state
+          },
+        },
+        ...data.name !== '' && {
+          name: data.name
+        },
+        ...range && {
+          ...range.startDate && {
+            startTime: localeDateService.parse(range.startDate.toISOString(), _DATE_FROM_ISO_8601) || null,
+          },
+          ...range.endDate && {
+            endTime: localeDateService.parse(range.endDate.toISOString(), _DATE_FROM_ISO_8601) || null
+          }
+        }
+      })
       result = response.data
     } catch (error) {
-      Toast.show({
-        type: 'danger',
-        text2: 'Erro ao buscar. Tente novamente mais tarde',
-      })
+      if ((error as any).response.status !== 404) {
+        Toast.show({
+          type: 'danger',
+          text2: 'Erro ao buscar. Tente novamente mais tarde',
+        })
+      }
       result = []
     } finally {
       setIsFetching(false)
@@ -250,6 +276,67 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
   return (
     <SafeAreaLayout style={styles.safeArea}>
       <View style={styles.container}>
+        <Controller
+          control={form.control}
+          rules={{
+            required: {
+              value: releasedToSearch ? false : true,
+              message: 'Campo obrigatório'
+            },
+          }}
+          render={({ field: { onBlur, name, value, ref } }) => (
+            <AutoCompleteComponent
+              size='small'
+              ref={ref}
+              onBlur={onBlur}
+              testID={name}
+              style={styles.input}
+              data={specialty}
+              label="Especialidade *"
+              onSelect={onSelectSpecialty}
+              onChangeText={onChangeTextSpecialty}
+              renderOption={renderOptionSpecialty}
+              accessoryRight={(props) => renderRightIcon(props, value, 'specialty')}
+              value={value}
+              autoCapitalize='sentences'
+              placeholder='Clique AQUI para selecionar uma Especialidade'
+            />
+          )}
+          name='specialty.description'
+          defaultValue=''
+        />
+        <Controller
+          control={form.control}
+          rules={{
+            required: false,
+            minLength: {
+              value: 4,
+              message: `Mín. 4 caracteres`
+            },
+          }}
+          render={({ field: { onChange, onBlur, value, name, ref } }) => (
+            <Input
+              size='small'
+              label="Nome do Especialista"
+              style={styles.input}
+              keyboardType='default'
+              testID={name}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              ref={ref}
+              maxLength={60}
+              returnKeyType="next"
+              underlineColorAndroid="transparent"
+              autoCapitalize="words"
+              textContentType="name"
+              placeholder='Digite o Nome do Especialista'
+            />
+          )}
+          name='name'
+          defaultValue=''
+        />
+        <CustomErrorMessage name='name' errors={form.formState.errors} />
         {params?.type === 1 && (
           <>
             <Controller
@@ -272,6 +359,7 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
                   returnKeyType="next"
                   onSubmitEditing={() => onSubmitEditing('city')}
                   style={styles.input}
+                  placeholder='Digite seu Estado'
                 />
               )}
               name='state'
@@ -298,6 +386,7 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
                   onSubmitEditing={() => onSubmitEditing('specialty')}
                   style={styles.input}
                   disabled={isDisabledCity}
+                  placeholder='Digite sua Cidade'
                 />
               )}
               name='city'
@@ -306,43 +395,40 @@ const FilterScheduleScreen: FC<DrawerContentComponentProps> = ({
             <CustomErrorMessage name='city' errors={form.formState.errors} />
           </>
         )}
-
-        <Controller
-          control={form.control}
-          rules={{
-            required: {
-              value: releasedToSearch ? false : true,
-              message: 'Campo obrigatório'
-            },
-          }}
-          render={({ field: { onBlur, name, value, ref } }) => (
-            <AutoCompleteComponent
-              size='small'
-              ref={ref}
-              onBlur={onBlur}
-              testID={name}
-              style={styles.input}
-              data={specialty}
-              label="Especialidade"
-              placeholder=''
-              onSelect={onSelectSpecialty}
-              onChangeText={onChangeTextSpecialty}
-              renderOption={renderOptionSpecialty}
-              accessoryRight={(props) => renderRightIcon(props, value, 'specialty')}
-              value={value}
-              autoCapitalize='sentences'
-            />
+        <RangeDatepicker
+          ref={rangeDatepickerRef}
+          size='small'
+          label={'Data da consulta'}
+          range={range}
+          onSelect={nextRange => setRange(nextRange)}
+          style={styles.input}
+          controlStyle={styles.rangeDatePicker}
+          accessoryRight={(props) => <Icon {...props} name='calendar' />}
+          dateService={localeDateService}
+          placement={PopoverPlacements.BOTTOM}
+          min={new Date(1900, 0, 0)}
+          backdropStyle={styles.backdropDatepicker}
+          boundingMonth={false}
+          onPress={() => Keyboard.dismiss()}
+          placeholder='DD/MM/AAAA'
+          caption={(props) => (
+            range && (range.startDate || range.endDate) ? (
+              <View style={styles.caption}>
+                <TouchableOpacity
+                  onPress={() => rangeDatepickerRef.current?.clear()}>
+                  <Text {...props}>LIMPAR</Text>
+                </TouchableOpacity>
+              </View>
+            ) : <></>
           )}
-          name='specialty.description'
-          defaultValue=''
         />
-        <CustomErrorMessage name='specialty.description' errors={form.formState.errors} />
         <View style={styles.viewButton}>
           <Button
             size='small'
+            disabled={!releasedToSearch}
             style={styles.button}
             onPress={form.handleSubmit(onSubmit)}
-            accessoryRight={isFetching ? LoadingIndicator : undefined}
+            accessoryRight={isFetching ? () => <LoadingIndicatorComponent insideButton size='tiny' status='basic' /> : undefined}
             status="primary">
             PESQUISAR
           </Button>

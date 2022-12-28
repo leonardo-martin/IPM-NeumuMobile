@@ -4,11 +4,18 @@ import { EUserRole } from '@models/UserRole'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { Layout, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components'
 import React, { FC, ReactElement } from 'react'
+import { TouchableOpacity } from 'react-native'
 import { RootState } from 'store'
 import { headerStyle } from '../style'
 
-const HeaderProfile: FC = (): ReactElement => {
+interface HeaderProfileProps {
+  showSaveButton?: boolean
+  actionSaveButton?: () => void
+  disableSaveButton?: boolean
+}
 
+const HeaderProfile: FC<HeaderProfileProps> = ({ ...props }): ReactElement => {
+  const { showSaveButton, disableSaveButton, actionSaveButton } = props
   const { goBack, navigate } = useNavigation<any>()
   const route = useRoute()
   const styles = useStyleSheet(headerStyle)
@@ -28,6 +35,16 @@ const HeaderProfile: FC = (): ReactElement => {
     />
   )
 
+  const renderSaveButton = () => (
+    <TouchableOpacity
+      disabled={disableSaveButton}
+      onPress={actionSaveButton}
+      style={styles.containerAction}>
+      <Text status={'primary'}
+        style={styles.label}>Salvar</Text>
+    </TouchableOpacity>
+  )
+
   return (
     <Layout level="1" style={styles.layout}>
       <TopNavigation
@@ -35,7 +52,8 @@ const HeaderProfile: FC = (): ReactElement => {
         title={evaProps => <Text {...evaProps}>Meu Perfil</Text>}
         accessoryLeft={renderLeftIcon}
         accessoryRight={
-          route.name === 'Profile' && sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? renderRigthIcon : undefined}
+          route.name === 'Profile' && sessionUser?.userRole.find(e => e.id === EUserRole.patient) ? renderRigthIcon :
+            showSaveButton ? renderSaveButton : undefined}
       />
     </Layout>
   )

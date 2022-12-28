@@ -13,4 +13,13 @@ export class AppInfoService {
   static getModel = (): string => {
     return DeviceInfo.getModel()
   }
+
+  static getAppName = (): string => {
+    return DeviceInfo.getApplicationName()
+  }
+
+  static isEmulator = async (): Promise<boolean> => {
+    return await DeviceInfo.isEmulator()
+  }
+
 }

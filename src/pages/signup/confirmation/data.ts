@@ -1,5 +1,5 @@
 import { JSONObject } from "@models/Common"
-
+import { TELENEUMU_CONTACT } from "@constants/mail"
 
 interface ListData {
     key: string
@@ -29,8 +29,8 @@ export const flatList: ListData[] = [
             1: "Confirmação de E-mail"
         },
         "description": {
-            0: "Você irá receber um email dentro de alguns instantes para ativar sua conta.",
-            1: "Você irá receber um email dentro de alguns instantes para ativar sua conta.",
+            0: `Você irá receber um e-mail dentro de alguns instantes para ativar sua conta, caso seja menor de idade a validação será encaminhada ao responsável que fez o cadastro. Em caso de dúvidas entre em contato: ${TELENEUMU_CONTACT}`,
+            1: "Você irá receber um e-mail dentro de alguns instantes para ativar sua conta",
         },
         "image": require('../../../assets/confirmation/sendEmail.png')
     },
@@ -41,8 +41,8 @@ export const flatList: ListData[] = [
             1: "Falta pouco!"
         },
         "description": {
-            0: "Ao confirmar sua conta, você terá acesso à todas funcionalidades do app.",
-            1: "Ao validar sua conta, seu cadastro será encaminhado para aprovação da administração do aplicativo, para que tenha acesso a todas funcionalidades do app."
+            0: "Ao confirmar sua conta, você terá acesso à todas funcionalidades do app",
+            1: "Ao validar sua conta, seu cadastro será encaminhado para aprovação da administração do aplicativo, para que tenha acesso a todas funcionalidades do app"
         },
         "image": require('../../../assets/confirmation/user-list-check.png')
     },

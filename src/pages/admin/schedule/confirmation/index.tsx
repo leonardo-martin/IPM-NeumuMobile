@@ -2,8 +2,7 @@ import LocalCalendarDialog from '@components/dialog/localCalendarDialog'
 import { useModal } from '@hooks/useModal'
 import { EventCalendar } from '@models/Calendar'
 import { FlatData } from '@models/FlatData'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { CommonActions, useFocusEffect, useRoute } from '@react-navigation/native'
+import { CommonActions, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { addCalendarEvent } from '@services/calendar.service'
 import { Modal, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
 import React, { createRef, FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
@@ -14,10 +13,9 @@ import { confirmationScheduleStyle } from './styles'
 
 const { width, height } = Dimensions.get('screen')
 
-const ConfirmationScheduleScreen: FC<DrawerContentComponentProps> = ({
-    navigation
-}): ReactElement => {
+const ConfirmationScheduleScreen: FC = (): ReactElement => {
 
+    const navigation = useNavigation()
     const [isVisibleCalendars, setIsVisibleCalendars] = useState(false)
     const openLocalCalendarModal = () => setIsVisibleCalendars(true)
     const closeLocalCalendarModal = () => setIsVisibleCalendars(false)

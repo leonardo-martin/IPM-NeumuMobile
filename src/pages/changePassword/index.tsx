@@ -1,9 +1,10 @@
-import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
-import { SafeAreaView, TouchableOpacity, View } from 'react-native'
-import { changePasswdReqStyle } from './style'
-import { Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
+import { TouchableOpacity, View } from 'react-native'
+import { choices, getChangePasswordChoices } from './data'
+import { changePasswdReqStyle } from './style'
 
 const ChangePasswordChoice: FC = (): ReactElement => {
 
@@ -19,15 +20,10 @@ const ChangePasswordChoice: FC = (): ReactElement => {
     )
 
     useEffect(() => {
-        if (selectedIndex === 0) {
+        if (selectedIndex !== -1)
             navigate('ChangePasswordRequest', {
-                choice: 'CPF'
+                choice: getChangePasswordChoices(selectedIndex)
             })
-        } else if (selectedIndex === 1) {
-            navigate('ChangePasswordRequest', {
-                choice: 'EMAIL'
-            })
-        }
     }, [selectedIndex])
 
     return (
@@ -39,14 +35,13 @@ const ChangePasswordChoice: FC = (): ReactElement => {
                         selectedIndex={selectedIndex}
                         onChange={index => setSelectedIndex(index)}
                         style={styles.controlContainer}>
-                        <Radio
-                            status='primary'>
-                            {evaProps => <Text {...evaProps} category='label' style={styles.radioText}>CPF</Text>}
-                        </Radio>
-                        <Radio
-                            status='primary'>
-                            {evaProps => <Text {...evaProps} category='label' style={styles.radioText}>Endereço de E-mail</Text>}
-                        </Radio>
+                        {choices.map(c => (
+                            <Radio
+                                key={c}
+                                status='primary'>
+                                {evaProps => <Text {...evaProps} category='label' style={styles.radioText}>{c}</Text>}
+                            </Radio>
+                        ))}
                     </RadioGroup>
                 </View>
                 <View style={[styles.viewDetails, { flexDirection: 'row', flex: .1 }]}>

@@ -1,5 +1,5 @@
 import HeaderAuth from '@components/header/auth'
-import RNWebView from '@components/webView'
+import AccountVerificationScreen from '@pages/account/verification'
 import WaitingApprovalsScreen from '@pages/approvals-waiting'
 import ChangePasswordChoice from '@pages/changePassword'
 import PasswordChangeConfirmationScreen from '@pages/changePassword/extra/change-confirmation'
@@ -12,6 +12,7 @@ import RegistrationConfirmation from '@pages/signup/confirmation'
 import { createStackNavigator, StackCardInterpolationProps, TransitionPresets } from '@react-navigation/stack'
 import { TransitionSpec } from '@react-navigation/stack/lib/typescript/src/types'
 import React, { FC, ReactElement } from 'react'
+import TestingRoutes from './test.routes'
 
 const { Navigator, Screen, Group } = createStackNavigator()
 
@@ -56,14 +57,14 @@ const AuthRoutes: FC = (): ReactElement => {
           options={{
             ...TransitionPresets.ModalSlideFromBottomIOS
           }} />
-        <Screen name="WebViewScreen" component={RNWebView} options={{
-          gestureDirection: "horizontal",
-          gestureEnabled: true,
-        }} />
-
         <Screen name="WaitingApprovals" component={WaitingApprovalsScreen}
           options={{
             ...TransitionPresets.ScaleFromCenterAndroid
+          }} />
+
+        <Screen name="AccountVerification" component={AccountVerificationScreen}
+          options={{
+            ...TransitionPresets.FadeFromBottomAndroid
           }} />
 
       </Group>
@@ -96,6 +97,12 @@ const AuthRoutes: FC = (): ReactElement => {
           }} />
       </Group>
 
+      {/* Rotas de Dev */}
+      <Group screenOptions={{
+        headerShown: false,
+      }}>
+        <Screen name="AtosDevTest" component={TestingRoutes} />
+      </Group>
     </Navigator>
   )
 }

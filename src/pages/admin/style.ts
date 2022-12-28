@@ -44,7 +44,7 @@ export const dashboardStyle = StyleSheet.create({
     }),
   },
   cardInline: {
-    height: 100,
+    minHeight: 100,
     justifyContent: 'center',
     borderRadius: 15,
     borderWidth: 1,
@@ -56,19 +56,17 @@ export const dashboardStyle = StyleSheet.create({
     alignItems: 'center',
     width: '47%',
     maxWidth: '90%',
-    height: 120,
-    maxHeight: 120,
+    minHeight: 100,
     borderWidth: 1,
     borderStyle: 'solid',
     borderRadius: 15,
   },
   cardText: {
     textAlign: 'center',
-    fontStyle: 'normal',
-    fontWeight: 'normal',
     lineHeight: 26,
-    display: 'flex',
     flexWrap: 'wrap',
+    flexShrink: 1,
+    fontSize: 18
   },
   text: {
     textAlign: 'center',

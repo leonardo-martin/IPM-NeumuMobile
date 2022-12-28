@@ -1,11 +1,13 @@
 import CustomErrorMessage from '@components/error'
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import { useAppSelector } from '@hooks/redux'
 import { useCombinedRefs } from '@hooks/useCombinedRefs'
 import { useDatepickerService } from '@hooks/useDatepickerService'
 import { PatientDiaryEntryDto } from '@models/Patient'
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
-import { postDiaryEntry } from '@services/patient.service'
-import { Button, Card, Icon, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import { postDiaryEntry, updateDiaryEntry } from '@services/patient.service'
+import { Button, Card, Icon, Input, Modal, Text, useStyleSheet } from '@ui-kitten/components'
+import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATETIME } from 'constants/date'
 import React, { Dispatch, FC, ForwardedRef, forwardRef, ReactElement, useCallback, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { TouchableOpacity, View } from 'react-native'
@@ -48,6 +50,9 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                     data: {
                         title: props.patientDiaryEntry?.data.title ? props.patientDiaryEntry?.data.title : title,
                         ...props.patientDiaryEntry?.data
+                    },
+                    ...props.patientDiaryEntry?.updatedAt && {
+                        updatedAt: new Date(props.patientDiaryEntry?.updatedAt)
                     }
                 })
             }
@@ -69,7 +74,15 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                 ...data,
                 patientId: ids?.patientId as number,
             }
-            const response = await postDiaryEntry(obj)
+            let response = null
+            if (!props.patientDiaryEntry) {
+                response = await postDiaryEntry(obj)
+            } else {
+                response = await updateDiaryEntry({
+                    ...obj,
+                    updatedAt: localeDateService.today()
+                })
+            }
             if (response.status === 201 || response.status === 200) {
                 props.onRefresh(response.data)
                 handleVisibleModal()
@@ -84,6 +97,7 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                         text2: 'Nota adicionada',
                     })
             }
+
         } catch (error) {
             setErrorMessage('Erro ao criar uma nota. Tente novamente mais tarde.')
             setIsError(true)
@@ -97,10 +111,6 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
         handleVisibleModal()
     }
 
-    const LoadingIndicator = () => (
-        <Spinner size='small' status='basic' />
-    )
-
     return (
         <Modal
             {...{ ...props, ref: combinedRef }}
@@ -110,7 +120,13 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
             onBackdropPress={handleVisibleModal}>
             <Card disabled={true} >
                 <View style={styles.headerModal}>
-                    <Text status='basic' category='label'>{readonly ? 'Detalhes' : 'Criar Nota'}</Text>
+                    <View>
+                        {props.patientDiaryEntry && props.patientDiaryEntry.updatedAt ? (
+                            <Text status='basic' style={styles.textSubtitle}>{`Última atualização: ${localeDateService.format(localeDateService.parse(props.patientDiaryEntry.updatedAt as string, _DATE_FROM_ISO_8601), _DEFAULT_FORMAT_DATETIME).replace('PM', '').replace('AM', '')}`}</Text>
+                        ) : (
+                            <Text status='basic' category='label'>{readonly ? 'Detalhes' : 'Criar Nota'}</Text>
+                        )}
+                    </View>
                     {route.name === 'PatientDiaryEntry' ?
                         <TouchableOpacity onPress={handleVisibleModal}>
                             <Icon name='close-outline' size={20} style={styles.icon} />
@@ -151,6 +167,7 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                                     returnKeyType="next"
                                     underlineColorAndroid="transparent"
                                     onSubmitEditing={() => form.setFocus('data.description')}
+                                    placeholder='Digite o Título'
                                 />
                             )}
                             name='data.title'
@@ -186,6 +203,7 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                                     returnKeyType="done"
                                     underlineColorAndroid="transparent"
                                     blurOnSubmit={true}
+                                    placeholder='Digite AQUI suas observações'
                                 />
                             )}
                             name='data.description'
@@ -206,7 +224,7 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                             <Button status='success'
                                 onPress={form.handleSubmit(submitForm)}
                                 style={styles.button}
-                                accessoryLeft={isLoading ? LoadingIndicator : undefined}>
+                                accessoryLeft={isLoading ? () => <LoadingIndicatorComponent insideButton size='small' status='basic' /> : undefined}>
                                 {isLoading ? '' : props.patientDiaryEntry ? 'Editar' : 'Salvar'}
                             </Button>
                         </View>

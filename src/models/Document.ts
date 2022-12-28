@@ -13,7 +13,9 @@ export class DocumentDataDto {
     documentId?: number
 }
 
-export interface DocBuffer {
-    type: "Buffer",
-    data: ArrayBuffer
+export interface FileDto {
+    uri: string
+    type: string | null
+    fileName: string
+    size: number | null
 }

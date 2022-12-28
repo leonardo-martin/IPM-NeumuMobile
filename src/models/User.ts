@@ -1,6 +1,8 @@
+import { JSONObject } from "./Common"
 import { ExamDNA } from "./Patient"
-import { PatientProfileCreatorDto } from "./PatientProfileCreator"
+import { PatientProfileCreatorDto, PatientProfileCreatorTypeEnum } from "./PatientProfileCreator"
 import { UserRole } from "./UserRole"
+import { VisitAddress } from "./VisitAddress"
 
 export interface AuthenticationPayload {
     accessToken: string
@@ -17,7 +19,10 @@ export class UserDto {
     id!: number
     name!: string
     email!: string
+    typeOfDocument!: any
+    countryCode!: string
     cpf!: string
+    rne!: string
     city!: string | null
     state!: string | null;
     phone1!: string;
@@ -37,6 +42,9 @@ export class UserData {
 
     constructor(name?: string,
         cpf?: string,
+        rne?: string,
+        typeOfDocument?: any,
+        countryCode?: string,
         email?: string,
         emailConfirmation?: string,
         phone?: string,
@@ -70,9 +78,15 @@ export class UserData {
         this.addressComplement = addressComplement
         this.country = country
         this.sex = sex
+        this.typeOfDocument = typeOfDocument
+        this.countryCode = countryCode
+        this.rne = rne
     }
 
     name?: string
+    typeOfDocument?: any
+    countryCode?: string
+    rne?: string
     cpf?: string
     email?: string
     emailConfirmation?: string
@@ -80,6 +94,7 @@ export class UserData {
     phone2?: string
     username?: string
     password?: string
+    confirmPassword?: string
     city?: string
     state?: string
     dateOfBirth?: Date | string
@@ -93,20 +108,35 @@ export class UserData {
 
 export class UserPatientData extends UserData {
 
+    partner?: string
     mothersName?: string
     susNumber?: string
-    creator?: PatientProfileCreatorDto
+    createdPatientProfileId?: string | number
+    patientProfileCreatorTypeId?:
+        | PatientProfileCreatorTypeEnum
+        | number
+        | undefined
+    data?: JSONObject | string | any
+    underAgePatientProfileId?: number
+    responsibleEmailKey?: string
+    responsibleEmail?: string
+    responsibleEmailSent?: boolean
+    responsibleEmailOk?: boolean
     abrafeuRegistrationOptIn?: string
     pastExams?: ExamDNA
 
     constructor(name?: string,
         cpf?: string,
+        rne?: string,
+        typeOfDocument?: any,
+        countryCode?: string,
         email?: string,
         emailConfirmation?: string,
         phone?: string,
         phone2?: string,
         username?: string,
         password?: string,
+        confirmPassword?: string,
         city?: string,
         state?: string,
         dateOfBirth?: Date,
@@ -117,17 +147,34 @@ export class UserPatientData extends UserData {
         country?: string,
         sex?: string,
         mothersName?: string, susNumber?: string,
-        creator?: PatientProfileCreatorDto,
         abrafeuRegistrationOptIn?: string,
-        pastExams?: ExamDNA) {
+        pastExams?: ExamDNA,
+        createdPatientProfileId?: string | number,
+        patientProfileCreatorTypeId?: PatientProfileCreatorTypeEnum | number,
+        data?: JSONObject | string | any,
+        underAgePatientProfileId?: number,
+        responsibleEmailKey?: string,
+        responsibleEmail?: string,
+        responsibleEmailSent?: boolean,
+        responsibleEmailOk?: boolean,
+        partner?: string) {
 
-        super(name, cpf, email, emailConfirmation, phone, phone2, username,
+        super(name, cpf, rne, typeOfDocument, countryCode, email, emailConfirmation, phone, phone2, username,
             password, city, state, dateOfBirth, postalCode, address1, address2, addressComplement, country, sex)
         this.mothersName = mothersName
         this.susNumber = susNumber
-        this.creator = creator
+        this.createdPatientProfileId = createdPatientProfileId
+        this.patientProfileCreatorTypeId = patientProfileCreatorTypeId
+        this.data = data
+        this.underAgePatientProfileId = underAgePatientProfileId
+        this.responsibleEmailKey = responsibleEmailKey
+        this.responsibleEmail = responsibleEmail
+        this.responsibleEmailSent = responsibleEmailSent
+        this.responsibleEmailOk = responsibleEmailOk
         this.abrafeuRegistrationOptIn = abrafeuRegistrationOptIn
         this.pastExams = pastExams
+        this.confirmPassword = confirmPassword
+        this.partner = partner
         Object.setPrototypeOf(this, UserPatientData.prototype)
     }
 }
@@ -137,15 +184,20 @@ export class UserDoctorData extends UserData {
     crm?: string
     specialty?: MedicalSpecialtyDto
     professionalTypeId?: string
+    visitAddress?: VisitAddress[]
 
     constructor(name?: string,
         cpf?: string,
+        rne?: string,
+        typeOfDocument?: any,
+        countryCode?: string,
         email?: string,
         emailConfirmation?: string,
         phone?: string,
         phone2?: string,
         username?: string,
         password?: string,
+        confirmPassword?: string,
         city?: string,
         state?: string,
         dateOfBirth?: Date,
@@ -156,13 +208,16 @@ export class UserDoctorData extends UserData {
         country?: string,
         sex?: string,
         crm?: string, specialty?: MedicalSpecialtyDto,
-        professionalTypeId?: string) {
+        professionalTypeId?: string,
+        visitAddress?: VisitAddress[]) {
 
-        super(name, cpf, email, emailConfirmation, phone, phone2, username,
+        super(name, cpf, rne, typeOfDocument, countryCode, email, emailConfirmation, phone, phone2, username,
             password, city, state, dateOfBirth, postalCode, address1, address2, addressComplement, country, sex)
         this.crm = crm
         this.specialty = specialty
         this.professionalTypeId = professionalTypeId
+        this.confirmPassword = confirmPassword
+        this.visitAddress = visitAddress
         Object.setPrototypeOf(this, UserDoctorData.prototype)
     }
 }
@@ -172,11 +227,13 @@ class MedicalSpecialtyDto {
     id!: number
     description!: string
     professionalTypeId!: string
+    others!: JSONObject | string | any
 }
 
-export class UserAccRecoveryPasswdRequest {
-    userEmail!: string
-    userCpf!: string
+export interface UserAccRecoveryPasswdRequest {
+    userEmail?: string
+    userCpf?: string
+    userRnm?: string
 }
 
 export class UserAccRecoveryPasswd {
@@ -190,4 +247,23 @@ export class UserRelatedIdsDto {
     patientId!: number
     medicalDoctorId!: number
     operatorId!: number
+}
+
+export enum EChoicesChangePassword {
+    CPF = 'CPF (Cadastro de Pessoa Física)',
+    RNM = 'RNM (Registro Nacional Migratório)',
+    EMAIL = 'Endereço de E-mail'
+}
+
+export interface VerifyUniqueUserKeysDto {
+    cpf?: string
+    rne?: string
+    email?: string
+    susNumber?: string
+}
+
+export enum ETypeOfDocument {
+    CPF = 'CPF',
+    RG = 'RG',
+    RNM = 'RNM'
 }

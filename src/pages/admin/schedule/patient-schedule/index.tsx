@@ -1,4 +1,5 @@
 import HeaderAdmin from '@components/header/admin'
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import ModalizeFixed from '@components/modalize'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _DATE_FROM_ISO_8601, _DEFAULT_FORMAT_DATETIME } from '@constants/date'
@@ -9,11 +10,11 @@ import { CreateAppointment } from '@models/Appointment'
 import { MedicalDoctorDisplay } from '@models/Medical'
 import { VisitAddressDTO } from '@models/VisitAddress'
 import { useRoute } from '@react-navigation/core'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import { useFocusEffect } from '@react-navigation/native'
-import { createAppointment, getAppointmentAvailabilityWithBookedAppointments } from '@services/appointment.service'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { AppInfoService } from '@services/app-info.service'
+import { createAppointment, getAppointmentAvailabilityListSummaryByDoctorId, getAppointmentAvailabilityWithBookedAppointments } from '@services/appointment.service'
 import { getVisitAddressListByDoctorId } from '@services/visit-address.service'
-import { Avatar, Button, Card, Icon, IconProps, Layout, List, Spinner, Text, TranslationWidth, useStyleSheet, useTheme } from '@ui-kitten/components'
+import { Avatar, Button, Card, Icon, IconProps, List, Text, TranslationWidth, useStyleSheet, useTheme } from '@ui-kitten/components'
 import { getTimeBlocksByTime, getTimesByInterval, scrollToRef } from '@utils/common'
 import { openMapsWithAddress } from '@utils/maps'
 import { addHours, addMinutes } from 'date-fns'
@@ -32,13 +33,12 @@ interface Data {
     layout: LayoutRectangle
 }
 
-const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
-    navigation
-}): ReactElement => {
+const PresentialScheduleScreen: FC = (): ReactElement => {
 
     const { localeDateService } = useDatepickerService()
+    const navigation = useNavigation<any>()
     const { ids } = useAppSelector((state: RootState) => state.user)
-    const times = getTimesByInterval(15, 405, 18)
+    const times = getTimesByInterval(15, 345, 18)
     const theme = useTheme()
     const opacity = useSharedValue(0)
     const styles = useStyleSheet(doctorScheduleStyle)
@@ -76,6 +76,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
 
     useFocusEffect(
         useCallback(() => {
+            setIsLoading(true)
             const param = route.params as MedicalDoctorDisplay
             setParams(param)
             setAvailableTimes([])
@@ -84,37 +85,49 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                 getVisitAddressFromId(param.medicalDoctorId)
             }
 
-            setIsLoading(false)
             handleClose()
 
             return () => {
-                setIsLoading(true)
+                setIsLoading(false)
                 setDateSelected(currentDate)
                 setDateTimeSelected(undefined)
                 setTimeSelected(undefined)
                 setCount(0)
-                newDaysInMonthArray(currentDate)
             }
         }, [route.params])
     )
 
     useEffect(() => {
-        if (!isLoading) {
+        if (!isLoading)
             scrollToRef(scrollViewDaysInMonthRef, 0, 0)
-        }
     }, [isLoading])
 
-    const getArray = (date: Date) => {
-        return Array.from({ length: localeDateService.getNumberOfDaysInMonth(date) }, (x, i) => localeDateService.format(localeDateService.addDay(localeDateService.getMonthStart(date), i), 'DD'))
+    const getDaysAvailables = async (date: Date, medicalDoctorId?: string) => {
+        const appointmentList = await getAppointmentAvailabilityListSummaryByDoctorId((medicalDoctorId || params?.medicalDoctorId) as number)
+        let arr = Array.from({ length: localeDateService.getNumberOfDaysInMonth(date) }, (x, i) => localeDateService.format(localeDateService.addDay(localeDateService.getMonthStart(date), i), 'DD'))
+        arr = localeDateService.getMonth(dateSelected) === localeDateService.getMonth(localeDateService.today()) ?
+            arr.filter(d => Number(d) >= Number(localeDateService.format(localeDateService.today(), 'DD')))
+            : arr || arr
+        const list = arr.filter((day: string) => {
+            const tDate = localeDateService.clone(dateSelected)
+            tDate.setDate(Number(day))
+            const dayOfWeek = localeDateService.getDayOfWeek(tDate)
+            if (appointmentList.data[dayOfWeek.toString()])
+                return day
+        })
+        setDaysInMonth(list)
+        setNumColumns(list.length)
+        setIsLoading(false)
     }
 
     useFocusEffect(
         useCallback(() => {
-            const array = getArray(dateSelected)
-            setDaysInMonth(array)
-            setNumColumns(array.length)
-            opacity.value = 0
-        }, [dateSelected])
+            if ((route.params as any)?.medicalDoctorId && dateSelected) {
+                getDaysAvailables(dateSelected, (route.params as any)?.medicalDoctorId)
+                if (availableTimes.length === 0) opacity.value = 0
+                else opacity.value = 1
+            }
+        }, [dateSelected, route.params])
     )
 
     const onSubmit = async () => {
@@ -145,7 +158,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
             const response = await createAppointment(scheduleData)
             if (response.status === 201) {
                 navigation.navigate('ConfirmationSchedule', {
-                    title: 'TeleNeuMu | Consulta Presencial',
+                    title: `${AppInfoService.getAppName()} | Consulta Presencial`,
                     description: 'Esta é uma marcação de uma consulta presencial com o seu médico',
                     location: fullAddress,
                     startDate: localeDateService.parse(scheduleData?.startTime as string, _DATE_FROM_ISO_8601).getTime().toString(),
@@ -190,13 +203,10 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
         }
     }
 
-    const newDaysInMonthArray = (date: Date) => setDaysInMonth(getArray(date))
-
     const next = () => {
         const date = localeDateService.addMonth(dateSelected, 1)
         setDateSelected(date)
         setCount(count + 1)
-        newDaysInMonthArray(date)
     }
 
     const previous = () => {
@@ -204,7 +214,6 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
             const date = localeDateService.addMonth(dateSelected, -1)
             setDateSelected(date)
             setCount(count - 1)
-            newDaysInMonthArray(date)
         }
     }
 
@@ -283,20 +292,22 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
         <View style={styles.daysItem} key={index}
             onLayout={(event) => {
                 const layout = event.nativeEvent.layout
-                dataSourceCords[index] = {
+                const cords = [{
                     id: index,
                     value: item,
                     layout: { ...layout }
-                }
+                }]
+                dataSourceCords[index] = cords[0]
                 setDataSourceCords(dataSourceCords)
-                if (index === (numColumns - 1)) {
-                    if (dateTimeSelected && localeDateService.compareDatesSafe(currentDate, dateTimeSelected) === 0) {
-                        scrollToRef(scrollViewDaysInMonthRef, dataSourceCords.find(v => v.value === localeDateService.format(currentDate, 'DD'))?.layout.x, 0)
-                    } else {
-                        const item = dataSourceCords.find(v => dateTimeSelected && v.value === localeDateService.format(dateTimeSelected, 'DD') && dateSelected.getMonth() === dateTimeSelected.getMonth())
+                if (dateTimeSelected) {
+                    if (localeDateService.compareDatesSafe(currentDate, dateTimeSelected) !== 0) {
+                        const item = (dataSourceCords || cords).find(v => dateTimeSelected && v.value === localeDateService.format(dateTimeSelected, 'DD') && dateSelected.getMonth() === dateTimeSelected.getMonth())
                         if (item) scrollToRef(scrollViewDaysInMonthRef, item.layout.x, 0)
-                        else scrollToRef(scrollViewDaysInMonthRef, dataSourceCords[0]?.layout.x, 0)
+                        else scrollToRef(scrollViewDaysInMonthRef, (dataSourceCords || cords)[0]?.layout.x, 0)
                     }
+                } else {
+                    if (index === 0)
+                        scrollToRef(scrollViewDaysInMonthRef, layout.x, 0)
                 }
             }}>
             {
@@ -345,13 +356,7 @@ const PresentialScheduleScreen: FC<DrawerContentComponentProps> = ({
                 <HeaderAdmin />
                 <SafeAreaLayout level='1' style={styles.safeArea}>
                     {isLoading ? (
-                        <Layout style={{
-                            flex: 1,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}>
-                            <Spinner status='primary' size='giant' />
-                        </Layout>
+                        <LoadingIndicatorComponent />
                     ) : (
                         <ScrollView
                             contentContainerStyle={styles.contentContainerScrollView}

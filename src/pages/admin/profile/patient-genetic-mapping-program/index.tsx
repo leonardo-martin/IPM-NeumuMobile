@@ -1,21 +1,21 @@
 import CustomErrorMessage from '@components/error'
 import HeaderAdmin from '@components/header/admin'
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import ModalizeFixed from '@components/modalize'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useAppSelector } from '@hooks/redux'
 import { useModal } from '@hooks/useModal'
+import { AbrafeuOptInStatus } from '@models/Abrafeu'
 import { PatientDto } from '@models/Patient'
 import { UnderageStatus } from '@models/Underage'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { getStatusAbrafeuForm, optIn, optOut } from '@services/abrafreu.service'
 import { getPatient, updatePatient } from '@services/patient.service'
 import { getStatus } from '@services/underage.service'
-import { Button, Input, Radio, RadioGroup, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
-import { EvaSize, EvaStatus } from '@ui-kitten/components/devsupport'
+import { Button, Input, Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
 import { getRelationPastExams } from '@utils/common'
-import { onlyNumbers } from '@utils/mask'
+import { formatCpf, onlyNumbers } from '@utils/mask'
 import { compareAsc, subYears } from 'date-fns'
-import { AbrafeuOptInStatus } from 'models/Abrafeu'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, Keyboard, RefreshControl, TouchableOpacity, View } from 'react-native'
@@ -31,6 +31,8 @@ import { mappingStyle } from './style'
 
 const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
 
+    const [isSending, setIsSending] = useState<boolean>(false)
+    const navigation = useNavigation<any>()
     const [refreshing, setRefreshing] = useState<boolean>(false)
     const [isFetchingData, setIsFetchingData] = useState<boolean>(false)
     const [isOpenedModal, setIsOpenedModal] = useState<boolean>(false)
@@ -68,17 +70,24 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
         try {
             const response = await getPatient()
             setPatient(response.data)
-            const optIn = response.data?.abrafeuRegistrationOptIn === 'true' ? 0 : 1
-            form.setValue('abrafeuRegistrationOptIn', response.data?.abrafeuRegistrationOptIn === 'true' ? 'true' : 'false')
+            if (response.data?.abrafeuRegistrationOptIn) {
+                const optIn = response.data?.abrafeuRegistrationOptIn === 'true' ? 0 : 1
+                form.setValue('abrafeuRegistrationOptIn', response.data?.abrafeuRegistrationOptIn === 'true' ? 'true' : 'false')
 
-            if (optIn === 0 && response.data.pastExams?.exam) {
-                setSelectedIndexExamDNA(response.data.pastExams.exam.id as number)
-                form.setValue('pastExams.exam.id', response.data.pastExams.exam.id)
-                form.setValue('pastExams.exam.description', response.data.pastExams.exam.description)
-                form.setValue('pastExams.doctor.crm', response.data.pastExams.doctor?.crm)
+                if (optIn === 0 && response.data.pastExams?.exam) {
+                    setSelectedIndexExamDNA(response.data.pastExams.exam.id as number)
+                    form.setValue('pastExams.exam.id', response.data.pastExams.exam.id)
+                    form.setValue('pastExams.exam.description', response.data.pastExams.exam.description)
+                    form.setValue('pastExams.doctor.crm', response.data.pastExams.doctor?.crm)
+                }
+                setSelectedIndex(optIn)
+                setSelectTmp(optIn)
+            } else {
+                setSelectedIndexExamDNA(-1)
+                setSelectedIndex(undefined)
+                setSelectTmp(undefined)
             }
-            setSelectedIndex(optIn)
-            setSelectTmp(optIn)
+
             setUnidentifiedError(false)
         } catch (error) {
             setSelectedIndex(undefined)
@@ -115,7 +124,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
         }
     }
 
-    const handleParticipateProgram = (index: number) => {
+    const handleParticipateProgram = useCallback((index: number) => {
         setSelectedIndex(index)
         if (index === 0 && underage && !accept) {
             if (statusPermission === UnderageStatus.GRANTED) {
@@ -149,6 +158,53 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                 modalRequiredAddress()
             else
                 alertCommon()
+        } else if (index === 1 && !selectTmp) {
+            Alert.alert(
+                'Atenção!',
+                'Caso não aceite participar do programa, irá ficar de fora do mapeamento genético. Está certo disso?',
+                [
+                    {
+                        text: 'Voltar',
+                        style: 'cancel',
+                        onPress: () => {
+                            setSelectedIndex(undefined)
+                            setSelectedIndexExamDNA(-1)
+                        }
+                    },
+                    {
+                        text: 'Sim',
+                        style: 'destructive',
+                        onPress: async () => {
+                            const data = { ...form.getValues() }
+                            delete data.pastExams
+                            try {
+                                const response = await updatePatient({
+                                    ...data
+                                })
+                                if (response.status === 201 || response.status === 200) {
+                                    setPatient(response.data)
+
+                                    Toast.show({
+                                        type: 'success',
+                                        text2: 'Perfil atualizado com sucesso',
+                                    })
+                                } else {
+                                    Toast.show({
+                                        type: 'warning',
+                                        text2: 'Não foi possível atualizar o perfil',
+                                    })
+                                }
+
+                            } catch (error) {
+                                Toast.show({
+                                    type: 'danger',
+                                    text2: 'Erro inesperado',
+                                })
+                            }
+                        }
+                    }
+                ]
+            )
         }
 
         form.clearErrors()
@@ -156,29 +212,43 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
         form.setValue('pastExams.exam.id', '')
         form.setValue('pastExams.exam.description', '')
         form.setValue('abrafeuRegistrationOptIn', index === 0 ? 'true' : 'false')
+        form.setValue('pastExams.questions', undefined)
         setSelectedIndexExamDNA(-1)
         if (selectTmp === 0 && index === 1) {
             setIsOpenedModal(true)
             ref.current?.open()
         }
-    }
+    }, [selectTmp, underage])
 
-    const modalRequiredAddress = () => {
+    const modalRequiredAddress = useCallback(() => {
         Alert.alert(
             'Atenção!',
             'Necessário preencher o endereço no perfil para participar do programa',
             [
                 {
                     text: 'OK',
+                    style: 'cancel',
+                    onPress: () => {
+                        if (selectTmp === undefined)
+                            setSelectedIndex(-1)
+                        else
+                            setSelectedIndex(1)
+                    }
+                },
+                {
+                    text: 'Meu Perfil',
                     style: 'default',
-                    onPress: () => setSelectedIndex(1)
+                    onPress: () => navigation.navigate('EditProfile')
                 }
             ]
         )
-    }
+    }, [selectTmp])
 
     const checkIfPermission = () => {
-        if (profile?.address1 !== '' && profile?.city !== '' && profile?.state !== '' && profile?.postalCode !== '') {
+        if ((profile?.address1 !== '' && profile?.address1 !== null) &&
+            (profile?.city !== '' && profile?.city !== null) &&
+            (profile?.state !== '' && profile?.state !== null) &&
+            (profile?.postalCode !== '' && profile?.postalCode !== null)) {
             setIsCompleteAddress(true)
         } else {
             setIsCompleteAddress(false)
@@ -197,21 +267,28 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                     }
                 ]
             )
+        } else {
+            navigation.navigate('AbrafeuForm')
         }
     }
 
     const getUnderageStatus = async () => {
-        const response = await getStatus()
-        if (response.status === 200) {
-            setStatusPermission(response.data)
-            verifyStatusForm()
-        } else {
+        try {
+            const response = await getStatus()
+            if (response.status === 200) {
+                setStatusPermission(response.data)
+                verifyStatusForm()
+            } else {
+                setStatusPermission(UnderageStatus.NOT_REQUESTED)
+            }
+            if (response.data === UnderageStatus.PENDING) {
+                setIsFetchingData(false)
+            } else
+                getData()
+        } catch (error) {
             setStatusPermission(UnderageStatus.NOT_REQUESTED)
-        }
-        if (response.data === UnderageStatus.PENDING) {
             setIsFetchingData(false)
-        } else
-            getData()
+        }
     }
 
     const confirm = async (data: PatientDto) => {
@@ -225,6 +302,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             }
 
             try {
+                setIsSending(true)
                 const response = await updatePatient(data)
                 setPatient(response.data)
                 // send email
@@ -251,26 +329,29 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                     await optOut()
                     Toast.show({
                         type: 'info',
-                        text2: 'Que pena... Agradeçemos pelo apoio',
+                        text2: 'Que pena... Agradecemos pelo apoio',
                     })
                 }
 
+                setIsOpenedModal(false)
+                ref.current?.close()
+                setIsSending(false)
                 setSelectTmp(data.abrafeuRegistrationOptIn === 'true' ? 0 : 1)
-
             } catch (error) {
+                setIsOpenedModal(false)
+                ref.current?.close()
+                setIsSending(false)
                 setSelectedIndex(selectTmp)
                 Toast.show({
                     type: 'danger',
                     text2: 'Ocorreu um erro. Tente novamente mais tarde!',
                 })
-            } finally {
-                setIsOpenedModal(false)
-                ref.current?.close()
             }
         } else {
             setIsOpenedModal(true)
             ref.current?.open()
         }
+        setIsSending(false)
     }
 
     const close = () => {
@@ -287,10 +368,6 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             form.setValue('pastExams.exam.description', exam)
         }
     }
-
-    const LoadingIndicator = (size: EvaSize | undefined = 'tiny', status: EvaStatus | undefined = 'basic') => (
-        <Spinner size={size} status={status} />
-    )
 
     const alertCommon = () => {
         Alert.alert(
@@ -318,13 +395,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             <SafeAreaLayout level='1' style={styles.safeArea}>
                 {isFetchingData ?
                     <>
-                        <View style={{
-                            flex: 1,
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}>
-                            {LoadingIndicator('giant', 'primary')}
-                        </View>
+                        <LoadingIndicatorComponent size='giant' />
                     </>
                     : (
                         <>
@@ -390,6 +461,58 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                                 isCompleteAddress && (
                                                     <>
                                                         <View style={[styles.subContainer, { alignItems: 'flex-start' }]}>
+                                                            <View>
+                                                                <Text style={styles.text}>
+                                                                    Eu, <Text style={[styles.text, { fontWeight: 'bold', textTransform: 'uppercase', textDecorationLine: 'underline' }]}>{profile?.name}</Text>, portador do {!!profile?.cpf ? 'CPF' : 'RNM'} <Text style={[styles.text, { fontWeight: 'bold', textDecorationLine: 'underline' }]}>{" " + (!!profile?.cpf ? (formatCpf(profile?.cpf) || profile?.cpf) : profile?.rne) + " "}</Text> concordo que o meu DNA (ou o DNA do meu filho) seja tornado anônimo e utilizado com o objetivo de pesquisa.
+                                                                </Text>
+                                                                <Controller
+                                                                    control={form.control}
+                                                                    rules={{
+                                                                        required: {
+                                                                            value: true,
+                                                                            message: 'Campo obrigatório'
+                                                                        }
+                                                                    }}
+                                                                    render={({ field: { name, ref, onChange, value } }) => (
+                                                                        <RadioGroup
+                                                                            testID={name}
+                                                                            ref={ref}
+                                                                            style={{ paddingHorizontal: 5 }}
+                                                                            selectedIndex={value}
+                                                                            onChange={onChange}>
+                                                                            <Radio>Sim</Radio>
+                                                                            <Radio>Não (descarte imediato após a conclusão do teste autorizado neste documento)</Radio>
+                                                                        </RadioGroup>
+                                                                    )}
+                                                                    name='pastExams.questions.one'
+                                                                />
+                                                                <CustomErrorMessage name='pastExams.questions.one' errors={form.formState.errors} />
+                                                                <Text style={styles.text}>
+                                                                    Concordo que os dados genômicos sejam tornados anônimos e utilizados com o objetivo de pesquisa ou publicações científicas.
+                                                                </Text>
+                                                                <Controller
+                                                                    control={form.control}
+                                                                    rules={{
+                                                                        required: {
+                                                                            value: true,
+                                                                            message: 'Campo obrigatório'
+                                                                        }
+                                                                    }}
+                                                                    render={({ field: { name, ref, onChange, value } }) => (
+                                                                        <RadioGroup
+                                                                            testID={name}
+                                                                            ref={ref}
+                                                                            style={{ paddingHorizontal: 5 }}
+                                                                            selectedIndex={value}
+                                                                            onChange={onChange}>
+                                                                            <Radio>Sim</Radio>
+                                                                            <Radio>Não (informações serão descartadas em 60 meses)</Radio>
+                                                                        </RadioGroup>
+                                                                    )}
+                                                                    name='pastExams.questions.two'
+                                                                />
+                                                                <CustomErrorMessage name='pastExams.questions.two' errors={form.formState.errors} />
+                                                            </View>
                                                             <Controller
                                                                 control={form.control}
                                                                 rules={{
@@ -408,7 +531,6 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                                                         label="Número de Registro do Médico Responsável *"
                                                                         style={styles.input}
                                                                         keyboardType='number-pad'
-                                                                        placeholder=''
                                                                         testID={name}
                                                                         onBlur={onBlur}
                                                                         onChangeText={onChange}
@@ -416,6 +538,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                                                         ref={ref}
                                                                         maxLength={6}
                                                                         underlineColorAndroid="transparent"
+                                                                        placeholder="Digite o número de REGISTRO do Médico Responsável (somente números)"
                                                                     />
                                                                 )}
                                                                 name='pastExams.doctor.crm'
@@ -501,9 +624,13 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                         {selectedIndex === 0 ? 'Deseja participar do programa?' : 'Deseja sair do programa?'}
                     </Text>
                     <TouchableOpacity style={styles.contentButton} activeOpacity={0.75} onPress={form.handleSubmit(confirm)}>
-                        <Text style={styles.contentButtonText}>{'Confirmar'.toUpperCase()}</Text>
+                        {isSending ? (
+                            <LoadingIndicatorComponent size='small' status='control' />
+                        ) : (
+                            <Text style={styles.contentButtonText}>{'Confirmar'.toUpperCase()}</Text>
+                        )}
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.contentButton, styles.buttonOutline]} activeOpacity={0.75} onPress={close}>
+                    <TouchableOpacity disabled={isSending} style={[styles.contentButton, styles.buttonOutline]} activeOpacity={0.75} onPress={close}>
                         <Text style={[styles.contentButtonText, styles.buttonTextOutline]}>{'Cancelar'.toUpperCase()}</Text>
                     </TouchableOpacity>
                 </ModalizeFixed>

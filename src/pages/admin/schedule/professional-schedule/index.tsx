@@ -1,4 +1,5 @@
 import HeaderAdmin from '@components/header/admin'
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { _DATE_FROM_ISO_8601 } from '@constants/date'
 import { useAppSelector } from '@hooks/redux'
@@ -6,7 +7,7 @@ import { useDatepickerService } from '@hooks/useDatepickerService'
 import { AppointmentAvailabilityParams } from '@models/Appointment'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { doctorCreateAppointmentAvailability, doctorDeleteAppointmentAvailabilityBlock, getAppointmentAvailabilityListSummaryByDoctorId } from '@services/appointment.service'
-import { Button, CheckBox, List, ListItem, Spinner, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
+import { Button, CheckBox, List, ListItem, Text, useStyleSheet, useTheme } from '@ui-kitten/components'
 import { getTimeBlocksByTime, getTimesByInterval, sortByNumber } from '@utils/common'
 import { addMinutes } from 'date-fns'
 import React, { createRef, FC, ReactElement, useCallback, useEffect, useState } from 'react'
@@ -59,9 +60,20 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
     })
 
     const loadData = async () => {
-        // get all time blocks
-        const resp = await getAppointmentAvailabilityListSummaryByDoctorId(ids?.medicalDoctorId as number)
-        setTimeBlockList(resp.data)
+        try {
+            if (ids?.medicalDoctorId) {
+                // get all time blocks
+                const resp = await getAppointmentAvailabilityListSummaryByDoctorId(ids?.medicalDoctorId as number)
+                setTimeBlockList(resp.data)
+            } else {
+                throw 'Error'
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'danger',
+                text2: 'Erro ao obter os horários',
+            })
+        }
     }
 
     useEffect(() => {
@@ -102,11 +114,16 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
             ]
         )
     }
-
+    useFocusEffect(
+        useCallback(() => {
+            if (ids?.medicalDoctorId)
+                loadData()
+        }, [ids])
+    )
+    
     useFocusEffect(
         useCallback(() => {
             alert()
-            loadData()
             opacity.value = 0
             if (listRef)
                 listRef.current?.scrollToIndex({
@@ -303,10 +320,6 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
         setScheduleList(originalScheduleList)
     }
 
-    const LoadingIndicator = () => (
-        <Spinner size='tiny' status='basic' />
-    )
-
     return (
         <>
             <HeaderAdmin />
@@ -372,7 +385,7 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
                     <Button
                         size='medium'
                         disabled={!enableUndoButton}
-                        accessoryRight={isLoading ? LoadingIndicator : undefined}
+                        accessoryRight={isLoading ? () => <LoadingIndicatorComponent insideButton size='tiny' status='basic' /> : undefined}
                         onPress={submit}>
                         {evaProps => <Text {...evaProps} style={[evaProps?.style, styles.uppercaseText]}>Salvar</Text>}
                     </Button>

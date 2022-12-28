@@ -14,7 +14,7 @@ export const extraProfileStyle = StyleSheet.create({
     aspectRatio: 1.0,
     height: 130,
     alignSelf: 'center',
-    borderColor: 'border-alternative-color-5',
+    borderColor: 'border-alternative-color-1',
   },
   editAvatarButton: {
     aspectRatio: 1.0,
@@ -31,15 +31,9 @@ export const extraProfileStyle = StyleSheet.create({
   section: {
     marginTop: 24,
   },
-  editViewButton: {
-    alignItems: 'flex-end',
-    paddingTop: 10,
-    paddingEnd: 20,
-    paddingBottom: 0
-  },
   avatar: {
     alignSelf: 'center',
-    borderWidth: 4,
+    borderWidth: 2,
   },
   shadow: {
     ...Platform.select({

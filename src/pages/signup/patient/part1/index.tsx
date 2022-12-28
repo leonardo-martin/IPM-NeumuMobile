@@ -1,40 +1,77 @@
 import CustomErrorMessage from '@components/error'
+import CountryPicker from '@components/picker/CountryPicker'
+import PartnerPicker from '@components/picker/PartnerPicker'
+import { COUNTRY } from '@constants/common'
 import { CONECTESUS_URI } from '@constants/uri'
 import { useDatepickerService } from '@hooks/useDatepickerService'
+import { useModal } from '@hooks/useModal'
 import { PatientSignUpProps } from '@models/SignUpProps'
+import { ETypeOfDocument } from '@models/User'
 import { registerStyle } from '@pages/signup/style'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { useFocusEffect, useIsFocused } from '@react-navigation/native'
-import { Datepicker, Icon, IconProps, Input, PopoverPlacements, Radio, RadioGroup, Text, useStyleSheet } from '@ui-kitten/components'
+import { Datepicker, Icon, IconProps, IndexPath, Input, PopoverPlacements, Radio, RadioGroup, Select, SelectItem, Text, useStyleSheet } from '@ui-kitten/components'
 import { getGender, openMailTo } from '@utils/common'
-import { formatCpf, formatPhone, isEmailValid } from '@utils/mask'
-import { validateCNS, validatePasswd } from '@utils/validators'
+import { typeOfPersonalDocuments } from '@utils/constants'
+import { cleanNumberMask, formatCpf, formatRNM, isEmailValid } from '@utils/mask'
+import { validateCNS, validatePasswd, validateUniqueData } from '@utils/validators'
 import { validate } from 'gerador-validador-cpf'
-import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
+import React, { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 import { Controller } from 'react-hook-form'
-import { Keyboard, Linking, TouchableOpacity, View } from 'react-native'
+import { Keyboard, Linking, Pressable, TouchableOpacity, View } from 'react-native'
+import { Modalize } from 'react-native-modalize'
+import { Portal } from 'react-native-portalize'
 
 const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): ReactElement => {
 
   const { localeDateService } = useDatepickerService()
   const isFocused = useIsFocused()
+  const { ref: modalizeRef } = useModal<Modalize>()
+  const { ref: partnerModalizeRef } = useModal<Modalize>()
+  const [countryCode, setCountryCode] = useState<string>(COUNTRY.DIAL_CODE)
+  const [partner, setPartner] = useState<string>('')
 
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const styles = useStyleSheet(registerStyle)
   const [secureTextEntry, setSecureTextEntry] = useState(true)
+  const [secureTextEntryRepeat, setSecureTextEntryRepeat] = useState(true)
+  const [selectedTypeOfDocument, setSelectedTypeOfDocument] = useState<IndexPath | IndexPath[]>()
 
   const emailConfirm = form.watch("email")
+  const password = useRef<string | undefined>()
+  password.current = form.watch("password", "")
+
+  const typeOfDocument = useRef<string | undefined>()
+  typeOfDocument.current = form.watch("typeOfDocument")
+
+  const openCountryPicker = () => modalizeRef.current?.open()
+  const openPartnerPicker = () => partnerModalizeRef.current?.open()
 
   useFocusEffect(
     useCallback(() => {
       const sex = form.getValues('sex')
       if (sex) setSelectedIndex(sex === 'male' ? 0 : sex === 'female' ? 1 : 2)
+      const doc = form.getValues('typeOfDocument')
+      if (doc)
+        setSelectedTypeOfDocument(new IndexPath(typeOfPersonalDocuments.indexOf(typeOfPersonalDocuments.find(e => e.label === doc) || {} as { value: number; label: string; })))
+      setPartner(form.getValues('partner') ?? '')
     }, [])
   )
 
   useEffect(() => {
     setSecureTextEntry(true)
   }, [isFocused])
+
+  useEffect(() => {
+    if (selectedTypeOfDocument && typeOfPersonalDocuments) {
+      const type = typeOfPersonalDocuments[Number(selectedTypeOfDocument) - 1]
+      if (type && type.label !== form.getValues('typeOfDocument')) {
+        form.setValue('cpf', undefined)
+        form.setValue('rne', undefined)
+        form.setValue('typeOfDocument', type.label)
+      }
+    }
+  }, [selectedTypeOfDocument, typeOfPersonalDocuments])
 
   const handleGender = (index: number) => {
     setSelectedIndex(index)
@@ -47,9 +84,14 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
   )
 
   const toggleSecureEntry = () => setSecureTextEntry(!secureTextEntry)
+  const toggleSecureEntryRepeat = () => setSecureTextEntryRepeat(!secureTextEntryRepeat)
 
   const renderIconRightPassword = (props: IconProps) => (
     <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} onPress={toggleSecureEntry} pack='eva' />
+  )
+
+  const renderIconRightRepeat = (props: IconProps) => (
+    <Icon {...props} name={secureTextEntryRepeat ? 'eye-off' : 'eye'} onPress={toggleSecureEntryRepeat} pack='eva' />
   )
 
   const openLink = (url: string) => Linking.openURL(url)
@@ -70,9 +112,43 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
     </React.Fragment>
   )
 
+  const CountrySelectBox = () => (
+    <Pressable onPress={openCountryPicker} style={{
+      flexDirection: 'row',
+      alignItems: 'center',
+    }}>
+      <Text category='c1'>{countryCode}</Text>
+      <Icon name='chevron-down-outline' size={10} />
+    </Pressable>
+  )
+
+  useEffect(() => {
+    form.setValue('countryCode', countryCode)
+  }, [countryCode])
+
+  useEffect(() => {
+    form.setValue('partner', partner)
+  }, [partner])
+
   return (
     <>
+      <Portal>
+        <CountryPicker ref={modalizeRef} setValue={setCountryCode} />
+        <PartnerPicker ref={partnerModalizeRef} setValue={setPartner} />
+      </Portal>
       <View style={styles.box}>
+        <View style={styles.partnerContainer}>
+          <View style={styles.partnerTextContainer}>
+            <Text style={styles.partnerTitle}>Selecione uma associação que conhece ou possui alguma relação:{" "}</Text>
+            <TouchableOpacity
+              style={styles.partnerBtn}
+              onPress={openPartnerPicker}>
+              <Text category={"c1"} status='control'>SELECIONAR</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={[styles.partnerText, { ...partner !== '' && { paddingVertical: 5 } }]}>{partner}</Text>
+
+        </View>
         <Controller
           control={form.control}
           rules={{
@@ -102,6 +178,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               underlineColorAndroid="transparent"
               autoCapitalize="words"
               textContentType="name"
+              placeholder='Digite seu Nome Completo'
             />
           )}
           name='name'
@@ -134,50 +211,137 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               ref={ref}
               maxLength={60}
               returnKeyType="next"
-              onSubmitEditing={() => form.setFocus('cpf')}
+              onSubmitEditing={() => form.setFocus('typeOfDocument')}
               autoCapitalize="words"
+              placeholder='Digite o Nome completo de sua Mãe'
             />
           )}
           name='mothersName'
           defaultValue=''
         />
         <CustomErrorMessage name='mothersName' errors={form.formState.errors} />
+
         <Controller
           control={form.control}
           rules={{
             required: {
               value: true,
               message: 'Campo obrigatório'
-            },
-            minLength: {
-              value: 14,
-              message: `Mín. 14 caracteres`
-            },
-            validate: (e) => e ? validate(e) : undefined
+            }
           }}
-          render={({ field: { onChange, onBlur, value, name, ref } }) => (
-            <Input
+          render={({ field: { onBlur, value, name, ref } }) => (
+            <Select
               size='small'
-              label="CPF *"
+              label="Documento *"
               style={styles.input}
-              keyboardType='number-pad'
+              placeholder='Selecione'
               testID={name}
               onBlur={onBlur}
-              onChangeText={onChange}
-              value={formatCpf(value)}
-              underlineColorAndroid="transparent"
-              autoCapitalize='none'
-              maxLength={14}
               ref={ref}
-              returnKeyType="next"
-              onSubmitEditing={() => form.setFocus('dateOfBirth')}
-            />
+              selectedIndex={selectedTypeOfDocument}
+              onSelect={setSelectedTypeOfDocument}
+              value={value}
+            >
+              {typeOfPersonalDocuments && typeOfPersonalDocuments.map((item: any, index: number) => (
+                <SelectItem key={item.value} title={item.label} />
+              ))}
+            </Select>
           )}
-          name='cpf'
+          name='typeOfDocument'
           defaultValue=''
         />
-        {form.formState.errors.cpf?.type !== 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} />}
-        {form.formState.errors.cpf?.type === 'validate' && <CustomErrorMessage name='cpf' errors={form.formState.errors} customMessage='CPF inválido' />}
+        <CustomErrorMessage name='typeOfDocument' errors={form.formState.errors} />
+
+        {typeOfDocument.current === ETypeOfDocument.CPF && (
+          <>
+            <Controller
+              control={form.control}
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Campo obrigatório'
+                },
+                minLength: {
+                  value: 14,
+                  message: `Mín. 14 caracteres`
+                },
+                validate: {
+                  valid: (e) => e ? validate(e) : undefined,
+                  unique: (e) => e ? validateUniqueData({ cpf: cleanNumberMask(e) }) : undefined
+                }
+              }}
+              render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                <Input
+                  size='small'
+                  label="CPF *"
+                  style={styles.input}
+                  keyboardType='number-pad'
+                  testID={name}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={formatCpf(value)}
+                  underlineColorAndroid="transparent"
+                  autoCapitalize='none'
+                  maxLength={14}
+                  ref={ref}
+                  returnKeyType="next"
+                  onSubmitEditing={() => form.setFocus('dateOfBirth')}
+                  placeholder='Digite seu CPF (somente números)'
+                />
+              )}
+              name='cpf'
+              defaultValue=''
+            />
+            {form.formState.errors.cpf?.type !== 'valid' && form.formState.errors.cpf?.type !== 'unique' && <CustomErrorMessage name='cpf' errors={form.formState.errors} />}
+            {form.formState.errors.cpf?.type === 'valid' && <CustomErrorMessage name='cpf' errors={form.formState.errors} customMessage={'CPF inválido'} />}
+            {form.formState.errors.cpf?.type === 'unique' && <CustomErrorMessage name='cpf' errors={form.formState.errors} customMessage={'CPF já cadastrado'} />}
+          </>
+        )}
+
+        {typeOfDocument.current === ETypeOfDocument.RNM && (
+          <>
+            <Controller
+              control={form.control}
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Campo obrigatório'
+                },
+                minLength: {
+                  value: 9,
+                  message: `Mín. 9 caracteres`
+                },
+                validate: {
+                  unique: (e) => e ? validateUniqueData({ rne: e }) : undefined
+                }
+              }}
+              render={({ field: { onChange, onBlur, value, name, ref } }) => (
+                <Input
+                  size='small'
+                  label="RNM *"
+                  style={styles.input}
+                  keyboardType='default'
+                  testID={name}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={formatRNM(value)}
+                  underlineColorAndroid="transparent"
+                  autoCapitalize='words'
+                  ref={ref}
+                  maxLength={9}
+                  returnKeyType="next"
+                  onSubmitEditing={() => form.setFocus('dateOfBirth')}
+                  placeholder='Digite seu RNM (letras e números)'
+                />
+              )}
+              name='rne'
+              defaultValue=''
+            />
+            {form.formState.errors.rne?.type !== 'unique' && <CustomErrorMessage name='rne' errors={form.formState.errors} />}
+            {form.formState.errors.rne?.type === 'unique' && <CustomErrorMessage name='rne' errors={form.formState.errors} customMessage={'RNM já cadastrado'} />}
+          </>
+        )}
+
         <Controller
           control={form.control}
           rules={{
@@ -205,6 +369,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               boundingMonth={false}
               onPress={() => Keyboard.dismiss()}
               caption='* Em caso de menor de idade, necessário um responsável'
+              placeholder='DD/MM/AAAA'
             />
           )}
           name='dateOfBirth'
@@ -254,7 +419,10 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               value: 5,
               message: `Mín. 5 caracteres`
             },
-            validate: (e) => e ? isEmailValid(e) : undefined
+            validate: {
+              valid: (e) => e ? isEmailValid(e) : undefined,
+              unique: (e) => e ? validateUniqueData({ email: e }) : undefined
+            }
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
@@ -273,6 +441,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               returnKeyType="next"
               onSubmitEditing={() => form.setFocus('emailConfirmation')}
               textContentType="emailAddress"
+              placeholder='Digite seu e-mail'
               caption={(evaProps) => (
                 <>
                   <View style={{ flexDirection: 'row' }}>
@@ -288,8 +457,9 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           name='email'
           defaultValue=''
         />
-        {form.formState.errors.email?.type !== 'validate' && <CustomErrorMessage name='email' errors={form.formState.errors} />}
-        {form.formState.errors.email?.type === 'validate' && <CustomErrorMessage name='email' errors={form.formState.errors} customMessage='E-mail inválido' />}
+        {form.formState.errors.email?.type !== 'valid' && form.formState.errors.email?.type !== 'unique' && <CustomErrorMessage name='email' errors={form.formState.errors} />}
+        {form.formState.errors.email?.type === 'valid' && <CustomErrorMessage name='email' errors={form.formState.errors} customMessage={'E-mail inválido'} />}
+        {form.formState.errors.email?.type === 'unique' && <CustomErrorMessage name='email' errors={form.formState.errors} customMessage={'E-mail já cadastrado'} />}
         <Controller
           control={form.control}
           rules={{
@@ -325,6 +495,7 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               returnKeyType="next"
               onSubmitEditing={() => form.setFocus('password')}
               textContentType="emailAddress"
+              placeholder='Digite seu e-mail novamente'
             />
           )}
           name='emailConfirmation'
@@ -361,10 +532,11 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               secureTextEntry={secureTextEntry}
               returnKeyType="next"
               ref={ref}
-              onSubmitEditing={() => form.setFocus('phone')}
+              onSubmitEditing={() => form.setFocus('confirmPassword')}
               underlineColorAndroid="transparent"
               autoCapitalize="none"
               textContentType="password"
+              placeholder="Digite a senha conforme regras abaixo"
               caption={(evaProps) => (
                 <>
                   <Text {...evaProps}>* 8 caracteres no mínimo</Text>
@@ -385,11 +557,56 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           rules={{
             required: {
               value: true,
+              message: 'Campo Obrigatório'
+            },
+            minLength: {
+              value: 8,
+              message: `Mín. 8 caracteres`
+            },
+            validate: {
+              valid: (e) => e ? validatePasswd(e) : undefined,
+              equal: (e) => e === password.current
+            }
+          }}
+          render={({ field: { onChange, onBlur, value, name, ref } }) => (
+            <Input
+              onFocus={() => (__DEV__) ? undefined : Clipboard.setString('')}
+              onSelectionChange={() => (__DEV__) ? undefined : Clipboard.setString('')}
+              size='small'
+              label="Confirmar Senha *"
+              style={styles.input}
+              keyboardType='default'
+              testID={name}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              maxLength={20}
+              accessoryRight={renderIconRightRepeat}
+              secureTextEntry={secureTextEntryRepeat}
+              returnKeyType="send"
+              ref={ref}
+              onSubmitEditing={() => form.setFocus('phone')}
+              underlineColorAndroid="transparent"
+              autoCapitalize="none"
+              textContentType="newPassword"
+              placeholder="Digite NOVAMENTE a Senha para confirmação"
+            />
+          )}
+          name='confirmPassword'
+        />
+        {(form.formState.errors.confirmPassword?.type !== 'valid' && form.formState.errors.confirmPassword?.type !== 'equal') && <CustomErrorMessage name='confirmPassword' errors={form.formState.errors} />}
+        {(form.formState.errors.confirmPassword?.type === 'valid') && <CustomErrorMessage name='confirmPassword' errors={form.formState.errors} customMessage='Senha inválida' />}
+        {(form.formState.errors.confirmPassword?.type === 'equal') && <CustomErrorMessage name='confirmPassword' errors={form.formState.errors} customMessage='Senhas não conferem' />}
+        <Controller
+          control={form.control}
+          rules={{
+            required: {
+              value: true,
               message: 'Campo obrigatório'
             },
             minLength: {
-              value: 13,
-              message: `Mín. 13 caracteres`
+              value: 8,
+              message: `Mín. 8 caracteres`
             },
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
@@ -401,13 +618,15 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               testID={name}
               onBlur={onBlur}
               onChangeText={onChange}
-              value={formatPhone(value)}
+              value={value}
               maxLength={15}
               ref={ref}
               returnKeyType="done"
               onSubmitEditing={() => form.setFocus('phone2')}
               underlineColorAndroid="transparent"
               textContentType="telephoneNumber"
+              accessoryLeft={CountrySelectBox}
+              placeholder="Digite seu telefone (DDD+número)"
             />
           )}
           name='phone'
@@ -419,8 +638,8 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
           rules={{
             required: false,
             minLength: {
-              value: 13,
-              message: `Mín. 13 caracteres`
+              value: 8,
+              message: `Mín. 8 caracteres`
             },
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
@@ -432,13 +651,15 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               testID={name}
               onBlur={onBlur}
               onChangeText={onChange}
-              value={formatPhone(value)}
+              value={value}
               maxLength={15}
               ref={ref}
               returnKeyType="next"
               onSubmitEditing={() => form.setFocus('susNumber')}
               underlineColorAndroid="transparent"
               textContentType="telephoneNumber"
+              accessoryLeft={CountrySelectBox}
+              placeholder="Digite seu telefone (DDD+número)"
             />
           )}
           name='phone2'
@@ -452,7 +673,10 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               value: 14,
               message: `Mín. 14 caracteres`
             },
-            validate: (e) => e !== null && e !== "" ? validateCNS(e) : true
+            validate: {
+              valid: (e) => e !== null && e !== "" ? validateCNS(e) : true,
+              unique: (e) => e !== null && e !== "" ? validateUniqueData({ susNumber: e }) : true
+            }
           }}
           render={({ field: { onChange, onBlur, value, name, ref } }) => (
             <Input
@@ -470,13 +694,15 @@ const PatientSignUpPart1Screen: FC<PatientSignUpProps> = ({ form, onSubmit }): R
               returnKeyType="send"
               onSubmitEditing={form.handleSubmit(onSubmit)}
               caption='Opcional'
+              placeholder="Digite o número do Cartão Nacional de Saúde (somente números)"
             />
           )}
           name='susNumber'
           defaultValue=''
         />
-        {form.formState.errors.susNumber?.type !== 'validate' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} />}
-        {form.formState.errors.susNumber?.type === 'validate' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} customMessage='Número de cartão inválido' />}
+        {form.formState.errors.susNumber?.type !== 'valid' && form.formState.errors.susNumber?.type !== 'unique' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} />}
+        {form.formState.errors.susNumber?.type === 'valid' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} customMessage={'Cartão SUS inválido'} />}
+        {form.formState.errors.susNumber?.type === 'unique' && <CustomErrorMessage name='susNumber' errors={form.formState.errors} customMessage={'Cartão SUS já cadastrado'} />}
       </View>
     </>
   )

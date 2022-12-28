@@ -10,15 +10,15 @@ export const baseData: ItemInfo[] = [
     //         pack: 'eva'
     //     },
     // },
-    // {
-    //     title: 'Notificações',
-    //     description: '',
-    //     route: 'Notification',
-    //     icon: {
-    //         name: 'bell-outline',
-    //         pack: 'eva'
-    //     },
-    // },
+    {
+        title: 'Notificações',
+        description: '',
+        route: 'Notification',
+        icon: {
+            name: 'bell-outline',
+            pack: 'eva'
+        },
+    },
     // {
     //     title: 'Central de Ajuda',
     //     description: 'Dúvidas? Fale conosco',

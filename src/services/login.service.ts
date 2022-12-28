@@ -4,11 +4,17 @@ import { api } from './api.service'
 
 export const changePassReq = async (data: UserAccRecoveryPasswdRequest) => {
 
-    return await api.post(`/login/change-password-request?userEmail=${encodeURIComponent(data.userEmail)}&userCpf=${encodeURIComponent(data.userCpf)}`, {})
+    const params = new URLSearchParams()
+    params.append('userEmail', data.userEmail ? encodeURIComponent(data.userEmail) : '')
+    params.append('userCpf', data.userCpf ? encodeURIComponent(data.userCpf) : '')
+    params.append('userRne', data.userRnm ? encodeURIComponent(data.userRnm) : '')
+    return await api.post('login/change-password-request?' + params, {})
 }
 
-export const changePass = async (data: UserAccRecoveryPasswd) : Promise<AxiosResponse> => {
+export const changePass = async (data: UserAccRecoveryPasswd): Promise<AxiosResponse> => {
 
-    return await api.post(`/login/change-password?token=${encodeURIComponent(data.token)}&newPassword=${encodeURIComponent(data.newPassword)}`, {})
-    .catch(e => e.response)
+    const params = new URLSearchParams()
+    params.append('token', encodeURIComponent(data.token))
+    params.append('newPassword', encodeURIComponent(data.newPassword))
+    return await api.post('login/change-password?token?' + params, {}).catch(e => e.response)
 }

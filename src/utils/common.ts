@@ -22,6 +22,20 @@ export const matchMessage = (message: any) => {
             return 3
         } else if (JSON.stringify(message).match('User email has not been verified')) {
             return 2
+        } else if (JSON.stringify(message).match('Under age user must be verified by responsible')) {
+            return 3
+        }
+        // Delete account error
+        else if (JSON.stringify(message).match('All projects must be cancelled before deleting the account.')) {
+            return 5
+        } else if (JSON.stringify(message).match('All consults must be cancelled before deleting the account.')) {
+            return 6
+        } else if (JSON.stringify(message).match('Special user not found')) {
+            return 7
+        } else if (JSON.stringify(message).match('User not found')) {
+            return 8
+        } else if (JSON.stringify(message).match('Error when trying to storage user data or delete user')) {
+            return 9
         }
     return 0
 }
@@ -304,4 +318,16 @@ export const formatBytes = (bytes: number, decimals: number = 2): string => {
     return (
         parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
     )
+}
+
+export const generateHash = (psLength: number) => {
+    var chars = '0123456789'
+    var hash = ''
+
+    for (var i = 0; i <= psLength; i++) {
+        var randomNumber = Math.floor(Math.random() * chars.length)
+        hash += chars.substring(randomNumber, randomNumber + 1)
+    }
+
+    return hash
 }

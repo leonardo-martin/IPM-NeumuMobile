@@ -6,7 +6,7 @@ export class ExamDto {
     documentId!: number
     examType!: string
     examDate!: Date | string
-    examResultDate!: Date
+    examResultDate!: Date | string
     data!: JSONObject
 }
 

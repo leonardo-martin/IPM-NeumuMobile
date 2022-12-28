@@ -1,6 +1,7 @@
 import LogoPedroMolina from '@assets/svg/logo.svg'
 import SignUpOptDialog from '@components/dialog/signUpOptDialog'
 import CustomErrorMessage from '@components/error'
+import LoadingIndicatorComponent from '@components/loadingIndicator'
 import { SafeAreaLayout } from '@components/safeAreaLayout'
 import SocialIconsComponent from '@components/social-icons'
 import TitleNeumu from '@components/titleNeumu'
@@ -10,11 +11,10 @@ import { ApprovalsMessageError } from '@models/Common'
 import { LoginDto } from '@models/User'
 import { useIsFocused, useNavigation } from '@react-navigation/native'
 import { AppInfoService } from '@services/app-info.service'
-import { AppStorage } from '@services/app-storage.service'
+import { AppStorageService } from '@services/app-storage.service'
 import { authLogin } from '@services/auth.service'
-import { Button, CheckBox, Icon, IconProps, Input, Modal, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
+import { Button, CheckBox, Icon, IconProps, Input, Modal, Text, useStyleSheet } from '@ui-kitten/components'
 import { matchMessage, openMailTo } from '@utils/common'
-import { cleanNumberMask, formatCpf } from '@utils/mask'
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Keyboard, Platform, StatusBar, View } from 'react-native'
@@ -45,7 +45,7 @@ const SignInScreen: FC = (): ReactElement => {
   const form = useForm<LoginDto>()
 
   const getStoredUsernameAndPassword = async () => {
-    const isRemember = await AppStorage.getItem('REMEMBER_ACCESS')
+    const isRemember = await AppStorageService.getItem('REMEMBER_ACCESS')
     if (isRemember === 'true') {
 
       try {
@@ -73,10 +73,10 @@ const SignInScreen: FC = (): ReactElement => {
   const handleSignIn = async (data: LoginDto) => {
     Keyboard.dismiss()
     setIsLoading(!isLoading)
+    Toast.hide()
     try {
       const response = await dispatch(authLogin({
         ...data,
-        username: cleanNumberMask(data.username),
       }, checked))
       if (response) {
         setIsLoading(false)
@@ -94,7 +94,8 @@ const SignInScreen: FC = (): ReactElement => {
               messageToast = 'E-mail não verificado'
             else if (matchId === 1)
               messageToast = 'Usuário e/ou senha incorretos'
-
+            else if (matchId === 3)
+              messageToast = 'Pendente a liberação pelo responsável'
           }
         } else {
           messageToast = 'Usuário e/ou senha incorretos'
@@ -104,6 +105,8 @@ const SignInScreen: FC = (): ReactElement => {
           Toast.show({
             type: 'danger',
             text2: messageToast,
+            autoHide: false,
+            position: 'bottom'
           })
         }
 
@@ -113,6 +116,8 @@ const SignInScreen: FC = (): ReactElement => {
       Toast.show({
         type: 'danger',
         text2: 'Ocorreu um erro inesperado. Entre em contato com o administrador',
+        visibilityTime: 8000,
+        position: 'bottom'
       })
     }
   }
@@ -130,10 +135,6 @@ const SignInScreen: FC = (): ReactElement => {
     <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} onPress={!isLoading ? toggleSecureEntry : undefined} pack='eva' />
   )
 
-  const LoadingIndicator = () => (
-    <Spinner size='small' status='basic' />
-  )
-
   const register = (selected: number | undefined) => {
     navigation.navigate('SignUp', {
       type: selected
@@ -149,8 +150,6 @@ const SignInScreen: FC = (): ReactElement => {
   useEffect(() => {
     if (isFocused) form.clearErrors()
   }, [isFocused])
-
-
 
   return (
     <>
@@ -185,19 +184,19 @@ const SignInScreen: FC = (): ReactElement => {
                   <Input
                     size='small'
                     style={styles.input}
-                    label="CPF"
-                    keyboardType='number-pad'
+                    label="Registro / Documento"
+                    keyboardType='default'
                     testID={name}
                     onBlur={onBlur}
                     onChangeText={onChange}
-                    value={formatCpf(value)}
+                    value={value}
                     returnKeyType="next"
                     ref={ref}
-                    maxLength={14}
                     onSubmitEditing={() => form.setFocus('password')}
                     autoCapitalize="none"
                     textContentType="username"
                     editable={!isLoading}
+                    placeholder="Digite aqui seu Documento"
                   />
                 )}
                 name="username"
@@ -236,6 +235,7 @@ const SignInScreen: FC = (): ReactElement => {
                     autoCapitalize="none"
                     textContentType="password"
                     editable={!isLoading}
+                    placeholder="Digite sua Senha"
                   />
                 )}
                 name="password"
@@ -249,7 +249,6 @@ const SignInScreen: FC = (): ReactElement => {
                   checked={checked} onChange={onCheckedChange}>
                   {evaProps => <Text style={[evaProps?.style, styles.checkboxText]}>Lembrar acesso</Text>}
                 </CheckBox>
-
                 <View style={styles.containerRecoveryPassword}>
                   <TouchableOpacity disabled={isLoading} onPress={recoveryPasswd}>
                     <Text
@@ -263,7 +262,7 @@ const SignInScreen: FC = (): ReactElement => {
               </View>
               <View style={styles.containerButtons}>
                 <Button
-                  accessoryLeft={isLoading ? LoadingIndicator : undefined}
+                  accessoryLeft={isLoading ? () => <LoadingIndicatorComponent insideButton size='small' status='basic' /> : undefined}
                   style={styles.button}
                   onPress={isLoading ? undefined : form.handleSubmit(handleSignIn)}
                   status="primary">
@@ -277,7 +276,6 @@ const SignInScreen: FC = (): ReactElement => {
                   {'Cadastre-se'.toUpperCase()}
                 </Button>
               </View>
-
             </View>
             <SignUpOptDialog
               ref={ref}
@@ -288,7 +286,7 @@ const SignInScreen: FC = (): ReactElement => {
           </View>
         </SafeAreaLayout>
         <SafeAreaLayout insets='bottom'>
-          <SocialIconsComponent /> 
+          <SocialIconsComponent />
           <TouchableOpacity
             onPress={isLoading ? undefined : openMailTo}>
             <View style={styles.containerContact}>
