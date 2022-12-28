@@ -167,8 +167,8 @@ android {
         applicationId 'net.atos.teleneumu'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 18
-        versionName '1.5.28'
+        versionCode 19
+        versionName '1.5.29'
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
 
         if (isNewArchitectureEnabled()) {
@@ -198,6 +198,9 @@ android {
         }
         manifestPlaceholders = [schemeDeepLinking: "teleneumuappdev"]
 
+        // Bug fix for codepush -> "Error in getting binary resources modified time"
+        // Link: https://github.com/microsoft/react-native-code-push/issues/2116#issuecomment-907251687
+        resValue 'string', "CODE_PUSH_APK_BUILD_TIME", String.format("\"%d\"", System.currentTimeMillis())
     }
 
     if (isNewArchitectureEnabled()) {
@@ -299,7 +302,7 @@ android {
             manifestPlaceholders = [ 
                 schemeDeepLinking: "teleneumuapp"
             ]
-            resValue "string", "CodePushDeploymentKey", '"vs3aIHhQBCzQU9TzwFMFDai_CU"'
+            resValue "string", "CodePushDeploymentKey", '"vs3aIHhQBCzQU9TzwFMFDai_CU-StQ13QhYxU"'
             resValue "string", "app_name", '"' + "${project.rootProject.name}" + '"'
             resValue "string", "build_config_package", defaultConfig.applicationId
         }

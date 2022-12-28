@@ -45,8 +45,8 @@ const CheckForUpdatesComponent: FC = (): ReactElement => {
                 break;
             case codePush.SyncStatus.UPDATE_INSTALLED:
                 setMessage('Atualizado com sucesso!')
-                var timeleft = MIN_TIME
-                var downloadTimer = setInterval(function () {
+                let timeleft = MIN_TIME
+                let downloadTimer = setInterval(function () {
                     setMessage(`Reiniciando em ${timeleft} segundos`)
                     if (timeleft <= 0) {
                         clearInterval(downloadTimer)
