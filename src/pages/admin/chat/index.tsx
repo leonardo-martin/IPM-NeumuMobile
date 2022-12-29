@@ -57,7 +57,7 @@ const ChatRoomScreen: FC = (): ReactElement => {
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const loadMessages = async () => {
+  const loadMessages = useCallback(async () => {
     const response = await getMessageHistory({
       receiverId: params?.senderID === ids?.userId ? params?.receiverId : params?.senderID,
       skip: skip.toString(),
@@ -66,7 +66,7 @@ const ChatRoomScreen: FC = (): ReactElement => {
 
     if (response.status === 200) {
       let items: Message[] = []
-      const list = response.data.sort((a, b) => sortByDate(a.timestamp, b.timestamp, AscendingOrder.ASC))
+      const list = response.data.sort((a, b) => sortByDate(localeDateService, a.timestamp, b.timestamp, AscendingOrder.ASC))
       list.forEach(e => {
         const msg = e.payload.split(' ').slice(2, e.payload.length).join(' ') ?? e.payload
         items.push(new Message(msg ?? '', e.timestamp.toString(),
@@ -77,7 +77,7 @@ const ChatRoomScreen: FC = (): ReactElement => {
       const arr = [...items, ...messages]
       setMessages([...new Set(arr.filter((v, i, a) => a.findIndex((v2: Message) => v2['date'] === v['date'] && v2['text'] === v['text']) === i))])
     }
-  }
+  }, [localeDateService])
 
   const loadInitialChatMessage = async () => {
     setIsLoading(true)

@@ -88,9 +88,9 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
         setEnableUndoButton(false)
     }, [timeBlockList])
 
-    const resetData = () => {
+    const resetData = useCallback(() => {
         // startTime 06h | endTime 22h
-        const array = getTimesByInterval(15, 345, 22)
+        const array = getTimesByInterval(localeDateService, 15, 345, 22)
         const newArray: ScheduleItem[] = array.map(e => {
             const timeBlock = getTimeBlocksByTime(localeDateService.parse(e as string, _DATE_FROM_ISO_8601))
             return {
@@ -100,7 +100,7 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
             }
         })
         setOriginalScheduleList(newArray)
-    }
+    }, [localeDateService])
 
     const alert = () => {
         Alert.alert(

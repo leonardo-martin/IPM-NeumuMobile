@@ -2,7 +2,7 @@ import { FileDto } from '@models/Document'
 import { getFileFromDevice, launchCameraFromDevice, launchImageLibraryFromDevice, saveFileToDevice, userGetDocumentFile } from '@services/document.service'
 import { Icon, Text, useStyleSheet } from '@ui-kitten/components'
 import { generateHash } from '@utils/common'
-import React, { FC, ReactElement } from 'react'
+import React, { FC, ReactElement, useEffect, useState } from 'react'
 import { Alert, Platform, TouchableOpacity, View, PermissionsAndroid } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { AppInfoService } from 'services/app-info.service'
@@ -14,12 +14,18 @@ interface AttachmentBoxProps {
     fileName?: string
     documentId?: number
     disabled?: boolean
+    isNew?: boolean
 }
 
 const AttachmentBoxComponent: FC<AttachmentBoxProps> = ({ ...props }): ReactElement => {
 
-    const { disabled, fileName, documentId, setFile, setFileName } = props
+    const { disabled, fileName, documentId, setFile, setFileName, isNew } = props
     const styles = useStyleSheet(attachBoxStyle)
+    const [docId, setDocId] = useState<number | undefined>(undefined)
+
+    useEffect(() => {
+        setDocId(documentId)
+    }, [documentId])
 
     const openFolder = async () => {
         try {
@@ -43,13 +49,15 @@ const AttachmentBoxComponent: FC<AttachmentBoxProps> = ({ ...props }): ReactElem
         try {
             const response = await launchImageLibraryFromDevice()
             if (response.assets) {
+                let hash = generateHash(16)
+                setDocId(Number(hash))
                 setFile([{
                     uri: response.assets[0].uri || '',
                     type: response.assets[0].type || '',
                     fileName: response.assets[0].fileName || '',
                     size: response.assets[0].fileSize || null
                 }])
-                setFileName(`IMG_${generateHash(16)}.${response.assets[0].fileName?.split('.')[1] || ''}`)
+                setFileName(`IMG_${hash}.${response.assets[0].fileName?.split('.')[1] || ''}`)
             }
         } catch (err: any) {
             console.error(err)
@@ -64,13 +72,15 @@ const AttachmentBoxComponent: FC<AttachmentBoxProps> = ({ ...props }): ReactElem
         try {
             const response = await launchCameraFromDevice()
             if (response.assets) {
+                let hash = generateHash(16)
+                setDocId(Number(hash))
                 setFile([{
                     uri: response.assets[0].uri || '',
                     type: response.assets[0].type || '',
                     fileName: response.assets[0].fileName || '',
                     size: response.assets[0].fileSize || null
                 }])
-                setFileName(`DCIM_${generateHash(16)}.${response.assets[0].fileName?.split('.')[1] || ''}`)
+                setFileName(`DCIM_${hash}.${response.assets[0].fileName?.split('.')[1] || ''}`)
             }
         } catch (err: any) {
             console.error(err)
@@ -159,6 +169,7 @@ const AttachmentBoxComponent: FC<AttachmentBoxProps> = ({ ...props }): ReactElem
                     onPress: () => {
                         setFile(undefined)
                         setFileName('')
+                        setDocId(undefined)
                     }
                 },
                 {
@@ -172,7 +183,7 @@ const AttachmentBoxComponent: FC<AttachmentBoxProps> = ({ ...props }): ReactElem
     return (
         <>
             <View style={styles.container}>
-                {documentId ? (
+                {docId ? (
                     <>
                         <TouchableOpacity
                             disabled={disabled}
@@ -194,31 +205,46 @@ const AttachmentBoxComponent: FC<AttachmentBoxProps> = ({ ...props }): ReactElem
                         </TouchableOpacity>
                     </>
                 ) : (
-                    <>
-                        <TouchableOpacity
-                            onPress={openLibrary}
-                            style={styles.button}>
-                            <View style={styles.containerButton}>
-                                <Icon name='images-outline' style={styles.icon} size={25} pack='ionicons' />
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={openCamera}
-                            style={styles.button}>
-                            <View style={styles.containerButton}>
-                                <Icon name='camera-outline' style={styles.icon} size={25} pack='ionicons' />
-                            </View>
-                        </TouchableOpacity>
-                        {Platform.OS === 'ios' && (
+                    (isNew && fileName === '') || (!isNew && !docId && fileName === '') ?
+                        <>
                             <TouchableOpacity
-                                onPress={openFolder}
+                                onPress={openLibrary}
                                 style={styles.button}>
                                 <View style={styles.containerButton}>
-                                    <Icon name='folder-open-outline' style={styles.icon} size={25} pack='ionicons' />
+                                    <Icon name='images-outline' style={styles.icon} size={25} pack='ionicons' />
                                 </View>
                             </TouchableOpacity>
-                        )}
-                    </>
+                            <TouchableOpacity
+                                onPress={openCamera}
+                                style={styles.button}>
+                                <View style={styles.containerButton}>
+                                    <Icon name='camera-outline' style={styles.icon} size={25} pack='ionicons' />
+                                </View>
+                            </TouchableOpacity>
+                            {Platform.OS === 'ios' && (
+                                <TouchableOpacity
+                                    onPress={openFolder}
+                                    style={styles.button}>
+                                    <View style={styles.containerButton}>
+                                        <Icon name='folder-open-outline' style={styles.icon} size={25} pack='ionicons' />
+                                    </View>
+                                </TouchableOpacity>
+                            )}
+                        </>
+                        :
+                        <>
+                            <TouchableOpacity
+                                disabled={disabled}
+                                style={styles.buttonRemove}
+                                onPress={removeFile}>
+                                <View style={styles.containerButton}>
+                                    <Icon name='trash-outline' style={styles.iconControl} size={20} pack='ionicons' />
+                                    <Text style={[styles.text, styles.textControl]} category='s1'>Remover</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </>
+
+
                 )}
             </View>
         </>
