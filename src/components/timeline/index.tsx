@@ -71,7 +71,7 @@ const Timeline: FC<TimelineProps> = ({
                                     <View key={`${index}-${item.title}`} style={styles.viewTimeline}>
                                         <View style={styles.viewTimelineItem}>
                                             <Text category='label' style={styles.text}>{item.title} </Text>
-                                            <Text appearance='hint' style={styles.text}>{(item.description.length > 48) ? `${item.description.substring(0, 44)}...` : item.description}</Text>
+                                            {item.description && <Text appearance='hint' style={styles.text}>{(item.description.length > 48) ? `${item.description.substring(0, 44)}...` : (item.description || '')}</Text>}
                                         </View>
                                         {readonly ? (
                                             <>
