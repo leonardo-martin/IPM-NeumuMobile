@@ -22,9 +22,10 @@ import { RootState } from 'store'
 import { createDocStyle } from './create-document.style'
 
 interface PatientDocumentParams {
-    editable?: boolean,
-    readonly?: boolean,
+    editable?: boolean
+    readonly?: boolean
     owningUserId?: number
+    isNew?: boolean
 }
 
 const CalendarIcon = (props: IconProps) => (
@@ -337,6 +338,7 @@ const CreatePatientDocumentScreen: FC = (): ReactElement => {
                                     documentId={params?.exam?.documentId}
                                     setFileName={setFileName}
                                     disabled={isLoading}
+                                    isNew={params?.props.isNew}
                                 />
                                 <CustomErrorMessage name='examImage' errors={form.formState.errors} />
                                 <View style={styles.containerButton}>

@@ -4,7 +4,7 @@ import { AscendingOrder } from '@models/Common'
 import { TimelineItem, TimelineTimeItem } from '@models/Timeline'
 import { CalendarRange, Divider, Icon, List, ListProps, Text, useStyleSheet } from '@ui-kitten/components'
 import { orderByDateRange, sortByDate } from '@utils/common'
-import React, { Dispatch, FC, ReactElement, useEffect, useState } from 'react'
+import React, { Dispatch, FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { ListRenderItemInfo, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Animated, { Layout, LightSpeedInLeft, LightSpeedOutRight } from 'react-native-reanimated'
@@ -30,19 +30,19 @@ const Timeline: FC<TimelineProps> = ({
     const { localeDateService } = useDatepickerService()
     const [listData, setListData] = useState<TimelineItem[]>()
 
-    const orderList = (list: any[]) => {
-        list = orderByDateRange(range, list)
-        list = list.sort((a, b) => sortByDate(a, b, orderBy))
+    const orderList = useCallback((list: any[]) => {
+        list = orderByDateRange(localeDateService, range, list)
+        list = list.sort((a, b) => sortByDate(localeDateService, a, b, orderBy))
         setListData([...list])
 
         if (list && data) {
-            var length = 0
+            let length = 0
             list.map(item => {
                 length += data[item].length
             })
             onChangeListSize(length)
         }
-    }
+    }, [localeDateService])
 
     useEffect(() => {
         if (data || (data && isFiltered))
@@ -71,7 +71,7 @@ const Timeline: FC<TimelineProps> = ({
                                     <View key={`${index}-${item.title}`} style={styles.viewTimeline}>
                                         <View style={styles.viewTimelineItem}>
                                             <Text category='label' style={styles.text}>{item.title} </Text>
-                                            <Text appearance='hint' style={styles.text}>{(item.description.length > 48) ? `${item.description.substring(0, 44)}...` : item.description}</Text>
+                                            {item.description && <Text appearance='hint' style={styles.text}>{(item.description.length > 48) ? `${item.description.substring(0, 44)}...` : (item.description || '')}</Text>}
                                         </View>
                                         {readonly ? (
                                             <>

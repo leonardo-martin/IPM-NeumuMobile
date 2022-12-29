@@ -1,12 +1,11 @@
 import { _DATE_FROM_ISO_8601 } from "@constants/date"
 import { TELENEUMU_CONTACT, TELENEUMU_SUBJECT } from '@constants/mail'
-import { useDatepickerService } from "@hooks/useDatepickerService"
 import { AscendingOrder } from "@models/Common"
 import { PatientDiaryEntryDto } from "@models/Patient"
 import { PatientProfileCreatorTypeEnum } from "@models/PatientProfileCreator"
 import { TimelineItem } from "@models/Timeline"
-import { CalendarRange } from "@ui-kitten/components"
-import { addMinutes } from 'date-fns'
+import { CalendarRange, NativeDateService } from "@ui-kitten/components"
+import { addMinutes, subHours } from 'date-fns'
 import { MutableRefObject } from "react"
 import { Linking } from "react-native"
 import Toast from 'react-native-toast-message'
@@ -42,8 +41,8 @@ export const matchMessage = (message: any) => {
 
 export const capitalizeFirstLetter = (text: string) => {
 
-    var splitStr = text.toLowerCase().split(' ')
-    for (var i = 0; i < splitStr.length; i++) {
+    let splitStr = text.toLowerCase().split(' ')
+    for (let i = 0; i < splitStr.length; i++) {
         splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1)
     }
     return splitStr.join(' ')
@@ -130,9 +129,7 @@ export const sortByNumber = (a: number, b: number) => {
     return 0
 }
 
-export const sortByDate = (a: Date | string, b: Date | string, order: AscendingOrder | undefined) => {
-
-    const { localeDateService } = useDatepickerService()
+export const sortByDate = (localeDateService: NativeDateService, a: Date | string, b: Date | string, order: AscendingOrder | undefined) => {
 
     if (typeof a === 'string') {
         a = localeDateService.parse(a, _DATE_FROM_ISO_8601)
@@ -160,10 +157,9 @@ export const openMailTo = () => {
         })
 }
 
-export const groupByDateTime = (data: PatientDiaryEntryDto[]): TimelineItem => {
-    const { localeDateService } = useDatepickerService()
+export const groupByDateTime = (localeDateService: NativeDateService, data: PatientDiaryEntryDto[]): TimelineItem => {
 
-    var groups: TimelineItem = {}
+    let groups: TimelineItem = {}
     data.forEach(val => {
         val.date = typeof val.date === 'string' ? localeDateService.parse(val.date, _DATE_FROM_ISO_8601) : val.date
         if (val.date.toISOString() in groups) {
@@ -176,16 +172,16 @@ export const groupByDateTime = (data: PatientDiaryEntryDto[]): TimelineItem => {
     return groups
 }
 
-export const orderByDateRange = (range: CalendarRange<Date>, array: any, _columnName?: string) => {
+export const orderByDateRange = (localeDateService: NativeDateService, range: CalendarRange<Date>, array: any[], _columnName?: string) => {
 
-    const { localeDateService } = useDatepickerService()
+    if (range.endDate)
+        console.log(subHours(localeDateService.addDay((range.endDate as Date), 1), 1))
 
     if (range.startDate && !range.endDate)
-        return array.filter((e: any) => localeDateService.parse(_columnName ? e[_columnName] : e, _DATE_FROM_ISO_8601) >= (range.startDate as Date)
-            && localeDateService.parse(_columnName ? e[_columnName] : e, _DATE_FROM_ISO_8601) <= localeDateService.addDay((range.startDate as Date), 1))
+        return array.filter((e: any) => localeDateService.parse(_columnName ? e[_columnName] : e, _DATE_FROM_ISO_8601) >= (range.startDate as Date))
     else if (range.startDate && range.endDate)
         return array.filter((e: any) => localeDateService.parse(_columnName ? e[_columnName] : e, _DATE_FROM_ISO_8601) >= (range.startDate as Date)
-            && localeDateService.parse(_columnName ? e[_columnName] : e, _DATE_FROM_ISO_8601) <= localeDateService.addDay((range.endDate as Date), 1))
+            && localeDateService.parse(_columnName ? e[_columnName] : e, _DATE_FROM_ISO_8601) < localeDateService.addDay((range.endDate as Date), 1))
 
     return array
 }
@@ -197,15 +193,13 @@ export const orderByDateRange = (range: CalendarRange<Date>, array: any, _column
  * @param endTime Hora final (Default = 24)
  * @returns string[...Date.toISOString]
  */
-export const getTimesByInterval = (interval: number = 30, startTime: number = 0, endTime: number = 24) => {
-
-    const { localeDateService } = useDatepickerService()
+export const getTimesByInterval = (localeDateService: NativeDateService, interval: number = 30, startTime: number = 0, endTime: number = 24) => {
 
     let dates: string[] = []
     let date = localeDateService.today()
     date.setHours(0, 0, 0, 0)
 
-    for (var i = 0; startTime < endTime * 60; i++) {
+    for (let i = 0; startTime < endTime * 60; i++) {
         startTime = startTime + interval
         let add = localeDateService.parse(addMinutes(date, startTime).toISOString(), _DATE_FROM_ISO_8601)
         dates.push(add.toISOString())
@@ -271,18 +265,20 @@ export const calcAge = (stringDate: string, _dateCompare: Date = new Date()): {
     let dateDob = dob.getDate()
     let yearAge = yearNow - yearDob
 
+    let monthAge = undefined
+    let dateAge = undefined
     if (monthNow >= monthDob)
-        var monthAge = monthNow - monthDob
+        monthAge = monthNow - monthDob
     else {
         yearAge--
-        var monthAge = 12 + monthNow - monthDob
+        monthAge = 12 + monthNow - monthDob
     }
 
     if (dateNow >= dateDob)
-        var dateAge = dateNow - dateDob
+        dateAge = dateNow - dateDob
     else {
         monthAge--;
-        var dateAge = 31 + dateNow - dateDob
+        dateAge = 31 + dateNow - dateDob
 
         if (monthAge < 0) {
             monthAge = 11
@@ -321,11 +317,11 @@ export const formatBytes = (bytes: number, decimals: number = 2): string => {
 }
 
 export const generateHash = (psLength: number) => {
-    var chars = '0123456789'
-    var hash = ''
+    let chars = '0123456789'
+    let hash = ''
 
-    for (var i = 0; i <= psLength; i++) {
-        var randomNumber = Math.floor(Math.random() * chars.length)
+    for (let i = 0; i <= psLength; i++) {
+        let randomNumber = Math.floor(Math.random() * chars.length)
         hash += chars.substring(randomNumber, randomNumber + 1)
     }
 

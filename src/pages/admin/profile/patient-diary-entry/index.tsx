@@ -84,10 +84,10 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
         if (refreshing) onRefresh()
     }, [refreshing])
 
-    const convertList = (list: PatientDiaryEntryDto[]) => {
-        let array = groupByDateTime(list)
+    const convertList = useCallback((list: PatientDiaryEntryDto[]) => {
+        let array = groupByDateTime(localeDateService, list)
         setData(array)
-    }
+    }, [localeDateService])
 
     useFocusEffect(
         useCallback(() => {

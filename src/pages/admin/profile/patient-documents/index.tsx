@@ -37,11 +37,11 @@ const PatientDocumentsScreen: FC = (): ReactElement => {
 
     const handleVisibleModal = () => setVisibleModal(true)
 
-    const orderList = (list: ExamDto[]) => {
-        list = orderByDateRange(range, list, 'examDate')
-        list = list.sort((a, b) => sortByDate(a.examDate, b.examDate, AscendingOrder.DESC))
+    const orderList = useCallback((list: ExamDto[]) => {
+        list = orderByDateRange(localeDateService, range, list, 'examDate')
+        list = list.sort((a, b) => sortByDate(localeDateService, a.examDate, b.examDate, AscendingOrder.DESC))
         setData([...list])
-    }
+    }, [localeDateService])
 
     const getExamList = useCallback(async () => {
         const result = await getPatientExamList()
@@ -232,14 +232,16 @@ const PatientDocumentsScreen: FC = (): ReactElement => {
             navigation.navigate('CreatePatientDocuments', {
                 exam: data,
                 props: {
-                    editable: true
+                    editable: true,
+                    isNew: false
                 }
             })
         }
         else navigation.navigate('CreatePatientDocuments', {
             exam: undefined,
             props: {
-                editable: true
+                editable: true,
+                isNew: true
             }
         })
     }

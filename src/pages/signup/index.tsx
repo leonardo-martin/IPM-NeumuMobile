@@ -104,7 +104,7 @@ const SignUpScreen: FC = (): ReactElement => {
         setIsLoading(true)
         setSending(true)
 
-        var messageError = ''
+        let messageError = ''
         let allowedToCreate: boolean = true
 
         try {
@@ -131,6 +131,7 @@ const SignUpScreen: FC = (): ReactElement => {
 
                 }
 
+                if (newData.typeOfDocument) delete newData.typeOfDocument
                 if (newData?.data['typeOfDocument']) delete newData.data['typeOfDocument']
 
                 if (newData?.data['emailConfirmation']) delete newData.data['emailConfirmation']
@@ -213,7 +214,7 @@ const SignUpScreen: FC = (): ReactElement => {
                     if (response.status !== 201) {
                         const message = response.data?.message
                         if (message.toUpperCase().includes('Unique constraint'.toUpperCase())) {
-                            var field = extractFieldString(message)
+                            let field = extractFieldString(message)
                             field = (field === 'SUSNUMBER') ? 'Cartão Nacional de Saúde' : field
                             messageError = field + ' já cadastrado'
                         } else {
@@ -240,7 +241,7 @@ const SignUpScreen: FC = (): ReactElement => {
                 if (response.status !== 201) {
                     const message = response.data?.message
                     if (message.toUpperCase().includes('Unique constraint'.toUpperCase())) {
-                        var field = extractFieldString(message)
+                        let field = extractFieldString(message)
                         messageError = field + ' já cadastrado'
                     } else {
                         messageError = 'Ocorreu um erro. Tente novamente mais tarde.'
@@ -270,13 +271,13 @@ const SignUpScreen: FC = (): ReactElement => {
     }
 
     const patientSteps = [
-        <PatientSignUpPart1Screen register={params} form={patientForm} onSubmit={onNext} />,
-        <PatientSignUpEndScreen register={params} form={patientForm} onSubmit={onNext} />
+        <PatientSignUpPart1Screen key={0} register={params} form={patientForm} onSubmit={onNext} />,
+        <PatientSignUpEndScreen key={1} register={params} form={patientForm} onSubmit={onNext} />
     ]
 
     const specialistSteps = [
-        <DoctorSignUpPart1Screen register={params} form={specialistForm} onSubmit={onNext} />,
-        <DoctorSignUpPart2Screen register={params} form={specialistForm} onSubmit={onNext} />
+        <DoctorSignUpPart1Screen key={0} register={params} form={specialistForm} onSubmit={onNext} />,
+        <DoctorSignUpPart2Screen key={1} register={params} form={specialistForm} onSubmit={onNext} />
     ]
 
     const steps = [
