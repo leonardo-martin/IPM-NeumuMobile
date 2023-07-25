@@ -22,4 +22,7 @@ export class AppInfoService {
     return await DeviceInfo.isEmulator()
   }
 
+  static getSystemVersion = (): string => {
+    return DeviceInfo.getSystemVersion()
+  }
 }

@@ -15,7 +15,10 @@ const _optionsKeychain: Keychain.Options = {
 }
 
 export const authLogin = (auth: LoginDto, _rememberAcess?: boolean) => (dispatch: AppDispatch): Promise<any> => {
-    return api.post('auth', {
+    const params = new URLSearchParams()
+    params.append('source', 'mobile')
+
+    return api.post('auth?' + params, {
         ...auth,
         username: validateCPF(auth.username) ? cleanNumberMask(auth.username) : auth.username
     })

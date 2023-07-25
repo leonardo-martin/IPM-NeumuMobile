@@ -9,15 +9,17 @@ import { DocumentDto, FileDto } from '@models/Document'
 import { ExamDto } from '@models/Exam'
 import { EUserRole } from '@models/UserRole'
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
-import { doctorGetDocumentData, uploadUserFile, userDelete, userGetDocument } from '@services/document.service'
+import { doctorGetDocumentData, doctorGetDocumentFile, requestPermission, saveFileToDevice, uploadUserFile, userDelete, userGetDocument } from '@services/document.service'
 import { updateExam, uploadExam } from '@services/exam.service'
 import { Button, Datepicker, Icon, IconProps, IndexPath, Input, PopoverPlacements, Select, SelectItem, Text, useStyleSheet } from '@ui-kitten/components'
 import { TYPES_DOCUMENTS } from '@utils/constants'
 import { getDocumentType, getEntityType } from '@utils/entity'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Keyboard, Platform, View } from 'react-native'
+import { Alert, Keyboard, Platform, View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import Toast from 'react-native-toast-message'
+import { AppInfoService } from 'services/app-info.service'
 import { RootState } from 'store'
 import { createDocStyle } from './create-document.style'
 
@@ -36,7 +38,7 @@ const CreatePatientDocumentScreen: FC = (): ReactElement => {
 
     const { ids } = useAppSelector((state: RootState) => state.user)
     const { sessionUser } = useAppSelector((state: RootState) => state.auth)
-    const [params, setParams] = useState<{ exam: ExamDto, props: PatientDocumentParams } | undefined>()
+    const [params, setParams] = useState<{ exam?: ExamDto, props: PatientDocumentParams } | undefined>(undefined)
     const form = useForm<ExamDto>()
     const styles = useStyleSheet(createDocStyle)
     const route = useRoute()
@@ -49,7 +51,7 @@ const CreatePatientDocumentScreen: FC = (): ReactElement => {
     const [file, setFile] = useState<FileDto[] | undefined>()
     const [fileName, setFileName] = useState<string | undefined>()
 
-    const submitForm = async (data: ExamDto) => {
+    const submitForm = useCallback(async (data: ExamDto) => {
         setIsLoading(!isLoading)
 
         try {
@@ -114,12 +116,15 @@ const CreatePatientDocumentScreen: FC = (): ReactElement => {
                         text2: 'Documento adicionado',
                     })
                 }
+                setSelectedType(undefined)
+                setDocumentDto(undefined)
+                setFileName(undefined)
+                setFile(undefined)
                 navigation.goBack()
 
             }
 
         } catch (error) {
-            console.error(error)
             Toast.show({
                 type: 'danger',
                 text2: 'Erro ao cadastrar documento.',
@@ -127,7 +132,7 @@ const CreatePatientDocumentScreen: FC = (): ReactElement => {
         } finally {
             setIsLoading(false)
         }
-    }
+    }, [params, fileName, ids, file])
 
     const loadFile = useCallback(async () => {
         try {
@@ -137,7 +142,7 @@ const CreatePatientDocumentScreen: FC = (): ReactElement => {
                         entityId: params.exam?.patientId,
                         entityType: getEntityType('exam'),
                         documentType: getDocumentType('exam'),
-                        documentId: params.exam?.documentId
+                        documentId: params.exam?.documentId?.toString()
                     })
                     if (response.status === 201) {
                         setDocumentDto(response.data[0] ?? undefined)
@@ -149,7 +154,7 @@ const CreatePatientDocumentScreen: FC = (): ReactElement => {
                         entityId: params.exam?.patientId,
                         entityType: getEntityType('exam'),
                         documentType: getDocumentType('exam'),
-                        documentId: params.exam?.documentId
+                        documentId: params.exam?.documentId?.toString()
                     })
                     if (response.status === 201) {
                         setDocumentDto(response.data[0] ?? undefined)
@@ -167,14 +172,14 @@ const CreatePatientDocumentScreen: FC = (): ReactElement => {
 
     useFocusEffect(
         useCallback(() => {
-            const param = route.params as { exam: ExamDto, props: PatientDocumentParams }
+            const param = route.params as { exam?: ExamDto, props: PatientDocumentParams }
             setParams(param)
             return () => {
                 form.reset({ data: { examDescription: "" }, examDate: "", examType: "" })
                 setParams(undefined)
                 setSelectedType(undefined)
                 setDocumentDto(undefined)
-                setFileName('')
+                setFileName(undefined)
                 setFile(undefined)
             }
         }, [route.params])
@@ -209,6 +214,76 @@ const CreatePatientDocumentScreen: FC = (): ReactElement => {
             setFileName(documentDto.documentFormat)
     }, [documentDto])
 
+
+    const download = async () => {
+        try {
+            const version = AppInfoService.getSystemVersion().split('.')
+            let bOk = await requestPermission(Number(version[0] ?? 0) ?? 0)
+
+            if (bOk) {
+                Alert.alert(
+                    'Deseja efetuar o download do arquivo?',
+                    'O arquivo será baixando em background e avisaremos quando estiver concluído',
+                    [
+                        {
+                            text: 'Sim',
+                            style: 'default',
+                            onPress: () => downloadFile()
+                        },
+                        {
+                            text: 'Não',
+                            style: 'cancel'
+                        }
+                    ]
+                )
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'danger',
+                text2: 'Erro ao solicitar permissão',
+            })
+        }
+    }
+
+    const downloadFile = useCallback(async () => {
+        try {
+            if (params?.exam?.patientId && documentDto?.id) {
+                const response = await doctorGetDocumentFile(params?.exam?.patientId.toString(), documentDto?.id)
+                if (response.status === 200) {
+                    const ret = await saveFileToDevice(response.data.data, documentDto.documentFormat)
+                    if (ret.recorded)
+                        Alert.alert(
+                            'Baixar arquivo',
+                            'Arquivo baixado concluído com sucesso.',
+                            [
+                                {
+                                    text: 'OK',
+                                    style: 'default'
+                                }
+                            ]
+                        )
+                    else
+                        Toast.show({
+                            type: 'warning',
+                            text2: 'Não foi possível baixar o arquivo',
+                        })
+                } else {
+                    Toast.show({
+                        type: 'danger',
+                        text2: 'Ocorreu um erro ao baixar o arquivo',
+                    })
+                }
+            }
+        } catch (error) {
+            console.error(error)
+            Toast.show({
+                type: 'danger',
+                text2: 'Erro ao baixar o arquivo. Entre em contato com o administrador',
+            })
+        }
+
+    }, [params, documentDto])
+
     return (
         <>
             <SafeAreaLayout level='1' style={styles.safeArea}>
@@ -226,14 +301,16 @@ const CreatePatientDocumentScreen: FC = (): ReactElement => {
                                     <Text style={styles.label}>Descrição</Text>
                                     <Text style={styles.textValue}>{form.getValues('data.examDescription')}</Text>
                                     <Text style={styles.label}>Documento</Text>
-                                    <Text style={styles.textValue}>{documentDto?.documentFormat}</Text>
+                                    <TouchableOpacity
+                                        style={styles.buttonDownload}
+                                        onPress={download}
+                                    >
+                                        <View style={styles.containerDownloadButton}>
+                                            <Icon name='cloud-download-outline' style={styles.iconControl} size={20} pack='ionicons' />
+                                            <Text style={[styles.text, styles.textControl]} category='s1'>Baixar</Text>
+                                        </View>
+                                    </TouchableOpacity>
                                 </View>
-
-                                {/* <View style={{ paddingVertical: 10 }}>
-                                <TouchableOpacity disabled style={styles.downloadBtn}>
-                                    <Icon name='cloud-download-outline' size={20} style={styles.downloadIcon} />
-                                </TouchableOpacity>
-                            </View> */}
                             </>
                         ) : (
                             <>
@@ -338,7 +415,7 @@ const CreatePatientDocumentScreen: FC = (): ReactElement => {
                                     documentId={params?.exam?.documentId}
                                     setFileName={setFileName}
                                     disabled={isLoading}
-                                    isNew={params?.props.isNew}
+                                    isNew={params?.props?.isNew || false}
                                 />
                                 <CustomErrorMessage name='examImage' errors={form.formState.errors} />
                                 <View style={styles.containerButton}>

@@ -167,8 +167,8 @@ android {
         applicationId 'net.atos.teleneumu'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 20
-        versionName '1.5.30'
+        versionCode 27
+        versionName '1.5.35.1'
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
 
         if (isNewArchitectureEnabled()) {

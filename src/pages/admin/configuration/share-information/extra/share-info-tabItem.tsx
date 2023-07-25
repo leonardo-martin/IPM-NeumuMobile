@@ -45,9 +45,13 @@ const ShareInfoTabItemScreen: FC = (): ReactElement => {
     const changeAuthorization = async (medicalDoctorId: string, authorization: boolean = false) => {
         try {
             const res = await patientGrantAuthorization({ medicalDoctorId, authorization })
-            if (res.status === 201)
+            if (res.status === 201) {
                 loadBadgeCount()
-            else
+                Toast.show({
+                    type: 'success',
+                    text2: authorization ? 'Compartilhamento autorizado' : 'Compartilhamento cancelado',
+                })
+            } else
                 Toast.show({
                     type: 'danger',
                     text2: 'Erro desconhecido. Contate o administrador',

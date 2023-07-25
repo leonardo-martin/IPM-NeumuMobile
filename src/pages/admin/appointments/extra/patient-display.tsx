@@ -36,14 +36,18 @@ const PatientDisplayAsDoctorScreen: FC = (): ReactElement => {
     }
 
     useEffect(() => {
-        if (exam && params) {
+        if (exam && params?.userDto?.id) {
             navigate('CreatePatientDocuments', {
-                ...exam,
-                readonly: true,
-                owningUserId: params.userDto.id
+                exam: exam,
+                props: {
+                    editable: true,
+                    isNew: true,
+                    readonly: true,
+                    owningUserId: params.userDto.id,
+                }
             })
         }
-    }, [exam])
+    }, [exam, params])
 
 
     const calcAgeToString = (date: Date) => {

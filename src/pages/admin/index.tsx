@@ -6,8 +6,9 @@ import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { useModal } from '@hooks/useModal'
 import { EUserRole } from '@models/UserRole'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import { getUserDetails, getUserRelatedIds } from '@services/user.service'
-import { setProfile } from '@store/ducks/profile'
+import { getProfilePicture, getUserDetails, getUserRelatedIds } from '@services/user.service'
+import { getVisitAddressListByDoctorId } from '@services/visit-address.service'
+import { setProfile, setVisitAddress } from '@store/ducks/profile'
 import { setUser } from '@store/ducks/user'
 import { RootState } from '@store/index'
 import { Card, Icon, Text, useStyleSheet } from '@ui-kitten/components'
@@ -26,7 +27,14 @@ const DashboardScreen: FC = (): ReactElement => {
     const res = await getUserDetails()
     dispatch(setProfile(res.data))
     const response = await getUserRelatedIds()
+    if (response.data.medicalDoctorId) {
+      const visitAddress = await getVisitAddressListByDoctorId(response.data.medicalDoctorId.toString() ?? "0")
+      dispatch(setVisitAddress(visitAddress.data))
+    } else {
+      dispatch(setVisitAddress([]))
+    }
     dispatch(setUser(response.data))
+    dispatch(getProfilePicture(response.data.userId))
   }
 
   useEffect(() => {
@@ -62,7 +70,6 @@ const DashboardScreen: FC = (): ReactElement => {
       navigation.jumpTo('Schedule') : navigation.jumpTo('ProfessionalSchedule')
   }
   const goToAppointments = () => navigation.jumpTo('MyAppointments')
-  const goToHelpMe = () => navigation.jumpTo('Help')
 
   return (
     <Host>

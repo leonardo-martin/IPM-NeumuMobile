@@ -235,20 +235,22 @@ const CardAddressComponent: FC<CardAddressProps> = ({ form, styles,
         handleFetchingData(true)
         const obj = await getAddressByPostalCode(value)
 
-        form.resetField(`${textFieldPrefix}country` as const)
-        form.resetField(`${textFieldPrefix}city` as const)
-        form.resetField(`${textFieldPrefix}state` as const)
-        form.resetField(`${textFieldPrefix}address1` as const)
-        // form.resetField(`${textFieldPrefix}address2` as const)
-        form.resetField(`${textFieldPrefix}addressComplement` as const)
+        if (obj) {
+            form.resetField(`${textFieldPrefix}country` as const)
+            form.resetField(`${textFieldPrefix}city` as const)
+            form.resetField(`${textFieldPrefix}state` as const)
+            form.resetField(`${textFieldPrefix}address1` as const)
+            // form.resetField(`${textFieldPrefix}address2` as const)
+            form.resetField(`${textFieldPrefix}addressComplement` as const)
 
-        setCountry(obj ? 'Brasil' : '')
-        form.setValue(`${textFieldPrefix}city` as const, obj?.localidade)
-        form.setValue(`${textFieldPrefix}address1` as const, obj?.logradouro)
-        // form.setValue(`${textFieldPrefix}address2` as const, obj?.bairro)
-        form.setValue(`${textFieldPrefix}state` as const, obj?.uf)
-        form.setValue(`${textFieldPrefix}addressComplement` as const, obj?.complemento)
-        form.setValue(`${textFieldPrefix}country` as const, obj ? 'Brasil' : '')
+            setCountry(obj ? 'Brasil' : '')
+            form.setValue(`${textFieldPrefix}city` as const, obj.localidade)
+            form.setValue(`${textFieldPrefix}address1` as const, obj.logradouro)
+            // form.setValue(`${textFieldPrefix}address2` as const, obj?.bairro)
+            form.setValue(`${textFieldPrefix}state` as const, obj.uf)
+            form.setValue(`${textFieldPrefix}addressComplement` as const, obj.complemento)
+            form.setValue(`${textFieldPrefix}country` as const, 'Brasil')
+        }
         handleFetchingData(false)
     }
 

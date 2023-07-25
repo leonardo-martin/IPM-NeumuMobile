@@ -37,7 +37,7 @@ const Timeline: FC<TimelineProps> = ({
 
         if (list && data) {
             let length = 0
-            list.map(item => {
+            list.forEach(item => {
                 length += data[item].length
             })
             onChangeListSize(length)

@@ -32,24 +32,31 @@ const ChangePasswordRequest: FC = (): ReactElement => {
         }
     }, [form.formState.isSubmitSuccessful])
 
-    const submit = async (data: ChangePasswdRequest) => {
+    const submit = React.useCallback(async (data: ChangePasswdRequest) => {
 
         setIsLoading(!isLoading)
         try {
-            var inputValue: UserAccRecoveryPasswdRequest = {}
-            if (EChoicesChangePassword.CPF) {
-                inputValue = {
-                    userCpf: cleanNumberMask(data.choice)
-                }
-            } else if (EChoicesChangePassword.EMAIL) {
-                inputValue = {
-                    userEmail: data.choice
-                }
-            } else if (EChoicesChangePassword.RNM) {
-                inputValue = {
-                    userRnm: data.choice
-                }
+            let inputValue: UserAccRecoveryPasswdRequest = {}
+            switch (params.choice) {
+                case EChoicesChangePassword.CPF:
+                    inputValue = {
+                        userCpf: cleanNumberMask(data.choice)
+                    }
+                    break;
+                case EChoicesChangePassword.EMAIL:
+                    inputValue = {
+                        userEmail: data.choice
+                    }
+                    break;
+                case EChoicesChangePassword.RNM:
+                    inputValue = {
+                        userRne: data.choice
+                    }
+                    break;
+                default:
+                    break;
             }
+
             const response = await changePassReq(inputValue)
 
             if (response.status !== 200 && response.status !== 201) {
@@ -70,7 +77,7 @@ const ChangePasswordRequest: FC = (): ReactElement => {
         } finally {
             setIsLoading(false)
         }
-    }
+    }, [params])
 
     return (
         <SafeAreaLayout level='1' style={styles.safeArea}>

@@ -35,7 +35,29 @@ export const createDocStyle = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: SPACING
   },
+  containerDownloadButton: {
+    flexDirection: 'column',
+    paddingVertical: SPACING,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   button: {
     width: '100%'
+  },
+  buttonDownload: {
+    backgroundColor: 'color-primary-500',
+    borderColor: 'border-basic-color-5',
+    borderWidth: .5,
+    borderRadius: 4,
+  },
+  iconControl: {
+    color: 'color-control-default'
+  },
+  text: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  textControl: {
+    color: 'text-control-color',
   },
 })

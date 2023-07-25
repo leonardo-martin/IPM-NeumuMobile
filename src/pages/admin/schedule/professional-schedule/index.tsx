@@ -26,7 +26,7 @@ interface ScheduleItem {
 
 const ProfessionalScheduleScreen: FC = (): ReactElement => {
 
-    const { ids } = useAppSelector((state: RootState) => state.user)
+    const { profile: { visitAddress }, user: { ids } } = useAppSelector((state: RootState) => state)
     const isFocused = useIsFocused()
     const styles = useStyleSheet(professionalStyle)
     const [selectedIndex, setSelectedIndex] = useState<number>(-1)
@@ -65,8 +65,6 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
                 // get all time blocks
                 const resp = await getAppointmentAvailabilityListSummaryByDoctorId(ids?.medicalDoctorId as number)
                 setTimeBlockList(resp.data)
-            } else {
-                throw 'Error'
             }
         } catch (error) {
             Toast.show({
@@ -89,8 +87,8 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
     }, [timeBlockList])
 
     const resetData = useCallback(() => {
-        // startTime 06h | endTime 22h
-        const array = getTimesByInterval(localeDateService, 15, 345, 22)
+        // startTime 06h | endTime 18h
+        const array = getTimesByInterval(localeDateService, 15, 345, 18)
         const newArray: ScheduleItem[] = array.map(e => {
             const timeBlock = getTimeBlocksByTime(localeDateService.parse(e as string, _DATE_FROM_ISO_8601))
             return {
@@ -102,25 +100,27 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
         setOriginalScheduleList(newArray)
     }, [localeDateService])
 
-    const alert = () => {
-        Alert.alert(
-            'Informativo',
-            'Para que o seu perfil esteja visível aos pacientes, faça o cadastro do seu Endereço Comercial em seu perfil',
-            [
-                {
-                    text: 'Ok',
-                    style: 'default',
-                }
-            ]
-        )
-    }
+    const alert = useCallback(() => {
+        if (!visitAddress || visitAddress.length === 0)
+            Alert.alert(
+                'Informativo',
+                'Para que o seu perfil esteja visível aos pacientes, faça o cadastro do seu Endereço Comercial em seu perfil',
+                [
+                    {
+                        text: 'Ok',
+                        style: 'default',
+                    }
+                ]
+            )
+    }, [visitAddress])
+
     useFocusEffect(
         useCallback(() => {
             if (ids?.medicalDoctorId)
                 loadData()
         }, [ids])
     )
-    
+
     useFocusEffect(
         useCallback(() => {
             alert()
@@ -253,7 +253,7 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
         const dayOfWeek = selectedIndex === 0 ? 7 : selectedIndex
         if (timeBlockList) {
             const arr = timeBlockList[dayOfWeek] ?? []
-            scheduleList.map(item => {
+            scheduleList.forEach(item => {
                 if (item.checked && !arr.includes(Number(item.id)))
                     saveItems.push(item)
                 else if (!item.checked && arr.includes(Number(item.id)))
@@ -269,8 +269,7 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
                 let amountSavedItems = 0
 
                 // save items
-                for (let index = 0; index < saveItems.length; index++) {
-                    const element = saveItems[index]
+                for (const element of saveItems) {
                     let data: AppointmentAvailabilityParams = {
                         startTime: new Date(element.title as string).toISOString(),
                         endTime: addMinutes(new Date(element.title as string), 14).toISOString(),
@@ -284,8 +283,7 @@ const ProfessionalScheduleScreen: FC = (): ReactElement => {
                 }
 
                 // remove items
-                for (let index = 0; index < removeItems.length; index++) {
-                    const element = removeItems[index]
+                for (const element of removeItems) {
                     let data: AppointmentAvailabilityParams = {
                         startTime: new Date(element.title as string).toISOString(),
                         endTime: addMinutes(new Date(element.title as string), 14).toISOString(),

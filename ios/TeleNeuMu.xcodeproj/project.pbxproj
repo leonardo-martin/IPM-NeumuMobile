@@ -341,9 +341,9 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = NO;
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1400;
-				LastUpgradeCheck = 1410;
+				LastUpgradeCheck = 1430;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
@@ -647,6 +647,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TeleNeuMu.app/TeleNeuMu";
 			};
 			name = Debug;
@@ -678,6 +679,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TeleNeuMu.app/TeleNeuMu";
 			};
 			name = Release;
@@ -695,7 +697,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 246JC9J4RZ;
 				DISPLAY_NAME = "TeleNeuMu Dev";
 				ENABLE_BITCODE = NO;
@@ -710,7 +712,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.29;
+				MARKETING_VERSION = 1.5.35;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CPLUSPLUSFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -723,7 +725,7 @@
 				PRODUCT_NAME = TeleNeuMu;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				URI_SCHEME_BASE = teleneumuappdev;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -742,7 +744,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 243B7XXD8U;
 				DISPLAY_NAME = TeleNeuMu;
 				EXCLUDED_ARCHS = "";
@@ -756,7 +758,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.29;
+				MARKETING_VERSION = 1.5.35;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CPLUSPLUSFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -768,7 +770,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.teleneumu.TeleNeuMu;
 				PRODUCT_NAME = TeleNeuMu;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				URI_SCHEME_BASE = teleneumuapp;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -944,7 +946,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODEPUSH_KEY = "ncvh--L_uKU0lIx69zwYnDtt_XagmsUN0Y3Ut";
+				CODEPUSH_KEY = "2ZtYchXcoqQlA11U6VgiUYp-5Bh2N64U9rt1r";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
@@ -980,7 +982,7 @@
 		};
 		C2508CC6295C432400708207 /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 87840D69ED6CEB35D7A2FD45 /* Pods-TeleNeuMu.release.xcconfig */;
+			baseConfigurationReference = 8FF428D5ADAE3E941BFFE5A7 /* Pods-TeleNeuMu.staging.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -991,7 +993,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 243B7XXD8U;
 				DISPLAY_NAME = "TeleNeuMu Test";
 				EXCLUDED_ARCHS = "";
@@ -1005,7 +1007,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.29;
+				MARKETING_VERSION = 1.5.35;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CPLUSPLUSFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -1017,7 +1019,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.teleneumu.TeleNeuMu;
 				PRODUCT_NAME = TeleNeuMu;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				URI_SCHEME_BASE = teleneumuappdev;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1026,7 +1028,7 @@
 		};
 		C2508CC7295C432400708207 /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B034892DDE102930BBCBC1C5 /* Pods-TeleNeuMu-TeleNeuMuTests.release.xcconfig */;
+			baseConfigurationReference = BAA0759DCB11DB74C00C0C1C /* Pods-TeleNeuMu-TeleNeuMuTests.staging.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1051,13 +1053,14 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TeleNeuMu.app/TeleNeuMu";
 			};
 			name = Staging;
 		};
 		C2508CC8295C432400708207 /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E293FFAAD65606A9F86D1770 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */;
+			baseConfigurationReference = 05A01C5066A75E0D685A7A48 /* Pods-OneSignalNotificationServiceExtension.staging.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;

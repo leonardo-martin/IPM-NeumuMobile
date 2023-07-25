@@ -1,6 +1,6 @@
 import { JSONObject } from "./Common"
 import { ExamDNA } from "./Patient"
-import { PatientProfileCreatorDto, PatientProfileCreatorTypeEnum } from "./PatientProfileCreator"
+import { PatientProfileCreatorTypeEnum } from "./PatientProfileCreator"
 import { UserRole } from "./UserRole"
 import { VisitAddress } from "./VisitAddress"
 
@@ -112,10 +112,7 @@ export class UserPatientData extends UserData {
     mothersName?: string
     susNumber?: string
     createdPatientProfileId?: string | number
-    patientProfileCreatorTypeId?:
-        | PatientProfileCreatorTypeEnum
-        | number
-        | undefined
+    patientProfileCreatorTypeId?: PatientProfileCreatorTypeEnum | number
     data?: JSONObject | string | any
     underAgePatientProfileId?: number
     responsibleEmailKey?: string
@@ -233,7 +230,7 @@ class MedicalSpecialtyDto {
 export interface UserAccRecoveryPasswdRequest {
     userEmail?: string
     userCpf?: string
-    userRnm?: string
+    userRne?: string
 }
 
 export class UserAccRecoveryPasswd {

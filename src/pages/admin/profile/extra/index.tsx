@@ -20,8 +20,9 @@ import { AxiosError } from 'axios'
 import { compareAsc, subYears } from 'date-fns'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Alert, ImageStyle, Keyboard, Platform, RefreshControl, ScrollView, StyleProp } from 'react-native'
+import { Alert, ImageStyle, Keyboard, Platform, RefreshControl, StyleProp } from 'react-native'
 import { Asset } from 'react-native-image-picker'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Toast from 'react-native-toast-message'
 import { RootState } from 'store'
 import BadgeProfile from './badge-profile'
@@ -70,8 +71,8 @@ const EditProfileScreen: FC = (): ReactElement => {
             susNumber: response.data.patientDto.susNumber,
             sex: response.data.patientDto.sex ?? undefined,
             ...bUnderage && patientDisplay?.patientProfileCreatorDto.patientProfileCreatorTypeId !== 1 && {
-              responsiblePersonEmail: response.data.responsiblePersonEmail ?? JSON.parse(response.data.patientProfileCreatorDto.data as string).email,
-              responsiblePersonName: JSON.parse(response.data.patientProfileCreatorDto.data as string).name
+              responsiblePersonEmail: response.data.responsiblePersonEmail,
+              responsiblePersonName: response.data.patientProfileCreatorDto.data?.name || ''
             }
           }
         }
@@ -96,7 +97,6 @@ const EditProfileScreen: FC = (): ReactElement => {
         await loadProfilePic(sessionUser.userId)
       }
     } catch (error) {
-
       if (error instanceof AxiosError) {
         Toast.show({
           type: 'danger',
@@ -115,7 +115,7 @@ const EditProfileScreen: FC = (): ReactElement => {
   const loadProfilePic = useCallback(async (userId: number) => {
     try {
       if (!profilePicId)
-        await dispatch(await getProfilePicture(userId))
+        dispatch(getProfilePicture(userId))
     } catch (error) {
       Toast.show({
         type: 'danger',
@@ -271,6 +271,7 @@ const EditProfileScreen: FC = (): ReactElement => {
           const base64 = await readFileFromDevice(file[0].uri)
           if (base64)
             dispatch(setProfilePic({ base64: base64, id: response.data.id }))
+          else dispatch(setProfilePic(null))
         }
         if (profilePicId) {
           await userDelete(profilePicId)
@@ -311,13 +312,14 @@ const EditProfileScreen: FC = (): ReactElement => {
   const loadDataFromPostalCode = async (value: string) => {
     try {
       const obj = await getAddressByPostalCode(value)
-
-      form.setValue('country', 'Brasil')
-      form.setValue('city', obj?.localidade)
-      form.setValue('state', obj?.uf)
-      form.setValue('address1', obj?.logradouro)
-      form.setValue('addressComplement', obj?.complemento)
-      Keyboard.dismiss()
+      if (obj) {
+        form.setValue('country', 'Brasil')
+        form.setValue('city', obj.localidade)
+        form.setValue('state', obj.uf)
+        form.setValue('address1', obj.logradouro)
+        form.setValue('addressComplement', obj.complemento)
+        Keyboard.dismiss()
+      }
     } catch (error) {
       Toast.show({
         type: 'danger',
@@ -343,8 +345,11 @@ const EditProfileScreen: FC = (): ReactElement => {
       {isLoading ? (
         <LoadingIndicatorComponent size='giant' status='primary' />
       ) : (
-        <ScrollView
+        <KeyboardAwareScrollView
+          keyboardShouldPersistTaps='handled'
+          keyboardDismissMode='interactive'
           showsVerticalScrollIndicator={false}
+          enableOnAndroid
           style={styles.container}
           contentContainerStyle={styles.contentContainer}
           refreshControl={
@@ -907,7 +912,7 @@ const EditProfileScreen: FC = (): ReactElement => {
                 />
               </>
             )}
-        </ScrollView>
+        </KeyboardAwareScrollView>
       )}
 
     </>

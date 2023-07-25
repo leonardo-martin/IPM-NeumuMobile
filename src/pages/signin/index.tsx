@@ -39,6 +39,7 @@ const SignInScreen: FC = (): ReactElement => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [visibleModal, setVisibleModal] = useState<boolean>(false)
   const [checked, setChecked] = useState<boolean>(false)
+  const [memoryAccess, setMemoryAccess] = useState<boolean>(false)
 
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(true)
   const navigation = useNavigation<any>()
@@ -66,7 +67,14 @@ const SignInScreen: FC = (): ReactElement => {
   }
 
   useEffect(() => {
-    getStoredUsernameAndPassword()
+    Keychain.getSupportedBiometryType().then(res => {
+      if (res) {
+        setMemoryAccess(true)
+        getStoredUsernameAndPassword()
+      } else {
+        setMemoryAccess(false)
+      }
+    })
     return () => { setChecked(false) }
   }, [])
 
@@ -96,6 +104,8 @@ const SignInScreen: FC = (): ReactElement => {
               messageToast = 'Usuário e/ou senha incorretos'
             else if (matchId === 3)
               messageToast = 'Pendente a liberação pelo responsável'
+            else if (matchId === 4)
+              messageToast = 'Usuário não tem permissão para acessar o aplicativo'
           }
         } else {
           messageToast = 'Usuário e/ou senha incorretos'
@@ -104,12 +114,11 @@ const SignInScreen: FC = (): ReactElement => {
         if (messageToast !== '') {
           Toast.show({
             type: 'danger',
+            visibilityTime: 10000,
             text2: messageToast,
-            autoHide: false,
             position: 'bottom'
           })
         }
-
       }
     } catch (error) {
       setIsLoading(false)
@@ -125,7 +134,10 @@ const SignInScreen: FC = (): ReactElement => {
   const registerName = () => {
     setVisibleModal(true)
   }
-  const recoveryPasswd = () => navigation.navigate('ChangePasswordChoice')
+  const recoveryPasswd = () => {
+    Toast.hide()
+    navigation.navigate('ChangePasswordChoice')
+  }
 
   const toggleSecureEntry = () => {
     setSecureTextEntry(!secureTextEntry)
@@ -136,6 +148,7 @@ const SignInScreen: FC = (): ReactElement => {
   )
 
   const register = (selected: number | undefined) => {
+    Toast.hide()
     navigation.navigate('SignUp', {
       type: selected
     })
@@ -243,12 +256,14 @@ const SignInScreen: FC = (): ReactElement => {
               />
               <CustomErrorMessage name='password' errors={form.formState.errors} />
               <View style={styles.containerCheckbox}>
-                <CheckBox
-                  disabled={isLoading}
-                  status='primary'
-                  checked={checked} onChange={onCheckedChange}>
-                  {evaProps => <Text style={[evaProps?.style, styles.checkboxText]}>Lembrar acesso</Text>}
-                </CheckBox>
+                {memoryAccess && (
+                  <CheckBox
+                    disabled={isLoading}
+                    status='primary'
+                    checked={checked} onChange={onCheckedChange}>
+                    {evaProps => <Text style={[evaProps?.style, styles.checkboxText]}>Lembrar acesso</Text>}
+                  </CheckBox>
+                )}
                 <View style={styles.containerRecoveryPassword}>
                   <TouchableOpacity disabled={isLoading} onPress={recoveryPasswd}>
                     <Text

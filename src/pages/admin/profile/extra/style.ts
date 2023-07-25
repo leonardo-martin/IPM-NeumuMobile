@@ -9,6 +9,7 @@ export const extraProfileStyle = StyleSheet.create({
   },
   contentContainer: {
     paddingVertical: 24,
+    flexGrow: 1
   },
   profileAvatar: {
     aspectRatio: 1.0,

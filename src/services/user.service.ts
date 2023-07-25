@@ -67,10 +67,14 @@ export const getProfilePicture = (userId: number) => async (dispatch: AppDispatc
                 const responseDocData = await userGetDocumentFile(responseDoc.data[0].id)
                 const base64 = Base64.arrayBufferToBase64(responseDocData.data.data)
                 dispatch(setProfilePic({ base64, id: responseDoc.data[0].id }))
+            } else {
+                dispatch(setProfilePic(null))
             }
+        } else {
+            dispatch(setProfilePic(null))
         }
     } catch (error) {
-        throw error
+        dispatch(setProfilePic(null))
     }
 }
 

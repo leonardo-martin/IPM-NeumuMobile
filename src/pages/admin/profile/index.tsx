@@ -5,7 +5,7 @@ import { SafeAreaLayout } from '@components/safeAreaLayout'
 import { useAppDispatch, useAppSelector } from '@hooks/redux'
 import { EUserRole } from '@models/UserRole'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import { deleteUserSelf, getProfilePicture } from '@services/user.service'
+import { deleteUserSelf } from '@services/user.service'
 import { logout } from '@store/ducks/auth'
 import { RootState } from '@store/index'
 import { Avatar, Button, Icon, IconProps, Spinner, Text, useStyleSheet } from '@ui-kitten/components'
@@ -138,23 +138,6 @@ const ProfileScreen: FC = (): ReactElement => {
     </View>
   )
 
-  const loadProfilePic = useCallback(async (userId: number) => {
-    try {
-      if (!profilePicId)
-        await dispatch(await getProfilePicture(userId))
-    } catch (error) {
-      Toast.show({
-        type: 'danger',
-        text2: 'Erro carregar a foto de perfil',
-      })
-    }
-    setIsLoading(false)
-
-    return () => {
-      setIsLoading(false)
-    }
-  }, [profilePic])
-
   const verifyIfUserTestIsLogged = async () => {
     const res = await AppStorageService.getItem(STORAGE.TESTE_USER)
     if (res)
@@ -167,11 +150,9 @@ const ProfileScreen: FC = (): ReactElement => {
     useCallback(() => {
       verifyIfUserTestIsLogged()
       setIsLoading(true)
-      if (!profilePicId && ids) {
-        loadProfilePic(ids.userId)
-      } else {
+      setTimeout(() => {
         setIsLoading(false)
-      }
+      }, 1000)
       return () => {
         setIsLoading(false)
       }

@@ -46,7 +46,7 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
                 const title = `Nota - ${localeDateService.format(localeDateService.today(), 'DD/MM/YY')}`
                 form.reset({
                     ...props.patientDiaryEntry,
-                    date: props.patientDiaryEntry?.date ? new Date(props.patientDiaryEntry?.date as string) : localeDateService.today(),
+                    date: props.patientDiaryEntry?.date ?? localeDateService.today(),
                     data: {
                         title: props.patientDiaryEntry?.data.title ? props.patientDiaryEntry?.data.title : title,
                         ...props.patientDiaryEntry?.data
@@ -59,29 +59,24 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
         }, [visible])
     )
 
-    const handleVisibleModal = () => {
+    const handleVisibleModal =() => {
         setErrorMessage('')
         setIsLoading(false)
         setIsError(false)
-        onVisible(!visible)
+        onVisible(false)
     }
 
-    const submitForm = async (data: PatientDiaryEntryDto) => {
+    const submitForm = useCallback(async (data: PatientDiaryEntryDto) => {
         setIsLoading(!isLoading)
         try {
-
-            const obj: PatientDiaryEntryDto = {
-                ...data,
-                patientId: ids?.patientId as number,
-            }
             let response = null
-            if (!props.patientDiaryEntry) {
-                response = await postDiaryEntry(obj)
-            } else {
-                response = await updateDiaryEntry({
-                    ...obj,
-                    updatedAt: localeDateService.today()
+            if (!data.patientId) {
+                response = await postDiaryEntry({
+                    ...data,
+                    patientId: ids?.patientId
                 })
+            } else {
+                response = await updateDiaryEntry(data)
             }
             if (response.status === 201 || response.status === 200) {
                 props.onRefresh(response.data)
@@ -104,7 +99,7 @@ const AddPatientDiaryEntryDialog: FC<AddPatientDiaryEntryDialogProps> = forwardR
         } finally {
             setIsLoading(false)
         }
-    }
+    }, [ids])
 
     const goTo = (routeName: string) => {
         navigation.navigate(routeName)

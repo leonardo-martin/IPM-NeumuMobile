@@ -57,7 +57,7 @@ const PatientDiaryEntryScreen: FC = (): ReactElement => {
     const [range, setRange] = useState<CalendarRange<Date>>({})
 
     const getPatientCalendarList = useCallback(async () => {
-        var arr: PatientDiaryEntryDto[] = []
+        let arr: PatientDiaryEntryDto[] = []
         if (sessionUser?.userRole.find(e => e.id === EUserRole.patient)) {
             const result = await getDiaryEntryByRange((ids?.patientId as number), range)
             arr = result.data

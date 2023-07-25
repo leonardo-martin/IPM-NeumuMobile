@@ -48,6 +48,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
     const [isCompleteAddress, setIsCompleteAddress] = useState(false)
     const [accept, setAccept] = useState<boolean>(false)
     const [formAvailable, setFormAvailable] = useState<AbrafeuOptInStatus>(AbrafeuOptInStatus.NOT_REQUESTED)
+    const [authorized, setAuthorized] = useState<boolean>(false)
 
     const { profile } = useAppSelector((state: RootState) => state.profile)
     const [underage, setUnderage] = useState<boolean>(true)
@@ -125,6 +126,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
     }
 
     const handleParticipateProgram = useCallback((index: number) => {
+        setAuthorized(false)
         setSelectedIndex(index)
         if (index === 0 && underage && !accept) {
             if (statusPermission === UnderageStatus.GRANTED) {
@@ -175,32 +177,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                         text: 'Sim',
                         style: 'destructive',
                         onPress: async () => {
-                            const data = { ...form.getValues() }
-                            delete data.pastExams
-                            try {
-                                const response = await updatePatient({
-                                    ...data
-                                })
-                                if (response.status === 201 || response.status === 200) {
-                                    setPatient(response.data)
-
-                                    Toast.show({
-                                        type: 'success',
-                                        text2: 'Perfil atualizado com sucesso',
-                                    })
-                                } else {
-                                    Toast.show({
-                                        type: 'warning',
-                                        text2: 'Não foi possível atualizar o perfil',
-                                    })
-                                }
-
-                            } catch (error) {
-                                Toast.show({
-                                    type: 'danger',
-                                    text2: 'Erro inesperado',
-                                })
-                            }
+                            setAuthorized(true)
                         }
                     }
                 ]
@@ -218,7 +195,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             setIsOpenedModal(true)
             ref.current?.open()
         }
-    }, [selectTmp, underage])
+    }, [selectTmp, underage, isCompleteAddress, statusPermission])
 
     const modalRequiredAddress = useCallback(() => {
         Alert.alert(
@@ -244,7 +221,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
         )
     }, [selectTmp])
 
-    const checkIfPermission = () => {
+    const checkIfPermission = useCallback(() => {
         if ((profile?.address1 !== '' && profile?.address1 !== null) &&
             (profile?.city !== '' && profile?.city !== null) &&
             (profile?.state !== '' && profile?.state !== null) &&
@@ -253,7 +230,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
         } else {
             setIsCompleteAddress(false)
         }
-    }
+    }, [profile])
 
     const checkIfFormIsAvailable = () => {
         if (formAvailable !== AbrafeuOptInStatus.AVAILABLE) {
@@ -291,7 +268,7 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
         }
     }
 
-    const confirm = async (data: PatientDto) => {
+    const confirm = useCallback(async (data: PatientDto) => {
         Keyboard.dismiss()
 
         if (isOpenedModal) {
@@ -303,8 +280,14 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
 
             try {
                 setIsSending(true)
+
+                if (authorized) {
+                    delete data.pastExams
+                }
+
                 const response = await updatePatient(data)
                 setPatient(response.data)
+
                 // send email
                 if (selectedIndex === 0) {
                     try {
@@ -352,9 +335,10 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
             ref.current?.open()
         }
         setIsSending(false)
-    }
+    }, [authorized, isOpenedModal, selectedIndex, selectTmp, underage])
 
     const close = () => {
+        setAuthorized(false)
         setIsOpenedModal(false)
         ref.current?.close()
     }
@@ -521,8 +505,8 @@ const PatientGeneticMappingProgramScreen: FC = (): ReactElement => {
                                                                         message: 'Campo obrigatório'
                                                                     },
                                                                     minLength: {
-                                                                        value: selectedIndex === 0 ? 5 : 0,
-                                                                        message: `Mín. 5 caracteres`
+                                                                        value: selectedIndex === 0 ? 4 : 0,
+                                                                        message: `Mín. 4 caracteres`
                                                                     },
                                                                 }}
                                                                 render={({ field: { onChange, onBlur, value, name, ref } }) => (

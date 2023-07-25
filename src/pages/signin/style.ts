@@ -32,8 +32,9 @@ export const loginStyle = StyleSheet.create({
   },
   containerRecoveryPassword: {
     paddingVertical: 15,
+    flex: 1,
     flexDirection: 'row',
-    alignItems: 'flex-end'
+    justifyContent: 'flex-end'
   },
   textRecoveryPassword: {
     fontWeight: Platform.OS === 'ios' ? '400' : '600',

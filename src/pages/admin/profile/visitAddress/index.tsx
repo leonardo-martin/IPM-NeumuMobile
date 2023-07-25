@@ -8,7 +8,7 @@ import { VisitAddressDTO } from '@models/VisitAddress'
 import { useFocusEffect } from '@react-navigation/native'
 import { getAddressByPostalCode, getCities, getStates } from '@services/common.service'
 import { createVisitAddress, getVisitAddressListByDoctorId, updateVisitAddress } from '@services/visit-address.service'
-import { AutocompleteItem, Button, CheckBox, Icon, IconProps, Input, Text, useStyleSheet } from '@ui-kitten/components'
+import { AutocompleteItem, Button, Icon, IconProps, Input, useStyleSheet } from '@ui-kitten/components'
 import { filterBy } from '@utils/common'
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -75,11 +75,13 @@ const VisitAddressScreen: FC = (): ReactElement => {
     const loadDataFromPostalCode = async (value: string) => {
         setEditable(false)
         const obj = await getAddressByPostalCode(value)
-        form.setValue('city', obj?.localidade)
-        form.setValue('state', obj?.uf)
-        form.setValue('complement', obj?.complemento)
-        form.setValue('street', obj?.logradouro)
-        form.setValue('district', obj?.bairro)
+        if (obj) {
+            form.setValue('city', obj.localidade)
+            form.setValue('state', obj.uf)
+            form.setValue('complement', obj.complemento)
+            form.setValue('street', obj.logradouro)
+            form.setValue('district', obj.bairro)
+        }
         setEditable(true)
     }
 
@@ -291,27 +293,6 @@ const VisitAddressScreen: FC = (): ReactElement => {
             (type === 1 && !checked && !selectedPresential && selectedTeleconsulta))
             formService.setValue('selecteds', undefined)
         else formService.clearErrors('selecteds')
-    }
-
-    const changeFormService = async () => {
-        try {
-            if (selectedTeleconsulta) {
-                // const response = await createVisitAddress({
-                //     cep: 'VIRTUAL',
-                //     city: 'VIRTUAL',
-                //     complement: '0NLINE',
-                //     district: 'VIRTUAL',
-                //     number: 'VIRTUAL',
-                //     state: 'VIRTUAL',
-                //     street: 'VIRTUAL'
-                // })
-                // console.log('aaaa', response.status)
-                // console.log('aaaa', response.data)
-            }
-
-        } catch (error) {
-
-        }
     }
 
     return (

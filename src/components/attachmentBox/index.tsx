@@ -1,9 +1,10 @@
 import { FileDto } from '@models/Document'
-import { getFileFromDevice, launchCameraFromDevice, launchImageLibraryFromDevice, saveFileToDevice, userGetDocumentFile } from '@services/document.service'
+import { useFocusEffect } from '@react-navigation/native'
+import { getFileFromDevice, launchCameraFromDevice, launchImageLibraryFromDevice, requestPermission, saveFileToDevice, userGetDocumentFile } from '@services/document.service'
 import { Icon, Text, useStyleSheet } from '@ui-kitten/components'
 import { generateHash } from '@utils/common'
-import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { Alert, Platform, TouchableOpacity, View, PermissionsAndroid } from 'react-native'
+import React, { FC, ReactElement, useCallback, useState } from 'react'
+import { Alert, Linking, PermissionsAndroid, Platform, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { AppInfoService } from 'services/app-info.service'
 import { attachBoxStyle } from './style'
@@ -23,9 +24,16 @@ const AttachmentBoxComponent: FC<AttachmentBoxProps> = ({ ...props }): ReactElem
     const styles = useStyleSheet(attachBoxStyle)
     const [docId, setDocId] = useState<number | undefined>(undefined)
 
-    useEffect(() => {
-        setDocId(documentId)
-    }, [documentId])
+    useFocusEffect(
+        useCallback(() => {
+            setDocId(documentId)
+            return () => {
+                setDocId(undefined)
+                setFile(undefined)
+                setFileName(undefined)
+            }
+        }, [documentId])
+    )
 
     const openFolder = async () => {
         try {
@@ -92,69 +100,70 @@ const AttachmentBoxComponent: FC<AttachmentBoxProps> = ({ ...props }): ReactElem
     }
 
     const download = async () => {
-        let bOk = false
-        if (Platform.OS === 'android') {
-            const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-                {
-                    title: AppInfoService.getAppName() + " desejar acessar o armazenamento.",
-                    message: "Deseja permitir que o aplicativo acesse o armazenamento?",
-                    buttonNegative: "Cancelar",
-                    buttonPositive: "Sim"
-                })
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                bOk = true
-            }
-        } else {
-            bOk = true
-        }
+        try {
+            const version = AppInfoService.getSystemVersion().split('.')
+            let bOk = await requestPermission(Number(version[0] ?? 0) ?? 0)
 
-        if (bOk) {
-            Alert.alert(
-                'Deseja efetuar o download do arquivo?',
-                'O arquivo será baixando em background e avisaremos quando estiver concluído',
-                [
-                    {
-                        text: 'Sim',
-                        style: 'default',
-                        onPress: () => downloadFile()
-                    },
-                    {
-                        text: 'Não',
-                        style: 'cancel'
-                    }
-                ]
-            )
+            if (bOk) {
+                Alert.alert(
+                    'Deseja efetuar o download do arquivo?',
+                    'O arquivo será baixando em background e avisaremos quando estiver concluído',
+                    [
+                        {
+                            text: 'Sim',
+                            style: 'default',
+                            onPress: () => downloadFile()
+                        },
+                        {
+                            text: 'Não',
+                            style: 'cancel'
+                        }
+                    ]
+                )
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'danger',
+                text2: 'Erro ao solicitar permissão',
+            })
         }
     }
 
     const downloadFile = async () => {
-        if (documentId && (fileName && fileName !== '')) {
-            const response = await userGetDocumentFile(documentId)
-            if (response.status === 200) {
-                const ret = await saveFileToDevice(response.data.data, fileName)
-                if (ret.recorded)
-                    Alert.alert(
-                        'Download',
-                        'Download concluído com sucesso. Verifique sua pasta de Downloads',
-                        [
-                            {
-                                text: 'OK',
-                                style: 'default'
-                            }
-                        ]
-                    )
-                else
+        try {
+            if (documentId && (fileName && fileName !== '')) {
+                const response = await userGetDocumentFile(documentId)
+                if (response.status === 200) {
+                    const ret = await saveFileToDevice(response.data.data, fileName)
+                    if (ret.recorded)
+                        Alert.alert(
+                            'Baixar arquivo',
+                            'Arquivo baixado concluído com sucesso.',
+                            [
+                                {
+                                    text: 'OK',
+                                    style: 'default'
+                                }
+                            ]
+                        )
+                    else
+                        Toast.show({
+                            type: 'warning',
+                            text2: 'Não foi possível baixar o arquivo',
+                        })
+                } else {
                     Toast.show({
-                        type: 'warning',
-                        text2: 'Erro inesperado no download do arquivo',
+                        type: 'danger',
+                        text2: 'Ocorreu um erro ao baixar o arquivo',
                     })
-            } else {
-                Toast.show({
-                    type: 'danger',
-                    text2: 'Ocorreu um erro ao baixar o arquivo',
-                })
+                }
             }
-
+        } catch (error) {
+            console.error(error)
+            Toast.show({
+                type: 'danger',
+                text2: 'Erro ao baixar o arquivo. Entre em contato com o administrador',
+            })
         }
     }
 
@@ -185,15 +194,17 @@ const AttachmentBoxComponent: FC<AttachmentBoxProps> = ({ ...props }): ReactElem
             <View style={styles.container}>
                 {docId ? (
                     <>
-                        <TouchableOpacity
-                            disabled={disabled}
-                            style={styles.buttonDownload}
-                            onPress={download}>
-                            <View style={styles.containerButton}>
-                                <Icon name='cloud-download-outline' style={styles.iconControl} size={20} pack='ionicons' />
-                                <Text style={[styles.text, styles.textControl]} category='s1'>Baixar</Text>
-                            </View>
-                        </TouchableOpacity>
+                        {!isNew && (
+                            <TouchableOpacity
+                                disabled={disabled}
+                                style={styles.buttonDownload}
+                                onPress={download}>
+                                <View style={styles.containerButton}>
+                                    <Icon name='cloud-download-outline' style={styles.iconControl} size={20} pack='ionicons' />
+                                    <Text style={[styles.text, styles.textControl]} category='s1'>Baixar</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
                         <TouchableOpacity
                             disabled={disabled}
                             style={styles.buttonRemove}
@@ -205,7 +216,7 @@ const AttachmentBoxComponent: FC<AttachmentBoxProps> = ({ ...props }): ReactElem
                         </TouchableOpacity>
                     </>
                 ) : (
-                    (isNew && fileName === '') || (!isNew && !docId && fileName === '') ?
+                    (isNew && (fileName === '' || !fileName)) || (!isNew && !docId && fileName === '') ?
                         <>
                             <TouchableOpacity
                                 onPress={openLibrary}

@@ -5,9 +5,9 @@ import { api } from './api.service'
 export const changePassReq = async (data: UserAccRecoveryPasswdRequest) => {
 
     const params = new URLSearchParams()
-    params.append('userEmail', data.userEmail ? encodeURIComponent(data.userEmail) : '')
+    params.append('userEmail', data.userEmail?.toLowerCase() || '')
     params.append('userCpf', data.userCpf ? encodeURIComponent(data.userCpf) : '')
-    params.append('userRne', data.userRnm ? encodeURIComponent(data.userRnm) : '')
+    params.append('userRne', data.userRne || '')
     return await api.post('login/change-password-request?' + params, {})
 }
 

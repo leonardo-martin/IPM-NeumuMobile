@@ -5,7 +5,7 @@ import { PatientDiaryEntryDto } from "@models/Patient"
 import { PatientProfileCreatorTypeEnum } from "@models/PatientProfileCreator"
 import { TimelineItem } from "@models/Timeline"
 import { CalendarRange, NativeDateService } from "@ui-kitten/components"
-import { addMinutes, subHours } from 'date-fns'
+import { addMinutes } from 'date-fns'
 import { MutableRefObject } from "react"
 import { Linking } from "react-native"
 import Toast from 'react-native-toast-message'
@@ -23,6 +23,8 @@ export const matchMessage = (message: any) => {
             return 2
         } else if (JSON.stringify(message).match('Under age user must be verified by responsible')) {
             return 3
+        } else if (JSON.stringify(message).match('User does not have permission to access the app')) {
+            return 4
         }
         // Delete account error
         else if (JSON.stringify(message).match('All projects must be cancelled before deleting the account.')) {
@@ -173,9 +175,6 @@ export const groupByDateTime = (localeDateService: NativeDateService, data: Pati
 }
 
 export const orderByDateRange = (localeDateService: NativeDateService, range: CalendarRange<Date>, array: any[], _columnName?: string) => {
-
-    if (range.endDate)
-        console.log(subHours(localeDateService.addDay((range.endDate as Date), 1), 1))
 
     if (range.startDate && !range.endDate)
         return array.filter((e: any) => localeDateService.parse(_columnName ? e[_columnName] : e, _DATE_FROM_ISO_8601) >= (range.startDate as Date))

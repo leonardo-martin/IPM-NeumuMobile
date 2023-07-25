@@ -10,7 +10,7 @@ export class DocumentDataDto {
     entityId!: number
     entityType!: string
     documentType!: string
-    documentId?: number
+    documentId?: number | string
 }
 
 export interface FileDto {
